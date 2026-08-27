@@ -1,6 +1,6 @@
 # gum-jsx
 
-The batteries-included [gum.jsx](https://github.com/CompendiumLabs/gum.jsx): a JSX vector graphics language that evaluates to SVG, designed for plots, diagrams, flow charts, and more. This package bundles the pure libraries — [`@gum-jsx/core`](https://www.npmjs.com/package/@gum-jsx/core) (the evaluator and elements), [`@gum-jsx/math`](https://www.npmjs.com/package/@gum-jsx/math) (LaTeX), [`@gum-jsx/node`](https://www.npmjs.com/package/@gum-jsx/node) (PNG rasterizing and terminal output), and [`@gum-jsx/mark`](https://www.npmjs.com/package/@gum-jsx/mark) (Markdown to terminal) — and ships the `gum`, `gum-tex`, and `gum-down` commands.
+The batteries-included [gum.jsx](https://github.com/CompendiumLabs/gum.jsx): a JSX vector graphics language that evaluates to SVG, designed for plots, diagrams, flow charts, and more. This package bundles the pure libraries — [`@gum-jsx/core`](https://www.npmjs.com/package/@gum-jsx/core) (the evaluator and elements), [`@gum-jsx/math`](https://www.npmjs.com/package/@gum-jsx/math) (LaTeX), [`@gum-jsx/node`](https://www.npmjs.com/package/@gum-jsx/node) (PNG rasterizing and terminal output), and [`@gum-jsx/mark`](https://www.npmjs.com/package/@gum-jsx/mark) (Markdown to terminal) — and ships the `gum`, `gum-tex`, and `gum-mark` commands.
 
 ## Installation
 
@@ -64,7 +64,7 @@ CLI options:
 
 ```bash
 gum-tex '\sum_{n=1}^\infty \frac{1}{n^2} = \frac{\pi^2}{6}' -o sum.svg   # LaTeX to SVG/PNG/terminal (see @gum-jsx/math)
-gum-down notes.md -t light -w 800                                        # Markdown in a kitty terminal (see @gum-jsx/mark)
+gum-mark notes.md -t light -w 800                                        # Markdown in a kitty terminal (see @gum-jsx/mark)
 ```
 
 ## Development

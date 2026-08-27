@@ -18,7 +18,7 @@ each sibling, then `bun install` here); switch them to semver ranges when publis
 - `src/test.ts` - The strict-mode example runner (`runTests`, `packageDir`; exported as `gum-jsx/test`), defaulting to the docs and gala examples out of `@gum-jsx/docs` plus `test/code` here
 - `scripts/gum.ts`, `scripts/dev.ts` - The `gum` CLI and its `--dev` live-reload mode
 - `scripts/tex.ts` - The `gum-tex` CLI (LaTeX → svg/png/kitty)
-- `scripts/down.ts` - The `gum-down` CLI (Markdown → kitty terminal)
+- `scripts/mark.ts` - The `gum-mark` CLI (Markdown → kitty terminal)
 - `scripts/test.ts` - Runs the suite (below)
 - `scripts/compare.ts` - Renders TeX with gum, katex-in-Chromium, and pdflatex side by side (below)
 - `test/code/` - Feature tests, one per file: `math_*.jsx` for the math elements, the rest for core

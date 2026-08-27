@@ -11,7 +11,7 @@ import { readStdin } from '@gum-jsx/node'
 // main program
 
 const program = new Command()
-program.name('gum-down')
+program.name('gum-mark')
   .description('Markdown pager with embedded gum.jsx visualizations')
   .argument('[file]', 'Markdown file to render (reads from stdin if not provided)')
   .option('-t, --theme <theme>', 'theme to use for gum.jsx and math: light or dark', 'dark')

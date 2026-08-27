@@ -22,7 +22,7 @@
   "scripts": {
     "gum": "bun ./scripts/gum.ts",
     "tex": "bun ./scripts/tex.ts",
-    "down": "bun ./scripts/down.ts",
+    "mark": "bun ./scripts/mark.ts",
     "test": "bun ./scripts/test.ts",
     "compare": "bun ./scripts/compare.ts",
     "report": "cd test/report && bun install && bun run dev",
@@ -31,7 +31,7 @@
   "bin": {
     "gum": "./scripts/gum.ts",
     "gum-tex": "./scripts/tex.ts",
-    "gum-down": "./scripts/down.ts"
+    "gum-mark": "./scripts/mark.ts"
   },
   "dependencies": {
     "@gum-jsx/core": "link:@gum-jsx/core",
