@@ -8,8 +8,7 @@
   "license": "MIT",
   "files": [
     "src",
-    "scripts",
-    "skills/gum-jsx"
+    "scripts"
   ],
   "exports": {
     ".": "./src/index.ts",
@@ -27,8 +26,7 @@
     "test": "bun ./scripts/test.ts",
     "compare": "bun ./scripts/compare.ts",
     "report": "cd test/report && bun install && bun run dev",
-    "typecheck": "bun tsc --noEmit",
-    "skill": "bun ./scripts/skill.ts && cd skills && rm -f gum-jsx.skill && zip -r gum-jsx.skill gum-jsx"
+    "typecheck": "bun tsc --noEmit"
   },
   "bin": {
     "gum": "./scripts/gum.ts",

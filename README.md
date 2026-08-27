@@ -73,7 +73,6 @@ gum-down notes.md -t light -w 800                                        # Markd
 bun scripts/test.ts            # render every docs, gala and test example in strict mode
 bun scripts/test.ts --report   # also write test/data for the report browser
 bun run report                 # browse the report at the printed URL
-bun run skill                  # rebuild the Claude skill (skills/gum-jsx.skill)
 ```
 
-The Claude skill for writing gum.jsx is `skills/gum-jsx` (zipped as `skills/gum-jsx.skill`), generated from the docs and gallery in `@gum-jsx/docs`.
+The Claude skill for writing gum.jsx lives in `@gum-jsx/docs`, generated from the docs and gallery there (`bun run skill` in that package, which writes `skills/gum-jsx` and zips it to `skills/gum-jsx.skill`).
