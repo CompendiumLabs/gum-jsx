@@ -1,6 +1,6 @@
 # gum.jsx test report
 
-A browser for the test suite: every example in `@gum-jsx/core`'s `docs/code` and
+A browser for the test suite: every example in `@gum-jsx/docs`'s `docs/code` and
 `gala/code` and this package's `test/code` as a card with its render, its source,
 and its strict-mode result.
 

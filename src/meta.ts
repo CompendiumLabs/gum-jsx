@@ -1,2 +1,2 @@
-// gum-jsx/meta: documentation metadata out of @gum-jsx/core
-export * from '@gum-jsx/core/meta'
+// gum-jsx/meta: the docs and gallery pages out of @gum-jsx/docs
+export * from '@gum-jsx/docs'

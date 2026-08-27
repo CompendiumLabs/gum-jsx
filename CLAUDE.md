@@ -1,24 +1,27 @@
 # `gum-jsx`
 
-The batteries-included gum.jsx package: it depends on all four libraries — `@gum-jsx/core`
-(`../gum.jsx`), `@gum-jsx/math` (`../gum-jsx-math`), `@gum-jsx/node` (`../gum-jsx-node`),
-`@gum-jsx/mark` (`../gum-jsx-mark`) — re-exports them, and ships the CLIs, the test suite, the report browser and the Claude skill. Everything under `@gum-jsx/*` is a pure library; anything that is a `bin`
+The batteries-included gum.jsx package: it depends on all five libraries — `@gum-jsx/core`
+(`../gum-jsx-core`), `@gum-jsx/math` (`../gum-jsx-math`), `@gum-jsx/node` (`../gum-jsx-node`),
+`@gum-jsx/mark` (`../gum-jsx-mark`), `@gum-jsx/docs` (`../gum-jsx-docs`: the docs and gallery
+examples) — re-exports them, and ships the CLIs, the test suite, the report browser and the
+Claude skill. Everything under `@gum-jsx/*` is a pure library; anything that is a `bin`
 or a test lives here. While unpublished the libraries are `link:` dependencies (`bun link` in
 each sibling, then `bun install` here); switch them to semver ranges when publishing.
 
 ## Layout
 
-- `src/index.ts` - `export *` of the four libraries; importing it registers the math elements and fonts with core
+- `src/index.ts` - `export *` of the four code libraries; importing it registers the math elements and fonts with core
 - `src/eval.ts` - `@gum-jsx/core/eval` with `@gum-jsx/math` imported first, so `evaluateGum` knows `<Latex>`
-- `src/math.ts` - `@gum-jsx/math` plus `@gum-jsx/math/render` (`mathToPng`, `mathToKitty`)
-- `src/render.ts` - `@gum-jsx/node` plus the math rasterizers (what the old `gum/render` exported)
-- `src/mark.ts`, `src/meta.ts` - `@gum-jsx/mark`, `@gum-jsx/core/meta`
-- `src/test.ts` - The strict-mode example runner (`runTests`, `packageDir`; exported as `gum-jsx/test`)
+- `src/math.ts` - `@gum-jsx/math` plus the math rasterizers from `src/render.ts`
+- `src/render.ts` - `@gum-jsx/node` plus `mathToPng`/`mathToKitty`, which rasterize `@gum-jsx/math`'s `mathToElement` (what the old `gum/render` exported; the math package itself is browser-safe and SVG-only)
+- `src/mark.ts`, `src/meta.ts` - `@gum-jsx/mark`, `@gum-jsx/docs` (the docs/gallery loaders)
+- `src/test.ts` - The strict-mode example runner (`runTests`, `packageDir`; exported as `gum-jsx/test`), defaulting to the docs and gala examples out of `@gum-jsx/docs` plus `test/code` here
 - `scripts/gum.ts`, `scripts/dev.ts` - The `gum` CLI and its `--dev` live-reload mode
 - `scripts/tex.ts` - The `gum-tex` CLI (LaTeX → svg/png/kitty)
 - `scripts/down.ts` - The `gum-down` CLI (Markdown → kitty terminal)
 - `scripts/test.ts` - Runs the suite (below)
-- `scripts/skill.ts` - Builds the Claude skill (`skills/gum-jsx`: `SKILL.md` plus `references/`) from core's docs and gallery (`@gum-jsx/core/meta` over `packageDir('@gum-jsx/core')`) and the prompt pieces in `prompt/`
+- `scripts/compare.ts` - Renders TeX with gum, katex-in-Chromium, and pdflatex side by side (below)
+- `scripts/skill.ts` - Builds the Claude skill (`skills/gum-jsx`: `SKILL.md` plus `references/`) from `@gum-jsx/docs` (`getDocs()`/`getGala()`, which locate their own content) and the prompt pieces in `prompt/`
 - `prompt/` - The hand-written parts of the skill (`head`, `intro`, `docs`, `refs`, `gen`)
 - `skills/gum-jsx/` - The generated skill (committed), and `skills/gum-jsx.skill`, its zip
 - `test/code/` - Feature tests, one per file: `math_*.jsx` for the math elements, the rest for core
@@ -34,13 +37,35 @@ bun scripts/test.ts --report     # also write test/data/<group>/<theme>/<name>.s
 bun run report                   # bun install + dev server in test/report
 bun run skill                    # regenerate skills/gum-jsx and zip it to skills/gum-jsx.skill
 bun scripts/gum.ts file.jsx -o out.png   # the CLIs, or install globally: bun i -g gum-jsx
+bun scripts/compare.ts '\frac{a}{b}'      # compare math against katex and pdflatex
+```
+
+### Comparing math against katex
+
+`scripts/compare.ts` renders the same TeX three ways at the same pixels per em — gum
+(`mathToPng`), katex's own HTML pipeline in headless Chromium (`renderToString` +
+`katex.min.css`, which pulls in the KaTeX fonts), and real LaTeX (`pdflatex` with the
+`standalone` class, rasterized by `pdftoppm` at `font_size · 72.27 / 10` dpi so a 10 pt em is
+`font_size` px) — trims each to its ink, and stacks them in one PNG (or shows it in a kitty
+terminal when no `-o` is given). It needs a Chromium binary on `PATH` (or `--chrome`/
+`$GUM_CHROME`) and a TeX install (`--no-latex` skips that panel; it is skipped with a note if
+`pdflatex` is missing, and shows the compile error when LaTeX rejects a katex-only command);
+the trims and composite are node-canvas. This is the ground truth for math layout questions the
+metrics checks cannot see, like widths and stroke weights. Note `katex.min.css` sets
+`.katex { font-size: 1.21em }`; the script divides the page font size by 1.21 so both renders
+share a scale.
+
+```bash
+bun scripts/compare.ts '\xrightarrow{f} \quad \frac{a}{b}' -o cmp.png
+bun scripts/compare.ts -i -S 64 -F eq.tex --packages amsmath,amssymb,mathtools   # inline; extra LaTeX packages
 ```
 
 ### Testing
 
-`scripts/test.ts` renders three groups: `docs` and `gala` out of `@gum-jsx/core` (its
-`docs/code`, `gala/code` and `docs/data`, found via core's `./package.json` export and
-`packageDir`) and `test` from `test/code` here. Every example renders in **strict mode**
+`scripts/test.ts` renders three groups: `docs` and `gala` out of `@gum-jsx/docs` (its
+`docsCodeDir`, `galaCodeDir` and `dataDir`, which that package resolves relative to itself) and
+`test` from `test/code` here — that trio is `runTests`' default, so the script only passes
+`--report` through. Every example renders in **strict mode**
 (`@gum-jsx/core/lib/strict`), which turns the permissive rendering fallbacks into thrown
 `StrictError`s so silent breakage shows up as a failure: unparseable TeX (`parse`), a katex node
 with no gum equivalent (`node`), an unknown command name drawn verbatim (`symbol`), a TeX font
@@ -58,3 +83,4 @@ out of `@gum-jsx/core` (through `node_modules`) and the KaTeX faces out of the r
 
 `gum-jsx/test` exports `runTests({ groups, dataDir, outDir, report, size })` — a group is a name
 (meaning `<name>/code`) or `{ name, dir }` — for running other example sets the same way.
+Omitting `groups`/`dataDir` runs the standard suite above.

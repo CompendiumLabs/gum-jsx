@@ -1,13 +1,11 @@
 #! /usr/bin/env bun
 
 // Build the Claude skill (skills/gum-jsx) out of the docs and gallery in
-// @gum-jsx/core and the prompt pieces in prompt/
+// @gum-jsx/docs and the prompt pieces in prompt/
 
 import { mkdirSync, readFileSync, writeFileSync } from 'fs'
-import { join } from 'path'
 import { Command } from 'commander'
 import { getDocs, getGala, prepareDocsPage, prepareGalaPage } from '../src/meta'
-import { packageDir } from '../src/test'
 
 // capitalize a string
 function capitalize(s: string): string {
@@ -20,10 +18,9 @@ program.option('-o, --output <output>', 'the output directory for the skill')
 program.parse(process.argv)
 const { output = 'skills/gum-jsx' } = program.opts()
 
-// load docs pages out of core
-const core = packageDir('@gum-jsx/core')
-const { tags: docs_tags, cats, text: docs_text, code: docs_code } = getDocs(join(core, 'docs'))
-const { tags: gala_tags, text: gala_text, code: gala_code } = getGala(join(core, 'gala'))
+// load docs pages out of @gum-jsx/docs (which knows where its own content is)
+const { tags: docs_tags, cats, text: docs_text, code: docs_code } = getDocs()
+const { tags: gala_tags, text: gala_text, code: gala_code } = getGala()
 
 // make reference pages
 

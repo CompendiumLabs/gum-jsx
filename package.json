@@ -25,6 +25,7 @@
     "tex": "bun ./scripts/tex.ts",
     "down": "bun ./scripts/down.ts",
     "test": "bun ./scripts/test.ts",
+    "compare": "bun ./scripts/compare.ts",
     "report": "cd test/report && bun install && bun run dev",
     "typecheck": "bun tsc --noEmit",
     "skill": "bun ./scripts/skill.ts && cd skills && rm -f gum-jsx.skill && zip -r gum-jsx.skill gum-jsx"
@@ -36,6 +37,7 @@
   },
   "dependencies": {
     "@gum-jsx/core": "link:@gum-jsx/core",
+    "@gum-jsx/docs": "link:@gum-jsx/docs",
     "@gum-jsx/mark": "link:@gum-jsx/mark",
     "@gum-jsx/math": "link:@gum-jsx/math",
     "@gum-jsx/node": "link:@gum-jsx/node",
@@ -43,6 +45,8 @@
   },
   "devDependencies": {
     "@types/node": "^25.2.3",
+    "canvas": "^3.2.3",
+    "katex": "^0.16.33",
     "typescript": "^5.9.3"
   }
 }

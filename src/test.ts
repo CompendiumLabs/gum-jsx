@@ -11,6 +11,8 @@ import { join, basename, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import { readdirSync, readFileSync, writeFileSync, mkdirSync, rmSync } from 'fs'
 
+import { docsCodeDir, galaCodeDir, dataDir as docsDataDir } from '@gum-jsx/docs'
+
 import { evaluateGum } from './eval'
 
 // the root directory of an installed package (through its ./package.json export)
@@ -20,6 +22,14 @@ function packageDir(name: string): string {
 
 // a group is a name plus the directory of its examples; a bare name means <name>/code
 type Group = string | { name: string, dir: string }
+
+// the standard suite: the docs and gallery examples out of @gum-jsx/docs, plus
+// the feature tests in test/code here
+const defaultGroups: Group[] = [
+    { name: 'docs', dir: docsCodeDir },
+    { name: 'gala', dir: galaCodeDir },
+    'test',
+]
 
 function groupEntry(group: Group): { name: string, dir: string } {
     return typeof group == 'string' ? { name: group, dir: join(group, 'code') } : group
@@ -62,7 +72,7 @@ type Manifest = {
 
 interface TestArgs {
     groups?: Group[]    // example groups (a name, or a name and directory)
-    dataDir?: string    // where examples' loadFile reads from
+    dataDir?: string    // where examples' loadFile reads from (default: @gum-jsx/docs' docs/data)
     outDir?: string     // where --report writes renders and the manifest
     report?: boolean    // write the report data
     size?: number       // render size
@@ -81,7 +91,7 @@ function allowsStrict(code: string): boolean {
 }
 
 function runTests(args: TestArgs = {}): TestResult {
-    const { groups = [ 'docs', 'gala', 'test' ], dataDir = 'docs/data', outDir = 'test/data', report = false, size = 1000 } = args
+    const { groups = defaultGroups, dataDir = docsDataDir, outDir = 'test/data', report = false, size = 1000 } = args
 
     function loadFile(path: string, encoding: string = 'utf8') {
         const file = join(dataDir, basename(path))

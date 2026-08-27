@@ -26,7 +26,7 @@ const png = rasterizeSvg(svg, { size: 800, background: 'white' })
 
 ## Command Line
 
-You can use the `gum` command to convert `gum.jsx` into SVG text or PNG data. You can even just display it directly in the terminal. For the latter you need a terminal that supports images, such as `ghostty` or `kitty`. There are a bunch of code examples in `docs/code/` and `gala/code/` of `@gum-jsx/core` to try out.
+You can use the `gum` command to convert `gum.jsx` into SVG text or PNG data. You can even just display it directly in the terminal. For the latter you need a terminal that supports images, such as `ghostty` or `kitty`. There are a bunch of code examples in `docs/code/` and `gala/code/` of `@gum-jsx/docs` to try out.
 
 Generate an SVG from a `gum.jsx` file:
 
@@ -76,4 +76,4 @@ bun run report                 # browse the report at the printed URL
 bun run skill                  # rebuild the Claude skill (skills/gum-jsx.skill)
 ```
 
-The Claude skill for writing gum.jsx is `skills/gum-jsx` (zipped as `skills/gum-jsx.skill`), generated from the docs and gallery in `@gum-jsx/core`.
+The Claude skill for writing gum.jsx is `skills/gum-jsx` (zipped as `skills/gum-jsx.skill`), generated from the docs and gallery in `@gum-jsx/docs`.

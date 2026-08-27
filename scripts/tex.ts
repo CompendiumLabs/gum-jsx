@@ -6,7 +6,7 @@ import { Command } from 'commander'
 import { readFileSync, writeFileSync } from 'fs'
 
 import { mathToSvg } from '@gum-jsx/math'
-import { mathToPng, mathToKitty } from '@gum-jsx/math/render'
+import { mathToPng, mathToKitty } from '../src/render'
 import { readStdin } from '@gum-jsx/node'
 
 //
