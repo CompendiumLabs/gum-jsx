@@ -1,0 +1,10 @@
+node_modules
+package-lock.json
+
+# generated test data
+test/data
+
+# we're only using the report in dev mode
+test/report/bun.lock
+test/report/node_modules
+test/report/dist

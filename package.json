@@ -1,0 +1,48 @@
+{
+  "name": "gum-jsx",
+  "version": "1.7.0",
+  "description": "Language for vector graphics generation.",
+  "type": "module",
+  "author": "Douglas Hanley",
+  "homepage": "https://github.com/CompendiumLabs/gum.jsx",
+  "license": "MIT",
+  "files": [
+    "src",
+    "scripts",
+    "skills/gum-jsx"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./eval": "./src/eval.ts",
+    "./math": "./src/math.ts",
+    "./render": "./src/render.ts",
+    "./mark": "./src/mark.ts",
+    "./meta": "./src/meta.ts",
+    "./test": "./src/test.ts"
+  },
+  "scripts": {
+    "gum": "bun ./scripts/gum.ts",
+    "tex": "bun ./scripts/tex.ts",
+    "down": "bun ./scripts/down.ts",
+    "test": "bun ./scripts/test.ts",
+    "report": "cd test/report && bun install && bun run dev",
+    "typecheck": "bun tsc --noEmit",
+    "skill": "bun ./scripts/skill.ts && cd skills && rm -f gum-jsx.skill && zip -r gum-jsx.skill gum-jsx"
+  },
+  "bin": {
+    "gum": "./scripts/gum.ts",
+    "gum-tex": "./scripts/tex.ts",
+    "gum-down": "./scripts/down.ts"
+  },
+  "dependencies": {
+    "@gum-jsx/core": "link:@gum-jsx/core",
+    "@gum-jsx/mark": "link:@gum-jsx/mark",
+    "@gum-jsx/math": "link:@gum-jsx/math",
+    "@gum-jsx/node": "link:@gum-jsx/node",
+    "commander": "^14.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "typescript": "^5.9.3"
+  }
+}
