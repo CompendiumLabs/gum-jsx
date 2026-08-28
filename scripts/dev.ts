@@ -34,7 +34,7 @@ interface CellRect {
 //
 
 function devCommand(args: CliArgs) {
-  const { file: file0, theme, background, size = 2000, loadFile } = args
+  const { file: file0, theme, background, size = 2000, unitSize, loadFile } = args
 
   if (file0 == null) {
     console.error('gum dev requires a file')
@@ -159,7 +159,7 @@ function devCommand(args: CliArgs) {
   async function renderFile(): Promise<void> {
     try {
       const code = readFileSync(file, 'utf-8')
-      const elem = evaluateGum(code, { size, theme, loadFile })
+      const elem = evaluateGum(code, { size, unit_size: unitSize, theme, loadFile })
       const svg = elem.svg()
       const [width, height] = elem.size
       const box = fitCells(width, height)

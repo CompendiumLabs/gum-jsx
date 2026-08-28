@@ -16,7 +16,7 @@ import { devCommand } from './dev'
 
 function transformArgs(cmd: Command) {
   const [ file0 ] = cmd.args
-  let { format, output, theme, background, size, rasterSize, dev, strict, seed } = cmd.opts()
+  let { format, output, theme, background, size, unitSize, rasterSize, dev, strict, seed } = cmd.opts()
 
   // add white background for light theme
   if (theme == 'light' && background == null) background = 'white'
@@ -41,7 +41,7 @@ function transformArgs(cmd: Command) {
       : readFileSync(file, encoding as BufferEncoding)
   }
 
-  return { file, format, output, theme, background, size, rasterSize, dev, strict, seed, loadFile }
+  return { file, format, output, theme, background, size, unitSize, rasterSize, dev, strict, seed, loadFile }
 }
 
 //
@@ -64,7 +64,7 @@ function convertToTree(elem: Element): any {
 //
 
 async function runCommand(args: CliArgs) {
-  const { file, format, output, theme, background, size: size0 = 1000, rasterSize, dev, strict, seed, loadFile } = args
+  const { file, format, output, theme, background, size: size0 = 1000, unitSize, rasterSize, dev, strict, seed, loadFile } = args
 
   // divert to dev command if update is on
   if (dev) {
@@ -76,7 +76,7 @@ async function runCommand(args: CliArgs) {
   const code = file ? readFileSync(file, 'utf-8') : await readStdin()
 
   // evaluate gum with size
-  const elem = evaluateGum(code, { size: size0, theme, strict, seed, loadFile })
+  const elem = evaluateGum(code, { size: size0, unit_size: unitSize, theme, strict, seed, loadFile })
 
   // rasterize output
   let out: string | Buffer
@@ -119,6 +119,7 @@ program.name('gum')
   .option('-t, --theme <theme>', 'theme to use', 'light')
   .option('-b, --background <background>', 'background color')
   .option('-s, --size <size>', 'SVG/viewBox size', (value: string) => parseInt(value))
+  .option('-u, --unit-size <size>', 'image size at which stroke_width = 1 is one pixel (default: 1000)', (value: string) => parseInt(value))
   .option('-r, --raster-size <size>', 'max rasterized PNG size', (value: string) => parseInt(value))
   .option('-o, --output <output>', 'output file')
   .action(async function(this: Command) {
