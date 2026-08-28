@@ -7,42 +7,37 @@
 @font-face {
     font-family: "IBM Plex Sans";
     font-weight: 300;
-    src: url("../../../node_modules/@gum-jsx/core/src/fonts/IBMPlexSans-Light.ttf") format("truetype");
+    src: url("@gum-jsx/core/fonts/IBMPlexSans-Light.ttf") format("truetype");
 }
 
 @font-face {
     font-family: "IBM Plex Sans";
     font-weight: 400;
-    src: url("../../../node_modules/@gum-jsx/core/src/fonts/IBMPlexSans-Regular.ttf") format("truetype");
+    src: url("@gum-jsx/core/fonts/IBMPlexSans-Regular.ttf") format("truetype");
 }
 
 @font-face {
     font-family: "IBM Plex Sans";
     font-weight: 700;
-    src: url("../../../node_modules/@gum-jsx/core/src/fonts/IBMPlexSans-Bold.ttf") format("truetype");
+    src: url("@gum-jsx/core/fonts/IBMPlexSans-Bold.ttf") format("truetype");
 }
 
 @font-face {
     font-family: "IBM Plex Mono";
     font-weight: 300;
-    src: url("../../../node_modules/@gum-jsx/core/src/fonts/IBMPlexMono-Light.ttf") format("truetype");
+    src: url("@gum-jsx/core/fonts/IBMPlexMono-Light.ttf") format("truetype");
 }
 
 @font-face {
     font-family: "IBM Plex Mono";
     font-weight: 400;
-    src: url("../../../node_modules/@gum-jsx/core/src/fonts/IBMPlexMono-Regular.ttf") format("truetype");
+    src: url("@gum-jsx/core/fonts/IBMPlexMono-Regular.ttf") format("truetype");
 }
 
 @font-face {
     font-family: "IBM Plex Mono";
     font-weight: 700;
-    src: url("../../../node_modules/@gum-jsx/core/src/fonts/IBMPlexMono-Bold.ttf") format("truetype");
-}
-
-@font-face {
-    font-family: "Noto Emoji";
-    src: url("../../../node_modules/@gum-jsx/core/src/fonts/NotoEmoji-Variable.ttf") format("truetype");
+    src: url("@gum-jsx/core/fonts/IBMPlexMono-Bold.ttf") format("truetype");
 }
 
 @font-face {
