@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import type { Example, Theme } from "./types";
 
 // the svg files are fetched and inlined rather than dropped in an <img>, so
-// they draw with the page's @font-face rules (see fonts.css); one request per
-// file, cached across theme flips and dialog opens
+// they draw with the faces @gum-jsx/web installed on the page (frontend.tsx);
+// one request per file, cached across theme flips and dialog opens
 const cache = new Map<string, Promise<string>>();
 
 function fetchSvg(path: string): Promise<string> {

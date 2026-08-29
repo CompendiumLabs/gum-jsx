@@ -76,9 +76,9 @@ exercises a fallback opts out with a `@nostrict` comment.
 
 `--report` writes every render in both themes plus `test/data/manifest.json` (each example's
 source, pass/fail status, and render paths). `test/report` reads `/manifest.json` and the SVGs
-under `/data/`, inlining them so they draw with the page's fonts: `src/fonts.css` names IBM Plex
-out of `@gum-jsx/core` (through `node_modules`) and the KaTeX faces out of the report's own
-`katex` dependency.
+under `/data/`, inlining them so they draw with the page's fonts: `src/frontend.tsx` awaits
+`loadWebFonts()` from `@gum-jsx/web` (with `@gum-jsx/math` imported first for the KaTeX faces),
+which installs gum's faces on the page through the `FontFace` API.
 
 `gum-jsx/test` exports `runTests({ groups, dataDir, outDir, report, size })` — a group is a name
 (meaning `<name>/code`) or `{ name, dir }` — for running other example sets the same way.

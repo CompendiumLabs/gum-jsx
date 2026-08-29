@@ -7,8 +7,14 @@
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import "@gum-jsx/math";
+import { loadWebFonts } from "@gum-jsx/web";
 import { App } from "./App";
-import "./fonts.css";
+
+// the svgs are inlined, so the page needs the faces gum's output names: load
+// them through core's registry (@gum-jsx/math imported first registers the
+// KaTeX ones) and install them with the FontFace API — no @font-face css
+await loadWebFonts();
 
 const elem = document.getElementById("root")!;
 const app = (

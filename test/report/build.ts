@@ -13,7 +13,7 @@ const result = await Bun.build({
   entrypoints: ["./src/index.html"],
   outdir: OUT,
   plugins: [tailwind],
-  // copy the fonts next to the css instead of inlining the small ones as data uris
+  // the font files @gum-jsx/core imports are copied out as assets, not inlined
   loader: { ".ttf": "file" },
   minify: true,
   sourcemap: "linked",

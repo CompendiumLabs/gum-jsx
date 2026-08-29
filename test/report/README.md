@@ -24,9 +24,10 @@ styled with Tailwind.
 
 The theme button switches the page *and* which of the two renders is shown.
 SVGs are fetched and inlined rather than put in an `<img>`, so they draw with
-the page's fonts: `fonts.css` names gum's faces — IBM Plex out of `@gum-jsx/core`
-(through `node_modules`) and the KaTeX ones out of the `katex` package — so the
-figures use the same glyphs the renderer measured.
+the page's fonts: `frontend.tsx` awaits `loadWebFonts()` from `@gum-jsx/web`, which
+loads gum's faces through core's registry (IBM Plex, and the KaTeX ones once
+`@gum-jsx/math` is imported) and installs them with the `FontFace` API, so the
+figures use the same glyphs the renderer measured without any `@font-face` css.
 
 `bun run build` writes a self-contained `dist/`: the bundle plus a copy of the
 data (`dist/manifest.json` and `dist/data/`), since a static site has no server
