@@ -1,6 +1,6 @@
 {
   "name": "gum-jsx",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "Language for vector graphics generation.",
   "type": "module",
   "author": "Douglas Hanley",
@@ -39,10 +39,10 @@
     "gum-mark": "scripts/mark.ts"
   },
   "dependencies": {
-    "@gum-jsx/core": "^1.7.0",
+    "@gum-jsx/core": "^1.7.1",
     "@gum-jsx/docs": "^1.7.0",
     "@gum-jsx/mark": "^1.7.0",
-    "@gum-jsx/math": "^1.7.0",
+    "@gum-jsx/math": "^1.7.1",
     "@gum-jsx/node": "^1.7.0",
     "commander": "^14.0.3"
   },
