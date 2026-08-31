@@ -12,7 +12,8 @@
   "license": "MIT",
   "files": [
     "src",
-    "scripts"
+    "scripts",
+    "test/unit.ts"
   ],
   "exports": {
     ".": "./src/index.ts",
@@ -21,14 +22,14 @@
     "./render": "./src/render.ts",
     "./mark": "./src/mark.ts",
     "./meta": "./src/meta.ts",
-    "./test": "./src/test.ts",
+    "./test": "./test/unit.ts",
     "./package.json": "./package.json"
   },
   "scripts": {
     "gum": "bun ./scripts/gum.ts",
     "tex": "bun ./scripts/tex.ts",
     "mark": "bun ./scripts/mark.ts",
-    "test": "bun ./scripts/test.ts",
+    "test": "bun ./test/run.ts",
     "compare": "bun ./scripts/compare.ts",
     "report": "cd test/report && bun install && bun run dev",
     "typecheck": "bun tsc --noEmit"

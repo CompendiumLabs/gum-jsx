@@ -1,4 +1,4 @@
-// mirrors the manifest `bun scripts/test.ts --report` writes to test/data
+// mirrors the manifest `bun test/run.ts --report` writes to test/data
 
 export type Theme = "light" | "dark";
 

@@ -76,10 +76,10 @@ const elem = new Plot({
 const svg = elem.svg()
 ```
 
-`gum-jsx` re-exports everything from the libraries, and each of its entry points registers the math elements and fonts, so `<Latex>` works out of the box:
+`gum-jsx` re-exports everything from the libraries, and each of its entry points applies the math plugin to the default `Env` (`gum.use(math)`), so `<Latex>` works out of the box:
 
 ```javascript
-import { evaluateGum } from 'gum-jsx/eval'          // with <Latex> and friends registered
+import { evaluateGum } from 'gum-jsx/eval'          // the default Env, with <Latex> and friends
 import { rasterizeSvg, formatImage } from 'gum-jsx/render'
 import { mathToSvg, mathToPng } from 'gum-jsx/math'
 import { displayMarkdown } from 'gum-jsx/mark'
@@ -139,8 +139,8 @@ gum-mark notes.md -t light -w 800                                        # Markd
 ## Development
 
 ```bash
-bun scripts/test.ts            # render every docs, gala and test example in strict mode
-bun scripts/test.ts --report   # also write test/data for the report browser
+bun test/run.ts            # render every docs, gala and test example in strict mode
+bun test/run.ts --report   # also write test/data for the report browser
 bun run report                 # browse the report at the printed URL
 ```
 

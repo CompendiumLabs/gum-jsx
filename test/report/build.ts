@@ -4,7 +4,7 @@ import { join } from "node:path";
 import tailwind from "bun-plugin-tailwind";
 
 const OUT = "./dist";
-// the svg files and manifest `bun scripts/test.ts --report` wrote, as in src/index.ts
+// the svg files and manifest `bun test/run.ts --report` wrote, as in src/index.ts
 const DATA = process.env.GUM_REPORT_DATA ?? new URL("../data", import.meta.url).pathname;
 
 rmSync(OUT, { recursive: true, force: true });
@@ -27,7 +27,7 @@ if (!result.success) {
 // dist is static: there is no server to route /manifest.json and /data/*, so the
 // data goes in beside the bundle (the app fetches both relative to the page)
 if (!existsSync(join(DATA, "manifest.json"))) {
-  console.error(`no manifest in ${DATA} — run \`bun scripts/test.ts --report\` first`);
+  console.error(`no manifest in ${DATA} — run \`bun test/run.ts --report\` first`);
   process.exit(1);
 }
 cpSync(join(DATA, "manifest.json"), join(OUT, "manifest.json"));

@@ -12,16 +12,16 @@ those ranges to the sibling directories (see `../CLAUDE.md`).
 
 ## Layout
 
-- `src/index.ts` - `export *` of the four code libraries; importing it registers the math elements and fonts with core
-- `src/eval.ts` - `@gum-jsx/core/eval` with `@gum-jsx/math` imported first, so `evaluateGum` knows `<Latex>`
+- `src/index.ts` - `export *` of the four code libraries; importing it applies the math plugin to the default Env (`gum.use(math)`), so `<Latex>` and the KaTeX faces are there
+- `src/eval.ts` - `@gum-jsx/core/eval` with the math plugin applied to the default Env first, so `evaluateGum` knows `<Latex>`
 - `src/math.ts` - `@gum-jsx/math` plus the math rasterizers from `src/render.ts`
 - `src/render.ts` - `@gum-jsx/node` plus `mathToPng`/`mathToKitty`, which rasterize `@gum-jsx/math`'s `mathToElement` (what the old `gum/render` exported; the math package itself is browser-safe and SVG-only)
 - `src/mark.ts`, `src/meta.ts` - `@gum-jsx/mark`, `@gum-jsx/docs` (the docs/gallery loaders)
-- `src/test.ts` - The strict-mode example runner (`runTests`, `packageDir`; exported as `gum-jsx/test`), defaulting to the docs and gala examples out of `@gum-jsx/docs` plus `test/code` here
+- `test/unit.ts` - The strict-mode example runner (`runTests`, `packageDir`; exported as `gum-jsx/test`), defaulting to the docs and gala examples out of `@gum-jsx/docs` plus `test/code` here; takes an `env` (default: the default Env) and, in the strict render, walks every tree and fails on an element built against another Env (a construction site that dropped `env`, see core's `CLAUDE.md`)
 - `scripts/gum.ts`, `scripts/dev.ts` - The `gum` CLI and its `--dev` live-reload mode
 - `scripts/tex.ts` - The `gum-tex` CLI (LaTeX → svg/png/kitty)
 - `scripts/mark.ts` - The `gum-mark` CLI (Markdown → kitty terminal)
-- `scripts/test.ts` - Runs the suite (below)
+- `test/run.ts` - Runs the suite (below): the Env checks in `test/env.ts`, then every example (the `test` script)
 - `scripts/compare.ts` - Renders TeX with gum, katex-in-Chromium, and pdflatex side by side (below)
 - `test/code/` - Feature tests, one per file: `math_*.jsx` for the math elements, the rest for core
 - `test/report/` - A Bun + React browser for the suite's renders (see its `README.md`)
@@ -32,8 +32,8 @@ those ranges to the sibling directories (see `../CLAUDE.md`).
 
 ```bash
 bun tsc --noEmit                 # typecheck (follows the workspace symlinks into the libraries' sources)
-bun scripts/test.ts              # render every example in strict mode
-bun scripts/test.ts --report     # also write test/data/<group>/<theme>/<name>.svg + manifest.json
+bun test/run.ts              # render every example in strict mode
+bun test/run.ts --report     # also write test/data/<group>/<theme>/<name>.svg + manifest.json
 bun run report                   # bun install + dev server in test/report
 bun scripts/gum.ts file.jsx -o out.png   # the CLIs, or install globally: bun i -g gum-jsx
 bun scripts/compare.ts '\frac{a}{b}'      # compare math against katex and pdflatex
@@ -61,7 +61,7 @@ bun scripts/compare.ts -i -S 64 -F eq.tex --packages amsmath,amssymb,mathtools  
 
 ### Testing
 
-`scripts/test.ts` renders three groups: `docs` and `gala` out of `@gum-jsx/docs` (its
+`test/run.ts` renders three groups: `docs` and `gala` out of `@gum-jsx/docs` (its
 `docsCodeDir`, `galaCodeDir` and `dataDir`, which that package resolves relative to itself) and
 `test` from `test/code` here — that trio is `runTests`' default, so the script only passes
 `--report` through. Every example renders in **strict mode**

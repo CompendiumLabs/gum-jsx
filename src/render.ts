@@ -14,7 +14,9 @@ function mathToPng(tex: string, args: MathPngArgs = {}): Buffer {
   const elem = mathToElement(tex, margs)
   const [ w, h ] = elem.size
   const svg = elem.svg()
-  return rasterizeSvg(svg, { size: [ Math.round(scale * w), Math.round(scale * h) ] })
+  // rasterize against the element's own Env: mathToElement lays out on a
+  // derived copy carrying the KaTeX faces, which node-canvas needs to draw
+  return rasterizeSvg(svg, { size: [ Math.round(scale * w), Math.round(scale * h) ], env: elem.env })
 }
 
 function mathToKitty(tex: string, args: MathKittyArgs = {}): string {

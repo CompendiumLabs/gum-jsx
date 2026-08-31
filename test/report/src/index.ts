@@ -2,7 +2,7 @@ import { serve, file } from "bun";
 import { join, normalize } from "node:path";
 import index from "./index.html";
 
-// the svg files and manifest `bun scripts/test.ts --report` wrote, in the repo's
+// the svg files and manifest `bun test/run.ts --report` wrote, in the repo's
 // test/data; override with GUM_REPORT_DATA=/path/to/data
 const DATA = process.env.GUM_REPORT_DATA ?? new URL("../../data", import.meta.url).pathname;
 
@@ -24,7 +24,7 @@ const server = serve({
       const data = file(join(DATA, "manifest.json"));
       if (!(await data.exists())) {
         return Response.json(
-          { error: `no manifest in ${DATA} — run \`bun scripts/test.ts --report\` first` },
+          { error: `no manifest in ${DATA} — run \`bun test/run.ts --report\` first` },
           { status: 404 },
         );
       }

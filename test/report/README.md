@@ -5,14 +5,14 @@ A browser for the test suite: every example in `@gum-jsx/docs`'s `docs/code` and
 and its strict-mode result.
 
 ```bash
-bun scripts/test.ts --report   # in the repo root: writes test/data
+bun test/run.ts --report   # in the repo root: writes test/data
 bun install                    # once, here
 bun dev                        # then open the printed URL
 PORT=4000 bun dev              # on a port other than 3000
 bun run build && bun run preview   # static build in dist/, then serve it
 ```
 
-`bun scripts/test.ts --report` writes one SVG per example per theme
+`bun test/run.ts --report` writes one SVG per example per theme
 (`test/data/<group>/<theme>/<name>.svg`) plus `test/data/manifest.json`, which
 lists every example with its source, its status, and the paths of the renders
 that exist. The server (`src/index.ts`) serves the manifest at `/manifest.json`
@@ -34,7 +34,7 @@ data (`dist/manifest.json` and `dist/data/`), since a static site has no server
 to route those. The app fetches both *relative* to the page, so `dist/` also
 works from a subdirectory (`http://host/whatever/dist/`), and the dev server
 still serves them from `test/data`. It needs the data to exist, so run
-`bun scripts/test.ts --report` before building.
+`bun test/run.ts --report` before building.
 
 Click a card for the full view; `←`/`→` step through the filtered set and the
 open example is kept in the URL hash, so a card can be linked to.

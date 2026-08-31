@@ -2,11 +2,13 @@
 
 // Render every example in strict mode: the docs and gala examples out of
 // @gum-jsx/docs plus the feature tests in test/code, which is what runTests
-// does by default (see src/test.ts); pass --report to also write the renders
-// and manifest to test/data for test/report
+// does by default (see ./unit.ts); pass --report to also write the
+// renders and manifest to test/data for test/report
 
-import { runTests } from '../src/test'
+import { runUnitTests } from './unit'
+import { runEnvTests } from './env'
 
+runEnvTests()
 const report = process.argv.includes('--report')
-const { failed } = runTests({ report })
+const { failed } = runUnitTests({ report })
 process.exit(failed > 0 ? 1 : 0)

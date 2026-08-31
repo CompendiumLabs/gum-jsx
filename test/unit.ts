@@ -12,8 +12,10 @@ import { fileURLToPath } from 'url'
 import { readdirSync, readFileSync, writeFileSync, mkdirSync, rmSync } from 'fs'
 
 import { docsCodeDir, galaCodeDir, dataDir as docsDataDir } from '@gum-jsx/docs'
+import { resolveEnv, type Env } from '@gum-jsx/core/env'
+import type { Svg } from '@gum-jsx/core'
 
-import { evaluateGum } from './eval'
+import '../src/eval' // the math plugin on the default Env
 
 // the root directory of an installed package (through its ./package.json export)
 function packageDir(name: string): string {
@@ -72,6 +74,7 @@ type Manifest = {
 
 interface TestArgs {
     groups?: Group[]    // example groups (a name, or a name and directory)
+    env?: Env           // the Env to evaluate against (default: the default Env, with the math plugin)
     dataDir?: string    // where examples' loadFile reads from (default: @gum-jsx/docs' docs/data)
     outDir?: string     // where --report writes renders and the manifest
     report?: boolean    // write the report data
@@ -90,8 +93,35 @@ function allowsStrict(code: string): boolean {
     return !/@nostrict\b/.test(code)
 }
 
-function runTests(args: TestArgs = {}): TestResult {
-    const { groups = defaultGroups, dataDir = docsDataDir, outDir = 'test/data', report = false, size = 1000 } = args
+// every element reachable from a root (children, plus elements stored under
+// other names), with its parent
+function walkTree(elem: any, out: any[] = [], parent: any = null, seen = new Set()): any[] {
+    if (seen.has(elem)) return out
+    seen.add(elem)
+    elem.__parent = parent
+    out.push(elem)
+    for (const [ key, v ] of Object.entries(elem)) {
+        if (key == '__parent' || key == 'args') continue
+        const items = Array.isArray(v) ? v : [ v ]
+        for (const c of items) if (c != null && typeof c == 'object' && 'env' in c && 'spec' in c) walkTree(c, out, elem, seen)
+    }
+    return out
+}
+
+// every element of a tree must carry the Env it was evaluated against: one
+// built against another (the default) Env means a construction site somewhere
+// dropped `env`, which would render with the wrong theme, strict mode or fonts
+function checkEnv(root: Svg): void {
+    const strays = walkTree(root).filter(e => e.env !== root.env)
+    if (strays.length > 0) {
+        const where = strays.slice(0, 3).map(e => `${e.constructor.name} in ${e.__parent?.constructor.name}`).join(', ')
+        throw new Error(`Env stray: ${strays.length} element(s) built against another Env (${where})`)
+    }
+}
+
+function runUnitTests(args: TestArgs = {}): TestResult {
+    const { groups = defaultGroups, env: env0, dataDir = docsDataDir, outDir = 'test/data', report = false, size = 1000 } = args
+    const env = resolveEnv(env0)
 
     function loadFile(path: string, encoding: string = 'utf8') {
         const file = join(dataDir, basename(path))
@@ -108,13 +138,14 @@ function runTests(args: TestArgs = {}): TestResult {
     function render(code: string, theme: Theme): Render {
         const strict = allowsStrict(code)
         try {
-            const elem = evaluateGum(code, { size, theme, strict, loadFile })
+            const elem = env.evaluate(code, { size, theme, strict, loadFile })
+            if (strict) checkEnv(elem)
             return { svg: elem.svg() }
         } catch (e: any) {
             const { message = 'Unknown error' } = e
             if (!strict) return { error: message }
             try {
-                const elem = evaluateGum(code, { size, theme, loadFile })
+                const elem = env.evaluate(code, { size, theme, loadFile })
                 return { svg: elem.svg(), error: message }
             } catch {
                 return { error: message }
@@ -188,5 +219,5 @@ function runTests(args: TestArgs = {}): TestResult {
     return { passed, failed, results }
 }
 
-export { runTests, packageDir }
+export { runUnitTests, packageDir }
 export type { Group, TestArgs, TestResult, Theme, Render, Result, Entry, Manifest }

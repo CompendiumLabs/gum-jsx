@@ -7,6 +7,7 @@ import { readFileSync } from 'fs'
 
 import { displayMarkdown } from '@gum-jsx/mark'
 import { readStdin } from '@gum-jsx/node'
+import '../src/eval' // the math plugin on the default Env, for <Latex> in gum blocks
 
 // main program
 
