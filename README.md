@@ -133,7 +133,7 @@ LaTeX math (`<Latex>`, `<Tex>`, and the standalone `mathToSvg`/`mathToPng`) come
 
 ```bash
 gum-tex '\sum_{n=1}^\infty \frac{1}{n^2} = \frac{\pi^2}{6}' -o sum.svg   # LaTeX to SVG/PNG/terminal (see @gum-jsx/math)
-gum-mark notes.md -t light -w 800                                        # Markdown in a kitty terminal (see @gum-jsx/mark)
+gum-mark notes.md -t light -H 100                                      # Markdown in a kitty terminal (see @gum-jsx/mark)
 ```
 
 ## Development
