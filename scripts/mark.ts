@@ -51,7 +51,8 @@ program.name('gum-mark')
   .description('Markdown pager with embedded gum.jsx visualizations')
   .argument('[file]', 'Markdown file to render (reads from stdin if not provided)')
   .option('-t, --theme <theme>', 'theme to use for gum.jsx and math: light or dark', 'dark')
-  .option('-H, --height <pixels>', 'max height for gum blocks and images; target height for display math', (value: string) => parseInt(value))
+  .option('-I, --image-height <pixels>', 'max height for gum blocks and images (default: 500)', (value: string) => parseInt(value))
+  .option('-H, --height <pixels>', 'target height for display math (default: 100)', (value: string) => parseInt(value))
   .option('-i, --inline-height <pixels>', 'target height for inline math (default: 48)', (value: string) => parseInt(value))
   .option('-p, --pager', 'page through less, with images as kitty Unicode placeholders')
   .action(async function(this: Command) {
@@ -61,7 +62,9 @@ program.name('gum-mark')
     if (pager) {
       displayPaged(content, opts)
     } else {
-      process.stdout.write(displayMarkdown(content, opts))
+      // the cell size lets PNG links be capped by terminal-side scaling (null off a tty)
+      const cell = queryCellSize() ?? undefined
+      process.stdout.write(displayMarkdown(content, { ...opts, cell }))
     }
   })
 program.parse()
