@@ -18,7 +18,7 @@ those ranges to the sibling directories (see `../CLAUDE.md`).
 - `src/render.ts` - `@gum-jsx/node` plus `mathToPng`/`mathToKitty`, which rasterize `@gum-jsx/math`'s `mathToElement` (what the old `gum/render` exported; the math package itself is browser-safe and SVG-only)
 - `src/mark.ts`, `src/meta.ts` - `@gum-jsx/mark`, `@gum-jsx/docs` (the docs/gallery loaders)
 - `test/unit.ts` - The strict-mode example runner (`runUnitTests`, `packageDir`; exported as `gum-jsx/test`), defaulting to the docs and gala examples out of `@gum-jsx/docs` plus `test/code` here; takes an `env` (default: the default Env) and, in the strict render, walks every tree and fails on an element built against another Env (a construction site that dropped `env`, see core's `CLAUDE.md`)
-- `scripts/gum.ts`, `scripts/dev.ts` - The `gum` CLI and its `--dev` live-reload mode
+- `scripts/gum.ts`, `scripts/dev.ts` - The `gum` CLI and its `--dev` live-reload mode. Besides svg/png/kitty/json it has `--format layout` (core's `layoutSvg`: one line per element with its placed and allocated pixel boxes, narrowed by `--depth`/`--select`) and `--zoom x0,y0,x1,y1` (core's `zoomSvg`: crop to a fractional region and magnify it; a filter for the layout format), the same inspection the studio's chat tools offer
 - `scripts/tex.ts` - The `gum-tex` CLI (LaTeX → svg/png/kitty)
 - `scripts/mark.ts` - The `gum-mark` CLI (Markdown → kitty terminal)
 - `test/run.ts` - Runs the suite (below): the Env checks in `test/env.ts`, then every example (the `test` script)

@@ -111,6 +111,12 @@ Display a `gum.jsx` file in the terminal:
 gum input.jsx
 ```
 
+Zoom into a region (fractions of the figure, origin at the top left) or list where every element landed instead of drawing it:
+```bash
+gum input.jsx -z 0,0,0.5,0.5 -o zoom.png
+gum input.jsx -f layout --select Text
+```
+
 CLI options:
 
 | Option | Description | Default |
@@ -120,9 +126,12 @@ CLI options:
 | `-u, --unit-size <size>` | Image size at which `stroke_width = 1` is one pixel | 1000 |
 | `-t, --theme <theme>` | Theme: `light` or `dark` | light |
 | `-b, --background <color>` | Background color | white |
-| `-f, --format <format>` | Format: `json`, `svg`, `png`, `kitty` | auto |
+| `-f, --format <format>` | Format: `svg`, `png`, `kitty`, `layout`, `json` | auto |
 | `-o, --output <output>` | Output file | stdout |
 | `-r, --raster-size <size>` | Max rasterized PNG size | auto |
+| `-z, --zoom <region>` | Region to zoom into, as `x0,y0,x1,y1` fractions of the figure | whole figure |
+| `--depth <levels>` | `layout` format: levels below the root to list | 4 |
+| `--select <text>` | `layout` format: only elements whose path, type, id, or class contains this | all |
 | `-d, --dev` | Live update display | off |
 | `--strict` | Throw on rendering fallbacks instead of drawing them | off |
 | `--seed <seed>` | Seed for `random`/`uniform`/`normal`/`integer` | 42 |

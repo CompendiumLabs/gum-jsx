@@ -1,22 +1,30 @@
 #! /usr/bin/env bun
 
-import { Command } from 'commander'
+import { Command, InvalidArgumentError } from 'commander'
 import { readFileSync, writeFileSync } from 'fs'
 import { dirname, resolve } from 'path'
 
 import { evaluateGum, fitSize } from '../src/eval'
 import { rasterizeSvg, formatImage, readStdin } from '@gum-jsx/node'
-import { Element, Group } from '@gum-jsx/core'
-import type { CliArgs, LoadFile } from '@gum-jsx/core/lib/types'
+import { Element, Group, validateZoom, zoomSvg, layoutSvg, LAYOUT_DEPTH } from '@gum-jsx/core'
+import type { CliArgs, LoadFile, Rect } from '@gum-jsx/core/lib/types'
 import { devCommand } from './dev'
 
 //
 // argument transform
 //
 
+// a zoom region as four comma (or space) separated fractions: "0,0,0.5,0.5"
+function parseZoom(value: string): Rect {
+  const zoom = value.split(/[\s,]+/).filter(s => s.length > 0).map(Number)
+  const problem = validateZoom(zoom)
+  if (problem != null) throw new InvalidArgumentError(problem)
+  return zoom as Rect
+}
+
 function transformArgs(cmd: Command) {
   const [ file0 ] = cmd.args
-  let { format, output, theme, background, size, unitSize, rasterSize, dev, strict, seed } = cmd.opts()
+  let { format, output, theme, background, size, unitSize, rasterSize, dev, strict, seed, zoom, depth, select } = cmd.opts()
 
   // add white background for light theme
   if (theme == 'light' && background == null) background = 'white'
@@ -41,7 +49,7 @@ function transformArgs(cmd: Command) {
       : readFileSync(file, encoding as BufferEncoding)
   }
 
-  return { file, format, output, theme, background, size, unitSize, rasterSize, dev, strict, seed, loadFile }
+  return { file, format, output, theme, background, size, unitSize, rasterSize, dev, strict, seed, zoom, depth, select, loadFile }
 }
 
 //
@@ -64,7 +72,7 @@ function convertToTree(elem: Element): any {
 //
 
 async function runCommand(args: CliArgs) {
-  const { file, format, output, theme, background, size: size0 = 1000, unitSize, rasterSize, dev, strict, seed, loadFile } = args
+  const { file, format, output, theme, background, size: size0 = 1000, unitSize, rasterSize, dev, strict, seed, zoom, depth, select, loadFile } = args
 
   // divert to dev command if update is on
   if (dev) {
@@ -76,13 +84,19 @@ async function runCommand(args: CliArgs) {
   const code = file ? readFileSync(file, 'utf-8') : await readStdin()
 
   // evaluate gum with size
-  const elem = evaluateGum(code, { size: size0, unit_size: unitSize, theme, strict, seed, loadFile })
+  const elem0 = evaluateGum(code, { size: size0, unit_size: unitSize, theme, strict, seed, loadFile })
+
+  // crop to the zoom region for the image formats (the layout listing works on
+  // the unzoomed element, with zoom as a filter; the json tree has no view)
+  const elem = (zoom != null && (format == 'svg' || format == 'png' || format == 'kitty')) ? zoomSvg(elem0, zoom) : elem0
 
   // rasterize output
   let out: string | Buffer
   if (format == 'json') {
     const tree = convertToTree(elem)
     out = JSON.stringify(tree, null, 2)
+  } else if (format == 'layout') {
+    out = layoutSvg(elem, { zoom, depth, select }) + '\n'
   } else if (format == 'svg') {
     out = elem.svg()
   } else if (format == 'png' || format == 'kitty') {
@@ -115,12 +129,15 @@ program.name('gum')
   .option('-d, --dev', 'live update display', false)
   .option('--strict', 'throw on rendering fallbacks instead of drawing them', false)
   .option('--seed <seed>', 'seed for random/uniform/normal/integer', (value: string) => parseInt(value))
-  .option('-f, --format <format>', 'format to output')
+  .option('-f, --format <format>', 'format to output: svg, png, kitty, layout, json (default: kitty, or inferred from the output file)')
   .option('-t, --theme <theme>', 'theme to use', 'dark')
   .option('-b, --background <background>', 'background color')
   .option('-s, --size <size>', 'SVG/viewBox size', (value: string) => parseInt(value))
   .option('-u, --unit-size <size>', 'image size at which stroke_width = 1 is one pixel (default: 1000)', (value: string) => parseInt(value))
   .option('-r, --raster-size <size>', 'max rasterized PNG size', (value: string) => parseInt(value))
+  .option('-z, --zoom <region>', 'region to zoom into, as x0,y0,x1,y1 fractions of the figure from the top left (magnified to fill the output size; a filter for the layout format)', parseZoom)
+  .option('--depth <levels>', `layout format: how many levels below the root to list (default: ${LAYOUT_DEPTH})`, (value: string) => parseInt(value))
+  .option('--select <text>', 'layout format: only list elements whose path, type, id, or class contains this text')
   .option('-o, --output <output>', 'output file')
   .action(async function(this: Command) {
     const args = transformArgs(this)

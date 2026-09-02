@@ -4,6 +4,7 @@ import { readFileSync, watchFile, unwatchFile } from 'fs'
 import { basename, resolve } from 'path'
 import { evaluateGum } from '../src/eval'
 import { rasterizeSvg, formatImage } from '@gum-jsx/node'
+import { zoomSvg } from '@gum-jsx/core'
 import type { Size, CliArgs } from '@gum-jsx/core/lib/types'
 
 //
@@ -34,7 +35,7 @@ interface CellRect {
 //
 
 function devCommand(args: CliArgs) {
-  const { file: file0, theme, background, size = 2000, unitSize, loadFile } = args
+  const { file: file0, theme, background, size = 2000, unitSize, strict, seed, zoom, loadFile } = args
 
   if (file0 == null) {
     console.error('gum dev requires a file')
@@ -159,7 +160,8 @@ function devCommand(args: CliArgs) {
   async function renderFile(): Promise<void> {
     try {
       const code = readFileSync(file, 'utf-8')
-      const elem = evaluateGum(code, { size, unit_size: unitSize, theme, loadFile })
+      const elem0 = evaluateGum(code, { size, unit_size: unitSize, theme, strict, seed, loadFile })
+      const elem = zoom != null ? zoomSvg(elem0, zoom) : elem0
       const svg = elem.svg()
       const [width, height] = elem.size
       const box = fitCells(width, height)
