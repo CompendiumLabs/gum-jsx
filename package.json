@@ -13,15 +13,34 @@
   "files": [
     "src",
     "scripts",
-    "test/unit.ts"
+    "test/unit.ts",
+    "types"
   ],
   "exports": {
-    ".": "./src/index.ts",
-    "./eval": "./src/eval.ts",
-    "./math": "./src/math.ts",
-    "./render": "./src/render.ts",
-    "./mark": "./src/mark.ts",
-    "./meta": "./src/meta.ts",
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./src/index.ts"
+    },
+    "./eval": {
+      "types": "./types/eval.d.ts",
+      "import": "./src/eval.ts"
+    },
+    "./math": {
+      "types": "./types/math.d.ts",
+      "import": "./src/math.ts"
+    },
+    "./render": {
+      "types": "./types/render.d.ts",
+      "import": "./src/render.ts"
+    },
+    "./mark": {
+      "types": "./types/mark.d.ts",
+      "import": "./src/mark.ts"
+    },
+    "./meta": {
+      "types": "./types/meta.d.ts",
+      "import": "./src/meta.ts"
+    },
     "./test": "./test/unit.ts",
     "./package.json": "./package.json"
   },
@@ -32,7 +51,9 @@
     "test": "bun ./test/run.ts",
     "compare": "bun ./scripts/compare.ts",
     "report": "cd test/report && bun install && bun run dev",
-    "typecheck": "bun tsc --noEmit"
+    "typecheck": "bun tsc --noEmit",
+    "types": "rm -rf types && bun tsc -p tsconfig.types.json",
+    "prepublishOnly": "bun run types"
   },
   "bin": {
     "gum": "scripts/gum.ts",

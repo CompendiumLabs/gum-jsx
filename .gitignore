@@ -8,3 +8,4 @@ test/data
 test/report/bun.lock
 test/report/node_modules
 test/report/dist
+types
