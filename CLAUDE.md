@@ -5,7 +5,7 @@ The batteries-included gum.jsx package: it depends on all five libraries — `@g
 `@gum-jsx/mark` (`../gum-jsx-mark`), `@gum-jsx/docs` (`../gum-jsx-docs`: the docs and gallery
 examples, and the Claude skill built from them) — re-exports them, and ships the CLIs, the test
 suite and the report browser. Everything under `@gum-jsx/*` is a pure library; anything that is
-a `bin` or a test lives here. The libraries are ordinary semver dependencies (`^1.8.0`; the
+a `bin` or a test lives here. The libraries are ordinary semver dependencies (`^1.9.0`; the
 `@gum-jsx/*` packages and this one are versioned in lockstep). During development the parent
 `gum-org` directory is a bun workspace over all the checkouts, so `bun install` there resolves
 those ranges to the sibling directories (see `../CLAUDE.md`).
