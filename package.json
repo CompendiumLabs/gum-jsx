@@ -48,6 +48,7 @@
     "mark": "bun ./scripts/mark.ts",
     "test": "bun ./test/run.ts",
     "compare": "bun ./scripts/compare.ts",
+    "perf": "bun ./scripts/perf.ts",
     "report": "cd test/report && bun install && bun run dev",
     "typecheck": "bun tsc --noEmit",
     "types": "rm -rf types && bun tsc -p tsconfig.types.json",
