@@ -7,8 +7,10 @@
 
 import { runUnitTests } from './unit'
 import { runEnvTests } from './env'
+import { runEmTests } from './em'
 
 runEnvTests()
+runEmTests()
 const report = process.argv.includes('--report')
 const { failed } = runUnitTests({ report })
 process.exit(failed > 0 ? 1 : 0)

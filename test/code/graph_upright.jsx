@@ -4,7 +4,7 @@
 // still sees the flipped coord, so its [0, 0] -> [1, 1] runs up and right
 <Graph aspect={2} xlim={[0, 10]} ylim={[0, 10]}>
   <Latex pos={[2, 7]} rad={[1.5, 1]}>x^2</Latex>
-  <Text pos={[6, 7]} rad={[2, 1.5]} wrap={5}>first second third fourth</Text>
+  <Text pos={[6, 7]} rad={[2, 1.5]} width={5}>first second third fourth</Text>
   <VStack pos={[2, 3]} rad={[1.5, 1.5]}>
     <Text>one</Text>
     <Text>two</Text>
