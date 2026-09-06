@@ -3,6 +3,7 @@
 import { Command, InvalidArgumentError } from 'commander'
 import { readFileSync, readdirSync, statSync, writeFileSync } from 'fs'
 import { basename, dirname, resolve } from 'path'
+import { isatty } from 'tty'
 
 import { evaluateGum, fitSize } from '../src/eval'
 import { rasterizeSvg, formatImage, readStdin } from '@gum-jsx/node'
@@ -136,7 +137,10 @@ async function pdfOutput(args: GumArgs): Promise<Buffer> {
 }
 
 async function runCommand(args: GumArgs) {
-  const { file, files, format, output, theme, background, size: size0 = 1000, unitSize, rasterSize, dev, strict, seed, zoom, depth, select, loadFile } = args
+  const { file, format, output, theme: theme0, background, size: size0 = 1000, unitSize, rasterSize, dev, strict, seed, zoom, depth, select, loadFile } = args
+
+  // handle default theme (dark for tty and light otherwise)
+  const theme = theme0 ?? (output == null && isatty(process.stdout.fd) ? 'dark' : 'light')
 
   // divert to dev command if update is on
   if (dev) {
@@ -202,7 +206,7 @@ program.name('gum')
   .option('--strict', 'throw on rendering fallbacks instead of drawing them', false)
   .option('--seed <seed>', 'seed for random/uniform/normal/integer', (value: string) => parseInt(value))
   .option('-f, --format <format>', 'format to output: svg, png, pdf, kitty, layout, json (default: kitty, or inferred from the output file)')
-  .option('-t, --theme <theme>', 'theme to use', 'dark')
+  .option('-t, --theme <theme>', 'theme to use')
   .option('-b, --background <background>', 'background color')
   .option('-s, --size <size>', 'SVG/viewBox size', (value: string) => parseInt(value))
   .option('-u, --unit-size <size>', 'image size at which stroke_width = 1 is one pixel (default: 1000)', (value: string) => parseInt(value))
