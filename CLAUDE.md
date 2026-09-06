@@ -1,11 +1,12 @@
 # `gum-jsx`
 
-The batteries-included gum.jsx package: it depends on all five libraries — `@gum-jsx/core`
+The batteries-included gum.jsx package: it depends on all six libraries — `@gum-jsx/core`
 (`../gum-jsx-core`), `@gum-jsx/math` (`../gum-jsx-math`), `@gum-jsx/node` (`../gum-jsx-node`),
 `@gum-jsx/mark` (`../gum-jsx-mark`), `@gum-jsx/docs` (`../gum-jsx-docs`: the docs and gallery
-examples, and the Claude skill built from them) — re-exports them, and ships the CLIs, the test
-suite and the report browser. Everything under `@gum-jsx/*` is a pure library; anything that is
-a `bin` or a test lives here. The libraries are ordinary semver dependencies (`^1.9.0`; the
+examples, and the Claude skill built from them), and `@gum-jsx/pdf` (`../gum-jsx-pdf`) — re-exports
+the source libraries and ships the CLIs, the test suite and the report browser. Vector PDF output
+is built into the `gum` CLI. Everything under `@gum-jsx/*` is a
+pure library; anything that is a `bin` or a test lives here. The libraries are ordinary semver dependencies (`^1.9.0`; the
 `@gum-jsx/*` packages and this one are versioned in lockstep). During development the parent
 `gum-org` directory is a bun workspace over all the checkouts, so `bun install` there resolves
 those ranges to the sibling directories (see `../CLAUDE.md`).
@@ -18,7 +19,7 @@ those ranges to the sibling directories (see `../CLAUDE.md`).
 - `src/render.ts` - `@gum-jsx/node` plus `mathToPng`/`mathToKitty`, which rasterize `@gum-jsx/math`'s `mathToElement` (what the old `gum/render` exported; the math package itself is browser-safe and SVG-only)
 - `src/mark.ts`, `src/meta.ts` - `@gum-jsx/mark`, `@gum-jsx/docs` (the docs/gallery loaders)
 - `test/unit.ts` - The strict-mode example runner (`runUnitTests`, `packageDir`; exported as `gum-jsx/test`), defaulting to the docs and gala examples out of `@gum-jsx/docs` plus `test/code` here; takes an `env` (default: the default Env) and, in the strict render, walks every tree and fails on an element built against another Env (a construction site that dropped `env`, see core's `CLAUDE.md`)
-- `scripts/gum.ts`, `scripts/dev.ts` - The `gum` CLI and its `--dev` live-reload mode. Besides svg/png/kitty/json it has `--format layout` (core's `layoutSvg`: one line per element with its placed and allocated pixel boxes, narrowed by `--depth`/`--select`) and `--zoom x0,y0,x1,y1` (core's `zoomSvg`: crop to a fractional region and magnify it; a filter for the layout format), the same inspection the studio's chat tools offer
+- `scripts/gum.ts`, `scripts/dev.ts` - The `gum` CLI and its `--dev` live-reload mode. Besides svg/png/kitty/json it renders vector PDF through `@gum-jsx/pdf`; PDF accepts multiple files or directories, one figure per page, and directories use numeric filename order. It also has `--format layout` (core's `layoutSvg`: one line per element with its placed and allocated pixel boxes, narrowed by `--depth`/`--select`) and `--zoom x0,y0,x1,y1` (core's `zoomSvg`: crop to a fractional region and magnify it; a filter for the layout format), the same inspection the studio's chat tools offer
 - `scripts/tex.ts` - The `gum-tex` CLI (LaTeX → svg/png/kitty)
 - `scripts/mark.ts` - The `gum-mark` CLI (Markdown → kitty terminal)
 - `test/run.ts` - Runs the suite (below): the Env checks in `test/env.ts`, then every example (the `test` script)
@@ -36,6 +37,7 @@ bun test/run.ts              # render every example in strict mode
 bun test/run.ts --report     # also write test/data/<group>/<theme>/<name>.svg + manifest.json
 bun run report                   # bun install + dev server in test/report
 bun scripts/gum.ts file.jsx -o out.png   # the CLIs, or install globally: bun i -g gum-jsx
+bun scripts/gum.ts slides/ -o deck.pdf   # one vector page per JSX file
 bun scripts/compare.ts '\frac{a}{b}'      # compare math against katex and pdflatex
 ```
 

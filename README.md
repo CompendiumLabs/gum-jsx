@@ -28,7 +28,7 @@
 bun i gum-jsx
 ```
 
-This installs the batteries-included `gum-jsx` package: the `gum`, `gum-tex`, and `gum-mark` commands plus everything below. Add a `-g` flag to install globally and get the commands on your `PATH`.
+This installs the batteries-included `gum-jsx` package: the `gum`, `gum-tex`, and `gum-mark` commands plus everything below, including vector PDF output. Add a `-g` flag to install globally and get the commands on your `PATH`.
 
 The pieces are also published separately as pure libraries, for hosts that only need part of the stack (a browser, a server that only produces SVG):
 
@@ -40,6 +40,7 @@ The pieces are also published separately as pure libraries, for hosts that only 
 | [`@gum-jsx/mark`](https://github.com/CompendiumLabs/gum-jsx-mark) | Markdown to terminal, with gum figures and math inline |
 | [`@gum-jsx/docs`](https://github.com/CompendiumLabs/gum-jsx-docs) | The documentation and gallery examples, and the Claude skill built from them (`skills/gum-jsx.skill`) |
 | [`@gum-jsx/react`](https://github.com/CompendiumLabs/react-gum-jsx) | React bindings and the `gum-react` command |
+| [`@gum-jsx/pdf`](https://github.com/CompendiumLabs/gum-jsx-pdf) | Vector PDF export with embedded fonts; its PDF stack is bundled |
 
 Nothing in `@gum-jsx/*` is node-specific except `@gum-jsx/node` and `@gum-jsx/mark`. See [gum.py](https://github.com/CompendiumLabs/gum.py) for a Python wrapper.
 
@@ -111,6 +112,22 @@ Display a `gum.jsx` file in the terminal:
 gum input.jsx
 ```
 
+Combine a directory of figures into a vector PDF, one figure per page:
+
+```bash
+gum slides/ -o deck.pdf
+```
+
+Directory entries are sorted by filename with numeric ordering (`slide_2.jsx` before
+`slide_10.jsx`). To choose the page order directly, list the files in that order:
+
+```bash
+gum title.jsx overview.jsx demo.jsx -o deck.pdf
+```
+
+The PDF exporter preserves vector paths and embeds the registered gum and KaTeX fonts. Use
+`--strict` to reject gum rendering fallbacks, as with the other output formats.
+
 Zoom into a region (fractions of the figure, origin at the top left) or list where every element landed instead of drawing it:
 ```bash
 gum input.jsx -z 0,0,0.5,0.5 -o zoom.png
@@ -121,12 +138,12 @@ CLI options:
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `file` | Gum JSX file to render | stdin |
+| `files` | Gum JSX input; PDF also accepts multiple files or directories | stdin |
 | `-s, --size <size>` | SVG/viewBox size in pixels | 1000 |
 | `-u, --unit-size <size>` | Image size at which `stroke_width = 1` is one pixel | 1000 |
 | `-t, --theme <theme>` | Theme: `light` or `dark` | light |
 | `-b, --background <color>` | Background color | white |
-| `-f, --format <format>` | Format: `svg`, `png`, `kitty`, `layout`, `json` | auto |
+| `-f, --format <format>` | Format: `svg`, `png`, `pdf`, `kitty`, `layout`, `json` | auto |
 | `-o, --output <output>` | Output file | stdout |
 | `-r, --raster-size <size>` | Max rasterized PNG size | auto |
 | `-z, --zoom <region>` | Region to zoom into, as `x0,y0,x1,y1` fractions of the figure | whole figure |
