@@ -102,7 +102,7 @@ function pdfInputFiles(inputs: string[]): string[] {
 }
 
 async function pdfOutput(args: GumArgs): Promise<Buffer> {
-  const { files: inputs, output, theme, size: size0 = 1000, unitSize, strict, seed, zoom } = args
+  const { files: inputs, output, theme, background, size: size0 = 1000, unitSize, strict, seed, zoom } = args
   const files = pdfInputFiles(inputs)
   const outputPath = output == null ? undefined : resolve(output)
   if (outputPath != null && files.includes(outputPath)) throw new Error('The output must not overwrite an input file')
@@ -131,6 +131,7 @@ async function pdfOutput(args: GumArgs): Promise<Buffer> {
 
   return Buffer.from(await renderPdf(pages, {
     title: output == null ? undefined : basename(output, '.pdf'),
+    background,
   }))
 }
 
