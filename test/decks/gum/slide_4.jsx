@@ -20,7 +20,7 @@ return <Slide background={paper} border={0} margin={0} padding={0.07}
     <Box aspect={1.4} rounded={12} padding={0.12} fill="#e5eeeb">
       <TextCol width={12} gap={0.8} align={['left', 'top']}>
         <T scale={0.65} font-family={mono} color={teal}>Shapes are math atoms, too</T>
-        <MathText>
+        <MathText scale={2} align="center">
           <Frac color={ink}>
             <Circle fill={teal} stroke={none} />
             <Square fill="#e77654" stroke={none} />
