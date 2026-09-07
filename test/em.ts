@@ -124,7 +124,7 @@ function runEmTests(): void {
     close(infig.elem.children[0].em.width, 10, 'figure in a column takes the width')
 
     // a box: padding and margin in em all round, a boolean for the default,
-    // an aspect that grows the box, and a hug that tightens to one line
+    // an aspect that grows the box, and a one-line box tightening to its line
     const box = root(`<TextBox width={11} padding={0.5}>${words}</TextBox>`)
     const h = para.em.height
     close(box.em.height, h + 1, 'box height')
@@ -134,14 +134,59 @@ function runEmTests(): void {
     close(root('<TextFrame padding margin>hi</TextFrame>').em.height, 1 + 0.8 + 0.8, 'frame with default padding and margin')
     close(root('<TextBox padding={0} aspect={4}>hi</TextBox>').em.width, 4, 'box grown to an aspect')
     close(root('<TextBox padding={0}><Latex>x</Latex></TextBox>').em.height, formula.em.height, 'box around a formula')
-    const hugged = root('<TextCol width={20} gap={0}><TextBox hug padding={0}>hi</TextBox></TextCol>')
-    assert.ok(hugged.elem.children[0].em.width < 20, 'hugged box tightens to its line')
+    const hugged = root('<TextCol width={20} gap={0}><TextBox padding={0}>hi</TextBox></TextCol>')
+    assert.ok(hugged.elem.children[0].em.width < 20, 'one-line box tightens to its line')
+    close(root(`<TextCol width={11} gap={0}><TextBox padding={0}>${words}</TextBox></TextCol>`).elem.children[0].em.width, 11, 'a wrapped box keeps the width')
 
     // a slide: `em` sets the text size as a fraction of the slide height, and
     // overflow is the content height over the area's
     const slide = gum.evaluate('<Slide em={0.05} margin={0.05} padding={0.1}><Text>a</Text></Slide>').children[0] as any
     close(slide.overflow, 1 / 14, 'slide overflow with one line in fourteen')
     assert.throws(() => gum.evaluate(`<Slide em={0.2} overflow="error"><Text>${words}</Text><Text>${words}</Text></Slide>`), /overflows/, 'slide overflow error')
+
+    // a text stack (layout_em_stack, shared with the math stacks): a column
+    // offers its width, a bare shape spans it, and a column without a width
+    // is as wide as its widest child laid at its own size
+    close(root('<TextStack width={10} gap={0}><Text>a</Text><Square /></TextStack>').em.height, 1 + 10, 'column: a shape spans the width')
+    const natural = root('<TextStack gap={0}><Text width={4}>a</Text><Square /></TextStack>')
+    close(natural.em.width, 4, 'column without a width is as wide as its widest child')
+    close(natural.em.height, 1 + 4, 'a shape spans that width too')
+    consistent(natural, 'column without a width')
+
+    // a row without a width: a bare shape is one em tall at its aspect
+    const line_a = root('<Text>a</Text>').em.width
+    close(root('<TextStack direc="h" gap={0}><Text>a</Text><Rect aspect={2} /></TextStack>').em.width, line_a + 2, 'row without a width: a shape is one em tall')
+
+    // a formula keeps its size in a row and sits on the text's anchor
+    const with_math = root('<TextRow width={20} gap={0} valign="anchor"><Text>a</Text><Latex>x</Latex></TextRow>')
+    close(with_math.elem.children[1].em.width, formula.em.width, 'formula keeps its width in a row')
+    close(with_math.em.anchor, TEXT_ANCHOR, 'row anchored on the text')
+
+    // a share stack in a text row spans its slot as a figure
+    const figure_in_row = root('<TextRow width={20} gap={0}><VStack><Square /><Square /></VStack><Text width={10}>c</Text></TextRow>')
+    const [ fx0, fy0, fx1, fy1 ] = figure_in_row.elem.children[0].spec.rect
+    close(fx1 - fx0, 10, 'share stack takes the slot')
+    close(fy1 - fy0, 20, 'at its aspect')
+
+    // TextCol and TextRow are the two directions of TextStack
+    close(root('<TextStack width={20}><Text>a</Text><Text>b</Text></TextStack>').em.height, root('<TextCol width={20}><Text>a</Text><Text>b</Text></TextCol>').em.height, 'TextCol is a vertical TextStack')
+    close(root('<TextStack direc="h" width={20} gap={1}><Text width={4}>a</Text><Text width={5}>b</Text></TextStack>').em.width, 20, 'TextRow is a horizontal TextStack')
+
+    // a math column is the same layout anchored on its middle, with overhang
+    // kept (the examples cover the rendering)
+    const mcol = root('<MathCol spacing={0}><Latex>x</Latex><Latex>y</Latex></MathCol>')
+    close(mcol.em.anchor, 0.5 * mcol.em.height, 'math column anchored on its middle')
+
+    // stack-size: the child's length along the stack in em, spanning it across
+    const sized = root('<TextCol width={10} gap={0}><Text>a</Text><Rect stack-size={3} /></TextCol>')
+    close(sized.em.height, 1 + 3, 'sized child: three em tall')
+    const [ rx0, ry0, rx1, ry1 ] = sized.elem.children[1].spec.rect
+    close(rx1 - rx0, 10, 'spanning the column')
+    close(ry1 - ry0, 3, 'at its size')
+    const sized_row = root('<TextRow width={20} gap={0}><Text>a</Text><Rect stack-size={5} /></TextRow>')
+    const [ qx0, , qx1 ] = sized_row.elem.children[1].spec.rect
+    close(qx1 - qx0, 5, 'sized child in a row: five em wide')
+    close(sized_row.elem.children[0].em.width, 15, 'the rest shares what is left')
 
     console.error('em checks passed')
 }
