@@ -13,14 +13,14 @@ return <Slide background={paper} border={0} margin={0} padding={0.07}
   <T scale={0.65} color={teal} font-family={mono}>GUM.JSX / 01</T>
   <T scale={1.95} font-weight={bold}>Pictures, written.</T>
   <T scale={0.9} color={muted}>Plots, diagrams, and math. Composed in JSX.</T>
-  <HStack spacing={0.05}>
-    <Box aspect={1.4} rounded={12} padding={0.12} fill={ink}>
+  <HStack spacing={0.05} sizes={[1, 0.08, 1]}>
+    <Box fit aspect={1.4} rounded={12} padding={0.12} fill={ink}>
       <TextCol gap={0.8}>
         <T scale={0.75} font-family={mono} color="#9bb8c5">figure.jsx</T>
         <Verbatim spacing={0.2} font-weight={regular} color="#e8f0f3">{code}</Verbatim>
       </TextCol>
     </Box>
-    <Arrow stack-size={0.08} aspect={3} points={[[0, 0.5], [1, 0.5]]}
+    <Arrow aspect={3} points={[[0, 0.5], [1, 0.5]]}
       stroke={teal} fill={teal} stroke-width={2} arrow-size={0.35} />
     <Plot aspect={1.5}
       xlim={[0, 2*pi]} ylim={[-1.2, 1.2]} margin={[0.17, 0.12]}

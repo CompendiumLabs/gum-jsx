@@ -92,7 +92,7 @@ function runEmTests(): void {
     close(formula.em.anchor, 0.5, 'formula anchor (strut, centered on the axis)')
     close(root('<TextCol width={10} gap={0}><Text>a</Text><Latex>x</Latex></TextCol>').em.height, 1 + formula.em.height, 'column with a formula')
     close(root('<Bullets width={10} gap={0.5}><Text>a</Text><Latex>x</Latex></Bullets>').em.height, 1 + 0.5 + formula.em.height, 'list with a formula')
-    assert.ok(root('<TextCol width={2} gap={0}><Text>a</Text><Latex>{"x + y + z"}</Latex></TextCol>').em.height < 1 + formula.em.height, 'a formula wider than the column is shrunk to fit it')
+    close(root('<TextCol width={2} gap={0}><Text>a</Text><Latex>{"x + y + z"}</Latex></TextCol>').em.height, 1 + formula.em.height, 'an overflowing formula keeps the shared em')
 
     // a row: children with a size of their own keep it, the rest share the
     // slack, and they align by their tops unless told otherwise
@@ -135,7 +135,7 @@ function runEmTests(): void {
     close(root('<TextBox padding={0} aspect={4}>hi</TextBox>').em.width, 4, 'box grown to an aspect')
     close(root('<TextBox padding={0}><Latex>x</Latex></TextBox>').em.height, formula.em.height, 'box around a formula')
     const hugged = root('<TextCol width={20} gap={0}><TextBox hug padding={0}>hi</TextBox></TextCol>')
-    assert.ok(hugged.elem.children[0].em.width < 20, 'hugged box tightens to its line')
+    close(hugged.elem.children[0].em.width, 20, 'a hugged box keeps its exact allocation around its content')
 
     // a slide: `em` sets the text size as a fraction of the slide height, and
     // overflow is the content height over the area's
