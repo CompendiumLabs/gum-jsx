@@ -160,6 +160,21 @@ function runEmTests(): void {
     assert.ok(hugged.elem.children[0].em.width < 20, 'one-line box hugs its line')
     close(root(`<TextCol width={11} gap={0}><TextBox padding={0}>${words}</TextBox></TextCol>`).elem.children[0].em.width, 11, 'a wrapped box keeps the width')
 
+    // a share box (Box, Frame) lays its content out for the area it is offered
+    // and takes the shape of what comes back: a column in a box is the column,
+    // and in a padded frame it is laid out for the area and the frame hugs it
+    const column = '<VStack><Rect aspect={2} /><Text>a caption</Text></VStack>'
+    const plain = root(column)
+    close(plain.em.height, 20 / 2 + 1, 'a captioned rect at the root')
+    const boxed = root(`<Box>${column}</Box>`)
+    close(boxed.em.width, plain.em.width, 'a box around a column keeps its width')
+    close(boxed.em.height, plain.em.height, 'a box around a column keeps its height')
+    consistent(boxed, 'boxed column')
+    const framed = root(`<Frame padding={0.1} adjust={false}>${column}</Frame>`)
+    close(framed.em.width, 20, 'a framed column spans the canvas')
+    close(framed.em.height, (20 / 1.2 / 2 + 1) * 1.2, 'a framed column is laid out for the area (the padding is of the content), and the frame hugs it')
+    close(root(`<Frame aspect={2}>${column}</Frame>`).em.height, 10, 'a frame with an aspect fits the canvas at it')
+
     // a slide: `em` sets the text size as a fraction of the slide height, and
     // overflow is the content height over the area's
     const slide = gum.evaluate('<Slide em={0.05} margin={0.05} padding={0.1}><Text>a</Text></Slide>').children[0] as any
