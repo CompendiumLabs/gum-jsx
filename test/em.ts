@@ -153,7 +153,7 @@ function runEmTests(): void {
     close(box.em.width, 11, 'box width is the outer width')
     close(box.em.anchor, 0.5 + TEXT_ANCHOR, 'box anchor')
     consistent(box, 'box')
-    close(root('<TextFrame padding margin>hi</TextFrame>').em.height, 1 + 0.8 + 0.8, 'frame with default padding and margin')
+    close(root('<TextFrame padding margin>hi</TextFrame>').em.height, 1 + 0.5 + 0.5, 'frame with default padding and margin')
     close(root('<TextBox padding={0} aspect={4}>hi</TextBox>').em.width, 20, 'a box with an aspect is a figure of it, sized by the offer')
     close(bare('<TextBox padding={0} aspect={4}>hi</TextBox>').em.width, 4, 'unoffered, a box grows around its content to its aspect')
     close(root('<TextBox padding={0}><Latex>x</Latex></TextBox>').em.height, formula.em.height, 'box around a formula')

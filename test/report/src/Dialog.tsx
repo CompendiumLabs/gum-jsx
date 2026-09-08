@@ -8,12 +8,10 @@ import { Code } from "./Code";
  * the strict-mode error above the drawing when there is one. Fills the
  * viewport; the code scrolls inside its own box.
  */
-export function Dialog({ example, theme, index, count, onClose, onStep }: {
-  example: Example; theme: Theme; index: number; count: number; onClose: () => void; onStep: (delta: number) => void;
-}) {
-  // focus lands on the dialog when it opens (and when stepping to another
-  // example), and the page behind it stops scrolling, so wheel and keyboard
-  // scrolling go to the panels inside rather than to the grid underneath
+export function Dialog({ example, theme, onClose }: { example: Example; theme: Theme; onClose: () => void }) {
+  // focus lands on the dialog when it opens, and the page behind it stops
+  // scrolling, so wheel and keyboard scrolling go to the panels inside rather
+  // than to the grid underneath
   const panel = useRef<HTMLDivElement>(null);
   useEffect(() => { panel.current?.focus(); }, [example.id]);
   useEffect(() => {
@@ -23,14 +21,10 @@ export function Dialog({ example, theme, index, count, onClose, onStep }: {
   }, []);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowRight") onStep(1);
-      if (e.key === "ArrowLeft") onStep(-1);
-    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onClose, onStep]);
+  }, [onClose]);
 
   // no overflow utility here: Figure clips on its own, and Code scrolls. Tailwind
   // resolves conflicts by stylesheet order, not class order, so an `overflow-hidden`
@@ -49,7 +43,6 @@ export function Dialog({ example, theme, index, count, onClose, onStep }: {
         <div className="flex flex-none items-center gap-3 border-b border-gray-300 px-4 py-3 dark:border-neutral-700">
           <span className="font-mono text-sm">{example.path}</span>
           <span className="mr-auto"><Chips example={example} /></span>
-          <span className="text-sm text-gray-500 dark:text-neutral-400">{index + 1} / {count}</span>
           <button onClick={onClose} aria-label="close"
                   className="h-7 w-7 rounded-full text-xl leading-none text-gray-500 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-neutral-700 dark:hover:text-white">
             ×

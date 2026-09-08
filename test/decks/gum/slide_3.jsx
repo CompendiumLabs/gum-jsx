@@ -18,8 +18,8 @@ return <Slide background={paper} border={0} margin={0} padding={0.07}
   <T scale={0.65} color={teal} font-family={mono}>GUM.JSX / 03</T>
   <T scale={1.95} font-weight={bold}>Compose. Reuse. Repeat.</T>
   <T scale={0.9} color={muted}>A component is a figure. A layout is a component.</T>
-  <TextRow sizes={[1, 1]} gap={1.5} valign="center">
-    <Box aspect={1.4} rounded={12} padding={0.12} fill={ink}>
+  <TextRow even gap={1.5} valign="center">
+    <Box aspect={1.4} rounded={12} padding={1} fill={ink}>
       <TextCol gap={0.8}>
         <T scale={0.9} font-family={mono} color="#9bb8c5">One reusable tile</T>
         <Verbatim spacing={0.2} font-weight={regular} color="#e8f0f3">{code}</Verbatim>

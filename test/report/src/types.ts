@@ -17,11 +17,20 @@ export interface Example {
   renders: Record<Theme, Render>;
 }
 
+// a deck of slides (test/decks/<name>), its slides as examples with the deck
+// name as their group and ids under decks/<name>/
+export interface Deck {
+  name: string;
+  path: string;         // the deck directory, relative to the repo root
+  slides: Example[];
+}
+
 export interface Manifest {
   generated: string;
   themes: Theme[];
   groups: string[];
-  passed: number;
+  passed: number;       // examples and slides together
   failed: number;
   examples: Example[];
+  decks: Deck[];
 }

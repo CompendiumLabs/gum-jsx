@@ -2,14 +2,16 @@
 //
 // Renders every example in each group's directory of *.jsx files in strict
 // mode (@gum-jsx/core/lib/strict), which turns the permissive rendering
-// fallbacks into thrown errors so silent breakage shows up as a failure. With
-// `report`, also writes every render in both themes to
-// <outDir>/<group>/<theme>/<name>.svg plus a manifest.json listing every
-// example with its source and status, which test/report browses.
+// fallbacks into thrown errors so silent breakage shows up as a failure, and
+// every slide of each deck in test/decks the same way. With `report`, also
+// writes every render in both themes to <outDir>/<group>/<theme>/<name>.svg
+// (<outDir>/decks/<deck>/<theme>/<name>.svg for slides) plus a manifest.json
+// listing every example and deck with its source and status, which
+// test/report browses.
 
 import { join, basename, dirname } from 'path'
 import { fileURLToPath } from 'url'
-import { readdirSync, readFileSync, writeFileSync, mkdirSync, rmSync } from 'fs'
+import { readdirSync, readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'fs'
 
 import { docsCodeDir, galaCodeDir, dataDir as docsDataDir } from '@gum-jsx/docs'
 import { resolveEnv, type Env } from '@gum-jsx/core/env'
@@ -35,6 +37,23 @@ const defaultGroups: Group[] = [
 
 function groupEntry(group: Group): { name: string, dir: string } {
     return typeof group == 'string' ? { name: group, dir: join(group, 'code') } : group
+}
+
+// a deck is a directory of slides (slide_1.jsx, slide_2.jsx, ...): every
+// subdirectory of test/decks by default, each shown as one entry of the report
+type Deck = { name: string, dir: string }
+
+function defaultDecks(root: string = 'test/decks'): Deck[] {
+    if (!existsSync(root)) return []
+    return readdirSync(root, { withFileTypes: true })
+        .filter(e => e.isDirectory())
+        .map(e => ({ name: e.name, dir: join(root, e.name) }))
+        .sort((a, b) => a.name.localeCompare(b.name))
+}
+
+// slide_2 before slide_10
+function naturalCompare(a: string, b: string): number {
+    return a.localeCompare(b, undefined, { numeric: true })
 }
 
 type Theme = 'light' | 'dark'
@@ -63,6 +82,12 @@ type Entry = {
     renders: Record<Theme, { svg: string | null, error: string | null }>
 }
 
+type DeckEntry = {
+    name: string
+    path: string
+    slides: Entry[]
+}
+
 type Manifest = {
     generated: string
     themes: Theme[]
@@ -70,10 +95,12 @@ type Manifest = {
     passed: number
     failed: number
     examples: Entry[]
+    decks: DeckEntry[]
 }
 
 interface TestArgs {
     groups?: Group[]    // example groups (a name, or a name and directory)
+    decks?: Deck[]      // slide decks (default: every directory in test/decks)
     env?: Env           // the Env to evaluate against (default: the default Env, with the math plugin)
     dataDir?: string    // where examples' loadFile reads from (default: @gum-jsx/docs' docs/data)
     outDir?: string     // where --report writes renders and the manifest
@@ -85,6 +112,7 @@ interface TestResult {
     passed: number
     failed: number
     results: Result[]
+    slides: Result[]    // the decks' slides, with the deck name as the group
 }
 
 // examples that deliberately exercise a permissive fallback opt out with a
@@ -120,7 +148,7 @@ function checkEnv(root: Svg): void {
 }
 
 function runUnitTests(args: TestArgs = {}): TestResult {
-    const { groups = defaultGroups, env: env0, dataDir = docsDataDir, outDir = 'test/data', report = false, size = 1000 } = args
+    const { groups = defaultGroups, decks = defaultDecks(), env: env0, dataDir = docsDataDir, outDir = 'test/data', report = false, size = 1000 } = args
     const env = resolveEnv(env0)
 
     function loadFile(path: string, encoding: string = 'utf8') {
@@ -153,10 +181,10 @@ function runUnitTests(args: TestArgs = {}): TestResult {
         }
     }
 
-    const results: Result[] = []
-    for (const { name: group, dir } of groups.map(groupEntry)) {
-        const files = readdirSync(dir).filter(f => f.endsWith('.jsx')).sort()
-        for (const file of files) {
+    // every .jsx file of a directory rendered in both themes, in order
+    function renderDir(group: string, dir: string): Result[] {
+        const files = readdirSync(dir).filter(f => f.endsWith('.jsx')).sort(naturalCompare)
+        return files.map(file => {
             const path = join(dir, file)
             const code = readFileSync(path, 'utf-8')
             const renders = { light: render(code, 'light'), dark: render(code, 'dark') }
@@ -167,47 +195,57 @@ function runUnitTests(args: TestArgs = {}): TestResult {
                 const detail = errors.map(t => `${t}: ${renders[t].error}`).join('; ')
                 console.error(`FAIL ${path}: ${detail}`)
             }
-            results.push({ group, file, path, code, renders })
-        }
+            return { group, file, path, code, renders }
+        })
     }
 
+    const results = groups.map(groupEntry).flatMap(({ name, dir }) => renderDir(name, dir))
+    const slides = decks.flatMap(({ name, dir }) => renderDir(name, dir))
+
     const isPass = (r: Result) => themes.every(t => r.renders[t].error == null)
-    const passed = results.filter(isPass).length
-    const failed = results.length - passed
+    const passed = [ ...results, ...slides ].filter(isPass).length
+    const failed = results.length + slides.length - passed
 
     // one svg file per example per theme (docs/light/Box.svg, ...) and a manifest
     // listing what got written, with the source and any strict error alongside
     function writeData() {
         rmSync(outDir, { recursive: true, force: true })
-        for (const { name: group } of groups.map(groupEntry)) {
-            for (const theme of themes) mkdirSync(join(outDir, group, theme), { recursive: true })
+
+        // the svg files of one group's results under <sub>/<theme>/, and their
+        // manifest entries, with ids under `prefix`
+        function writeEntries(items: Result[], sub: string, prefix: string): Entry[] {
+            for (const theme of themes) mkdirSync(join(outDir, sub, theme), { recursive: true })
+            return items.map(result => {
+                const { group, file, path, code, renders } = result
+                const name = file.replace(/\.jsx$/, '')
+                const entry: Entry = {
+                    id: `${prefix}/${name}`, name, group, path, code,
+                    status: isPass(result) ? 'pass' : 'fail',
+                    renders: { light: { svg: null, error: null }, dark: { svg: null, error: null } },
+                }
+                for (const theme of themes) {
+                    const { svg, error } = renders[theme]
+                    if (svg != null) {
+                        const rel = join(sub, theme, `${name}.svg`)
+                        writeFileSync(join(outDir, rel), svg)
+                        entry.renders[theme].svg = rel
+                    }
+                    entry.renders[theme].error = error ?? null
+                }
+                return entry
+            })
         }
 
-        const examples = results.map(result => {
-            const { group, file, path, code, renders } = result
-            const name = file.replace(/\.jsx$/, '')
-            const entry: Entry = {
-                id: `${group}/${name}`, name, group, path, code,
-                status: isPass(result) ? 'pass' : 'fail',
-                renders: { light: { svg: null, error: null }, dark: { svg: null, error: null } },
-            }
-            for (const theme of themes) {
-                const { svg, error } = renders[theme]
-                if (svg != null) {
-                    const rel = join(group, theme, `${name}.svg`)
-                    writeFileSync(join(outDir, rel), svg)
-                    entry.renders[theme].svg = rel
-                }
-                entry.renders[theme].error = error ?? null
-            }
-            return entry
-        })
+        const examples = groups.map(groupEntry).flatMap(({ name }) => writeEntries(results.filter(r => r.group == name), name, name))
+        const deckEntries: DeckEntry[] = decks.map(({ name, dir }) => ({
+            name, path: dir, slides: writeEntries(slides.filter(r => r.group == name), join('decks', name), `decks/${name}`),
+        }))
 
         const manifest: Manifest = {
-            generated: new Date().toISOString(), themes, groups: groups.map(g => groupEntry(g).name), passed, failed, examples,
+            generated: new Date().toISOString(), themes, groups: groups.map(g => groupEntry(g).name), passed, failed, examples, decks: deckEntries,
         }
         writeFileSync(join(outDir, 'manifest.json'), JSON.stringify(manifest, null, 2))
-        console.error(`wrote ${examples.length} examples to ${outDir}`)
+        console.error(`wrote ${examples.length} examples and ${slides.length} slides to ${outDir}`)
     }
 
     if (report) writeData()
@@ -216,8 +254,8 @@ function runUnitTests(args: TestArgs = {}): TestResult {
     console.error(`${passed} passed`)
     console.error(`${failed} failed`)
 
-    return { passed, failed, results }
+    return { passed, failed, results, slides }
 }
 
-export { runUnitTests, packageDir }
-export type { Group, TestArgs, TestResult, Theme, Render, Result, Entry, Manifest }
+export { runUnitTests, packageDir, defaultDecks }
+export type { Group, Deck, TestArgs, TestResult, Theme, Render, Result, Entry, DeckEntry, Manifest }

@@ -2,7 +2,7 @@
 // below use one shared layout unit; no TextFigure adapters are needed.
 const teal = '#137f89', coral = '#e77654'
 const Label = ({children}) => <Text scale={0.8} font-family={mono}>{children}</Text>
-return <Box padding fill="#f5f3ee">
+return <Box padding={1} fill="#f5f3ee">
   <VStack width={24} gap={1.2} justify="left">
     <Text scale={1.4} font-weight={bold}>One layout vocabulary</Text>
     <Label>Natural packing, shared anchors</Label>

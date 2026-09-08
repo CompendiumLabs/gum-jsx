@@ -45,11 +45,12 @@ bun scripts/gum.ts test/decks/stacking/slide_1.jsx --strict -t light -s 1600 -o 
 bun scripts/gum.ts test/decks/stacking/slide_1.jsx --strict -t light -s 1600 -o test/data/stacking/slide_1.svg
 ```
 
-Decks are outside the default `test/code` example group. To run the strict
-example checks, including Env consistency, on all seven slides in both themes:
+The suite (`bun test/run.ts`) renders every deck under `test/decks` in strict
+mode alongside the examples, and `--report` adds each deck to the report as a
+card that opens a slide viewer. To run just this deck:
 
 ```sh
-bun -e 'import { runUnitTests } from "./test/unit"; const { failed } = runUnitTests({ groups: [{ name: "stacking", dir: "test/decks/stacking" }] }); process.exit(failed ? 1 : 0)'
+bun -e 'import { runUnitTests } from "./test/unit"; const { failed } = runUnitTests({ groups: [], decks: [{ name: "stacking", dir: "test/decks/stacking" }] }); process.exit(failed ? 1 : 0)'
 ```
 
 Generated PDFs, PNGs, and SVGs belong under the ignored `test/data/stacking`

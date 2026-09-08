@@ -9,7 +9,7 @@ return <Slide background={paper} border={0} margin={0} padding={0.07}
   <T scale={1.95} font-weight={bold}>Text and math, together.</T>
   <T scale={0.9} color={muted}>Measured in em. Aligned by shared anchors.</T>
   <HStack even spacing={0.06}>
-    <Box aspect={1.4} rounded={12} padding={0.12} fill="#ffffff">
+    <Box aspect={1.4} rounded={12} padding={1} fill="#ffffff">
       <TextCol width={12} gap={0.8} align={['left', 'top']}>
         <T scale={0.65} font-family={mono} color={teal}>Text + LaTeX</T>
         <T>For any <Tex color={ink}>x</Tex>, define</T>
@@ -17,7 +17,7 @@ return <Slide background={paper} border={0} margin={0} padding={0.07}
         <T scale={0.7} color={muted}>Text sets the scale.</T>
       </TextCol>
     </Box>
-    <Box aspect={1.4} rounded={12} padding={0.12} fill="#e5eeeb">
+    <Box aspect={1.4} rounded={12} padding={1} fill="#e5eeeb">
       <TextCol width={12} gap={0.8} align={['left', 'top']}>
         <T scale={0.65} font-family={mono} color={teal}>Shapes are math atoms, too</T>
         <MathText scale={2} align="center">

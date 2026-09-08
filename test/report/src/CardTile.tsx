@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Example, Theme } from "./types";
+import type { Deck, Example, Theme } from "./types";
 
 // the svg files are fetched and inlined rather than dropped in an <img>, so
 // they draw with the faces @gum-jsx/web installed on the page (frontend.tsx);
@@ -91,6 +91,36 @@ export function CardTile({ example, theme, onOpen }: { example: Example; theme: 
         <Chips example={example} />
       </div>
       <Figure example={example} theme={theme} className="flex-1" />
+    </article>
+  );
+}
+
+/** A deck card: its first slide, the slide count and whether every slide passes. */
+export function DeckTile({ deck, theme, onOpen }: { deck: Deck; theme: Theme; onOpen: () => void }) {
+  const failing = deck.slides.filter(s => s.status === "fail").length;
+  const border = failing === 0
+    ? "border-gray-300 dark:border-neutral-700"
+    : "border-red-400 dark:border-red-800";
+  const chip = "rounded-full px-2 py-0.5 text-xs whitespace-nowrap font-semibold";
+  const status = failing === 0
+    ? "bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400"
+    : "bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-400";
+  const cover = deck.slides[0];
+  return (
+    <article
+      tabIndex={0} onClick={onOpen}
+      onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onOpen(); } }}
+      className={`flex aspect-video cursor-pointer flex-col overflow-hidden rounded-lg border bg-white
+                  hover:border-gray-500 dark:bg-neutral-800 ${border}`}
+    >
+      <div className="flex flex-none items-center justify-between gap-2 border-b border-inherit px-3 py-2">
+        <span className="truncate font-mono text-sm">{deck.name}</span>
+        <span className="flex flex-wrap justify-end gap-1">
+          <span className={`${chip} bg-gray-200 dark:bg-neutral-700`}>{deck.slides.length} slides</span>
+          <span className={`${chip} ${status}`}>{failing === 0 ? "PASS" : `${failing} FAIL`}</span>
+        </span>
+      </div>
+      {cover ? <Figure example={cover} theme={theme} className="flex-1" /> : null}
     </article>
   );
 }
