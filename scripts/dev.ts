@@ -3,6 +3,7 @@
 import { readFileSync, watchFile, unwatchFile } from 'fs'
 import { basename, resolve } from 'path'
 import { evaluateGum } from '../src/eval'
+import { preludeOf } from '../src/deck'
 import { rasterizeSvg, formatImage } from '@gum-jsx/node'
 import { zoomSvg } from '@gum-jsx/core'
 import type { Size, CliArgs } from '@gum-jsx/core/lib/types'
@@ -160,7 +161,8 @@ function devCommand(args: CliArgs) {
   async function renderFile(): Promise<void> {
     try {
       const code = readFileSync(file, 'utf-8')
-      const elem0 = evaluateGum(code, { size, unit_size: unitSize, theme, strict, seed, loadFile })
+      const prelude = preludeOf(file)  // read each time: a deck's prelude may change too
+      const elem0 = evaluateGum(code, { size, unit_size: unitSize, theme, strict, seed, prelude: prelude?.code, loadFile })
       const elem = zoom != null ? zoomSvg(elem0, zoom) : elem0
       const svg = elem.svg()
       const [width, height] = elem.size
@@ -254,6 +256,7 @@ function devCommand(args: CliArgs) {
 
     if (renderTimer != null) clearTimeout(renderTimer)
     unwatchFile(file)
+    if (preludePath != null) unwatchFile(preludePath)
 
     clearScreen()
     write('\x1b[?25h')
@@ -263,6 +266,8 @@ function devCommand(args: CliArgs) {
   }
 
   watchFile(file, { interval: WATCH_INTERVAL }, () => scheduleRender(true))
+  const preludePath = preludeOf(file)?.path
+  if (preludePath != null) watchFile(preludePath, { interval: WATCH_INTERVAL }, () => scheduleRender(true))
   process.on('SIGWINCH', () => scheduleRender(false))
   process.on('SIGINT', () => closeViewer(0))
   process.on('SIGTERM', () => closeViewer(0))

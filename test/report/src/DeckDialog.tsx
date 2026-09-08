@@ -48,7 +48,7 @@ export function DeckDialog({ deck, index, theme, onClose, onStep }: {
                    text-gray-900 shadow-2xl dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200"
       >
         <div className="flex flex-none items-center gap-3 border-b border-gray-300 px-4 py-3 dark:border-neutral-700">
-          <span className="font-semibold">{deck.name}</span>
+          <span className="font-semibold">{deck.title ?? deck.name}</span>
           <span className="font-mono text-sm text-gray-500 dark:text-neutral-400">{slide.path}</span>
           <span className="mr-auto"><Chips example={slide} /></span>
           <button onClick={() => setCode(c => !c)} className={`${button} ${code ? active : ""}`}>code</button>

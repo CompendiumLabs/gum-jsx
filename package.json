@@ -40,6 +40,10 @@
       "types": "./types/meta.d.ts",
       "import": "./src/meta.ts"
     },
+    "./deck": {
+      "types": "./types/deck.d.ts",
+      "import": "./src/deck.ts"
+    },
     "./package.json": "./package.json"
   },
   "scripts": {

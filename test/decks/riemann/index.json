@@ -1,0 +1,10 @@
+{
+  "title": "The Riemann Zeta Function",
+  "prelude": "prelude.jsx",
+  "slides": [
+    "slide_1.jsx",
+    "slide_2.jsx",
+    "slide_3.jsx",
+    "slide_4.jsx"
+  ]
+}

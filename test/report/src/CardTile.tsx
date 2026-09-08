@@ -114,7 +114,10 @@ export function DeckTile({ deck, theme, onOpen }: { deck: Deck; theme: Theme; on
                   hover:border-gray-500 dark:bg-neutral-800 ${border}`}
     >
       <div className="flex flex-none items-center justify-between gap-2 border-b border-inherit px-3 py-2">
-        <span className="truncate font-mono text-sm">{deck.name}</span>
+        <span className="truncate text-sm">
+          <span className="font-mono">{deck.name}</span>
+          {deck.title && <span className="ml-2 text-gray-500 dark:text-neutral-400">{deck.title}</span>}
+        </span>
         <span className="flex flex-wrap justify-end gap-1">
           <span className={`${chip} bg-gray-200 dark:bg-neutral-700`}>{deck.slides.length} slides</span>
           <span className={`${chip} ${status}`}>{failing === 0 ? "PASS" : `${failing} FAIL`}</span>

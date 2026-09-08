@@ -1,0 +1,13 @@
+{
+  "title": "Stacking scenarios",
+  "prelude": "prelude.jsx",
+  "slides": [
+    "slide_1.jsx",
+    "slide_2.jsx",
+    "slide_3.jsx",
+    "slide_4.jsx",
+    "slide_5.jsx",
+    "slide_6.jsx",
+    "slide_7.jsx"
+  ]
+}

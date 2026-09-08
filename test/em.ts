@@ -39,6 +39,12 @@ function consistent({ elem, em }: { elem: any, em: EmSpec }, what: string): void
     close(em.width / em.height, elem.spec.aspect, `${what}: width/height vs aspect`)
 }
 
+// the width of a laid child's placement rect
+function rectWidth(elem: any): number {
+    const [ x0, , x1 ] = elem.spec.rect
+    return x1 - x0
+}
+
 function runEmTests(): void {
     const words = 'the quick brown fox jumps over the lazy dog and keeps on running'
 
@@ -228,6 +234,24 @@ function runEmTests(): void {
     close(qx1 - qx0, 5, 'sized child in a row: five em wide')
     close(sized_row.elem.children[0].em.width, 15, 'a paragraph takes what is left')
     close(root('<TextRow width={20} gap={0}><Text>a</Text><Rect width={5} /></TextRow>').elem.children[0].em.width, line_a, 'a one-word text keeps its line (it cannot use more)')
+
+    // the stacking deck's rules (test/decks/stacking): in a row with a width
+    // and no height, aspect-only siblings split their allocation at one
+    // common height, and a bare stretch beside text is as tall as the text
+    // (bare: the deck builds its stacks with no offer; root: the Svg offers
+    // the canvas height too, which changes nothing for the shapes, while a
+    // stretch fills a height it is offered)
+    for (const [ ctx, name ] of [ [ bare, 'bare' ], [ root, 'root' ] ] as const) {
+        // (to a millionth: with a height offered the row bisects to the answer)
+        const approx = (x: number) => Math.round(x * 1e6) / 1e6
+        const two_aspects = ctx('<HStack width={12} gap={1}><Rect aspect={2} /><Rect aspect={0.5} /></HStack>')
+        close(approx(two_aspects.em.height), 4.4, `${name}: two aspects share the height that spends the width: 11 / (2 + 0.5)`)
+        close(approx(rectWidth(two_aspects.elem.children[0])), 8.8, `${name}: the 2:1 shape is 8.8 wide`)
+        close(approx(rectWidth(two_aspects.elem.children[1])), 2.2, `${name}: the 1:2 shape is 2.2 wide`)
+    }
+    const stretch_row = bare('<HStack width={12} gap={1}><Rect /><Text width={4}>Hi</Text></HStack>')
+    close(stretch_row.em.height, 1, 'a bare stretch beside text takes the text height')
+    close(rectWidth(stretch_row.elem.children[0]), 7, 'and what is left of the width')
 
     // shares and spacing: fractions of the stack's length; a fitted text
     // scales to its share like a title in a figure

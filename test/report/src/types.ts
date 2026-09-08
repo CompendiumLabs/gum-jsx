@@ -21,6 +21,7 @@ export interface Example {
 // name as their group and ids under decks/<name>/
 export interface Deck {
   name: string;
+  title: string | null; // from the deck's index.json, if it has one
   path: string;         // the deck directory, relative to the repo root
   slides: Example[];
 }

@@ -3,7 +3,8 @@
 // Renders every example in each group's directory of *.jsx files in strict
 // mode (@gum-jsx/core/lib/strict), which turns the permissive rendering
 // fallbacks into thrown errors so silent breakage shows up as a failure, and
-// every slide of each deck in test/decks the same way. With `report`, also
+// every slide of each deck in test/decks the same way (a deck's index.json
+// gives its order and prelude, see src/deck.ts). With `report`, also
 // writes every render in both themes to <outDir>/<group>/<theme>/<name>.svg
 // (<outDir>/decks/<deck>/<theme>/<name>.svg for slides) plus a manifest.json
 // listing every example and deck with its source and status, which
@@ -18,6 +19,7 @@ import { resolveEnv, type Env } from '@gum-jsx/core/env'
 import type { Svg } from '@gum-jsx/core'
 
 import '../src/eval' // the math plugin on the default Env
+import { loadDeck } from '../src/deck'
 
 // the root directory of an installed package (through its ./package.json export)
 function packageDir(name: string): string {
@@ -84,6 +86,7 @@ type Entry = {
 
 type DeckEntry = {
     name: string
+    title: string | null
     path: string
     slides: Entry[]
 }
@@ -163,17 +166,17 @@ function runUnitTests(args: TestArgs = {}): TestResult {
     // unknown commands, missing glyphs) into thrown errors. On a strict failure we
     // still do the permissive render, so the report shows what the document draws
     // alongside the reason it failed
-    function render(code: string, theme: Theme): Render {
+    function render(code: string, theme: Theme, prelude?: string): Render {
         const strict = allowsStrict(code)
         try {
-            const elem = env.evaluate(code, { size, theme, strict, loadFile })
+            const elem = env.evaluate(code, { size, theme, strict, prelude, loadFile })
             if (strict) checkEnv(elem)
             return { svg: elem.svg() }
         } catch (e: any) {
             const { message = 'Unknown error' } = e
             if (!strict) return { error: message }
             try {
-                const elem = env.evaluate(code, { size, theme, loadFile })
+                const elem = env.evaluate(code, { size, theme, prelude, loadFile })
                 return { svg: elem.svg(), error: message }
             } catch {
                 return { error: message }
@@ -181,26 +184,32 @@ function runUnitTests(args: TestArgs = {}): TestResult {
         }
     }
 
-    // every .jsx file of a directory rendered in both themes, in order
+    // one file rendered in both themes (with its deck's prelude, for a slide)
+    function renderFile(group: string, path: string, code: string, prelude?: string): Result {
+        const file = basename(path)
+        const renders = { light: render(code, 'light', prelude), dark: render(code, 'dark', prelude) }
+        const errors = themes.filter(t => renders[t].error != null)
+        if (errors.length == 0) {
+            console.log(`PASS ${path}`)
+        } else {
+            const detail = errors.map(t => `${t}: ${renders[t].error}`).join('; ')
+            console.error(`FAIL ${path}: ${detail}`)
+        }
+        return { group, file, path, code, renders }
+    }
+
+    // every .jsx file of a directory, sorted; a deck's slides in its order
     function renderDir(group: string, dir: string): Result[] {
         const files = readdirSync(dir).filter(f => f.endsWith('.jsx')).sort(naturalCompare)
-        return files.map(file => {
-            const path = join(dir, file)
-            const code = readFileSync(path, 'utf-8')
-            const renders = { light: render(code, 'light'), dark: render(code, 'dark') }
-            const errors = themes.filter(t => renders[t].error != null)
-            if (errors.length == 0) {
-                console.log(`PASS ${path}`)
-            } else {
-                const detail = errors.map(t => `${t}: ${renders[t].error}`).join('; ')
-                console.error(`FAIL ${path}: ${detail}`)
-            }
-            return { group, file, path, code, renders }
-        })
+        return files.map(file => { const path = join(dir, file); return renderFile(group, path, readFileSync(path, 'utf-8')) })
+    }
+    function renderDeck(group: string, dir: string): Result[] {
+        const deck = loadDeck(dir)
+        return deck.slides.map(({ path, code }) => renderFile(group, path, code, deck.prelude))
     }
 
     const results = groups.map(groupEntry).flatMap(({ name, dir }) => renderDir(name, dir))
-    const slides = decks.flatMap(({ name, dir }) => renderDir(name, dir))
+    const slides = decks.flatMap(({ name, dir }) => renderDeck(name, dir))
 
     const isPass = (r: Result) => themes.every(t => r.renders[t].error == null)
     const passed = [ ...results, ...slides ].filter(isPass).length
@@ -238,7 +247,8 @@ function runUnitTests(args: TestArgs = {}): TestResult {
 
         const examples = groups.map(groupEntry).flatMap(({ name }) => writeEntries(results.filter(r => r.group == name), name, name))
         const deckEntries: DeckEntry[] = decks.map(({ name, dir }) => ({
-            name, path: dir, slides: writeEntries(slides.filter(r => r.group == name), join('decks', name), `decks/${name}`),
+            name, title: loadDeck(dir).title ?? null, path: dir,
+            slides: writeEntries(slides.filter(r => r.group == name), join('decks', name), `decks/${name}`),
         }))
 
         const manifest: Manifest = {

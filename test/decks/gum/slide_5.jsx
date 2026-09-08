@@ -1,5 +1,4 @@
 // The evaluator produces SVG; runtime packages make it useful in other places.
-const paper = '#f5f3ee', ink = '#182d3b', muted = '#657780', teal = '#137f89'
 const outputs = [
   { label: 'Web / React', color: teal },
   { label: 'PNG / PDF', color: blue },
@@ -9,11 +8,7 @@ const outputs = [
 const columnGap = 14, rowGap = 4
 const diagramWidth = 3 * columnGap, diagramHeight = outputs.length * rowGap
 
-return <Slide background={paper} border={0} margin={0} padding={0.07}
-  em={0.044} gap={0.65} valign="top" overflow="error">
-  <Text scale={0.65} color={teal} font-family={mono}>GUM.JSX / 05</Text>
-  <Text scale={1.95} color={ink} font-weight={bold}>Write once. Render anywhere.</Text>
-  <Text scale={0.9} color={muted}>Keep the source. Export the picture.</Text>
+return <Page n={5} title="Write once. Render anywhere." subtitle="Keep the source. Export the picture.">
   <Network xlim={[-columnGap / 2, 2.5 * columnGap]}
     ylim={[-diagramHeight / 2, diagramHeight / 2]} aspect={diagramWidth / diagramHeight}
     em={1} node-padding={0.7} node-border={0} node-rounded={12}
@@ -47,4 +42,4 @@ return <Slide background={paper} border={0} margin={0} padding={0.07}
     )}
   </Network>
   <Text scale={0.75} color={teal} font-family={mono}>gum figure.jsx -o figure.svg</Text>
-</Slide>
+</Page>

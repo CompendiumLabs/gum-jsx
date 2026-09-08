@@ -1,10 +1,9 @@
 // Slide 2: analytic continuation, functional equation, and the critical strip
 
-// imaginary parts of the first nontrivial zeros
-const zeros = [14.1347, 21.0220, 25.0109, 30.4249, 32.9351]
-
-// diagram coordinates: real part in [X0, X1], imaginary part in [-Y1, Y1]
+// diagram coordinates: real part in [X0, X1], imaginary part in [-Y1, Y1];
+// the zeros that fit the strip
 const [X0, X1, Y1, ASP] = [-9.5, 4.5, 38, 0.8]
+const shown = zeros.slice(0, 5)
 
 const Leader = ({ p1, p2 }) => <Line points={[p1, p2]} stroke="#999" />
 const Cross = (attr) => <Group aspect {...attr}>
@@ -22,8 +21,8 @@ const Diagram = (attr) =>
     {range(-8, 0, 2).map(x => <Text pos={[x, -3]} ysize={2.8} color="#666">{x}</Text>)}
     <Text pos={[1.7, -3]} ysize={2.8} color="#666">1</Text>
     {[-8, -6, -4, -2].map(x => <Circle pos={[x, 0]} xrad={0.25} fill={white} stroke={purple} stroke-width={2} />)}
-    {zeros.map(t => <Circle pos={[0.5, t]} xrad={0.25} fill={blue} stroke={none} />)}
-    {zeros.map(t => <Circle pos={[0.5, -t]} xrad={0.25} fill={blue} stroke={none} />)}
+    {shown.map(t => <Circle pos={[0.5, t]} xrad={0.25} fill={blue} stroke={none} />)}
+    {shown.map(t => <Circle pos={[0.5, -t]} xrad={0.25} fill={blue} stroke={none} />)}
     <Cross pos={[1, 0]} xrad={0.35} />
     <Text pos={[-5, 5.5]} ysize={3} color={purple}>trivial zeros</Text>
     <Text pos={[2.75, 21]} ysize={2.8} color="#555">series</Text>

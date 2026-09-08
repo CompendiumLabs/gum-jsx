@@ -1,13 +1,6 @@
 // Native text metrics set the formula scale; geometry can be a math atom too.
-const paper = '#f5f3ee', ink = '#182d3b', muted = '#657780', teal = '#137f89'
-const T = ({ children, ...args }) =>
-  <Text color={ink} font-weight={regular} {...args}>{children}</Text>
 
-return <Slide background={paper} border={0} margin={0} padding={0.07}
-  em={0.044} gap={0.65} valign="top" overflow="error">
-  <T scale={0.65} color={teal} font-family={mono}>GUM.JSX / 04</T>
-  <T scale={1.95} font-weight={bold}>Text and math, together.</T>
-  <T scale={0.9} color={muted}>Measured in em. Aligned by shared anchors.</T>
+return <Page n={4} title="Text and math, together." subtitle="Measured in em. Aligned by shared anchors.">
   <HStack even spacing={0.06}>
     <Box aspect={1.4} rounded={12} padding={1} fill="#ffffff">
       <TextCol width={12} gap={0.8} align={['left', 'top']}>
@@ -32,4 +25,4 @@ return <Slide background={paper} border={0} margin={0} padding={0.07}
     </Box>
   </HStack>
   <T scale={0.75} color={muted}>Fractions size themselves. Labels keep a common scale.</T>
-</Slide>
+</Page>

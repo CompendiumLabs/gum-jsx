@@ -1,7 +1,4 @@
 // One component, reused by two aspect-aware layout containers.
-const paper = '#f5f3ee', ink = '#182d3b', muted = '#657780', teal = '#137f89'
-const T = ({ children, ...args }) =>
-  <Text color={ink} font-weight={regular} {...args}>{children}</Text>
 const colors = [teal, blue, '#e77654', '#d5a33d', '#8f76b0', '#678e78']
 const Tile = ({ color }) => <Box rounded padding={0.5} fill={color}>
   <Circle stroke={none} fill={paper} />
@@ -13,11 +10,7 @@ const code = `const Tile = ({ color }) =>
       fill={paper} />
   </Box>`
 
-return <Slide background={paper} border={0} margin={0} padding={0.07}
-  em={0.044} gap={0.65} valign="top" overflow="error">
-  <T scale={0.65} color={teal} font-family={mono}>GUM.JSX / 03</T>
-  <T scale={1.95} font-weight={bold}>Compose. Reuse. Repeat.</T>
-  <T scale={0.9} color={muted}>A component is a figure. A layout is a component.</T>
+return <Page n={3} title="Compose. Reuse. Repeat." subtitle="A component is a figure. A layout is a component.">
   <TextRow even gap={1.5} valign="center">
     <Box aspect={1.4} rounded={12} padding={1} fill={ink}>
       <TextCol gap={0.8}>
@@ -37,4 +30,4 @@ return <Slide background={paper} border={0} margin={0} padding={0.07}
     </TextCol>
   </TextRow>
   <T scale={0.75} color={muted}>Map over data. Nest layouts. Let proportions propagate.</T>
-</Slide>
+</Page>

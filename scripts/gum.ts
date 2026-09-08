@@ -1,7 +1,7 @@
 #! /usr/bin/env bun
 
 import { Command, InvalidArgumentError } from 'commander'
-import { readFileSync, readdirSync, statSync, writeFileSync } from 'fs'
+import { readFileSync, statSync, writeFileSync } from 'fs'
 import { basename, dirname, resolve } from 'path'
 import { isatty } from 'tty'
 
@@ -11,6 +11,7 @@ import { renderPdf } from '@gum-jsx/pdf'
 import { Element, Group, validateZoom, zoomSvg, layoutSvg, LAYOUT_DEPTH } from '@gum-jsx/core'
 import type { CliArgs, LoadFile, Rect } from '@gum-jsx/core/lib/types'
 import { devCommand } from './dev'
+import { loadDeck, preludeOf } from '../src/deck'
 
 type GumArgs = Omit<CliArgs, 'format'> & {
   files: string[]
@@ -88,23 +89,27 @@ function loadFileFrom(cwd: string): LoadFile {
   }
 }
 
-function pdfInputFiles(inputs: string[]): string[] {
-  const order = new Intl.Collator('en', { numeric: true })
-  return inputs.flatMap(input => {
-    if (!statSync(input).isDirectory()) return [input]
-    const files = readdirSync(input, { withFileTypes: true })
-      .filter(entry => entry.isFile() && entry.name.endsWith('.jsx'))
-      .map(entry => entry.name)
-      .sort(order.compare)
-      .map(name => resolve(input, name))
-    if (!files.length) throw new Error(`No JSX files in ${input}`)
-    return files
+// the pages of a pdf: a directory is a deck (its slides in order, with its
+// prelude, see src/deck.ts), a file is one page, with the prelude of the deck
+// it sits in, if any
+type Page = { path: string, prelude?: string }
+
+function pdfInputPages(inputs: string[]): { pages: Page[], title?: string } {
+  let title: string | undefined
+  const pages = inputs.flatMap((input): Page[] => {
+    if (!statSync(input).isDirectory()) return [{ path: input, prelude: preludeOf(input)?.code }]
+    const deck = loadDeck(input)
+    if (!deck.slides.length) throw new Error(`No JSX files in ${input}`)
+    if (inputs.length == 1) title = deck.title
+    return deck.slides.map(({ path }) => ({ path, prelude: deck.prelude }))
   })
+  return { pages, title }
 }
 
 async function pdfOutput(args: GumArgs): Promise<Buffer> {
   const { files: inputs, output, theme, background, size: size0 = 1000, unitSize, strict, seed, zoom } = args
-  const files = pdfInputFiles(inputs)
+  const { pages: inputPages, title } = pdfInputPages(inputs)
+  const files = inputPages.map(p => p.path)
   const outputPath = output == null ? undefined : resolve(output)
   if (outputPath != null && files.includes(outputPath)) throw new Error('The output must not overwrite an input file')
 
@@ -113,7 +118,7 @@ async function pdfOutput(args: GumArgs): Promise<Buffer> {
         element: evaluateGum(await readStdin(), { size: size0, unit_size: unitSize, theme, strict, seed, loadFile: loadFileFrom(process.cwd()) }),
         baseDir: process.cwd(),
       }]
-    : files.map(file => {
+    : inputPages.map(({ path: file, prelude }) => {
         try {
           const element0 = evaluateGum(readFileSync(file, 'utf8'), {
             size: size0,
@@ -121,6 +126,7 @@ async function pdfOutput(args: GumArgs): Promise<Buffer> {
             theme,
             strict,
             seed,
+            prelude,
             loadFile: loadFileFrom(dirname(file)),
           })
           return { element: zoom == null ? element0 : zoomSvg(element0, zoom), baseDir: dirname(file) }
@@ -131,7 +137,7 @@ async function pdfOutput(args: GumArgs): Promise<Buffer> {
   if (files.length === 0 && zoom != null) pages[0]!.element = zoomSvg(pages[0]!.element, zoom)
 
   return Buffer.from(await renderPdf(pages, {
-    title: output == null ? undefined : basename(output, '.pdf'),
+    title: title ?? (output == null ? undefined : basename(output, '.pdf')),
     background,
   }))
 }
@@ -159,8 +165,9 @@ async function runCommand(args: GumArgs) {
   // wait for stdin
   const code = file ? readFileSync(file, 'utf-8') : await readStdin()
 
-  // evaluate gum with size
-  const elem0 = evaluateGum(code, { size: size0, unit_size: unitSize, theme, strict, seed, loadFile })
+  // evaluate gum with size (a slide of a deck gets the deck's prelude)
+  const prelude = file ? preludeOf(file)?.code : undefined
+  const elem0 = evaluateGum(code, { size: size0, unit_size: unitSize, theme, strict, seed, prelude, loadFile })
 
   // crop to the zoom region for the image formats (the layout listing works on
   // the unzoomed element, with zoom as a filter; the json tree has no view)

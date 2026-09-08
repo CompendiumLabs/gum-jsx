@@ -1,8 +1,11 @@
 # Stacking scenarios
 
-Seven standalone gum.jsx slides for the experimental unified metrics model.
-Start with the two example stacks near the top of each file. The rest of the
-file draws the slide, code snippets, allocation outlines, and measured labels.
+Seven gum.jsx slides for the experimental unified metrics model. Each slide is
+its two example stacks plus a `Page` with two `Panel`s: the titles, the code
+captions and the notes. The shared code is in [prelude.jsx](prelude.jsx), which
+[index.json](index.json) names as the deck's prelude, so every slide is
+evaluated with it: the palette and styles, the helpers that draw a completed
+stack with its allocation outlines and measured labels, and the `Page`.
 
 | Slide | Comparison |
 | --- | --- |
@@ -27,8 +30,8 @@ coordinates, so the slide itself does not offer them a new wrapping width.
 
 Code captions omit shared styling: rows use `justify="left"` and `valign="top"`,
 and sample text uses regular IBM Plex Mono with zero line spacing. Teal and
-coral distinguish the first and second children. The source above each helper
-section includes all of those settings. Here “matched” covers both matching
+coral distinguish the first and second children. The prelude includes all of
+those settings. Here “matched” covers both matching
 child heights/aspects and a drawing matching the aspect of its allocated slot.
 
 From the `gum-jsx` directory, render the deck to a vector PDF:
@@ -46,12 +49,14 @@ bun scripts/gum.ts test/decks/stacking/slide_1.jsx --strict -t light -s 1600 -o 
 ```
 
 The suite (`bun test/run.ts`) renders every deck under `test/decks` in strict
-mode alongside the examples, and `--report` adds each deck to the report as a
-card that opens a slide viewer. To run just this deck:
+mode alongside the examples, in `index.json` order and with the prelude, and
+`--report` adds each deck to the report as a card that opens a slide viewer.
+To run just this deck:
 
 ```sh
 bun -e 'import { runUnitTests } from "./test/unit"; const { failed } = runUnitTests({ groups: [], decks: [{ name: "stacking", dir: "test/decks/stacking" }] }); process.exit(failed ? 1 : 0)'
 ```
 
 Generated PDFs, PNGs, and SVGs belong under the ignored `test/data/stacking`
-directory; the JSX sources and this README are the deck's maintained files.
+directory; the slides, the prelude, the index and this README are the deck's
+maintained files.

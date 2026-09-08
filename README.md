@@ -125,6 +125,18 @@ Directory entries are sorted by filename with numeric ordering (`slide_2.jsx` be
 gum title.jsx overview.jsx demo.jsx -o deck.pdf
 ```
 
+A directory can also carry an `index.json` that makes it a deck: the slide order, a title for
+the PDF, and a *prelude*, a file of declarations (helpers, colors, data) every slide is
+evaluated with, so they are written once instead of at the top of each slide. Every key is
+optional:
+
+```json
+{ "title": "Stacking scenarios", "prelude": "prelude.jsx", "slides": ["slide_1.jsx", "slide_2.jsx"] }
+```
+
+A slide rendered on its own (`gum slides/slide_1.jsx`, with or without `--dev`) gets its
+deck's prelude too.
+
 The PDF exporter preserves vector paths and embeds the registered gum and KaTeX fonts. Use
 `--strict` to reject gum rendering fallbacks, as with the other output formats.
 

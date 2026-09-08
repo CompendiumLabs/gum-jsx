@@ -1,27 +1,6 @@
 // Slide 3: the image of the critical line, zeta(1/2 + it) for 0 <= t <= 50
 
-// Borwein's algorithm coefficients for the Dirichlet eta function
-const NB = 64
-const terms = range(1, NB+1).reduce(
-  (acc, i) => [...acc, acc[acc.length-1] * 4*(NB+i-1)*(NB-i+1) / (2*i*(2*i-1))], [1/NB]
-)
-const dk = cumsum(terms, false).map(d => NB*d)
-const dn = dk[NB]
-const wk = range(0, NB).map(k => pow(-1, k) * (dk[k] - dn) / dn)
-
-// complex zeta(sigma + i t) for sigma > 0, returned as [re, im]
-const zeta = (sigma, t) => {
-  const ks = range(0, NB)
-  const ere = -sum(ks.map(k => wk[k] * pow(k+1, -sigma) * cos(t * log(k+1))))
-  const eim =  sum(ks.map(k => wk[k] * pow(k+1, -sigma) * sin(t * log(k+1))))
-  const p = pow(2, 1-sigma), a = t * log(2)
-  const dre = 1 - p * cos(a), dim = p * sin(a)
-  const den = dre*dre + dim*dim
-  return [(ere*dre + eim*dim) / den, (eim*dre - ere*dim) / den]
-}
-
 // trace the critical line zeta(1/2 + i t), colored by t
-const tmax = 50
 const R = 4
 const pal = palette(blue, red, [0, tmax])
 const [NP, L] = [2000, 20]
