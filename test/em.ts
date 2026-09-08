@@ -154,15 +154,16 @@ function runEmTests(): void {
     close(box.em.anchor, 0.5 + TEXT_ANCHOR, 'box anchor')
     consistent(box, 'box')
     close(root('<TextFrame padding margin>hi</TextFrame>').em.height, 1 + 0.8 + 0.8, 'frame with default padding and margin')
-    close(root('<TextBox padding={0} aspect={4}>hi</TextBox>').em.width, 4, 'box grown to an aspect')
+    close(root('<TextBox padding={0} aspect={4}>hi</TextBox>').em.width, 20, 'a box with an aspect is a figure of it, sized by the offer')
+    close(bare('<TextBox padding={0} aspect={4}>hi</TextBox>').em.width, 4, 'unoffered, a box grows around its content to its aspect')
     close(root('<TextBox padding={0}><Latex>x</Latex></TextBox>').em.height, formula.em.height, 'box around a formula')
     const hugged = root('<TextCol width={20} gap={0}><TextBox padding={0}>hi</TextBox></TextCol>')
     assert.ok(hugged.elem.children[0].em.width < 20, 'one-line box hugs its line')
     close(root(`<TextCol width={11} gap={0}><TextBox padding={0}>${words}</TextBox></TextCol>`).elem.children[0].em.width, 11, 'a wrapped box keeps the width')
 
-    // a share box (Box, Frame) lays its content out for the area it is offered
-    // and takes the shape of what comes back: a column in a box is the column,
-    // and in a padded frame it is laid out for the area and the frame hugs it
+    // a box lays its content out for the area it is offered, inside its em
+    // padding, and hugs what comes back: a column in a box is the column, and
+    // in a padded frame it is laid out for the area and the frame hugs it
     const column = '<VStack><Rect aspect={2} /><Text>a caption</Text></VStack>'
     const plain = root(column)
     close(plain.em.height, 20 / 2 + 1, 'a captioned rect at the root')
@@ -170,9 +171,9 @@ function runEmTests(): void {
     close(boxed.em.width, plain.em.width, 'a box around a column keeps its width')
     close(boxed.em.height, plain.em.height, 'a box around a column keeps its height')
     consistent(boxed, 'boxed column')
-    const framed = root(`<Frame padding={0.1} adjust={false}>${column}</Frame>`)
+    const framed = root(`<Frame padding={0.1}>${column}</Frame>`)
     close(framed.em.width, 20, 'a framed column spans the canvas')
-    close(framed.em.height, (20 / 1.2 / 2 + 1) * 1.2, 'a framed column is laid out for the area (the padding is of the content), and the frame hugs it')
+    close(framed.em.height, (20 - 0.2) / 2 + 1 + 0.2, 'a framed column is laid out for the area inside the padding, and the frame hugs it')
     close(root(`<Frame aspect={2}>${column}</Frame>`).em.height, 10, 'a frame with an aspect fits the canvas at it')
 
     // a slide: `em` sets the text size as a fraction of the slide height, and

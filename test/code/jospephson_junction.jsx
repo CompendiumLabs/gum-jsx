@@ -25,7 +25,7 @@ const ph = (x) =>
   w * (x - xB2) + w * (xB1 - xL)
 const wave = linspace(xL, xR, 400).map(x => [x, yc - env(x) * cos(ph(x))])
 
-return <Box margin={0.04}>
+return <Box margin>
   <VStack gap={0.3}>
     <Text color={navy}>Josephson Junction</Text>
 

@@ -1,6 +1,6 @@
 // Text and math share an em. Scale compounds; anchors stay aligned.
 const teal = '#137f89'
-return <Box padding={0.06} fill="#f5f3ee">
+return <Box padding fill="#f5f3ee">
   <TextCol width={28} gap={1.2} color="#182d3b" font-weight={regular}>
     <Text scale={1.4} font-weight={bold}>One scale for text and math</Text>
     {[0.75, 1, 1.5].map(scale =>
