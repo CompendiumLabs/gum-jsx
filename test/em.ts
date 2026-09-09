@@ -167,6 +167,29 @@ function runEmTests(): void {
     close(root('<TextBox padding={0}><Latex>x</Latex></TextBox>').em.height, formula.em.height, 'box around a formula')
     const hugged = root('<TextCol width={20} gap={0}><TextBox padding={0}>hi</TextBox></TextCol>')
     assert.ok(hugged.elem.children[0].em.width < 20, 'one-line box hugs its line')
+    close(root('<TextCol width={20} gap={0} justify="stretch"><TextBox padding={0}>hi</TextBox></TextCol>').elem.children[0].em.width, 20, 'a stretch column makes a one-line box span it')
+    close(root('<TextCol width={20} gap={0}><TextBox padding={0} align="stretch">hi</TextBox></TextCol>').elem.children[0].em.width, 20, 'a box asking to stretch spans the column')
+    const kept = root('<TextCol width={20} gap={0} justify="stretch"><TextBox padding={0} align="left">hi</TextBox></TextCol>')
+    assert.ok(kept.elem.children[0].em.width < 20, 'a box with an align of its own hugs its line in a stretch column')
+    close(root('<TextCol gap={0} justify="stretch"><TextBox padding={0}>hi</TextBox><TextBox padding={0} width={8}>hi</TextBox></TextCol>').elem.children[0].em.width, 8, 'in a hugging stretch column a box spans the widest child')
+    assert.ok(root('<TextCol gap={0}><TextBox padding={0}>hi</TextBox><TextBox padding={0} width={8}>hi</TextBox></TextCol>').elem.children[0].em.width < 8, 'in a hugging column a box hugs its line')
+
+    // a row stretches a box across it when asked: frames of different text
+    // come out the same height, the taller setting it; a frame with an align
+    // of its own keeps its height, and so does a text block, which cannot
+    // stretch; without valign="stretch" nothing does
+    const long = 'a paragraph long enough to wrap onto a few lines in half of the row it is given'
+    const frames = root(`<HStack even width={20} valign="stretch"><TextFrame padding={0.5}>short</TextFrame><TextFrame padding={0.5}>${long}</TextFrame></HStack>`).elem.children
+    close(frames[0].em.height, frames[1].em.height, 'frames in a stretch row come out the same height')
+    assert.ok(frames[0].em.height > 2, 'the short frame stretched to the tall one')
+    const asked = root(`<HStack even width={20}><TextFrame padding={0.5} align="stretch">short</TextFrame><TextFrame padding={0.5}>${long}</TextFrame></HStack>`).elem.children
+    close(asked[0].em.height, asked[1].em.height, 'a frame asking to stretch takes the row height')
+    const topped = root(`<HStack even width={20} valign="stretch"><TextFrame padding={0.5} align="top">short</TextFrame><TextFrame padding={0.5}>${long}</TextFrame></HStack>`).elem.children
+    close(topped[0].em.height, 2, 'a frame with an align of its own keeps its height')
+    const texts = root(`<HStack even width={20} valign="stretch"><Text>short</Text><TextFrame padding={0.5}>${long}</TextFrame></HStack>`).elem.children
+    close(texts[0].em.height, 1, 'a text block beside a frame keeps its height')
+    const unasked = root(`<HStack even width={20}><TextFrame padding={0.5}>short</TextFrame><TextFrame padding={0.5}>${long}</TextFrame></HStack>`).elem.children
+    close(unasked[0].em.height, 2, 'without stretch a frame in a row keeps its height')
     close(root(`<TextCol width={11} gap={0}><TextBox padding={0}>${words}</TextBox></TextCol>`).elem.children[0].em.width, 11, 'a wrapped box keeps the width')
 
     // a box lays its content out for the area it is offered, inside its em
