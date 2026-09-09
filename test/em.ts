@@ -7,6 +7,8 @@
 import { strict as assert } from 'node:assert'
 
 import { gum } from '@gum-jsx/core'
+import { Span } from '@gum-jsx/core/elems/text'
+import { ensure_em } from '@gum-jsx/core/elems/em'
 import { TEXT_AXIS, MATH_AXIS } from '@gum-jsx/core/lib/const'
 import type { EmSpec } from '@gum-jsx/core/lib/em'
 
@@ -269,6 +271,34 @@ function runEmTests(): void {
     const tall = root('<TextCol width={10} height={8} gap={0}><Text>a</Text><Text>b</Text></TextCol>')
     close(tall.em.height, 8, 'a column with a height of its own is that tall')
     close(tall.elem.children[0].em.height, 2, 'and its content is what it is')
+
+    // a span in a line has no box until something asks for one: then it is
+    // the line it draws in (its coordinate frame), 1em tall and as wide as its
+    // advance, anchored on the axis of its text, which is where a line places
+    // a formula beside it. both ways of asking agree
+    const adapted = ensure_em(new Span({ children: [ 'fox' ] }))
+    const stated = new Span({ children: [ 'fox' ], metrics: {} })
+    for (const [ span, name ] of [ [ adapted, 'adapted' ], [ stated, 'stated' ] ] as const) {
+        close(span.em!.height, 1, `${name} line span: 1em tall`)
+        close(span.em!.width, span.spec.aspect!, `${name} line span: as wide as its advance`)
+        close(span.em!.anchor, TEXT_ANCHOR, `${name} line span: anchored on the text axis`)
+    }
+    assert.ok(new Span({ children: [ 'fox' ] }).em == null, 'a line span carries no box of its own')
+
+    // framed by its ink, a span's box is its ink about the axis, and its frame
+    // is that box: a quarter em above the baseline by default, or through the
+    // middle of the ink when centered
+    const inked = new Span({ children: [ 'fox' ], frame: 'ink' })
+    const [ , top, , bottom ] = inked.spec.coord!
+    close(inked.em!.anchor, -top, 'ink span: the axis at y = 0 of its frame')
+    close(inked.em!.height, bottom - top, 'ink span: as tall as its ink')
+    close(inked.glyphs.size, 1, 'ink span: drawn at a 1em font')
+    close(inked.glyphs.baseline, MATH_AXIS, 'ink span: the baseline a quarter em below the axis')
+    const centered = new Span({ children: [ 'fox' ], frame: 'ink', axis: 'center' })
+    const [ , ctop, , cbottom ] = centered.spec.coord!
+    close(ctop + cbottom, 0, 'centered ink span: the axis through the middle of the ink')
+    close(centered.em!.anchor, 0.5 * centered.em!.height, 'centered ink span: anchored on its middle')
+    close(centered.em!.height, inked.em!.height, 'centering does not change the ink')
 
     console.error('em checks passed')
 }
