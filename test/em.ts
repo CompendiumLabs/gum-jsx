@@ -213,10 +213,22 @@ function runEmTests(): void {
     close(slide.overflow, 1 / 14, 'slide overflow with one line in fourteen')
     assert.throws(() => gum.evaluate(`<Slide em={0.2} overflow="error"><Text>${words}</Text><Text>${words}</Text></Slide>`), /overflows/, 'slide overflow error')
 
+    // content wider than the em asks for overflows too: shrunk by default
+    // (the em comes out smaller, so the slide's text does), or refused
+    const figures = '<TextRow gap={1}><Rect aspect={2} height={6} /><Rect aspect={2} height={6} /><Rect aspect={2} height={6} /></TextRow>'
+    assert.throws(() => gum.evaluate(`<Slide em={0.08} overflow="error">${figures}</Slide>`), /in width/, 'slide width overflow error')
+    assert.doesNotThrow(() => gum.evaluate(`<Slide em={0.08}>${figures}</Slide>`), 'a wide slide shrinks by default')
+
     // a stack (one engine for figures, text and math): a column offers its
     // width, a bare shape spans it, and a column with nothing offered (placed
     // by rect in a group) is as wide as its widest child laid at its own size
     close(root('<TextStack width={10} gap={0}><Text>a</Text><Square /></TextStack>').em.height, 1 + 10, 'column: a shape spans the width')
+
+    // an even stack counts its em gaps against the shares, so the children
+    // and the gaps together are exactly the length it was given
+    const evens = root('<HStack even gap={2} width={30}><TextBox padding={0}>a</TextBox><TextBox padding={0}>b</TextBox><TextBox padding={0}>c</TextBox></HStack>')
+    close(evens.em.width, 30, 'an even row with a gap comes out the width it was given')
+    close(evens.elem.children[0].em.width, (30 - 2 * 2) / 3, 'an even row splits what the gaps leave')
     const natural = bare('<TextStack gap={0}><Text width={4}>a</Text><Square /></TextStack>')
     close(natural.em.width, 4, 'column without a width is as wide as its widest child')
     close(natural.em.height, 1 + 4, 'a shape spans that width too')
