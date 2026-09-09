@@ -94,6 +94,14 @@ function loadFileFrom(cwd: string): LoadFile {
 // it sits in, if any
 type Page = { path: string, prelude?: string }
 
+// a page's bookmark in the pdf outline: its Slide's title when it has one
+// (as a string), else the filename
+function pageLabel(element: Element, file: string): string {
+  const root = (element as Group).children?.[0]
+  const title = root?.args?.title
+  return typeof title == 'string' ? title : basename(file, '.jsx')
+}
+
 function pdfInputPages(inputs: string[]): { pages: Page[], title?: string } {
   let title: string | undefined
   const pages = inputs.flatMap((input): Page[] => {
@@ -129,7 +137,7 @@ async function pdfOutput(args: GumArgs): Promise<Buffer> {
             prelude,
             loadFile: loadFileFrom(dirname(file)),
           })
-          return { element: zoom == null ? element0 : zoomSvg(element0, zoom), baseDir: dirname(file) }
+          return { element: zoom == null ? element0 : zoomSvg(element0, zoom), baseDir: dirname(file), label: pageLabel(element0, file) }
         } catch (error) {
           throw new Error(`${file}: ${(error as Error).message}`, { cause: error })
         }

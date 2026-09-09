@@ -135,7 +135,8 @@ optional:
 ```
 
 A slide rendered on its own (`gum slides/slide_1.jsx`, with or without `--dev`) gets its
-deck's prelude too.
+deck's prelude too. In the PDF every page is bookmarked by its slide's title (else its
+filename), and a deck's title becomes the document's.
 
 The PDF exporter preserves vector paths and embeds the registered gum and KaTeX fonts. Use
 `--strict` to reject gum rendering fallbacks, as with the other output formats.
