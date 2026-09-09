@@ -11,7 +11,7 @@ const code = `const Tile = ({ color }) =>
   </Box>`
 
 return <Page n={3} title="Compose. Reuse. Repeat." subtitle="A component is a figure. A layout is a component.">
-  <TextRow even gap={1.5} valign="center">
+  <TextRow even gap={0} spacing={0.04} valign="center">
     <Box aspect={1.4} rounded={12} padding={1} fill={ink}>
       <TextCol gap={0.8}>
         <T scale={0.9} font-family={mono} color="#9bb8c5">One reusable tile</T>
