@@ -7,12 +7,12 @@
 import { strict as assert } from 'node:assert'
 
 import { gum } from '@gum-jsx/core'
-import { vtext, maxis } from '@gum-jsx/core/lib/const'
+import { TEXT_AXIS, MATH_AXIS } from '@gum-jsx/core/lib/const'
 import type { EmSpec } from '@gum-jsx/core/lib/em'
 
 import '../src/eval' // the math plugin on the default Env
 
-const TEXT_ANCHOR = 1 + vtext - maxis
+const TEXT_ANCHOR = 1 + TEXT_AXIS - MATH_AXIS
 
 function close(actual: number, expected: number, what: string): void {
     assert.ok(Math.abs(actual - expected) < 1e-9, `${what}: expected ${expected}, got ${actual}`)
