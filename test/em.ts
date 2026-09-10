@@ -219,6 +219,20 @@ function runEmTests(): void {
     assert.throws(() => gum.evaluate(`<Slide em={0.08} overflow="error">${figures}</Slide>`), /in width/, 'slide width overflow error')
     assert.doesNotThrow(() => gum.evaluate(`<Slide em={0.08}>${figures}</Slide>`), 'a wide slide shrinks by default')
 
+    // a bare group takes the ambient em: a text placed by pos alone in a
+    // group laid out h em tall is its em height over h tall in the group's
+    // coordinates (the canvas is 10 em tall, so 0.1 here), in any coord, and
+    // an `em` of the group's own still wins; a text with no pos fills the
+    // group as ever
+    const ambient = (code: string): any => (gum.evaluate(code).children[0] as any).children[0]
+    const ysize = (elem: any): number => elem.spec.rect[3] - elem.spec.rect[1]
+    const label = ambient('<Group aspect={2}><Text pos={[0.5, 0.5]}>a</Text></Group>')
+    close(ysize(label), 0.1, 'a text in a bare group is one em of the ambient tall')
+    close(ysize(ambient('<Group aspect={2} coord={[0, 0, 10, 5]}><Text pos={[5, 2.5]}>a</Text></Group>')), 0.5, 'the ambient em in the group\'s coordinates')
+    close(ysize(ambient('<Group aspect={2} em={0.2}><Text pos={[0.5, 0.5]}>a</Text></Group>')), 0.2, 'an em of the group\'s own wins')
+    close(ysize(ambient('<Group aspect={2}><Text scale={2} pos={[0.5, 0.5]}>a</Text></Group>')), 0.2, 'a scaled text in a bare group')
+    assert.ok(ambient('<Group aspect={2}><Text>a</Text></Group>').spec.rect == null, 'a text with no pos still fills the group')
+
     // a stack (one engine for figures, text and math): a column offers its
     // width, a bare shape spans it, and a column with nothing offered (placed
     // by rect in a group) is as wide as its widest child laid at its own size
