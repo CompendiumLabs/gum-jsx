@@ -43,6 +43,7 @@ Click a card for the full view; the open example is kept in the URL hash, so a
 card can be linked to. A deck card (named by its directory, with the title from its `index.json`)
 opens the deck at its first slide: `←`/`→`
 (or the buttons) move between slides, `code` shows the slide's source beside
-it, and the hash holds the open slide. The `decks` entry of the group select
-shows just the decks; the status filter treats a deck as failing when any of
+it and `prelude` the deck's prelude (the declarations every slide is evaluated
+with) — either or both — and the hash holds the open slide. The `decks` entry
+of the group select shows just the decks; the status filter treats a deck as failing when any of
 its slides does.

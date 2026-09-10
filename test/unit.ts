@@ -10,7 +10,7 @@
 // listing every example and deck with its source and status, which
 // test/report browses.
 
-import { join, basename, dirname } from 'path'
+import { join, basename, dirname, relative } from 'path'
 import { fileURLToPath } from 'url'
 import { readdirSync, readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'fs'
 
@@ -88,6 +88,8 @@ type DeckEntry = {
     name: string
     title: string | null
     path: string
+    prelude: string | null      // the prelude's source, if the deck has one
+    preludePath: string | null  // and its path, relative to the repo root
     slides: Entry[]
 }
 
@@ -246,10 +248,15 @@ function runUnitTests(args: TestArgs = {}): TestResult {
         }
 
         const examples = groups.map(groupEntry).flatMap(({ name }) => writeEntries(results.filter(r => r.group == name), name, name))
-        const deckEntries: DeckEntry[] = decks.map(({ name, dir }) => ({
-            name, title: loadDeck(dir).title ?? null, path: dir,
-            slides: writeEntries(slides.filter(r => r.group == name), join('decks', name), `decks/${name}`),
-        }))
+        const deckEntries: DeckEntry[] = decks.map(({ name, dir }) => {
+            const { title, prelude, preludeFile } = loadDeck(dir)
+            return {
+                name, title: title ?? null, path: dir,
+                prelude: prelude ?? null,
+                preludePath: preludeFile != null ? relative(process.cwd(), preludeFile) : null,
+                slides: writeEntries(slides.filter(r => r.group == name), join('decks', name), `decks/${name}`),
+            }
+        })
 
         const manifest: Manifest = {
             generated: new Date().toISOString(), themes, groups: groups.map(g => groupEntry(g).name), passed, failed, examples, decks: deckEntries,

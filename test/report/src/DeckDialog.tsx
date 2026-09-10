@@ -5,14 +5,17 @@ import { Code } from "./Code";
 
 /**
  * A deck, one slide at a time: the render fills the panel, `←`/`→` (and the
- * buttons) move between slides, and the code can be shown beside the slide.
- * The open slide is the active id, so a slide can be linked to.
+ * buttons) move between slides, and the slide's code and the deck's prelude
+ * (the declarations every slide is evaluated with) can be shown beside it,
+ * either or both. The open slide is the active id, so a slide can be linked to.
  */
 export function DeckDialog({ deck, index, theme, onClose, onStep }: {
   deck: Deck; index: number; theme: Theme; onClose: () => void; onStep: (delta: number) => void;
 }) {
   const slide = deck.slides[index]!;
   const [code, setCode] = useState(false);
+  const [prelude, setPrelude] = useState(false);
+  const side = code || (prelude && deck.prelude != null);
 
   // focus lands on the panel when it opens, and the page behind it stops
   // scrolling, so wheel and keyboard scrolling stay inside
@@ -52,21 +55,34 @@ export function DeckDialog({ deck, index, theme, onClose, onStep }: {
           <span className="font-mono text-sm text-gray-500 dark:text-neutral-400">{slide.path}</span>
           <span className="mr-auto"><Chips example={slide} /></span>
           <button onClick={() => setCode(c => !c)} className={`${button} ${code ? active : ""}`}>code</button>
+          {deck.prelude != null && (
+            <button onClick={() => setPrelude(p => !p)} className={`${button} ${prelude ? active : ""}`}>prelude</button>
+          )}
           <button onClick={() => onStep(-1)} aria-label="previous slide" className={`${button} text-xl`}>‹</button>
           <span className="text-sm text-gray-500 tabular-nums dark:text-neutral-400">{index + 1} / {deck.slides.length}</span>
           <button onClick={() => onStep(1)} aria-label="next slide" className={`${button} text-xl`}>›</button>
           <button onClick={onClose} aria-label="close" className={`${button} w-7 text-xl`}>×</button>
         </div>
 
-        <div key={slide.id} className={`grid min-h-0 flex-1 gap-4 p-4 ${code ? "grid-cols-2" : "grid-cols-1"}`}>
+        <div key={slide.id} className={`grid min-h-0 flex-1 gap-4 p-4 ${side ? "grid-cols-2" : "grid-cols-1"}`}>
           <div className="flex min-h-0 flex-col">
             <h3 className={label}>{slide.name} ({theme})</h3>
             <Figure example={slide} theme={theme} className={`${box} flex-1`} />
           </div>
-          {code && (
-            <div className="flex min-h-0 flex-col">
-              <h3 className={label}>code</h3>
-              <Code code={slide.code.trim()} className={box} />
+          {side && (
+            <div className="flex min-h-0 flex-col gap-4">
+              {code && (
+                <div className="flex min-h-0 flex-1 flex-col">
+                  <h3 className={label}>code</h3>
+                  <Code code={slide.code.trim()} className={box} />
+                </div>
+              )}
+              {prelude && deck.prelude != null && (
+                <div className="flex min-h-0 flex-1 flex-col">
+                  <h3 className={label}>prelude{deck.preludePath && ` (${deck.preludePath.split("/").pop()})`}</h3>
+                  <Code code={deck.prelude.trim()} className={box} />
+                </div>
+              )}
             </div>
           )}
         </div>
