@@ -60,9 +60,9 @@ function runEmTests(): void {
     close(para.em.scale, 1, 'paragraph scale')
     consistent(para, 'paragraph')
 
-    // line spacing stretches the block: n lines are n / (1 - spacing) em tall
-    const spaced = root(`<Text width={10} spacing={0.2}>${words}</Text>`)
-    close(spaced.em.height, para.em.height / 0.8, 'spaced paragraph height')
+    // line spacing sets the pitch: n lines are n + (n - 1) gap em tall
+    const spaced = root(`<Text width={10} gap={0.2}>${words}</Text>`)
+    close(spaced.em.height, para.em.height + 0.2 * (para.em.height - 1), 'spaced paragraph height')
 
     // a single unwrapped line: its own advance wide and one em tall
     const line = root('<Text>hello</Text>')
