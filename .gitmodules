@@ -1,3 +1,6 @@
 [submodule "gum-next-core"]
 	path = gum-next-core
 	url = git@github.com:CompendiumLabs/gum-next-core
+[submodule "gum-edit"]
+	path = gum-edit
+	url = git@github.com:CompendiumLabs/gum-edit

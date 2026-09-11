@@ -1,0 +1,14 @@
+{
+  "name": "gum-next",
+  "private": true,
+  "workspaces": [
+    "gum-next-core",
+    "gum-edit"
+  ],
+  "scripts": {
+    "dev": "bun --filter gum-edit dev",
+    "build": "bun --filter gum-edit build",
+    "typecheck": "bun --filter gum-edit typecheck",
+    "test": "bun --filter gum-jsx-core test"
+  }
+}
