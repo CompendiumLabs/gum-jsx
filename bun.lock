@@ -4,6 +4,9 @@
   "workspaces": {
     "": {
       "name": "gum-next",
+      "devDependencies": {
+        "gum-next-cli": "workspace:*",
+      },
     },
     "gum-edit": {
       "name": "gum-edit",
@@ -12,7 +15,7 @@
         "@codemirror/lang-javascript": "^6.2.5",
         "@codemirror/view": "^6.43.11",
         "@uiw/react-codemirror": "^4.25.11",
-        "gum-jsx-core": "workspace:*",
+        "gum-next-core": "workspace:*",
         "react": "^19.3.0",
         "react-dom": "^19.3.0",
       },
@@ -26,8 +29,22 @@
         "vite": "^8.3.0",
       },
     },
+    "gum-next-cli": {
+      "name": "gum-next-cli",
+      "version": "0.1.0",
+      "bin": {
+        "gum": "src/cli.ts",
+      },
+      "dependencies": {
+        "gum-next-core": "workspace:*",
+      },
+      "devDependencies": {
+        "@types/bun": "latest",
+        "typescript": "^7",
+      },
+    },
     "gum-next-core": {
-      "name": "gum-jsx-core",
+      "name": "gum-next-core",
       "dependencies": {
         "acorn": "^8.15.0",
         "acorn-jsx": "^5.3.2",
@@ -244,7 +261,9 @@
 
     "gum-edit": ["gum-edit@workspace:gum-edit"],
 
-    "gum-jsx-core": ["gum-jsx-core@workspace:gum-next-core"],
+    "gum-next-cli": ["gum-next-cli@workspace:gum-next-cli"],
+
+    "gum-next-core": ["gum-next-core@workspace:gum-next-core"],
 
     "jiti": ["jiti@2.7.0", "", { "bin": { "jiti": "lib/jiti-cli.mjs" } }, "sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ=="],
 

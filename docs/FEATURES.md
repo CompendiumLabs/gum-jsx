@@ -460,6 +460,12 @@ direct JavaScript use.
 
 ## Command-line and authoring workflows
 
+The basic rendering command lives in the separate
+[`gum-next-cli` workspace package](../gum-next-cli/README.md), backed by the core's
+public API. Run `bun run gum` from the workspace root.
+
+- [x] Separate CLI package with a `gum` executable, its own tests, and workspace
+  scripts; command-line I/O and rasterization are outside `gum-next-core` runtime.
 - [x] Render a JSX file or stdin to SVG with explicit or content-sized viewport
   dimensions.
 - [x] Emit a textual layout tree and JSON fragment data.

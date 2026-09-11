@@ -4,3 +4,6 @@
 [submodule "gum-edit"]
 	path = gum-edit
 	url = git@github.com:CompendiumLabs/gum-edit
+[submodule "gum-next-cli"]
+	path = gum-next-cli
+	url = git@github.com:CompendiumLabs/gum-next-cli

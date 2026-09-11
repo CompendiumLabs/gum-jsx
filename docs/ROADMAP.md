@@ -7,14 +7,18 @@ plotting, networks, slides, and migration of the add-on packages come afterward.
 
 Stages 1–5 are implemented in this directory, with
 unit and layout checks, JSX evaluation, measured and wrapping text, ordinary shapes,
-Box/Frame/Fit composition, HStack/VStack/Spacer, a local rendering CLI, and an SVG/PNG/tree
-[gallery](./examples/README.md). Stage 6(a), positioned Group, is
+Box/Frame/Fit composition, HStack/VStack/Spacer, and an SVG/PNG/tree
+[gallery](../gum-next-core/examples/README.md). Stage 6(a), positioned Group, is
 also implemented. Stage 6(b), wrapping stacks, is next.
+The basic rendering CLI now lives in the separate
+[`gum-next-cli` workspace package](../gum-next-cli/README.md), with a `gum`
+executable and independent CLI tests. The core retains evaluation, layout,
+SVG serialization, fragment inspection, and its development gallery/probes.
 Content-sized SVG dimensions moved forward into stage 4: a Box can hug a Square,
 and Svg can hug the whole result, with one layout query per element. A fixed-width
 SVG can also derive its height from a framed, wrapping paragraph.
 The agreed decisions and original legacy assessment are preserved in [DESIGN.md](./DESIGN.md).
-This file tracks scope and status; [README.md](./README.md) covers usage, implementation
+This file tracks scope and status; [README.md](../gum-next-core/README.md) covers usage, implementation
 ownership, and contributor commands. The checkpoint is complete through 6(a); remaining
 stages below are future work, not part of the current API.
 
@@ -284,7 +288,8 @@ See if they produce reasonable output (tree, SVG, and PNG). Also consider if a
 reasonable task is concisely expressible. If it's not, that may be a sign that
 changes are needed.
 
-Use the local rendering CLI, `bun scripts/gum.ts`, to rapidly try example code.
+Use the workspace rendering CLI, `bun run gum`, from the workspace root to rapidly
+try example code, for example `bun run gum gum-next-core/examples/group.jsx -f tree`.
 Browser work remains deferred. Build up the example gallery as you go so we can
 both keep track of coverage.
 
