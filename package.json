@@ -4,7 +4,7 @@
   "workspaces": [
     "gum-next-core",
     "gum-next-cli",
-    "gum-edit"
+    "gum-next-edit"
   ],
   "devDependencies": {
     "gum-next-cli": "workspace:*"
