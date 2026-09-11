@@ -1,9 +1,9 @@
 [submodule "gum-next-core"]
 	path = gum-next-core
 	url = git@github.com:CompendiumLabs/gum-next-core
-[submodule "gum-edit"]
-	path = gum-edit
-	url = git@github.com:CompendiumLabs/gum-edit
 [submodule "gum-next-cli"]
 	path = gum-next-cli
 	url = git@github.com:CompendiumLabs/gum-next-cli
+[submodule "gum-next-edit"]
+	path = gum-next-edit
+	url = git@github.com:CompendiumLabs/gum-next-edit
