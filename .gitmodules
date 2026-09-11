@@ -1,0 +1,3 @@
+[submodule "gum-jsx-core"]
+	path = gum-jsx-core
+	url = ./gum-jsx-core
