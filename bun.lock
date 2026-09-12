@@ -40,6 +40,14 @@
         "typescript": "^7",
       },
     },
+    "gum-next-docs": {
+      "name": "gum-next-docs",
+      "devDependencies": {
+        "@types/bun": "latest",
+        "gum-next-core": "workspace:*",
+        "typescript": "^7",
+      },
+    },
     "gum-next-edit": {
       "name": "gum-next-edit",
       "version": "0.1.0",
@@ -56,6 +64,7 @@
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",
         "@vitejs/plugin-react": "^6.1.1",
+        "gum-next-docs": "workspace:*",
         "tailwindcss": "^4.3.3",
         "typescript": "^7.0.2",
         "vite": "^8.3.0",
@@ -300,6 +309,8 @@
     "gum-next-cli": ["gum-next-cli@workspace:gum-next-cli"],
 
     "gum-next-core": ["gum-next-core@workspace:gum-next-core"],
+
+    "gum-next-docs": ["gum-next-docs@workspace:gum-next-docs"],
 
     "gum-next-edit": ["gum-next-edit@workspace:gum-next-edit"],
 
