@@ -10,3 +10,6 @@
 [submodule "gum-next-png"]
 	path = gum-next-png
 	url = git@github.com:CompendiumLabs/gum-next-png
+[submodule "gum-next-docs"]
+	path = gum-next-docs
+	url = git@github.com:CompendiumLabs/gum-next-docs
