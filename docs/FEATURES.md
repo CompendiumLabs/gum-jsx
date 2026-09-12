@@ -112,7 +112,7 @@ lengths, and explicit `Fit` remain the foundation.
   visible ink and overflow are retained.
 - [x] **`Attach`** — attach a child outside a selected side of another box with
   offset, extent, location, and justification. **Basic:** Attach supplies side,
-  offset, at, and align without reserving outer space.
+  offset, at, and attachment_anchor without reserving outer space.
 - [x] **`Absolute`** — give a child an absolute drawing-unit size while it
   participates in proportional layout. **API choice:** ordinary px() width and
   height cover this capability; no separate Absolute element is needed.
@@ -164,6 +164,8 @@ lengths, and explicit `Fit` remain the foundation.
 - [x] **`Arrow`** — straight, spline-curved, or rounded multi-point shaft with
   independently styled heads at either end.
   **Basic:** start/end heads are independently enabled and share head_style.
+  Shafts retreat at headed ends using pixel stroke/cap clearance while tips
+  retain the original endpoints; short routes cannot reverse from shortening.
 - [x] Low-level move, line, quadratic, cubic, and close commands through
   `move_to`, `line_to`, `quad_to`, `curve_to`, and `close_path`.
 - [-] Original public command constructors **`Command`**, **`MoveCmd`**,
@@ -399,7 +401,7 @@ These names were globals inside evaluated gum JSX and were also exported for
 direct JavaScript use.
 
 - [x] Mathematical constants **`e`**, **`pi`**, **`phi`**, **`r2d`**, and
-  **`d2r`**.
+  **`d2r`**. Next also provides **`tau`** (2 pi).
 - [x] Paint constants **`none`**, **`white`**, **`black`**, **`blue`**, **`red`**,
   **`green`**, **`yellow`**, **`purple`**, **`gray`**, **`lightgray`**,
   **`darkgray`**, and **`slate`**.
@@ -409,25 +411,31 @@ direct JavaScript use.
   **`mathrm`**, **`mathit`**, **`mathbf`**, **`mathbb`**, **`mathcal`**,
   **`mathfrak`**, **`mathscr`**, **`mathsf`**, **`mathtt`**, and
   **`boldsymbol`**.
-- [ ] Array creation and manipulation: **`range`**, **`linspace`**,
+- [x] Array creation and manipulation: **`range`**, **`linspace`**,
   **`enumerate`**, **`repeat`**, **`meshgrid`**, **`lingrid`**, **`zip`**,
   **`reshape`**, **`split`**, **`concat`**, and **`slice`**.
-- [ ] Reductions and elementwise numeric helpers: **`sum`**, **`prod`**,
+- [x] Reductions and elementwise numeric helpers: **`sum`**, **`prod`**,
   **`mean`**, **`cumsum`**, **`min`**, **`max`**, **`minimum`**, **`maximum`**,
   **`norm`**, **`clamp`**, **`rescale`**, and **`normalize`**.
-- [ ] Scalar math aliases: **`exp`**, **`log`**, **`log10`**, **`sin`**,
+- [x] Scalar math aliases: **`exp`**, **`log`**, **`log10`**, **`sin`**,
   **`cos`**, **`tan`**, **`abs`**, **`pow`**, **`sqrt`**, **`sign`**,
   **`floor`**, **`ceil`**, **`round`**, **`atan`**, and **`atan2`**.
-- [ ] Curve and mapping helpers: **`sigmoid`**, **`logit`**, **`smoothstep`**,
+- [x] Curve and mapping helpers: **`sigmoid`**, **`logit`**, **`smoothstep`**,
   **`polar`**, **`polard`**, and **`rounder`**.
-- [ ] Color interpolation: **`interp`** and **`palette`**.
-- [ ] Two-dimensional vector arithmetic: **`add2`**, **`sub2`**, **`mul2`**,
+- [x] Color interpolation: **`interp`** and **`palette`**.
+- [x] Two-dimensional vector arithmetic: **`add2`**, **`sub2`**, **`mul2`**,
   and **`div2`**; N-dimensional equivalents **`addn`**, **`subn`**, **`muln`**,
   and **`divn`**.
-- [ ] Complex arithmetic: **`addc`**, **`subc`**, **`mulc`**, **`divc`**,
+- [x] Complex arithmetic: **`addc`**, **`subc`**, **`mulc`**, **`divc`**,
   **`conjc`**, **`normc`**, and **`argc`**.
-- [ ] Seeded random helpers **`setSeed`**, **`random`**, **`uniform`**,
+- [x] Seeded random helpers **`setSeed`**, **`random`**, **`uniform`**,
   **`normal`**, and **`integer`**.
+
+The [math reference](../gum-next-docs/docs/text/MathHelpers.md) covers the helper
+set and links to runnable examples. Generated arrays are bounded and frozen,
+2D helpers return native points, and random streams belong to individual
+evaluations. See [migration notes](../gum-next-docs/docs/text/Migration.md#numeric-helpers)
+for the precise differences in range, singleton linspace, and integer endpoints.
 
 ## Inspection, rendering, and export
 

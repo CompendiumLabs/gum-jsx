@@ -4,6 +4,8 @@ The new core uses immutable element descriptions, explicit layout requests, and
 immutable layout results. The original scoped roadmap below covers the layout
 foundation. A subsequent [basic plotting slice](PLOTTING.md) now implements
 geometry, coordinates, text composition/slides, plots, and symbolic sampling.
+Arrow and field shafts now account for stroke caps at their head tips; the
+[arrow gallery](../gum-next-core/examples/arrow_caps.jsx) covers the cap and route variants.
 Wrapping rows and grids remain deferred, along with math and networks.
 
 Stages 1–5 are implemented in this directory, with

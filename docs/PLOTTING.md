@@ -7,8 +7,8 @@ reference while keeping the fresh immutable source/layout/fragment model.
 ```jsx
 <Svg width={px(640)} height={px(400)}>
   <Plot title="A sampled function" xlabel="x" ylabel="sin(x)"
-    xlim={[0, 2 * pi]} ylim={[-1.2, 1.2]} background="white">
-    <SymLine fy={Math.sin} xlim={[0, 2 * pi]}
+    xlim={[0, tau]} ylim={[-1.2, 1.2]} background="white">
+    <SymLine fy={sin} xlim={[0, tau]}
       stroke="#2563eb" stroke_width={px(2)} />
   </Plot>
 </Svg>
@@ -37,6 +37,15 @@ The [plotting reference](../gum-next-docs/docs/text/Plot.md),
 Every public element has a runnable page. The editor's Plotting category exposes
 plots and their parts.
 
+[Math and array helpers](../gum-next-docs/docs/text/MathHelpers.md), including
+range, linspace, sin/cos, polar, and seeded random sampling, are available directly
+in JSX and as named imports. Examples use the shared helpers for their data.
+
+[Point inputs](../gum-next-docs/docs/text/PointValues.md) accept `[x,y]` or `{x,y}`,
+including mixed lists and length-valued pairs. For example,
+`<CoordLine points={zip(xs, xs.map(sin))} />` uses array helpers directly.
+Marker/field callbacks and generated points retain named coordinates.
+
 ## Deliberate choices
 
 - Numeric points in new graph marks are data coordinates inside Graph/Plot.
@@ -44,6 +53,9 @@ plots and their parts.
   for graph paths. New marks support `space="local"` or `space="data"`.
 - Widths, fonts, strokes, marker sizes, and arrowheads use layout lengths.
   Resizing remaps data and reflows text without scaling completed drawings.
+- Arrow shafts retreat at headed ends after mapping. Clearance accounts for
+  stroke width, cap style, and the triangular head's width; head tips and inferred
+  data bounds retain the original endpoints. Field arrows share this behavior.
 - Graphs infer limits from an element-type `data_bounds` capability, without
   measuring or cloning children. Nested graphs form independent boundaries.
   Empty axes use [0,1], singleton data expands, and explicit limits stay exact.
@@ -81,8 +93,8 @@ Pixel sizing already covers the old Absolute use case.
 
 ## Verification and examples
 
-The core suite has 106 named checks, including 25 new plotting, sampling,
-geometry, and composition checks. These cover coordinate cache separation,
+The core suite includes plotting, sampling, geometry, composition, numeric helper,
+and point representation checks. These cover coordinate cache separation,
 reversed axes, singleton/empty data, immutable callback expansion, resize reuse,
 measured margins, clipping, negative bars, path gaps, fixed-size markers and
 heads, transforms, and text baselines. A counting font provider verifies that
