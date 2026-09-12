@@ -2,8 +2,8 @@
 
 This is the parity inventory for the fresh gum implementation. It records the
 public elements and supporting capabilities of the original `gum-org` workspace
-so that features can be restored, redesigned, or explicitly retired without
-being forgotten.
+(see `../gum-org`) so that features can be restored, redesigned, or explicitly
+retired without being forgotten.
 
 The original sources of truth are `gum-jsx-core/src/env.ts` (`CORE_ELEMS`),
 `gum-jsx-core/src/gum.ts` (the direct JavaScript API),
@@ -15,6 +15,7 @@ Checkboxes describe capability coverage in the fresh core at the time this file
 was added:
 
 - `[x]` means the essential capability is implemented, although the API may differ.
+- `[-]` means the capability is will not be implemented.
 - `[ ]` means work or an explicit product decision remains.
 - A note beginning with **Partial** names useful infrastructure that exists but
   does not yet cover the original feature.
@@ -77,7 +78,7 @@ lengths, and explicit `Fit` remain the foundation.
   and reusable immutable fragments remain distinct.
 - [ ] Arbitrary local coordinate systems (`coord`, `xlim`, `ylim`) with flipped
   axes and mappings between data coordinates and drawing coordinates.
-- [ ] Original placement conveniences: `rect`, `pos`, `size`, `rad`, `xrect`,
+- [-] Original placement conveniences: `rect`, `pos`, `size`, `rad`, `xrect`,
   `yrect`, `align`, `expand`, and automatic containment of positioned children.
   **Partial:** the fresh API provides the core sizing and positioned-group cases.
 - [ ] Element-level `rotate`, `spin`, `orient`, `upright`, and aspect-invariant
@@ -85,8 +86,6 @@ lengths, and explicit `Fit` remain the foundation.
 - [ ] Content-sized overlay composition in which one child sizes the container
   and decorations layer over it.
 - [ ] Debug placement stencils showing allocated and realized rectangles.
-- [ ] Decide the replacement for the original `unit_size` stroke scale. The new
-  core deliberately uses CSS/SVG pixels for strokes and other absolute lengths.
 
 ## Foundation and layout elements
 
@@ -97,7 +96,7 @@ lengths, and explicit `Fit` remain the foundation.
   clipping.
 - [x] **`Box`**, **`Frame`** — padded content, background, border, rounding,
   alignment, clipping, and a bordered convenience variant.
-- [ ] **`Stack`** — public direction-selectable stack. **Partial:** the shared
+- [x] **`Stack`** — public direction-selectable stack. **Partial:** the shared
   implementation exists behind `HStack` and `VStack`.
 - [x] **`HStack`**, **`VStack`** — horizontal and vertical flow for figures,
   text, and nested containers.
@@ -158,7 +157,7 @@ lengths, and explicit `Fit` remain the foundation.
   independently styled heads at either end.
 - [x] Low-level move, line, quadratic, cubic, and close commands through
   `move_to`, `line_to`, `quad_to`, `curve_to`, and `close_path`.
-- [ ] Original public command constructors **`Command`**, **`MoveCmd`**,
+- [-] Original public command constructors **`Command`**, **`MoveCmd`**,
   **`LineCmd`**, **`ArcCmd`**, **`CornerCmd`**, **`RoundedCornerCmd`**, and
   **`CubicSplineCmd`**. **Partial:** most have functional equivalents, but arc
   and corner commands are absent.
@@ -374,13 +373,14 @@ not a requirement to retain KaTeX as the parser.
 These names were globals inside evaluated gum JSX and were also exported for
 direct JavaScript use.
 
-- [ ] Mathematical constants **`e`**, **`pi`**, **`phi`**, **`r2d`**, and
+- [x] Mathematical constants **`e`**, **`pi`**, **`phi`**, **`r2d`**, and
   **`d2r`**.
-- [ ] Paint constants **`none`**, **`white`**, **`black`**, **`blue`**, **`red`**,
+- [x] Paint constants **`none`**, **`white`**, **`black`**, **`blue`**, **`red`**,
   **`green`**, **`yellow`**, **`purple`**, **`gray`**, **`lightgray`**,
   **`darkgray`**, and **`slate`**.
-- [ ] Font and weight constants **`sans`**, **`mono`**, **`moji`**, **`cmoji`**,
-  **`light`**, **`regular`**, and **`bold`**; math additionally supplied
+- [x] Supported font and weight constants **`sans`**, **`mono`**, **`light`**,
+  **`regular`**, and **`bold`**.
+- [ ] Emoji font constants **`moji`**, **`cmoji`**; math additionally supplied
   **`mathrm`**, **`mathit`**, **`mathbf`**, **`mathbb`**, **`mathcal`**,
   **`mathfrak`**, **`mathscr`**, **`mathsf`**, **`mathtt`**, and
   **`boldsymbol`**.
@@ -506,8 +506,8 @@ public API. Run `bun run gum` from the workspace root.
 The exact milestones belong in `ROADMAP.md`; this order only records major
 feature dependencies exposed by the original system.
 
-1. Finish general composition: wrapping rows, overlay, grid, remaining placement,
-   transforms, and coordinate mapping.
+1. Finish general composition: remaining placement, transforms, and coordinate
+   mapping (except for wrapping rows and grid).
 2. Complete geometry and reusable path primitives, then data-coordinate graphs.
 3. Add text-aware composition, labels, and slide structure on the shared
    baseline/axis protocol.
@@ -520,3 +520,7 @@ feature dependencies exposed by the original system.
    breadth against the original strict corpus.
 9. Rebuild host packages—web export, React, Node terminal/raster, PDF, Markdown,
    decks, and the batteries-included CLI—against the stabilized core.
+
+## Save For Later
+
+- wrapping rows, grid
