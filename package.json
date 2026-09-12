@@ -3,17 +3,21 @@
   "private": true,
   "workspaces": [
     "gum-next-core",
+    "gum-next-png",
     "gum-next-cli",
     "gum-next-edit"
   ],
   "devDependencies": {
     "gum-next-cli": "workspace:*"
   },
+  "trustedDependencies": [
+    "canvas"
+  ],
   "scripts": {
-    "dev": "bun --filter gum-edit dev",
-    "build": "bun --filter gum-edit build",
+    "dev": "bun --filter gum-next-edit dev",
+    "build": "bun --filter gum-next-edit build",
     "gum": "bun gum-next-cli/src/cli.ts",
     "typecheck": "bun run --workspaces typecheck",
-    "test": "bun --filter 'gum-next-*' test"
+    "test": "bun --filter gum-next-core test"
   }
 }

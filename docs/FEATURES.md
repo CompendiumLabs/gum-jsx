@@ -431,9 +431,15 @@ direct JavaScript use.
 
 ### Node/Bun package
 
-- [ ] Rasterize SVG to PNG buffers or raw pixels with registered host fonts.
-- [ ] Kitty graphics protocol output for PNG or pixels, including chunking,
-  placement, cell sizing, and Unicode placeholders.
+- [x] Rasterize SVG to PNG buffers or raw RGBA pixels through
+  [`gum-next-png`](../gum-next-png/README.md), with raster size, sampling ratio,
+  and background controls. Fresh-core text is outlined in SVG and needs no
+  host-font registration.
+- [x] Kitty graphics protocol encoding for PNG or RGBA pixels in
+  `gum-next-cli`, including chunking, image/placement IDs, terminal cell
+  dimensions, cursor movement, and virtual-placement controls.
+- [ ] Unicode placeholder text grids for kitty images under pagers and
+  multiplexers.
 - [ ] ANSI text styling, PNG dimension reading, terminal cell-size queries, and
   stdin collection.
 
@@ -464,12 +470,15 @@ The basic rendering command lives in the separate
 [`gum-next-cli` workspace package](../gum-next-cli/README.md), backed by the core's
 public API. Run `bun run gum` from the workspace root.
 
-- [x] Separate CLI package with a `gum` executable, its own tests, and workspace
+- [x] Separate CLI package with a `gum` executable and workspace
   scripts; command-line I/O and rasterization are outside `gum-next-core` runtime.
 - [x] Render a JSX file or stdin to SVG with explicit or content-sized viewport
   dimensions.
 - [x] Emit a textual layout tree and JSON fragment data.
-- [x] Rasterize CLI output to PNG through an installed SVG rasterizer.
+- [x] Rasterize CLI output to PNG through `gum-next-png` and node-canvas, with
+  no external rasterizer command or font registration.
+- [x] Default stdout to kitty graphics, as in the original gum command;
+  explicit formats and output file extensions take precedence.
 - [ ] Batteries-included `gum` command with automatic output format selection,
   SVG/PNG/PDF/kitty/layout/JSON formats, theme, background, raster size, zoom,
   depth/select inspection, strictness, seed, and original unit-size options.

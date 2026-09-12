@@ -12,8 +12,13 @@ Box/Frame/Fit composition, HStack/VStack/Spacer, and an SVG/PNG/tree
 also implemented. Stage 6(b), wrapping stacks, is next.
 The basic rendering CLI now lives in the separate
 [`gum-next-cli` workspace package](../gum-next-cli/README.md), with a `gum`
-executable and independent CLI tests. The core retains evaluation, layout,
+executable. The core retains evaluation, layout,
 SVG serialization, fragment inspection, and its development gallery/probes.
+The CLI defaults to kitty graphics on stdout, including pipes. An output
+filename or explicit format selects kitty, SVG, PNG, tree, or JSON instead.
+The [`gum-next-png` submodule](../gum-next-png/README.md) provides node-canvas
+PNG and raw-pixel rendering for the CLI. It consumes SVG with outlined glyphs,
+so no legacy environment or font registry is needed at rasterization time.
 Content-sized SVG dimensions moved forward into stage 4: a Box can hug a Square,
 and Svg can hug the whole result, with one layout query per element. A fixed-width
 SVG can also derive its height from a framed, wrapping paragraph.

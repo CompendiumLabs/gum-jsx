@@ -7,3 +7,6 @@
 [submodule "gum-next-edit"]
 	path = gum-next-edit
 	url = git@github.com:CompendiumLabs/gum-next-edit
+[submodule "gum-next-png"]
+	path = gum-next-png
+	url = git@github.com:CompendiumLabs/gum-next-png
