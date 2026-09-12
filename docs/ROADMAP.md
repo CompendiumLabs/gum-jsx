@@ -1,15 +1,17 @@
 # Fresh core implementation roadmap
 
 The new core uses immutable element descriptions, explicit layout requests, and
-immutable layout results. The scoped roadmap covers SVG elements, ordinary shapes,
-text, boxes, stacks, positioned groups, wrapping rows, and a simple grid. Math,
-plotting, networks, slides, and migration of the add-on packages come afterward.
+immutable layout results. The original scoped roadmap below covers the layout
+foundation. A subsequent [basic plotting slice](PLOTTING.md) now implements
+geometry, coordinates, text composition/slides, plots, and symbolic sampling.
+Wrapping rows and grids remain deferred, along with math and networks.
 
 Stages 1–5 are implemented in this directory, with
 unit and layout checks, JSX evaluation, measured and wrapping text, ordinary shapes,
 Box/Frame/Fit composition, HStack/VStack/Spacer, and an SVG/PNG/tree
 [gallery](../gum-next-core/examples/README.md). Stage 6(a), positioned Group, is
-also implemented. Stage 6(b), wrapping stacks, is next.
+also implemented. The plotting slice followed 6(a); stage 6(b), wrapping stacks,
+remains deferred.
 The basic rendering CLI now lives in the separate
 [`gum-next-cli` workspace package](../gum-next-cli/README.md), with a `gum`
 executable. The core retains evaluation, layout,
@@ -24,8 +26,9 @@ and Svg can hug the whole result, with one layout query per element. A fixed-wid
 SVG can also derive its height from a framed, wrapping paragraph.
 The agreed decisions and original legacy assessment are preserved in [DESIGN.md](./DESIGN.md).
 This file tracks scope and status; [README.md](../gum-next-core/README.md) covers usage, implementation
-ownership, and contributor commands. The checkpoint is complete through 6(a); remaining
-stages below are future work, not part of the current API.
+ownership, and contributor commands. The foundation checkpoint is complete through
+6(a). Overlay and explicit transforms were added with plotting; wrapping/grid milestones below remain
+future work. See [PLOTTING](PLOTTING.md) for the current additions.
 
 **The agreed direction is a Flutter/SwiftUI synthesis.** Parents control allocation and
 position; children answer layout requests with geometry. A parent may make more than one
@@ -64,7 +67,7 @@ Preserve them when adding the remaining containers:
 | What does fractional padding reference? | The corresponding axis of the containing content box: horizontal sides use its width; vertical sides use its height. These are outside references, not the box's own unresolved dimensions. |
 | What does a fractional gap reference? | The stack's established content length along its main axis. A gap remains distinct from a flex weight. |
 | What if that reference is indefinite? | `measure_length` can retain a tagged dependency, but LayoutPass resolves source sizing before calling an element, even on a natural request. A nonzero fraction without its basis reports a property-path error. Zero needs no basis. General percentage-cycle solving is deferred. |
-| What do fractional shape coordinates reference? | The shape's own resolved content rectangle. Scalar geometric lengths such as a circle radius, stroke width, or circular corner radius use its shorter side; two-axis radii resolve per axis. Arbitrary data-coordinate systems are deferred with plotting. |
+| What do fractional shape coordinates reference? | The shape's own resolved content rectangle. Scalar geometric lengths such as a circle radius, stroke width, or circular corner radius use its shorter side; two-axis radii resolve per axis. Graph now supplies explicit data-coordinate mapping. |
 | What do `Box.width` and `height` include? | The border box: content, padding, and border. Borders occupy space and draw inside the border box. For space outside the decoration, wrap the Box in another Box with padding. |
 | Does making a box smaller scale its contents? | Ordinary layout reflows, constrains, or records overflow. An explicit `Fit` operation may scale a completed fragment, including its text and strokes. |
 | Who reads flex and position props? | The immediate stack reads `basis`/`grow`/`shrink`; the immediate Group reads `x`/`y`/`anchor`. They do not inherit or acquire behavior in LayoutPass. |
@@ -231,9 +234,9 @@ The gallery includes the mixed row nested in columns at two widths, completely n
 stack composition, flex limits and shrinkage, baselines, distributed packing, and stretch.
 
 **Milestone 6 is partially complete.** Positioned Group is implemented as 6(a).
-Wrapping stacks are next in 6(b); overlays, grid tracks, and the optional common-height
-figure policy remain separate work. Keep reflow into a region distinct from fitting
-an already laid-out drawing into it.
+Wrapping stacks remain deferred in 6(b). The plotting slice added Overlay;
+grid tracks and the optional common-height figure policy remain separate work.
+Keep reflow into a region distinct from fitting an already laid-out drawing into it.
 
 Stage 6(a) implements Group as a positioned canvas. Dimensions and finite offers
 establish its rectangle before any child query; a preferred aspect can derive one
@@ -244,7 +247,8 @@ canvas; em positions use the child's local font. Anchors position completed chil
 allocations, and nested groups establish independent local references. Paint order
 follows source order, and optional canvas clipping preserves overflow. The gallery
 covers resized drawings, nested anchor demonstrations, and shared clipped artwork.
-Content-sized overlays remain separate work; the next slice is 6(b), wrapping stacks.
+The later plotting slice added content-sized Overlay. Stage 6(b), wrapping stacks,
+remains deferred.
 
 For **6(b), wrapping stacks**, first specify how the container chooses a line width,
 forms lines, and treats an item wider than a line. Decide when that width becomes a
@@ -256,8 +260,8 @@ should wrap the same set of mixed cards at two widths without rebuilding descrip
 
 Remaining composition slices are:
 
-- A content-sized overlay with one explicit sizing child and non-sizing decorations.
-  Group already provides layering on a finite canvas; it is not that hugging overlay.
+- Implemented with plotting: Overlay has one explicit sizing child and non-sizing
+  decorations. Group continues to provide layering on a finite canvas.
 - A simple grid with explicit columns and fixed or weighted tracks. Full CSS track
   sizing is deferred.
 - Common-height figure allocation as a named optional row policy. Solve straightforward

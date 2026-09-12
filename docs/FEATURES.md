@@ -11,8 +11,7 @@ The original sources of truth are `gum-jsx-core/src/env.ts` (`CORE_ELEMS`),
 original workspace. Names below are the original public names, even where the
 fresh core will choose a different API.
 
-Checkboxes describe capability coverage in the fresh core at the time this file
-was added:
+Checkboxes describe current capability coverage in the fresh core:
 
 - `[x]` means the essential capability is implemented, although the API may differ.
 - `[-]` means the capability is will not be implemented.
@@ -76,14 +75,16 @@ lengths, and explicit `Fit` remain the foundation.
   clipping, nested reference boxes, and explicit fitting.
 - [x] Paint bounds, layout bounds, overflow, clips, affine placement transforms,
   and reusable immutable fragments remain distinct.
-- [ ] Arbitrary local coordinate systems (`coord`, `xlim`, `ylim`) with flipped
+- [x] Arbitrary local coordinate systems (`coord`, `xlim`, `ylim`) with flipped
   axes and mappings between data coordinates and drawing coordinates.
 - [-] Original placement conveniences: `rect`, `pos`, `size`, `rad`, `xrect`,
   `yrect`, `align`, `expand`, and automatic containment of positioned children.
   **Partial:** the fresh API provides the core sizing and positioned-group cases.
-- [ ] Element-level `rotate`, `spin`, `orient`, `upright`, and aspect-invariant
-  behavior. **Partial:** fragments and placements already carry affine transforms.
-- [ ] Content-sized overlay composition in which one child sizes the container
+- [x] Element-level `rotate`, `spin`, `orient`, `upright`, and aspect-invariant
+  behavior. **Basic:** Rotate and TransformBox are explicit wrappers;
+  ordinary data mapping leaves fonts, marker sizes, and strokes in layout units.
+  Original per-element shorthand and automatic orientation policies are deferred.
+- [x] Content-sized overlay composition in which one child sizes the container
   and decorations layer over it.
 - [ ] Debug placement stencils showing allocated and realized rectangles.
 
@@ -104,14 +105,17 @@ lengths, and explicit `Fit` remain the foundation.
   width, with separate horizontal and vertical gaps.
 - [ ] **`Grid`** — row/column grid with inferred or explicit track proportions,
   spacing, missing-cell fillers, and an inferred overall aspect.
-- [ ] **`Points`** — clone a configurable point shape at a list of coordinates,
+- [x] **`Points`** — clone a configurable point shape at a list of coordinates,
   with scalar, pair, or functional point sizes.
-- [ ] **`Anchor`** — place a child around a zero-width or zero-height anchor line.
-  **Partial:** group children can be placed by anchors.
-- [ ] **`Attach`** — attach a child outside a selected side of another box with
-  offset, extent, location, and justification.
-- [ ] **`Absolute`** — give a child an absolute drawing-unit size while it
-  participates in proportional layout.
+- [x] **`Anchor`** — place a child around a zero-width or zero-height anchor line.
+  **Basic:** the child's measured allocation is aligned around a point or line;
+  visible ink and overflow are retained.
+- [x] **`Attach`** — attach a child outside a selected side of another box with
+  offset, extent, location, and justification. **Basic:** Attach supplies side,
+  offset, at, and align without reserving outer space.
+- [x] **`Absolute`** — give a child an absolute drawing-unit size while it
+  participates in proportional layout. **API choice:** ordinary px() width and
+  height cover this capability; no separate Absolute element is needed.
 - [x] **`Spacer`** — empty flexible stack item.
 - [x] **`Fit`** — fresh-core replacement for explicitly scaling completed
   content into a box; this was behavior spread across original elements rather
@@ -133,35 +137,40 @@ lengths, and explicit `Fit` remain the foundation.
   separately.
 - [x] **`Polygon`** — closed piecewise-linear path.
 - [x] **`Path`** — explicit path command sequence.
-- [ ] **`UnitLine`**, **`HLine`**, **`VLine`** — unit-length line and directional
+- [x] **`UnitLine`**, **`HLine`**, **`VLine`** — unit-length line and directional
   conveniences.
-- [ ] **`CoordLine`** — piecewise path whose points are interpreted directly in
+- [x] **`CoordLine`** — piecewise path whose points are interpreted directly in
   the containing coordinate system.
-- [ ] **`Segments`** — many independent line segments in one element.
-- [ ] **`Ray`** — ray from an origin through a direction or angle.
-- [ ] **`Dot`** — filled circle with useful point defaults.
-- [ ] **`Triangle`** — three-sided polygon convenience.
-- [ ] **`Arc`** — portion of an ellipse between two angles.
-- [ ] **`Spline`** — open or closed cubic spline through points, with curvature
+- [x] **`Segments`** — many independent line segments in one element.
+- [x] **`Ray`** — ray from an origin through a direction or angle.
+- [x] **`Dot`** — filled circle with useful point defaults.
+- [x] **`Triangle`** — three-sided polygon convenience.
+- [x] **`Arc`** — portion of an ellipse between two angles.
+- [x] **`Spline`** — open or closed cubic spline through points, with curvature
   and optional endpoint directions.
-- [ ] **`RoundedLine`** — polyline with circularly rounded interior corners,
+  **Basic:** uniform tangents and tension; custom endpoint directions are deferred.
+- [x] **`RoundedLine`** — polyline with circularly rounded interior corners,
   intended for right-angle routes.
-- [ ] **`Fill`**, **`HFill`**, **`VFill`** — filled region between paired paths,
+  **API choice:** the fresh implementation uses quadratic rounded corners.
+- [x] **`Fill`**, **`HFill`**, **`VFill`** — filled region between paired paths,
   with horizontal and vertical conveniences.
 
 ### Arrows and low-level path construction
 
-- [ ] **`ArrowHead`** — independently usable filled or stroked head with angle,
+- [x] **`ArrowHead`** — independently usable filled or stroked head with angle,
   barb selection, spread, base, exact tip placement, and curved barbs.
-- [ ] **`Arrow`** — straight, spline-curved, or rounded multi-point shaft with
+  **Basic:** triangular or open heads with exact tips and layout-unit dimensions;
+  advanced barb shapes remain deferred.
+- [x] **`Arrow`** — straight, spline-curved, or rounded multi-point shaft with
   independently styled heads at either end.
+  **Basic:** start/end heads are independently enabled and share head_style.
 - [x] Low-level move, line, quadratic, cubic, and close commands through
   `move_to`, `line_to`, `quad_to`, `curve_to`, and `close_path`.
 - [-] Original public command constructors **`Command`**, **`MoveCmd`**,
   **`LineCmd`**, **`ArcCmd`**, **`CornerCmd`**, **`RoundedCornerCmd`**, and
   **`CubicSplineCmd`**. **Partial:** most have functional equivalents, but arc
   and corner commands are absent.
-- [ ] One-dimensional and two-dimensional cubic interpolation helpers
+- [x] One-dimensional and two-dimensional cubic interpolation helpers
   **`spline1d`** and **`spline2d`**.
 
 ### Drawing and SVG behavior
@@ -172,7 +181,7 @@ lengths, and explicit `Fit` remain the foundation.
   labels.
 - [ ] Arbitrary SVG presentation attributes on every element, including dash
   arrays, opacity, filters, CSS classes, IDs, and data attributes. **Partial:**
-  the fresh drawing records cover the core paint attributes.
+  core paint, stroke_dasharray, and per-drawing opacity are implemented.
 - [ ] General masks, custom clip shapes, shared definitions, and style/metadata
   nodes. **Partial:** rectangular and rounded fragment clips are implemented.
 
@@ -193,24 +202,28 @@ lengths, and explicit `Fit` remain the foundation.
 
 ### Text-aware layout
 
-- [ ] **`TextStack`** — em-based mixed text/figure stack.
-- [ ] **`TextCol`**, **`TextRow`** — text-aware column and row with inherited
+- [x] **`TextStack`** — em-based mixed text/figure stack.
+- [x] **`TextCol`**, **`TextRow`** — text-aware column and row with inherited
   type scale, wrapping, fixed-size children, and shared remaining space.
 - [ ] **`TextGrid`** — equal text columns filled row by row.
-- [ ] **`TextFigure`** — figure with an em-sized image area and caption.
-- [ ] **`Bullets`** — wrapped bulleted and nested lists with shared indentation,
+- [x] **`TextFigure`** — figure with an em-sized image area and caption.
+- [x] **`Bullets`** — wrapped bulleted and nested lists with shared indentation,
   marker customization, and item spacing.
-- [ ] **`TextBox`**, **`TextFrame`** — box conveniences that accept strings,
+- [x] **`TextBox`**, **`TextFrame`** — box conveniences that accept strings,
   formulas, or text columns directly and supply text-oriented padding defaults.
-  **Partial:** compose `Text` with `Box` or `Frame` today.
+  **Basic:** strings, spans, and existing elements are supported; formulas await math.
 
 ### Labels, slides, and presentation composition
 
-- [ ] **`LabelBox`** — label-sized box used as a presentation building block.
-- [ ] **`TitleBox`** — framed content with a title attached to an edge.
-- [ ] **`TitleFrame`** — bordered title-box convenience.
-- [ ] **`Slide`** — fixed 16:9 presentation canvas with title, content column,
+- [x] **`LabelBox`** — label-sized box used as a presentation building block.
+  **API choice:** use the content-hugging TextBox; no LabelBox alias.
+- [x] **`TitleBox`** — framed content with a title. **Basic:** the fresh title is
+  measured above content; edge-attached decoration remains deferred.
+- [x] **`TitleFrame`** — bordered title-box convenience.
+- [x] **`Slide`** — fixed 16:9 presentation canvas with title, content column,
   document-wide em sizing, overflow policy, and slide-specific subunit styling.
+  **Basic:** ordinary font inheritance and a title_style object replace the
+  original document scaling and prefixed props.
 
 ### Fonts
 
@@ -227,53 +240,65 @@ lengths, and explicit `Fit` remain the foundation.
 
 ## Data coordinates, plotting, and charts
 
+**Basic implementations are available.** See [PLOTTING](PLOTTING.md) for APIs,
+examples, and deliberate differences. Limits are linear and directed; styles use
+nested objects. Plot measures margins, and callbacks expand at construction.
+Advanced legacy options in the descriptions below are not parity promises.
+
 ### Graph containers
 
-- [ ] **`Graph`** — propagate a data coordinate system to graphable children,
+- [x] **`Graph`** — propagate a data coordinate system to graphable children,
   infer limits from their data, accept explicit `coord`/`xlim`/`ylim`, apply
   padding, and support flipped axes.
-- [ ] **`Plot`** — compose graph content with axes, labels, mesh/grid, title,
+- [x] **`Plot`** — compose graph content with axes, labels, mesh/grid, title,
   margins, box decoration, inferred limits, and prefixed subunit styling.
+  **API choice:** parts use nested style/options objects, not prefixed props.
 
 ### Bars
 
-- [ ] **`Bar`**, **`VBar`**, **`HBar`** — rounded bar primitives in either
+- [x] **`Bar`**, **`VBar`**, **`HBar`** — rounded bar primitives in either
   orientation.
-- [ ] **`Bars`**, **`VBars`**, **`HBars`** — generate bar sets from values,
+- [x] **`Bars`**, **`VBars`**, **`HBars`** — generate bar sets from values,
   positions, widths, bases, and functional styles.
-- [ ] **`BarPlot`** — put bars in a plot with suitable inferred limits and axis
+- [x] **`BarPlot`** — put bars in a plot with suitable inferred limits and axis
   defaults.
 
 ### Scales, axes, labels, and grids
 
-- [ ] **`Scale`**, **`HScale`**, **`VScale`** — ticks from explicit values or
+- [x] **`Scale`**, **`HScale`**, **`VScale`** — ticks from explicit values or
   generated intervals, with side/orientation and tick styling.
-- [ ] **`Label`**, **`HLabel`**, **`VLabel`** — one positioned tick label with
+- [x] **`Label`**, **`HLabel`**, **`VLabel`** — one positioned tick label with
   rotation, offset, and alignment.
-- [ ] **`Labels`**, **`HLabels`**, **`VLabels`** — generated or explicit sets of
+- [x] **`Labels`**, **`HLabels`**, **`VLabels`** — generated or explicit sets of
   tick labels, including `[value, label]` pairs.
-- [ ] **`Axis`**, **`HAxis`**, **`VAxis`** — axis line, tick scale, tick labels,
+- [x] **`Axis`**, **`HAxis`**, **`VAxis`** — axis line, tick scale, tick labels,
   optional arrowheads, locations and sides, and prefixed styling of each part.
-- [ ] **`OuterLabel`** — axis title attached outside a plot edge.
-- [ ] **`Mesh`**, **`HMesh`**, **`VMesh`** — grid lines generated from one scale.
-- [ ] **`Mesh2D`** — combined horizontal and vertical mesh.
-- [ ] **`Legend`** — framed badge/label rows with automatic swatches and
+  **API choice:** line_style, tick_style, and label_style are explicit objects.
+- [x] **`OuterLabel`** — axis title attached outside a plot edge.
+- [x] **`Mesh`**, **`HMesh`**, **`VMesh`** — grid lines generated from one scale.
+- [x] **`Mesh2D`** — combined horizontal and vertical mesh.
+- [x] **`Legend`** — framed badge/label rows with automatic swatches and
   separate badge and label styles.
 
 ## Symbolic and sampled geometry
 
-- [ ] Shared symbolic sampler accepting parametric `f(t)`, separate `fx(t)` and
+Sampling uses `samples` (default 101), point records or parametric pair results,
+and explicit domains/arrays. Nonfinite samples remain gaps, and line/fill paths
+split at them. Samplers are construction-time operations; resizing does not
+reexecute callbacks. Adaptive sampling and discontinuity detection are deferred.
+
+- [x] Shared symbolic sampler accepting parametric `f(t)`, separate `fx(t)` and
   `fy(t)`, explicit `xvals`/`yvals`/`tvals`, domain limits, and sample count;
   infer compatible missing values and omit non-finite samples.
-- [ ] **`SymPoints`** — sampled points with a configurable element-producing
+- [x] **`SymPoints`** — sampled points with a configurable element-producing
   shape function and functional point size.
-- [ ] **`SymLine`** — sampled piecewise-linear function or parametric curve.
-- [ ] **`SymSpline`** — sampled smooth function or parametric curve.
-- [ ] **`SymPoly`** — sampled closed polygon.
-- [ ] **`SymFill`** — sampled filled region between two functions, including a
+- [x] **`SymLine`** — sampled piecewise-linear function or parametric curve.
+- [x] **`SymSpline`** — sampled smooth function or parametric curve.
+- [x] **`SymPoly`** — sampled closed polygon.
+- [x] **`SymFill`** — sampled filled region between two functions, including a
   scalar as either boundary.
-- [ ] **`Field`** — place and orient a shape over explicit vector-field samples.
-- [ ] **`SymField`** — sample a regular grid and orient/scale a shape from a
+- [x] **`Field`** — place and orient a shape over explicit vector-field samples.
+- [x] **`SymField`** — sample a regular grid and orient/scale a shape from a
   function, using arrows by default.
 
 ## Networks and diagrams
@@ -502,6 +527,10 @@ public API. Run `bun run gum` from the workspace root.
   example and produces a browsable comparison report.
 
 ## Suggested dependency order
+
+Steps 1–5 now have basic implementations; [PLOTTING](PLOTTING.md) records the
+slice and remaining limits. Wrapping/grid and advanced unchecked details remain
+deferred. This sequence still records dependencies rather than parity targets.
 
 The exact milestones belong in `ROADMAP.md`; this order only records major
 feature dependencies exposed by the original system.
