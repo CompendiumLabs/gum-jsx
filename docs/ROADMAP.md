@@ -99,9 +99,12 @@ const svg = render_svg(fragment);
 
 There is no separate `intrinsics()` API. `make_request()` uses natural axes by
 default; a container asks the same layout method for natural or constrained
-geometry. `define_element(name, layout, defaults?)` keeps construction independent
-of these queries. See the actual contracts in [element.ts](./src/element.ts),
-[pass.ts](./src/pass.ts), and [fragment.ts](./src/fragment.ts).
+geometry. Classes extend `Element` with static layout and optional defaults,
+normalization, and bounds hooks. The inherited constructor keeps construction
+independent of queries; `define_element` uses the same machinery. See
+[custom elements](../gum-next-docs/docs/text/CustomElements.md) and the contracts
+in [element.ts](../gum-next-core/src/element.ts),
+[pass.ts](../gum-next-core/src/pass.ts), and [fragment.ts](../gum-next-core/src/fragment.ts).
 
 Each axis request distinguishes `natural`, `available(value)`, and `exact(value)`.
 Available space is a budget: a child can report needing more. An exact request fixes the

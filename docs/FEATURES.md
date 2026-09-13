@@ -32,9 +32,10 @@ lengths, and explicit `Fit` remain the foundation.
   methods such as `map`.
 - [x] Construct elements directly from JavaScript or TypeScript as well as from
   evaluated source.
-- [x] Define custom element types against the public layout protocol and place
-  them in an evaluation scope; the fresh `define_element` replaces the original
-  subclass and clone mechanics for most extension work.
+- [x] Define custom element classes against the public layout protocol, directly
+  in JSX or host code. `Element` supplies the inherited constructor, merged static
+  defaults, automatic names, and layout/normalize/data_bounds hooks. `define_element`
+  remains a convenience over the same immutable source machinery.
 - [x] Report syntax and runtime failures with source locations and JSX
   construction sites.
 - [ ] Accept a top-level JSX fragment or array of elements and wrap it in the
