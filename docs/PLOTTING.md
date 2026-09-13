@@ -66,8 +66,9 @@ Marker/field callbacks and generated points retain named coordinates.
   wrapper. Samplers, marker functions, bar styles, and tick formatters retain
   no callbacks. Create a new element to resample.
 - Plot builds axes and label descriptions once. Layout measures axis overflow
-  to reserve margins, then lays out data. Parts use nested style objects
-  rather than prefixed prop routing.
+  to reserve margins, then lays out data. Scoped props such as `axis_stroke`,
+  `xaxis_label_color`, and `title_wrap` route at construction. Nested part objects
+  remain supported; specific scopes override shared settings per property.
 - Null/nonfinite samples create gaps. Lines and fills split there rather than
   joining the remaining samples across them.
 - Transforms are explicit wrappers. TitleBox/Frame put measured titles above

@@ -8,6 +8,12 @@ Arrow and field shafts now account for stroke caps at their head tips; the
 [arrow gallery](../gum-next-core/examples/arrow_caps.jsx) covers the cap and route variants.
 Wrapping rows and grids remain deferred, along with math and networks.
 
+Typed component scopes now route flat props at construction for arrows, axes,
+plots, legends, titles, and captions. Public `prefix_split`/`prefix_join` helpers
+support custom components. Nested settings remain compatible; scopes preserve
+owner geometry props and merge shared/specific part settings per property.
+See [scoped props](../gum-next-core/README.md#scoped-component-props).
+
 Stages 1–5 are implemented in this directory, with
 unit and layout checks, JSX evaluation, measured and wrapping text, ordinary shapes,
 Box/Frame/Fit composition, HStack/VStack/Spacer, and an SVG/PNG/tree

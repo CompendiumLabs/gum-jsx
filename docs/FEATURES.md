@@ -164,7 +164,8 @@ lengths, and explicit `Fit` remain the foundation.
   advanced barb shapes remain deferred.
 - [x] **`Arrow`** — straight, spline-curved, or rounded multi-point shaft with
   independently styled heads at either end.
-  **Basic:** start/end heads are independently enabled and share head_style.
+  **Basic:** start/end heads are independently enabled and share head_style,
+  also available through `head_` scoped style props.
   Shafts retreat at headed ends using pixel stroke/cap clearance while tips
   retain the original endpoints; short routes cannot reverse from shortening.
 - [x] Low-level move, line, quadratic, cubic, and close commands through
@@ -225,8 +226,8 @@ lengths, and explicit `Fit` remain the foundation.
 - [x] **`TitleFrame`** — bordered title-box convenience.
 - [x] **`Slide`** — fixed 16:9 presentation canvas with title, content column,
   document-wide em sizing, overflow policy, and slide-specific subunit styling.
-  **Basic:** ordinary font inheritance and a title_style object replace the
-  original document scaling and prefixed props.
+  **Basic:** ordinary font inheritance supplies document sizing; `title_` scoped
+  props and the compatible title_style object configure the generated title.
 
 ### Fonts
 
@@ -244,8 +245,8 @@ lengths, and explicit `Fit` remain the foundation.
 ## Data coordinates, plotting, and charts
 
 **Basic implementations are available.** See [PLOTTING](PLOTTING.md) for APIs,
-examples, and deliberate differences. Limits are linear and directed; styles use
-nested objects. Plot measures margins, and callbacks expand at construction.
+examples, and deliberate differences. Limits are linear and directed; parts accept
+scoped props and nested objects. Plot measures margins, and callbacks expand at construction.
 Advanced legacy options in the descriptions below are not parity promises.
 
 ### Graph containers
@@ -255,7 +256,8 @@ Advanced legacy options in the descriptions below are not parity promises.
   padding, and support flipped axes.
 - [x] **`Plot`** — compose graph content with axes, labels, mesh/grid, title,
   margins, box decoration, inferred limits, and prefixed subunit styling.
-  **API choice:** parts use nested style/options objects, not prefixed props.
+  **API choice:** typed component scopes route at construction; nested style/options
+  objects remain compatible. Specific scopes override shared settings per field.
 
 ### Bars
 
@@ -276,7 +278,8 @@ Advanced legacy options in the descriptions below are not parity promises.
   tick labels, including `[value, label]` pairs.
 - [x] **`Axis`**, **`HAxis`**, **`VAxis`** — axis line, tick scale, tick labels,
   optional arrowheads, locations and sides, and prefixed styling of each part.
-  **API choice:** line_style, tick_style, and label_style are explicit objects.
+  **API choice:** line_, tick_, and label_ scopes coexist with line_style,
+  tick_style, and label_style objects. Labels also accept text options such as wrap.
 - [x] **`OuterLabel`** — axis title attached outside a plot edge.
 - [x] **`Mesh`**, **`HMesh`**, **`VMesh`** — grid lines generated from one scale.
 - [x] **`Mesh2D`** — combined horizontal and vertical mesh.
