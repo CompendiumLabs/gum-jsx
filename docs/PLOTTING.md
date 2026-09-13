@@ -31,17 +31,17 @@ bun run gum gum-next-core/examples/plot_bars.jsx -f tree
 | 4. Plot composition | Linear ticks, axes and independent scale/label/mesh parts, measured margins, titles, legend, bars, BarPlot, and Plot. |
 | 5. Symbolic geometry | Shared scalar/parametric/array sampler; sampled lines, splines, polygons, points, bands, and vector fields. |
 
-The [plotting reference](../gum-next-docs/docs/text/Plot.md),
-[coordinate reference](../gum-next-docs/docs/text/Coordinates.md), and
-[sampling reference](../gum-next-docs/docs/text/Sampling.md) describe the APIs.
+The [plotting reference](../gum-next-docs/elements/text/Plot.md),
+[coordinate reference](../gum-next-docs/topics/text/Coordinates.md), and
+[sampling reference](../gum-next-docs/topics/text/Sampling.md) describe the APIs.
 Every public element has a runnable page. The editor's Plotting category exposes
 plots and their parts.
 
-[Math and array helpers](../gum-next-docs/docs/text/MathHelpers.md), including
+[Math and array helpers](../gum-next-docs/topics/text/MathHelpers.md), including
 range, linspace, sin/cos, polar, and seeded random sampling, are available directly
 in JSX and as named imports. Examples use the shared helpers for their data.
 
-[Point inputs](../gum-next-docs/docs/text/PointValues.md) accept `[x,y]` or `{x,y}`,
+[Point inputs](../gum-next-docs/topics/text/PointValues.md) accept `[x,y]` or `{x,y}`,
 including mixed lists and length-valued pairs. For example,
 `<CoordLine points={zip(xs, xs.map(sin))} />` uses array helpers directly.
 Marker/field callbacks and generated points retain named coordinates.

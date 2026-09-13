@@ -432,10 +432,10 @@ direct JavaScript use.
 - [x] Seeded random helpers **`setSeed`**, **`random`**, **`uniform`**,
   **`normal`**, and **`integer`**.
 
-The [math reference](../gum-next-docs/docs/text/MathHelpers.md) covers the helper
+The [math reference](../gum-next-docs/topics/text/MathHelpers.md) covers the helper
 set and links to runnable examples. Generated arrays are bounded and frozen,
 2D helpers return native points, and random streams belong to individual
-evaluations. See [migration notes](../gum-next-docs/docs/text/Migration.md#numeric-helpers)
+evaluations. See [migration notes](../gum-next-docs/topics/text/Migration.md#numeric-helpers)
 for the precise differences in range, singleton linspace, and integer endpoints.
 
 ## Inspection, rendering, and export

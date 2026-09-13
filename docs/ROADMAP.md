@@ -102,7 +102,7 @@ default; a container asks the same layout method for natural or constrained
 geometry. Classes extend `Element` with static layout and optional defaults,
 normalization, and bounds hooks. The inherited constructor keeps construction
 independent of queries; `define_element` uses the same machinery. See
-[custom elements](../gum-next-docs/docs/text/CustomElements.md) and the contracts
+[custom elements](../gum-next-docs/topics/text/CustomElements.md) and the contracts
 in [element.ts](../gum-next-core/src/element.ts),
 [pass.ts](../gum-next-core/src/pass.ts), and [fragment.ts](../gum-next-core/src/fragment.ts).
 
