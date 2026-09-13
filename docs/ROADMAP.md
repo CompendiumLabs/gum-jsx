@@ -78,7 +78,7 @@ Preserve them when adding the remaining containers:
 | What do fractional shape coordinates reference? | The shape's own resolved content rectangle. Scalar geometric lengths such as a circle radius, stroke width, or circular corner radius use its shorter side; two-axis radii resolve per axis. Graph now supplies explicit data-coordinate mapping. |
 | What do `Box.width` and `height` include? | The border box: content, padding, and border. Borders occupy space and draw inside the border box. For space outside the decoration, wrap the Box in another Box with padding. |
 | Does making a box smaller scale its contents? | Ordinary layout reflows, constrains, or records overflow. An explicit `Fit` operation may scale a completed fragment, including its text and strokes. |
-| Who reads flex and position props? | The immediate stack reads `basis`/`grow`/`shrink`; the immediate Group reads `x`/`y`/`anchor`. They do not inherit or acquire behavior in LayoutPass. |
+| Who reads flex and position props? | The immediate stack reads `basis`/`grow`/`shrink`/`align_self`; the immediate Group reads `x`/`y`/`anchor`. They do not inherit or acquire behavior in LayoutPass. |
 | Does every empty container hug to zero? | Empty Box/Svg/stacks follow ordinary zero-content sizing. Group requires a finite canvas even when empty; its children never determine the viewport. |
 
 A finite available-space offer is not automatically a definite percentage reference. A
@@ -236,6 +236,11 @@ weights default to zero, so growth and shrinkage are explicit. Spacer supplies a
 zero basis and growth weight one in its source description. Flex limits redistribute
 space without losing opposing clamp corrections, and impossible budgets retain
 overflow. Padding and clipping remain Box composition; LayoutPass has no stack policy.
+
+Direct children can override the stack's cross-axis alignment with `align_self`.
+Omission uses the parent's `align`; the child's own content alignment remains
+independent. Mixed stretch and baseline groups preserve the same bounded
+measurement phases and stable percentage references.
 
 Rows allocate widths before measuring the resulting height. Stretching columns
 select a shared width before allocating heights, so text reflows at that width.

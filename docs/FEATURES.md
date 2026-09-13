@@ -70,8 +70,8 @@ lengths, and explicit `Fit` remain the foundation.
   fixed allocation, and explicit overflow.
 - [x] Parent-owned allocation and placement, including stack flex metadata and
   positioned-group `x`, `y`, and `anchor` metadata.
-- [x] Cross-axis alignment, main-axis packing, flex grow/shrink/basis, spacers,
-  and real text-baseline alignment.
+- [x] Cross-axis alignment with child `align_self` overrides, main-axis packing,
+  flex grow/shrink/basis, spacers, and real text-baseline alignment.
 - [x] Content boxes with padding, borders, backgrounds, rounded corners,
   clipping, nested reference boxes, and explicit fitting.
 - [x] Paint bounds, layout bounds, overflow, clips, affine placement transforms,
