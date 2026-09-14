@@ -5,7 +5,7 @@ immutable layout results. The original scoped roadmap below covers the layout
 foundation. A subsequent [basic plotting slice](PLOTTING.md) now implements
 geometry, coordinates, text composition/slides, plots, and symbolic sampling.
 Arrow and field shafts now account for stroke caps at their head tips; the
-[arrow gallery](../gum-next-core/examples/arrow_caps.jsx) covers the cap and route variants.
+[arrow gallery](../gum-next-docs/topics/code/arrow_caps.jsx) covers the cap and route variants.
 Wrapping rows and grids remain deferred, along with math and networks.
 
 Typed component scopes now route flat props at construction for arrows, axes,
@@ -16,14 +16,15 @@ See [scoped props](../gum-next-core/README.md#scoped-component-props).
 
 Stages 1–5 are implemented in this directory, with
 unit and layout checks, JSX evaluation, measured and wrapping text, ordinary shapes,
-Box/Frame/Fit composition, HStack/VStack/Spacer, and an SVG/PNG/tree
-[gallery](../gum-next-core/examples/README.md). Stage 6(a), positioned Group, is
+Box/Frame/Fit composition, HStack/VStack/Spacer, and runnable
+[docs examples](../gum-next-docs/README.md). Stage 6(a), positioned Group, is
 also implemented. The plotting slice followed 6(a); stage 6(b), wrapping stacks,
 remains deferred.
 The basic rendering CLI now lives in the separate
 [`gum-next-cli` workspace package](../gum-next-cli/README.md), with a `gum`
 executable. The core retains evaluation, layout,
-SVG serialization, fragment inspection, and its development gallery/probes.
+SVG serialization, fragment inspection, and its development probes. Examples live
+in gum-next-docs and render through the CLI or editor's docs view.
 The CLI defaults to kitty graphics on stdout, including pipes. An output
 filename or explicit format selects kitty, SVG, PNG, tree, or JSON instead.
 The [`gum-next-png` submodule](../gum-next-png/README.md) provides node-canvas
@@ -134,12 +135,12 @@ followed by element implementation.
 
 | Milestone | Status | Deliverable / completion reference |
 |---|---|---|
-| 1. Contracts and units | Complete | Lengths, references, sizing precedence, and fragments; [contract probes](./examples/contracts.ts) distinguish indefinite axes from zero. |
-| 2. Elements and SVG | Complete | Immutable descriptions, queries, JSX, SVG, and CLI; [repeated.jsx](./examples/repeated.jsx) reuses descriptions and fragments at different placements and sizes. |
-| 3. Text and shapes | Complete | Font measurement, wrapping, styled runs, baselines, glyph paths, and ordinary shapes; [paragraph.jsx](./examples/paragraph.jsx) and [shapes.jsx](./examples/shapes.jsx). |
-| 4. Box composition | Complete | Box/Frame/Fit and content-sized Svg; [hugging.jsx](./examples/hugging.jsx) and [card.jsx](./examples/card.jsx). |
-| 5. Stacks | Complete | HStack/VStack/Spacer, gaps, basis/grow/shrink, min/max, alignment, baselines, and overflow; [stack.jsx](./examples/stack.jsx) nests mixed rows at two widths. |
-| 6(a). Positioned Group | Complete | A finite canvas with fractional/px/em positions, anchors, nested references, and clipping; [group.jsx](./examples/group.jsx). |
+| 1. Contracts and units | Complete | Lengths, references, sizing precedence, and fragments; [contract probes](../gum-next-core/test/fixtures/contracts.ts) distinguish indefinite axes from zero. |
+| 2. Elements and SVG | Complete | Immutable descriptions, queries, JSX, SVG, and CLI; [repeated.jsx](../gum-next-docs/topics/code/repeated.jsx) reuses descriptions and fragments at different placements and sizes. |
+| 3. Text and shapes | Complete | Font measurement, wrapping, styled runs, baselines, glyph paths, and ordinary shapes; [paragraph.jsx](../gum-next-docs/topics/code/paragraph.jsx) and [shape cards](../gum-next-docs/topics/code/shape_cards.jsx). |
+| 4. Box composition | Complete | Box/Frame/Fit and content-sized Svg; [Frame](../gum-next-docs/elements/code/Frame.jsx) and [Box](../gum-next-docs/elements/code/Box.jsx). |
+| 5. Stacks | Complete | HStack/VStack/Spacer, gaps, basis/grow/shrink, min/max, alignment, baselines, and overflow; [HStack](../gum-next-docs/elements/code/HStack.jsx) composes a mixed row. |
+| 6(a). Positioned Group | Complete | A finite canvas with fractional/px/em positions, anchors, nested references, and clipping; [Group](../gum-next-docs/elements/code/Group.jsx). |
 | 6(b). Wrapping stacks | Next, unimplemented | Wrap measured items into lines, then allocate and align each line with stable references and explicit overflow. |
 | 6. Remaining composition | Pending | Content-sized overlays, a simple grid, and an optional common-height figure policy; separate slices after wrapping. |
 | 7. Stabilize the new core | Pending | Consolidate API documentation, diagnostics, numerical contracts, SVG/browser inspection, and measured layout costs. |
@@ -314,7 +315,7 @@ reasonable task is concisely expressible. If it's not, that may be a sign that
 changes are needed.
 
 Use the workspace rendering CLI, `bun run gum`, from the workspace root to rapidly
-try example code, for example `bun run gum gum-next-core/examples/group.jsx -f tree`.
+try example code, for example `bun run gum gum-next-docs/elements/code/Group.jsx -f tree`.
 Browser work remains deferred. Build up the example gallery as you go so we can
 both keep track of coverage.
 

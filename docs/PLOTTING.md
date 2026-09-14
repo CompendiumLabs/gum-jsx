@@ -17,8 +17,8 @@ reference while keeping the fresh immutable source/layout/fragment model.
 Run examples from the workspace root:
 
 ```sh
-bun run gum gum-next-core/examples/plot_wave.jsx -o /tmp/plot.png
-bun run gum gum-next-core/examples/plot_bars.jsx -f tree
+bun run gum gum-next-docs/topics/code/plot_wave.jsx -o /tmp/plot.png
+bun run gum gum-next-docs/topics/code/plot_bars.jsx -f tree
 ```
 
 ## Implemented slices
@@ -107,7 +107,6 @@ From the workspace root:
 bun run test
 bun run typecheck
 bun --cwd gum-next-docs run check
-bun --cwd gum-next-core run gallery
 bun run build
 ```
 
@@ -117,6 +116,7 @@ From gum-next-core, also check public declaration emission:
 bun tsc --noEmit false --declaration --emitDeclarationOnly --outDir /tmp/gum-next-types
 ```
 
-The [gallery](../gum-next-core/examples/README.md) includes a curve with an
-uncertainty band at two widths, negative categorical bars, custom markers on a
-reversed axis, a field, and a slide. SVG, PNG, and numerical trees are checked in.
+The [docs showcases](../gum-next-docs/README.md#showcases) include a curve with an
+uncertainty band, negative categorical bars, custom markers on a reversed axis,
+a field, and a slide. Use the CLI to render at different widths or inspect SVG,
+PNG, and numerical trees; generated previews are not checked in.
