@@ -109,8 +109,8 @@ geometry. Classes extend `Element` with static layout and optional defaults,
 normalization, and bounds hooks. The inherited constructor keeps construction
 independent of queries; `define_element` uses the same machinery. See
 [custom elements](../gum-next-docs/topics/text/CustomElements.md) and the contracts
-in [element.ts](../gum-next-core/src/element.ts),
-[pass.ts](../gum-next-core/src/pass.ts), and [fragment.ts](../gum-next-core/src/fragment.ts).
+in [element.ts](../gum-next-core/src/engine/element.ts),
+[pass.ts](../gum-next-core/src/engine/pass.ts), and [fragment.ts](../gum-next-core/src/engine/fragment.ts).
 
 Each axis request distinguishes `natural`, `available(value)`, and `exact(value)`.
 Available space is a budget: a child can report needing more. An exact request fixes the
@@ -144,7 +144,7 @@ followed by element implementation.
 | 6. Remaining composition | Pending | Content-sized overlays, a simple grid, and an optional common-height figure policy; separate slices after wrapping. |
 | 7. Stabilize the new core | Pending | Consolidate API documentation, diagnostics, numerical contracts, SVG/browser inspection, and measured layout costs. |
 
-**Milestone 1 established the contracts and defaults.** [defaults.ts](./src/defaults.ts)
+**Milestone 1 established the contracts and defaults.** [defaults.ts](../gum-next-core/src/engine/defaults.ts)
 contains the 16px font and natural shape fallback, 1.2em line height, and 1px stroke.
 The probes cover a fixed viewport, hugging content, a half-width child, tight aspect
 allocations, and insufficient space for padding. Zero-size content remains distinct
