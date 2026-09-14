@@ -336,23 +336,26 @@ KaTeX, converted the AST to ordinary gum elements, measured bundled KaTeX font
 faces, and aligned formulas through an em metric record carrying width, height,
 math-axis anchor, ink overhang, atom class, italic correction, and style scale.
 
+Phases 1 and 2 now run in `gum-next-math`, including CLI/editor bindings and
+KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
+
 ### Public math elements
 
-- [ ] **`MathSpan`** — measured math/text glyph run with ink-based metrics.
-- [ ] **`MathSymbol`** — symbol-table lookup, font selection, atom class,
+- [x] **`MathSpan`** — measured math/text glyph run with ink-based metrics.
+- [x] **`MathSymbol`** — symbol-table lookup, font selection, atom class,
   italic correction, and accent skew.
 - [ ] **`MathOp`** — named or glyph operator with display sizing and optional
   over/under limits.
-- [ ] **`MathSpacer`** — explicit or named TeX glue/kern.
-- [ ] **`MathRow`**, **`MathCol`** — math-axis-aware horizontal and vertical
+- [x] **`MathSpacer`** — explicit or named TeX glue/kern.
+- [x] **`MathRow`**, **`MathCol`** — math-axis-aware horizontal and vertical
   composition.
-- [ ] **`MathBox`** — padding, positioning, width, and atom-class wrapper.
-- [ ] **`MathRule`** — scalable line/rule used by fractions, arrays, and
+- [x] **`MathBox`** — padding, positioning, width, and atom-class wrapper.
+- [x] **`MathRule`** — scalable line/rule used by fractions, arrays, and
   decorations.
 - [ ] **`MathArray`** — aligned rows and columns, separators, row gaps, and rules.
 - [ ] **`MathStretch`** — drawn extensible arrows, groups, segments, and accents.
 - [ ] **`HorizBrace`** — over/under brace with an optional label.
-- [ ] **`MathText`** — atom row with TeX inter-atom spacing and binary-operator
+- [x] **`MathText`** — atom row with TeX inter-atom spacing and binary-operator
   cancellation.
 - [ ] **`SupSub`** — superscripts, subscripts, combined scripts, italic
   correction, style descent, and operator limits.
@@ -363,9 +366,9 @@ math-axis anchor, ink overhang, atom class, italic correction, and style scale.
 - [ ] **`Accent`** — glyph or stretchy accents with skew and script attachment.
 - [ ] **`Bracket`** — auto-sized left/right delimiters and explicit delimiter
   levels.
-- [ ] **`Latex`** — parse a TeX string in display or selected style and expose it
+- [x] **`Latex`** — parse a TeX string in display or selected style and expose it
   as one gum element.
-- [ ] **`Tex`** — inline-style `Latex` convenience.
+- [x] **`Tex`** — inline-style `Latex` convenience.
 - [ ] **`TextMode`** — literal upright text inside math with family, bold, and
   italic controls.
 

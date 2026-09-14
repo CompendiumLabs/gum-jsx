@@ -3,6 +3,7 @@
 This is a Bun workspace. Each package is a separate Git repository included as a submodule:
 
 - `gum-next-core`: core rendering library.
+- `gum-next-math`: math layout, TeX parsing, and math fonts.
 - `gum-next-png`: SVG-to-PNG rendering.
 - `gum-next-cli`: command-line interface.
 - `gum-next-edit`: web editor.

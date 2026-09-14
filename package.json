@@ -3,6 +3,7 @@
   "private": true,
   "workspaces": [
     "gum-next-core",
+    "gum-next-math",
     "gum-next-png",
     "gum-next-cli",
     "gum-next-edit",
@@ -18,7 +19,8 @@
     "dev": "bun --filter gum-next-edit dev",
     "build": "bun --filter gum-next-edit build",
     "gum": "bun gum-next-cli/src/cli.ts",
+    "compare": "bun gum-next-math/scripts/compare.ts",
     "typecheck": "bun run --workspaces typecheck",
-    "test": "bun --filter gum-next-core test"
+    "test": "bun --filter gum-next-core test && bun --filter gum-next-math test && bun --filter gum-next-docs check && bun --filter gum-next-edit check"
   }
 }

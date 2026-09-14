@@ -1,7 +1,25 @@
 # Math architecture and implementation roadmap
 
-Status: proposal for review, September 14, 2026. No math implementation is part
-of this change.
+Status: phases 1 and 2 implemented, September 14, 2026. Phases 3–8 remain planned.
+
+The [math package](../gum-next-math/README.md) now supplies glyphs, signed glue,
+rows/columns/boxes, and the first TeX slice, with CLI/editor bindings and
+[runnable examples](../gum-next-docs/topics/text/Math.md). Core carries passive
+math metrics/context and lazy font registration; it does not depend on math.
+KaTeX is pinned to 0.16.47.
+
+The [comparison script](../gum-next-math/scripts/compare.ts) adapts gum-1's tool
+and renders Gum, KaTeX HTML, and pdflatex side by side at equal pixels per em.
+The first ten-formula gallery caught an italic-spacing defect: TeX correction
+must come from font metric data, independently of measured ink overhang. This
+is corrected and regression-tested. Group/color behavior follows KaTeX; LaTeX's
+color grouping and text spacing can differ. The script preserves diagnostics
+and exits unsuccessfully if any requested renderer fails.
+
+Verification commands are `bun run test`, `bun run typecheck`, `bun run build`,
+`bun gum-next-math/scripts/check-browser.ts`, and
+`bun run compare --suite -S 48 -o gum-next-math/out/comparison.png`.
+The remaining sections retain the original architecture review and roadmap.
 
 The recommendation is to retain gum-1's math model and typographic rules in a
 separate `gum-next-math` package, implemented on gum-next's existing
@@ -691,9 +709,8 @@ The main decisions proposed for this review are:
 | First implementation checkpoint | Phases 1–4: core math protocol, ordinary formulas, and composition in both directions. |
 | Parity scope | Correct the confirmed spacing/metrics/limits defects, add `\middle` during delimiter work, and defer tags/CD/specialized features explicitly. |
 
-After review, the first concrete change should be phase 1's package and glyph
-slice. It will validate the metric/context boundary against the current engine
-before the larger converter and typography port depend on it.
+The next implementation checkpoint is phase 3: scripts, fractions, roots,
+operators, and delimiters on the now-established metric/context boundary.
 
 [old-elems]: ../../gum-org/gum-jsx-math/src/elems.ts
 [old-symbols]: ../../gum-org/gum-jsx-math/src/symbols.ts
