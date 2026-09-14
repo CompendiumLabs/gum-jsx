@@ -97,10 +97,10 @@ different inherited styles or allocations, and produce independent fragments.
 
 ```ts
 // The implemented entry points; source, request, and context are caller inputs.
-const element = evaluate(source);
-const pass = new LayoutPass();
-const fragment = pass.layout(element, request, context);
-const svg = render_svg(fragment);
+const element = evaluate(source)
+const pass = new LayoutPass()
+const fragment = pass.layout(element, request, context)
+const svg = render_svg(fragment)
 ```
 
 There is no separate `intrinsics()` API. `make_request()` uses natural axes by
