@@ -8,11 +8,8 @@ In examples with text, use em in wherever possible for size, padding, gap. Conti
 
 Binary flag defaults
 
-Svg level font-size
-
 Debug frames flag
 
 Editor overscroll
 
 Round corners with h/v and tl/tr/bl/br.
-
