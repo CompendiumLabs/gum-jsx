@@ -13,3 +13,6 @@
 [submodule "gum-next-docs"]
 	path = gum-next-docs
 	url = git@github.com:CompendiumLabs/gum-next-docs
+[submodule "gum-next-math"]
+	path = gum-next-math
+	url = git@github.com:CompendiumLabs/gum-next-math

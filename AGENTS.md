@@ -10,6 +10,10 @@ This is a Bun workspace. Each package is a separate Git repository included as a
 
 Run `bun install` from the top level. The root `package.json` provides shared commands, and `bun.lock` is the workspace lockfile.
 
+# Prior Work
+
+This is a ground-up rewrite of gum-1, which resides in `../gum-org` and uses a similar workspace structure. This project (gum-next or gum-2) uses a different layout engine that hews closer to a flexbox-like model. Absolute sizes are more welcome here, and there is less of an attempt to automatically infer sizing and aspect ratios in elements like Stack. However, there is a lot of good and useful stuff in gum-1 that is worth using as inspiration.
+
 # Git workflow
 
 “Commit and push everything” means:
