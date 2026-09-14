@@ -113,7 +113,7 @@ lengths, and explicit `Fit` remain the foundation.
   visible ink and overflow are retained.
 - [x] **`Attach`** — attach a child outside a selected side of another box with
   offset, extent, location, and justification. **Basic:** Attach supplies side,
-  offset, at, and attachment_anchor without reserving outer space.
+  offset, at, and child_anchor without reserving outer space.
 - [x] **`Absolute`** — give a child an absolute drawing-unit size while it
   participates in proportional layout. **API choice:** ordinary px() width and
   height cover this capability; no separate Absolute element is needed.
