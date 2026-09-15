@@ -6,7 +6,11 @@ foundation. A subsequent [basic plotting slice](PLOTTING.md) now implements
 geometry, coordinates, text composition/slides, plots, and symbolic sampling.
 Arrow and field shafts now account for stroke caps at their head tips; the
 [arrow gallery](../gum-next-docs/topics/code/arrow_caps.jsx) covers the cap and route variants.
-Wrapping rows and grids remain deferred, along with math and networks.
+[Network, Node, and Edge](../gum-next-docs/elements/text/Network.md) now connect
+completed node frames through text reflow, padding, fitting, and affine transforms.
+Edges support explicit ports, waypoints, self loops, and Arrow head styling.
+Wrapping rows and grids remain deferred; the subsequent math work is tracked in
+[MATH.md](./MATH.md).
 
 Typed component scopes now route flat props at construction for arrows, axes,
 plots, legends, titles, and captions. Public `prefix_split`/`prefix_join` helpers

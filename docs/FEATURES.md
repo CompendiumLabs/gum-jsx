@@ -310,14 +310,18 @@ reexecute callbacks. Adaptive sampling and discontinuity detection are deferred.
 
 ## Networks and diagrams
 
-- [ ] **`Node`** — ID-addressable node with a configurable shape, label,
-  text-aware sizing, padding, and style.
-- [ ] **`Edge`** — arrow between node IDs or node instances; infer attachment
+- [x] **`Node`** — ID-addressable TextFrame with rounded/elliptical corners,
+  text-aware sizing, padding, style, and explicit connection geometry.
+- [x] **`Edge`** — arrow between node IDs or node instances; infer attachment
   sides, trim to node boundaries, route straight, curved, or rounded paths, and
   style shaft and heads independently.
-- [ ] **`Network`** — collect and resolve nodes and edges, propagate node/edge
-  defaults through prefixed props, establish a shared coordinate system and em,
-  and preserve layering of edges, nodes, and free annotations.
+- [x] **`Network`** — lay out nodes before resolving edges, establish Graph
+  coordinates and inherited font sizes, preserve source layering and annotations,
+  and follow node boundaries through fitting, padding, and arbitrary affine transforms.
+  Nested networks have separate ID scopes. See the
+  [connection example](../gum-next-docs/topics/code/network_connections.jsx).
+- [ ] Shared node/edge defaults through prefixed Network props, and arbitrary
+  node outlines beyond rounded rectangles and ellipses.
 
 ## Images and external data
 
