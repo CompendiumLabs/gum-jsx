@@ -1,6 +1,6 @@
 # Math architecture and implementation roadmap
 
-Status: phases 1–6 implemented, September 14, 2026. Phases 7–8 remain planned.
+Status: phases 1–7 implemented, September 15, 2026. Phase 8 remains planned.
 
 The [math package](../gum-next-math/README.md) now supplies glyphs, signed glue,
 rows/columns/boxes, and the first TeX slice, with CLI/editor bindings and
@@ -131,6 +131,43 @@ the production build, CLI raster renders, and the production-browser checks for
 font loading, reuse, dark decorations, errors, and recovery. The inspected
 galleries contain 24 display and 24 inline Gum/KaTeX/LaTeX comparisons, plus 16
 extended Gum/KaTeX comparisons; every requested renderer succeeded.
+
+Phase 7 adds [standalone exports](../gum-next-docs/topics/text/MathExport.md),
+[formula labels on plots](../gum-next-docs/topics/text/MathPlotLabels.md), and
+[math in slides](../gum-next-docs/topics/text/MathSlides.md). `mathToElement`
+returns an immutable SVG source whose viewport is measured during ordinary
+layout. It includes logical bounds and visible ink, translates negative extents,
+adds Gum-length padding, and gives empty axes a one-pixel floor. Explicit SVG
+constraints keep their clipping policy; `Fit` scales a completed formula.
+
+`mathToSvg` and `mathToSvgAsync` create or use caller-owned fonts and a pass.
+`mathToElementAsync` requires a caller-owned font resource or pass so its
+preloaded faces remain accessible when the returned source is laid out. Async
+helpers preload all registered faces and share in-flight requests through the
+existing `Fonts` implementation; synchronous helpers also accept a custom
+provider through a pass. No global font registry or new core dependency is added.
+
+The new `gum-tex` executable accepts literal TeX, a file, or stdin. It shares
+layout, SVG, PNG, kitty, tree, and JSON output with `gum`; options cover font
+size, padding, inline style, struts, color, macros, and explicit `--fit` sizing.
+The workspace installs both executable bindings and runs CLI integration tests.
+PNG stays in its existing host package and consumes completed outline SVG.
+
+The editor's completions now use its math evaluator bindings directly. The Math
+category includes the new export, plot-label, and slide topics. Comparison suite
+7 uses the public export path for overhanging, smashed, raised, and decorated
+formulas; production-browser checks compare standalone output exactly with the
+library SVG in addition to loading, concurrent rendering, and error recovery.
+
+Phase-7 verification passed: all workspace checks, 138 math tests (2,076
+assertions), seven CLI integration tests (89 assertions), 164 documentation
+previews at both development URL bases, typechecks, and the production build.
+The installed `gum-tex` executable was exercised, and CLI PNGs of exports, plot
+labels, and slides were inspected. The production browser loaded 24 font faces
+once, rendered concurrent examples, recovered after formula errors, and matched
+standalone library SVG exactly. Eight Gum/KaTeX/LaTeX export comparisons all
+succeeded and their gallery was inspected. Core and PNG need no changes for
+this phase.
 
 The [comparison script](../gum-next-math/scripts/compare.ts) adapts gum-1's tool
 and renders Gum, KaTeX HTML, and pdflatex side by side at equal pixels per em.
@@ -833,9 +870,8 @@ The main decisions proposed for this review are:
 | First implementation checkpoint | Phases 1–4: core math protocol, ordinary formulas, and composition in both directions. |
 | Parity scope | Correct the confirmed spacing/metrics/limits defects, add `\middle` during delimiter work, and defer tags/CD/specialized features explicitly. |
 
-Phases 1–5 are implemented, including the first broadly useful review checkpoint
-and arrays. The next implementation phase is phase 6: remaining legacy typography
-and box operations.
+Phases 1–7 are implemented, including standalone authoring and export. The next
+phase is phase 8: parity review, performance measurement, and stabilization.
 
 [old-elems]: ../../gum-org/gum-jsx-math/src/elems.ts
 [old-symbols]: ../../gum-org/gum-jsx-math/src/symbols.ts

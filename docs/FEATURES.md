@@ -336,7 +336,7 @@ KaTeX, converted the AST to ordinary gum elements, measured bundled KaTeX font
 faces, and aligned formulas through an em metric record carrying width, height,
 math-axis anchor, ink overhang, atom class, italic correction, and style scale.
 
-Phases 1–6 now run in `gum-next-math`, including CLI/editor bindings and
+Phases 1–7 now run in `gum-next-math`, including CLI/editor bindings and
 KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
 
 ### Public math elements
@@ -398,8 +398,9 @@ KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
   strikeout, phantom/smash/lap, rules, raisebox, vcenter, and verbatim.
 - [x] Mix arbitrary gum elements inside formulas and formulas inside normal
   text/layout while preserving a shared axis/baseline protocol.
-- [ ] Standalone synchronous and asynchronous `mathToElement` and `mathToSvg`,
-  with selective base/full KaTeX font loading.
+- [x] Standalone synchronous and asynchronous `mathToElement` and `mathToSvg`,
+  with caller-owned font resources, selective base/full preload, natural ink
+  viewports, and explicit clipping or `Fit` sizing.
 - [ ] Preserve or explicitly reconsider the original known omissions:
   `\middle`, display-margin `\tag`, arrows in the `CD` environment, three
   exotic enclosures, several missing-font symbols, script-style metric drift,
@@ -531,7 +532,8 @@ public API. Run `bun run gum` from the workspace root.
   SVG/PNG/PDF/kitty/layout/JSON formats, theme, background, raster size, zoom,
   depth/select inspection, strictness, seed, and original unit-size options.
 - [ ] Live `gum --dev` terminal refresh while a source file changes.
-- [ ] `gum-tex` command for standalone TeX to SVG, PNG, or terminal output.
+- [x] `gum-tex` command for standalone TeX to SVG, PNG, kitty, tree, or JSON;
+  literal/file/stdin input, font size, padding, macros, and explicit fitting.
 - [ ] Multi-file and directory deck loading with natural filename ordering.
 - [ ] Deck `index.json` for explicit slide order, shared prelude, and document
   title; automatically apply a neighboring deck prelude when rendering one

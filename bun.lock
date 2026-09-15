@@ -13,6 +13,7 @@
       "version": "0.1.0",
       "bin": {
         "gum": "src/cli.ts",
+        "gum-tex": "src/tex.ts",
       },
       "dependencies": {
         "commander": "^14.0.3",
