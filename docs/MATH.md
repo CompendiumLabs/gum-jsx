@@ -1,12 +1,32 @@
 # Math architecture and implementation roadmap
 
-Status: phases 1 and 2 implemented, September 14, 2026. Phases 3–8 remain planned.
+Status: phases 1–3 implemented, September 14, 2026. Phases 4–8 remain planned.
 
 The [math package](../gum-next-math/README.md) now supplies glyphs, signed glue,
 rows/columns/boxes, and the first TeX slice, with CLI/editor bindings and
 [runnable examples](../gum-next-docs/topics/text/Math.md). Core carries passive
 math metrics/context and lazy font registration; it does not depend on math.
 KaTeX is pinned to 0.16.47.
+
+Phase 3 adds `MathOp`, `SupSub`, `Frac`, `Sqrt`, and `Bracket`, with
+[ordinary-expression examples](../gum-next-docs/topics/text/MathExpressions.md).
+It covers all eight styles, TeX size declarations and `\mathchoice`, scripts,
+operator limits, generalized/continued fractions, binomials, root indices,
+fixed delimiters, and complete left/middle/right delimiter groups. `size_index`
+is optional passive context data so font-size declarations retain the correct
+script table and cache identity.
+
+The new display and inline comparison galleries are available through
+`bun run compare --suite 3` (add `--inline` for text style). Comparison caught
+the distinction between a large operator's logical TeX height and its outline
+ink, and the need to preserve baselines across local size declarations. Tests
+also cover explicit limits, custom fraction-rule dimensions, cramped descent,
+scriptscript floors, missing size-font glyphs, and prepared-source reuse.
+The adapter also restores explicit limits on operator names, including macro
+expansions, where KaTeX's original operator-name nodes discard those flags.
+Fractions expose TeX's ordinary atom class. Tall ordinary delimiters retain
+the planned uniform-scaling fallback; vertical bars and radicals preserve width.
+Extensible-piece assembly remains deferred.
 
 The [comparison script](../gum-next-math/scripts/compare.ts) adapts gum-1's tool
 and renders Gum, KaTeX HTML, and pdflatex side by side at equal pixels per em.
@@ -709,8 +729,8 @@ The main decisions proposed for this review are:
 | First implementation checkpoint | Phases 1–4: core math protocol, ordinary formulas, and composition in both directions. |
 | Parity scope | Correct the confirmed spacing/metrics/limits defects, add `\middle` during delimiter work, and defer tags/CD/specialized features explicitly. |
 
-The next implementation checkpoint is phase 3: scripts, fractions, roots,
-operators, and delimiters on the now-established metric/context boundary.
+The next implementation checkpoint is phase 4: formulas within prose and
+ordinary Gum content within math operands, including text layout and wrapping.
 
 [old-elems]: ../../gum-org/gum-jsx-math/src/elems.ts
 [old-symbols]: ../../gum-org/gum-jsx-math/src/symbols.ts

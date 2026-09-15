@@ -336,7 +336,7 @@ KaTeX, converted the AST to ordinary gum elements, measured bundled KaTeX font
 faces, and aligned formulas through an em metric record carrying width, height,
 math-axis anchor, ink overhang, atom class, italic correction, and style scale.
 
-Phases 1 and 2 now run in `gum-next-math`, including CLI/editor bindings and
+Phases 1–3 now run in `gum-next-math`, including CLI/editor bindings and
 KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
 
 ### Public math elements
@@ -344,7 +344,7 @@ KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
 - [x] **`MathSpan`** — measured math/text glyph run with ink-based metrics.
 - [x] **`MathSymbol`** — symbol-table lookup, font selection, atom class,
   italic correction, and accent skew.
-- [ ] **`MathOp`** — named or glyph operator with display sizing and optional
+- [x] **`MathOp`** — named or glyph operator with display sizing and optional
   over/under limits.
 - [x] **`MathSpacer`** — explicit or named TeX glue/kern.
 - [x] **`MathRow`**, **`MathCol`** — math-axis-aware horizontal and vertical
@@ -357,14 +357,14 @@ KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
 - [ ] **`HorizBrace`** — over/under brace with an optional label.
 - [x] **`MathText`** — atom row with TeX inter-atom spacing and binary-operator
   cancellation.
-- [ ] **`SupSub`** — superscripts, subscripts, combined scripts, italic
+- [x] **`SupSub`** — superscripts, subscripts, combined scripts, italic
   correction, style descent, and operator limits.
-- [ ] **`Frac`** — fractions with style-dependent numerator/denominator shifts,
+- [x] **`Frac`** — fractions with style-dependent numerator/denominator shifts,
   clearance, optional rule, and generalized-fraction behavior.
 - [ ] **`Underline`**, **`Overline`** — rule decorations around arbitrary math.
-- [ ] **`Sqrt`** — extensible radical with optional index.
+- [x] **`Sqrt`** — extensible radical with optional index.
 - [ ] **`Accent`** — glyph or stretchy accents with skew and script attachment.
-- [ ] **`Bracket`** — auto-sized left/right delimiters and explicit delimiter
+- [x] **`Bracket`** — auto-sized left/middle/right delimiters and explicit delimiter
   levels.
 - [x] **`Latex`** — parse a TeX string in display or selected style and expose it
   as one gum element.
@@ -377,7 +377,7 @@ KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
 - [ ] KaTeX parsing with display/text/script/scriptscript and cramped styles,
   style descent, size commands, colors, font families, macros, symbol aliases,
   text mode, and strict/permissive failures.
-- [ ] TeX atom classes and spacing, binary cancellation, named functions,
+- [x] TeX atom classes and spacing, binary cancellation, named functions,
   large operators, side scripts, and over/under limits.
 - [ ] Fractions and generalized fractions; binomials; roots; delimiters;
   accents; over/under lines, braces, arrows, groups, and segments; overset,
