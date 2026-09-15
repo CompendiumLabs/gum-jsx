@@ -9,21 +9,15 @@
     "gum-jsx-edit",
     "gum-jsx-docs"
   ],
-  "devDependencies": {
-    "gum-jsx-cli": "workspace:*"
-  },
-  "trustedDependencies": [
-    "canvas"
-  ],
   "scripts": {
-    "dev": "bun --filter gum-jsx-edit dev",
-    "build": "bun --filter gum-jsx-edit build",
     "gum": "bun gum-jsx-cli/src/cli.ts",
+    "gum-tex": "bun gum-jsx-cli/src/tex.ts",
+    "dev": "bun --filter @gum-jsx/edit dev",
+    "build": "bun --filter @gum-jsx/edit build",
     "compare": "bun gum-jsx-math/scripts/compare.ts",
-    "visual-test": "bun --filter gum-jsx-cli visual-test",
-    "visual-report": "bun --filter gum-jsx-cli visual-report",
+    "visual-test": "bun --filter @gum-jsx/cli visual-test",
+    "visual-report": "bun --filter @gum-jsx/cli visual-report",
     "typecheck": "bun run --workspaces typecheck",
-    "test": "bun --filter gum-jsx-core test && bun --filter gum-jsx-math test && bun --filter gum-jsx-cli test && bun --filter gum-jsx-docs check && bun --filter gum-jsx-edit check",
-    "gum-tex": "bun gum-jsx-cli/src/tex.ts"
+    "test": "bun --filter @gum-jsx/core test && bun --filter @gum-jsx/math test && bun --filter @gum-jsx/cli test && bun --filter @gum-jsx/docs check && bun --filter @gum-jsx/edit check"
   }
 }
