@@ -336,7 +336,7 @@ KaTeX, converted the AST to ordinary gum elements, measured bundled KaTeX font
 faces, and aligned formulas through an em metric record carrying width, height,
 math-axis anchor, ink overhang, atom class, italic correction, and style scale.
 
-Phases 1–5 now run in `gum-next-math`, including CLI/editor bindings and
+Phases 1–6 now run in `gum-next-math`, including CLI/editor bindings and
 KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
 
 ### Public math elements
@@ -353,17 +353,18 @@ KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
 - [x] **`MathRule`** — scalable line/rule used by fractions, arrays, and
   decorations.
 - [x] **`MathArray`** — aligned rows and columns, separators, row gaps, and rules.
-- [ ] **`MathStretch`** — drawn extensible arrows, groups, segments, and accents.
-- [ ] **`HorizBrace`** — over/under brace with an optional label.
+- [x] **`MathStretch`** — drawn extensible arrows, groups, segments, and accents.
+- [x] **`HorizBrace`** — over/under brace or bracket with an optional label.
+- [x] **`XArrow`** — extensible relation with upper/lower labels.
 - [x] **`MathText`** — atom row with TeX inter-atom spacing and binary-operator
   cancellation.
 - [x] **`SupSub`** — superscripts, subscripts, combined scripts, italic
   correction, style descent, and operator limits.
 - [x] **`Frac`** — fractions with style-dependent numerator/denominator shifts,
   clearance, optional rule, and generalized-fraction behavior.
-- [ ] **`Underline`**, **`Overline`** — rule decorations around arbitrary math.
+- [x] **`Underline`**, **`Overline`** — rule decorations around arbitrary math.
 - [x] **`Sqrt`** — extensible radical with optional index.
-- [ ] **`Accent`** — glyph or stretchy accents with skew and script attachment.
+- [x] **`Accent`** — glyph or stretchy accents with skew and script attachment.
 - [x] **`Bracket`** — auto-sized left/middle/right delimiters and explicit delimiter
   levels.
 - [x] **`Latex`** — parse a TeX string in display or selected style and expose it
@@ -371,15 +372,19 @@ KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
 - [x] **`Tex`** — inline-style `Latex` convenience.
 - [x] **`TextMode`** — literal upright text inside math with family, bold, and
   italic controls.
+- [x] **`Phantom`**, **`Smash`**, **`Lap`** — independently suppress ink,
+  vertical dimensions, or advance while preserving the remaining metrics.
+- [x] **`Enclose`**, **`RaiseBox`**, **`VCenter`**, **`Pmb`** — frames,
+  cancellation, vertical positioning, and overprinted bold.
 
 ### Math capabilities
 
-- [ ] KaTeX parsing with display/text/script/scriptscript and cramped styles,
+- [x] KaTeX parsing with display/text/script/scriptscript and cramped styles,
   style descent, size commands, colors, font families, macros, symbol aliases,
   text mode, and strict/permissive failures.
 - [x] TeX atom classes and spacing, binary cancellation, named functions,
   large operators, side scripts, and over/under limits.
-- [ ] Fractions and generalized fractions; binomials; roots; delimiters;
+- [x] Fractions and generalized fractions; binomials; roots; delimiters;
   accents; over/under lines, braces, arrows, groups, and segments; overset,
   underset, and stackrel.
 - [x] Matrices and the original ordinary math environments: arrays,
@@ -389,7 +394,7 @@ KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
   environments and their variants are listed in the
   [math package](../gum-next-math/README.md#arrays-and-multiline-math).
   Automatic numbering, explicit tags, and `CD` diagrams remain deferred.
-- [ ] Boxes and enclosures: boxed/fbox/colorbox/fcolorbox, cancellation,
+- [x] Boxes and enclosures: boxed/fbox/colorbox/fcolorbox, cancellation,
   strikeout, phantom/smash/lap, rules, raisebox, vcenter, and verbatim.
 - [x] Mix arbitrary gum elements inside formulas and formulas inside normal
   text/layout while preserving a shared axis/baseline protocol.

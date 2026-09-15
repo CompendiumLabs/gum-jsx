@@ -1,6 +1,6 @@
 # Math architecture and implementation roadmap
 
-Status: phases 1–5 implemented, September 14, 2026. Phases 6–8 remain planned.
+Status: phases 1–6 implemented, September 14, 2026. Phases 7–8 remain planned.
 
 The [math package](../gum-next-math/README.md) now supplies glyphs, signed glue,
 rows/columns/boxes, and the first TeX slice, with CLI/editor bindings and
@@ -48,7 +48,7 @@ remain horizontal; rotated children retain their own geometry and guides.
 The phase-4 comparison suite (`bun run compare --suite 4`, optionally `--inline`)
 covers literal text, kerning, text operands/scripts, nested math, and color.
 The CLI and production-browser galleries include the same mixed-content docs.
-Full TeX text-font command composition remains in phase 6.
+Phase 6 completes TeX text-font command composition on this path.
 
 Phase 5 adds [MathArray](../gum-next-docs/elements/text/MathArray.md),
 [matrices and cases](../gum-next-docs/topics/text/MathArrays.md), and
@@ -73,13 +73,64 @@ It caught a delimiter-selection tolerance that could accept a glyph shorter
 than requested; selection now meets the target without that tolerance. Very tall
 delimiters retain the existing scaling fallback rather than extensible-piece
 assembly, and script font metrics and dash patterns can differ from LaTeX.
-Full typography and box operations are the next implementation phase.
+Phase 6 builds on these arrays with typography and box operations.
 
 Phase-5 verification passed: all workspace tests and typechecks, the production
 build, 72 math tests, 145 runnable docs previews (including both development URL
 bases), CLI raster renders, and the production-browser font/reuse/error checks.
 The display and inline galleries contain 20 and 16 comparisons respectively,
 with all three renderers succeeding; the rendered galleries were inspected.
+
+Phase 6 adds [accents and horizontal decorations](../gum-next-docs/topics/text/MathDecorations.md),
+[box operations](../gum-next-docs/topics/text/MathBoxes.md), and
+[composed fonts and macros](../gum-next-docs/topics/text/MathFonts.md).
+`Accent`, `Underline`, `Overline`, `MathStretch`, `HorizBrace`, and `XArrow`
+measure immutable operands before drawing or placing decorations. Wide hats,
+checks, and tildes follow actual width, including figure operands, instead of
+reusing fixed glyphs. Single-character accent scripts attach to the nucleus;
+brace labels leave the brace at its body width, and opposite scripts survive.
+
+`Phantom`, `Smash`, `Lap`, `Enclose`, `RaiseBox`, `VCenter`, and `Pmb` retain
+independent advance, baseline, logical size, and ink. Phantom removes all ink,
+including nested colors/backgrounds. Smash/lap keep ink without restoring
+suppressed dimensions; negative kern/rule advances remain distinct from zero
+advance. TeX rules preserve dimensions and shifts, and frames, cancellation,
+strikeout, hbox, verbatim, overset/underset/stackrel, and all legacy horizontal
+shape families now convert through the adapter.
+
+Text commands compose family, weight, shape, and emphasis with scoped resets
+and kerning across compatible runs. Entering text clears an outer math alphabet;
+text weight/shape still applies to text-like symbols in nested math. Font
+selection checks coverage per glyph, including bold-symbol fallbacks, and
+missing glyphs remain explicit errors. Unavailable sans bold italic and styled
+typewriter combinations use the corresponding Main face, retaining weight and
+shape; the pinned KaTeX renderer instead errors on those missing variants.
+Macro arguments, declarations, local definitions, and per-parse isolation are
+tested. Optional defaults in `\newcommand` remain outside the pinned parser.
+
+The phase-6 galleries use `--suite 6` for common display/inline typography and
+`--suite 6-extra --no-latex` for extended KaTeX commands. Comparison corrected
+accent script attachment, script-sized arrow-label padding, and nested text
+font selection. The harness now captures leading lap/smash overhang in HTML
+and PDF, excludes clipped oversized stretch SVGs from HTML viewport estimates,
+and rejects empty reference images when the formula should have visible ink.
+Gum's own shape curves, LaTeX-style frame padding, and retained opposite brace
+scripts are documented differences. The last can preserve a script KaTeX drops.
+
+All legacy supported node families have named tests, with separate numeric
+checks for the important fields; every stretch shape is exercised in all four
+size styles, and all eighteen font faces are rendered. Thirteen new element
+references and three topics have indented, runnable JSX examples. Automatic
+numbering, tags, `CD` diagrams, exotic enclosures, automatic equation line
+breaking, and extensible-piece vertical delimiters remain deferred. Actual
+line breaks outside arrays fail explicitly; a normal display `\\` is a no-op.
+
+Phase-6 verification passed: all workspace checks, 130 math tests (1,894
+assertions), 161 runnable docs previews at both development URL bases, typechecks,
+the production build, CLI raster renders, and the production-browser checks for
+font loading, reuse, dark decorations, errors, and recovery. The inspected
+galleries contain 24 display and 24 inline Gum/KaTeX/LaTeX comparisons, plus 16
+extended Gum/KaTeX comparisons; every requested renderer succeeded.
 
 The [comparison script](../gum-next-math/scripts/compare.ts) adapts gum-1's tool
 and renders Gum, KaTeX HTML, and pdflatex side by side at equal pixels per em.
