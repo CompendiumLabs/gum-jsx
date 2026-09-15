@@ -10,7 +10,7 @@
     "gum-next-docs"
   ],
   "devDependencies": {
-    "gum-next-cli": "workspace:*"
+    "gum-jsx-cli": "workspace:*"
   },
   "trustedDependencies": [
     "canvas"
