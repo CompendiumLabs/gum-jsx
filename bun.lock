@@ -5,11 +5,11 @@
     "": {
       "name": "gum-next",
       "devDependencies": {
-        "gum-next-cli": "workspace:*",
+        "gum-jsx-cli": "workspace:*",
       },
     },
-    "gum-next-cli": {
-      "name": "gum-next-cli",
+    "gum-jsx-cli": {
+      "name": "gum-jsx-cli",
       "version": "0.1.0",
       "bin": {
         "gum": "src/cli.ts",
@@ -17,17 +17,17 @@
       },
       "dependencies": {
         "commander": "^14.0.3",
-        "gum-next-core": "workspace:*",
-        "gum-next-math": "workspace:*",
-        "gum-next-png": "workspace:*",
+        "gum-jsx-core": "workspace:*",
+        "gum-jsx-math": "workspace:*",
+        "gum-jsx-png": "workspace:*",
       },
       "devDependencies": {
         "@types/bun": "latest",
         "typescript": "^7",
       },
     },
-    "gum-next-core": {
-      "name": "gum-next-core",
+    "gum-jsx-core": {
+      "name": "gum-jsx-core",
       "dependencies": {
         "acorn": "^8.15.0",
         "acorn-jsx": "^5.3.2",
@@ -42,17 +42,17 @@
         "typescript": "^7",
       },
     },
-    "gum-next-docs": {
-      "name": "gum-next-docs",
+    "gum-jsx-docs": {
+      "name": "gum-jsx-docs",
       "devDependencies": {
         "@types/bun": "latest",
-        "gum-next-core": "workspace:*",
-        "gum-next-math": "workspace:*",
+        "gum-jsx-core": "workspace:*",
+        "gum-jsx-math": "workspace:*",
         "typescript": "^7",
       },
     },
-    "gum-next-edit": {
-      "name": "gum-next-edit",
+    "gum-jsx-edit": {
+      "name": "gum-jsx-edit",
       "version": "0.1.0",
       "dependencies": {
         "@codemirror/lang-javascript": "^6.2.5",
@@ -60,8 +60,8 @@
         "@codemirror/legacy-modes": "^6.5.4",
         "@codemirror/view": "^6.43.11",
         "@uiw/react-codemirror": "^4.25.11",
-        "gum-next-core": "workspace:*",
-        "gum-next-math": "workspace:*",
+        "gum-jsx-core": "workspace:*",
+        "gum-jsx-math": "workspace:*",
         "marked": "^18.0.11",
         "react": "^19.3.0",
         "react-dom": "^19.3.0",
@@ -71,29 +71,29 @@
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",
         "@vitejs/plugin-react": "^6.1.1",
-        "gum-next-docs": "workspace:*",
+        "gum-jsx-docs": "workspace:*",
         "tailwindcss": "^4.3.3",
         "typescript": "^7.0.2",
         "vite": "^8.3.0",
       },
     },
-    "gum-next-math": {
-      "name": "gum-next-math",
+    "gum-jsx-math": {
+      "name": "gum-jsx-math",
       "version": "0.1.0",
       "dependencies": {
-        "gum-next-core": "workspace:*",
+        "gum-jsx-core": "workspace:*",
         "katex": "0.16.47",
       },
       "devDependencies": {
         "@types/bun": "latest",
         "canvas": "^3.2.3",
         "commander": "^14.0.3",
-        "gum-next-png": "workspace:*",
+        "gum-jsx-png": "workspace:*",
         "typescript": "^7",
       },
     },
-    "gum-next-png": {
-      "name": "gum-next-png",
+    "gum-jsx-png": {
+      "name": "gum-jsx-png",
       "version": "0.1.0",
       "dependencies": {
         "canvas": "^3.2.3",
@@ -330,17 +330,17 @@
 
     "graceful-fs": ["graceful-fs@4.2.11", "", {}, "sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ=="],
 
-    "gum-next-cli": ["gum-next-cli@workspace:gum-next-cli"],
+    "gum-jsx-cli": ["gum-jsx-cli@workspace:gum-jsx-cli"],
 
-    "gum-next-core": ["gum-next-core@workspace:gum-next-core"],
+    "gum-jsx-core": ["gum-jsx-core@workspace:gum-jsx-core"],
 
-    "gum-next-docs": ["gum-next-docs@workspace:gum-next-docs"],
+    "gum-jsx-docs": ["gum-jsx-docs@workspace:gum-jsx-docs"],
 
-    "gum-next-edit": ["gum-next-edit@workspace:gum-next-edit"],
+    "gum-jsx-edit": ["gum-jsx-edit@workspace:gum-jsx-edit"],
 
-    "gum-next-math": ["gum-next-math@workspace:gum-next-math"],
+    "gum-jsx-math": ["gum-jsx-math@workspace:gum-jsx-math"],
 
-    "gum-next-png": ["gum-next-png@workspace:gum-next-png"],
+    "gum-jsx-png": ["gum-jsx-png@workspace:gum-jsx-png"],
 
     "ieee754": ["ieee754@1.2.1", "", {}, "sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA=="],
 
