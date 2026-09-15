@@ -1,0 +1,18 @@
+[submodule "gum-jsx-core"]
+	path = gum-jsx-core
+	url = git@github.com:CompendiumLabs/gum-jsx-core
+[submodule "gum-jsx-cli"]
+	path = gum-jsx-cli
+	url = git@github.com:CompendiumLabs/gum-jsx-cli
+[submodule "gum-jsx-docs"]
+	path = gum-jsx-docs
+	url = git@github.com:CompendiumLabs/gum-jsx-docs
+[submodule "gum-jsx-edit"]
+	path = gum-jsx-edit
+	url = git@github.com:CompendiumLabs/gum-jsx-edit
+[submodule "gum-jsx-math"]
+	path = gum-jsx-math
+	url = git@github.com:CompendiumLabs/gum-jsx-math
+[submodule "gum-jsx-png"]
+	path = gum-jsx-png
+	url = git@github.com:CompendiumLabs/gum-jsx-png
