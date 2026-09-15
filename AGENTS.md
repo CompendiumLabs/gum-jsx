@@ -23,6 +23,10 @@ This is a ground-up rewrite of gum-1, which resides in `../gum-org` and uses a s
 
 # Git workflow
 
+Write short, single-line commit messages based on your memory of the changes from
+the current session. Avoid re-reading diffs or re-analyzing completed work solely
+to compose commit messages.
+
 “Commit and push everything” means:
 
 1. In each sub-repo, commit all pending changes and push to its `origin` remote.

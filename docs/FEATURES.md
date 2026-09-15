@@ -336,7 +336,7 @@ KaTeX, converted the AST to ordinary gum elements, measured bundled KaTeX font
 faces, and aligned formulas through an em metric record carrying width, height,
 math-axis anchor, ink overhang, atom class, italic correction, and style scale.
 
-Phases 1–4 now run in `gum-next-math`, including CLI/editor bindings and
+Phases 1–5 now run in `gum-next-math`, including CLI/editor bindings and
 KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
 
 ### Public math elements
@@ -352,7 +352,7 @@ KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
 - [x] **`MathBox`** — padding, positioning, width, and atom-class wrapper.
 - [x] **`MathRule`** — scalable line/rule used by fractions, arrays, and
   decorations.
-- [ ] **`MathArray`** — aligned rows and columns, separators, row gaps, and rules.
+- [x] **`MathArray`** — aligned rows and columns, separators, row gaps, and rules.
 - [ ] **`MathStretch`** — drawn extensible arrows, groups, segments, and accents.
 - [ ] **`HorizBrace`** — over/under brace with an optional label.
 - [x] **`MathText`** — atom row with TeX inter-atom spacing and binary-operator
@@ -382,10 +382,13 @@ KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
 - [ ] Fractions and generalized fractions; binomials; roots; delimiters;
   accents; over/under lines, braces, arrows, groups, and segments; overset,
   underset, and stackrel.
-- [ ] Matrices and all original supported KaTeX environments: arrays,
+- [x] Matrices and the original ordinary math environments: arrays,
   `matrix` variants, `cases`, `aligned`, `gathered`, `substack`, `align`,
   `alignat`, `gather`, `equation`, `split`, and `subarray`, with column
-  alignment, separators, `hline`/`hdashline`, and row spacing.
+  alignment, separators, `hline`/`hdashline`, and row spacing. All 32 supported
+  environments and their variants are listed in the
+  [math package](../gum-next-math/README.md#arrays-and-multiline-math).
+  Automatic numbering, explicit tags, and `CD` diagrams remain deferred.
 - [ ] Boxes and enclosures: boxed/fbox/colorbox/fcolorbox, cancellation,
   strikeout, phantom/smash/lap, rules, raisebox, vcenter, and verbatim.
 - [x] Mix arbitrary gum elements inside formulas and formulas inside normal

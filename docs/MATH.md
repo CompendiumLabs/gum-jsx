@@ -1,6 +1,6 @@
 # Math architecture and implementation roadmap
 
-Status: phases 1–4 implemented, September 14, 2026. Phases 5–8 remain planned.
+Status: phases 1–5 implemented, September 14, 2026. Phases 6–8 remain planned.
 
 The [math package](../gum-next-math/README.md) now supplies glyphs, signed glue,
 rows/columns/boxes, and the first TeX slice, with CLI/editor bindings and
@@ -48,8 +48,38 @@ remain horizontal; rotated children retain their own geometry and guides.
 The phase-4 comparison suite (`bun run compare --suite 4`, optionally `--inline`)
 covers literal text, kerning, text operands/scripts, nested math, and color.
 The CLI and production-browser galleries include the same mixed-content docs.
-Full TeX text-font command composition remains in phase 6; arrays
-and multiline math environments are the next implementation phase.
+Full TeX text-font command composition remains in phase 6.
+
+Phase 5 adds [MathArray](../gum-next-docs/elements/text/MathArray.md),
+[matrices and cases](../gum-next-docs/topics/text/MathArrays.md), and
+[aligned equations](../gum-next-docs/topics/text/AlignedMath.md). Immutable cells
+are measured naturally, then placed using shared column advances and row
+baselines. Row struts, array stretch, pre/post gaps, outer spacing, positive and
+negative row gaps, and leading retain the environment's semantics. Solid,
+dashed, double, and intersecting rules have independent, precise ink bounds.
+Cells can contain ordinary Gum elements with explicit dimensions, and a narrow
+offer does not trigger fitting or another measurement search.
+
+The adapter covers all 32 ordinary array/display environments from the pinned
+parser, including the six starred matrix variants, all four cases variants,
+smallmatrix/subarray, and the substack macro. Cell styles and font resets survive
+normalization; aligned relation spacing and last-row leading have numeric
+regressions. Starred and unstarred display environments render without numbers.
+Explicit tags and the entire `CD` environment remain unsupported diagnostics.
+
+The phase-5 comparison suite (`bun run compare --suite 5`, optionally `--inline`)
+includes rules, empty cells, row gaps, font resets, and multiline environments.
+It caught a delimiter-selection tolerance that could accept a glyph shorter
+than requested; selection now meets the target without that tolerance. Very tall
+delimiters retain the existing scaling fallback rather than extensible-piece
+assembly, and script font metrics and dash patterns can differ from LaTeX.
+Full typography and box operations are the next implementation phase.
+
+Phase-5 verification passed: all workspace tests and typechecks, the production
+build, 72 math tests, 145 runnable docs previews (including both development URL
+bases), CLI raster renders, and the production-browser font/reuse/error checks.
+The display and inline galleries contain 20 and 16 comparisons respectively,
+with all three renderers succeeding; the rendered galleries were inspected.
 
 The [comparison script](../gum-next-math/scripts/compare.ts) adapts gum-1's tool
 and renders Gum, KaTeX HTML, and pdflatex side by side at equal pixels per em.
@@ -752,8 +782,9 @@ The main decisions proposed for this review are:
 | First implementation checkpoint | Phases 1–4: core math protocol, ordinary formulas, and composition in both directions. |
 | Parity scope | Correct the confirmed spacing/metrics/limits defects, add `\middle` during delimiter work, and defer tags/CD/specialized features explicitly. |
 
-Phases 1–4 now form the first broadly useful review checkpoint. The next
-implementation phase is phase 5: arrays and multiline math environments.
+Phases 1–5 are implemented, including the first broadly useful review checkpoint
+and arrays. The next implementation phase is phase 6: remaining legacy typography
+and box operations.
 
 [old-elems]: ../../gum-org/gum-jsx-math/src/elems.ts
 [old-symbols]: ../../gum-org/gum-jsx-math/src/symbols.ts
