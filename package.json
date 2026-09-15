@@ -20,6 +20,8 @@
     "build": "bun --filter gum-next-edit build",
     "gum": "bun gum-next-cli/src/cli.ts",
     "compare": "bun gum-next-math/scripts/compare.ts",
+    "visual-test": "bun --filter gum-next-cli visual-test",
+    "visual-report": "bun --filter gum-next-cli visual-report",
     "typecheck": "bun run --workspaces typecheck",
     "test": "bun --filter gum-next-core test && bun --filter gum-next-math test && bun --filter gum-next-cli test && bun --filter gum-next-docs check && bun --filter gum-next-edit check",
     "gum-tex": "bun gum-next-cli/src/tex.ts"
