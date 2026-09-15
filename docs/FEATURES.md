@@ -48,8 +48,9 @@ lengths, and explicit `Fit` remain the foundation.
   bindings, fonts, theme, strictness, text scale, and random streams.
 - [ ] Restore plugins of the form `{ elems, bindings, fonts }`, including
   registration and derived environments with independent settings.
-- [ ] Restore light and dark themes, per-element defaults, and boolean shorthand
-  values such as `padding`, `rounded`, `spacing`, and `grid`.
+- [x] Add inherited light and dark palettes with semantic per-element paint
+  defaults, a light web default, and CLI theme selection (dark for kitty).
+- [ ] Restore boolean shorthand values such as `padding`, `rounded`, `spacing`, and `grid`.
 - [ ] Restore strict rendering mode, with permissive visual fallbacks in normal
   mode and typed failures in strict mode.
 - [ ] Restore deterministic evaluation-local random streams, separately from
