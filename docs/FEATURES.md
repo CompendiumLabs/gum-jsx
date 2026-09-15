@@ -196,7 +196,7 @@ lengths, and explicit `Fit` remain the foundation.
 - [x] **`Span`** — styled inline text runs.
 - [x] **`Text`** — measured paragraphs with real font metrics, wrapping,
   explicit newlines, whitespace handling, alignment, line height, inherited
-  style, and mixed spans.
+  style, mixed spans, and indivisible inline elements with expanding line boxes.
 - [ ] **`TextLine`** — public single-line normalized span container. The fresh
   `Text` owns line construction internally.
 - [ ] **`Verbatim`** — preserved whitespace, tabs, and monospace defaults.
@@ -215,7 +215,7 @@ lengths, and explicit `Fit` remain the foundation.
   marker customization, and item spacing.
 - [x] **`TextBox`**, **`TextFrame`** — box conveniences that accept strings,
   formulas, or text columns directly and supply text-oriented padding defaults.
-  **Basic:** strings, spans, and existing elements are supported; formulas await math.
+  Mixed prose, styled spans, and inline formulas are supported; a sole block is preserved.
 
 ### Labels, slides, and presentation composition
 
@@ -336,7 +336,7 @@ KaTeX, converted the AST to ordinary gum elements, measured bundled KaTeX font
 faces, and aligned formulas through an em metric record carrying width, height,
 math-axis anchor, ink overhang, atom class, italic correction, and style scale.
 
-Phases 1–3 now run in `gum-next-math`, including CLI/editor bindings and
+Phases 1–4 now run in `gum-next-math`, including CLI/editor bindings and
 KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
 
 ### Public math elements
@@ -369,7 +369,7 @@ KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
 - [x] **`Latex`** — parse a TeX string in display or selected style and expose it
   as one gum element.
 - [x] **`Tex`** — inline-style `Latex` convenience.
-- [ ] **`TextMode`** — literal upright text inside math with family, bold, and
+- [x] **`TextMode`** — literal upright text inside math with family, bold, and
   italic controls.
 
 ### Math capabilities
@@ -388,7 +388,7 @@ KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
   alignment, separators, `hline`/`hdashline`, and row spacing.
 - [ ] Boxes and enclosures: boxed/fbox/colorbox/fcolorbox, cancellation,
   strikeout, phantom/smash/lap, rules, raisebox, vcenter, and verbatim.
-- [ ] Mix arbitrary gum elements inside formulas and formulas inside normal
+- [x] Mix arbitrary gum elements inside formulas and formulas inside normal
   text/layout while preserving a shared axis/baseline protocol.
 - [ ] Standalone synchronous and asynchronous `mathToElement` and `mathToSvg`,
   with selective base/full KaTeX font loading.

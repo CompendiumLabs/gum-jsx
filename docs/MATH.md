@@ -1,6 +1,6 @@
 # Math architecture and implementation roadmap
 
-Status: phases 1–3 implemented, September 14, 2026. Phases 4–8 remain planned.
+Status: phases 1–4 implemented, September 14, 2026. Phases 5–8 remain planned.
 
 The [math package](../gum-next-math/README.md) now supplies glyphs, signed glue,
 rows/columns/boxes, and the first TeX slice, with CLI/editor bindings and
@@ -27,6 +27,29 @@ expansions, where KaTeX's original operator-name nodes discard those flags.
 Fractions expose TeX's ordinary atom class. Tall ordinary delimiters retain
 the planned uniform-scaling fallback; vertical bars and radicals preserve width.
 Extensible-piece assembly remains deferred.
+
+Phase 4 connects [formulas inside prose](../gum-next-docs/topics/text/InlineMath.md)
+and [Gum elements inside formulas](../gum-next-docs/topics/text/MathComposition.md).
+Core `Text` has generic indivisible element tokens with Unicode break behavior,
+baseline alignment, and line boxes that accommodate logical inline extents.
+Shaping remains cached across widths; reference-dependent element measurement
+stays in layout. Styled spans pass size/color through, and text boxes, bullet
+items, captions, and titles normalize mixed prose into a paragraph while
+preserving a sole block child.
+
+`TextMode` provides literal runs, spaces, kerning, and bundled text-face controls
+without changing nested math fonts. The existing `\text`/`\textrm`/`\textnormal`
+slice now uses that path, including nested math. Source newlines become spaces;
+wrapping prose belongs in an explicitly sized `Text`. Ordinary operands retain
+their explicit dimensions and first baseline, including plots and multiline
+text. Translation, fitting, and transforms preserve guides when those guides
+remain horizontal; rotated children retain their own geometry and guides.
+
+The phase-4 comparison suite (`bun run compare --suite 4`, optionally `--inline`)
+covers literal text, kerning, text operands/scripts, nested math, and color.
+The CLI and production-browser galleries include the same mixed-content docs.
+Full TeX text-font command composition remains in phase 6; arrays
+and multiline math environments are the next implementation phase.
 
 The [comparison script](../gum-next-math/scripts/compare.ts) adapts gum-1's tool
 and renders Gum, KaTeX HTML, and pdflatex side by side at equal pixels per em.
@@ -729,8 +752,8 @@ The main decisions proposed for this review are:
 | First implementation checkpoint | Phases 1–4: core math protocol, ordinary formulas, and composition in both directions. |
 | Parity scope | Correct the confirmed spacing/metrics/limits defects, add `\middle` during delimiter work, and defer tags/CD/specialized features explicitly. |
 
-The next implementation checkpoint is phase 4: formulas within prose and
-ordinary Gum content within math operands, including text layout and wrapping.
+Phases 1–4 now form the first broadly useful review checkpoint. The next
+implementation phase is phase 5: arrays and multiline math environments.
 
 [old-elems]: ../../gum-org/gum-jsx-math/src/elems.ts
 [old-symbols]: ../../gum-org/gum-jsx-math/src/symbols.ts
