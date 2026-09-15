@@ -319,7 +319,7 @@ reexecute callbacks. Adaptive sampling and discontinuity detection are deferred.
   coordinates and inherited font sizes, preserve source layering and annotations,
   and follow node boundaries through fitting, padding, and arbitrary affine transforms.
   Nested networks have separate ID scopes. See the
-  [connection example](../gum-next-docs/topics/code/network_connections.jsx).
+  [connection example](../gum-jsx-docs/topics/code/network_connections.jsx).
 - [ ] Shared node/edge defaults through prefixed Network props, and arbitrary
   node outlines beyond rounded rectangles and ellipses.
 
@@ -341,7 +341,7 @@ KaTeX, converted the AST to ordinary gum elements, measured bundled KaTeX font
 faces, and aligned formulas through an em metric record carrying width, height,
 math-axis anchor, ink overhang, atom class, italic correction, and style scale.
 
-Phases 1–7 now run in `gum-next-math`, including CLI/editor bindings and
+Phases 1–7 now run in `gum-jsx-math`, including CLI/editor bindings and
 KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
 
 ### Public math elements
@@ -397,7 +397,7 @@ KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
   `alignat`, `gather`, `equation`, `split`, and `subarray`, with column
   alignment, separators, `hline`/`hdashline`, and row spacing. All 32 supported
   environments and their variants are listed in the
-  [math package](../gum-next-math/README.md#arrays-and-multiline-math).
+  [math package](../gum-jsx-math/README.md#arrays-and-multiline-math).
   Automatic numbering, explicit tags, and `CD` diagrams remain deferred.
 - [x] Boxes and enclosures: boxed/fbox/colorbox/fcolorbox, cancellation,
   strikeout, phantom/smash/lap, rules, raisebox, vcenter, and verbatim.
@@ -452,10 +452,10 @@ direct JavaScript use.
 - [x] Seeded random helpers **`setSeed`**, **`random`**, **`uniform`**,
   **`normal`**, and **`integer`**.
 
-The [math reference](../gum-next-docs/topics/text/MathHelpers.md) covers the helper
+The [math reference](../gum-jsx-docs/topics/text/MathHelpers.md) covers the helper
 set and links to runnable examples. Generated arrays are bounded and frozen,
 2D helpers return native points, and random streams belong to individual
-evaluations. See [migration notes](../gum-next-docs/topics/text/Migration.md#numeric-helpers)
+evaluations. See [migration notes](../gum-jsx-docs/topics/text/Migration.md#numeric-helpers)
 for the precise differences in range, singleton linspace, and integer endpoints.
 
 ## Inspection, rendering, and export
@@ -486,11 +486,11 @@ for the precise differences in range, singleton linspace, and integer endpoints.
 ### Node/Bun package
 
 - [x] Rasterize SVG to PNG buffers or raw RGBA pixels through
-  [`gum-next-png`](../gum-next-png/README.md), with raster size, sampling ratio,
+  [`gum-jsx-png`](../gum-jsx-png/README.md), with raster size, sampling ratio,
   and background controls. Fresh-core text is outlined in SVG and needs no
   host-font registration.
 - [x] Kitty graphics protocol encoding for PNG or RGBA pixels in
-  `gum-next-cli`, including chunking, image/placement IDs, terminal cell
+  `gum-jsx-cli`, including chunking, image/placement IDs, terminal cell
   dimensions, cursor movement, and virtual-placement controls.
 - [ ] Unicode placeholder text grids for kitty images under pagers and
   multiplexers.
@@ -521,15 +521,15 @@ for the precise differences in range, singleton linspace, and integer endpoints.
 ## Command-line and authoring workflows
 
 The basic rendering command lives in the separate
-[`gum-next-cli` workspace package](../gum-next-cli/README.md), backed by the core's
+[`gum-jsx-cli` workspace package](../gum-jsx-cli/README.md), backed by the core's
 public API. Run `bun run gum` from the workspace root.
 
 - [x] Separate CLI package with a `gum` executable and workspace
-  scripts; command-line I/O and rasterization are outside `gum-next-core` runtime.
+  scripts; command-line I/O and rasterization are outside `gum-jsx-core` runtime.
 - [x] Render a JSX file or stdin to SVG with explicit or content-sized viewport
   dimensions.
 - [x] Emit a textual layout tree and JSON fragment data.
-- [x] Rasterize CLI output to PNG through `gum-next-png` and node-canvas, with
+- [x] Rasterize CLI output to PNG through `gum-jsx-png` and node-canvas, with
   no external rasterizer command or font registration.
 - [x] Default stdout to kitty graphics, as in the original gum command;
   explicit formats and output file extensions take precedence.

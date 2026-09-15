@@ -5,8 +5,8 @@ immutable layout results. The original scoped roadmap below covers the layout
 foundation. A subsequent [basic plotting slice](PLOTTING.md) now implements
 geometry, coordinates, text composition/slides, plots, and symbolic sampling.
 Arrow and field shafts now account for stroke caps at their head tips; the
-[arrow gallery](../gum-next-docs/topics/code/arrow_caps.jsx) covers the cap and route variants.
-[Network, Node, and Edge](../gum-next-docs/elements/text/Network.md) now connect
+[arrow gallery](../gum-jsx-docs/topics/code/arrow_caps.jsx) covers the cap and route variants.
+[Network, Node, and Edge](../gum-jsx-docs/elements/text/Network.md) now connect
 completed node frames through text reflow, padding, fitting, and affine transforms.
 Edges support explicit ports, waypoints, self loops, and Arrow head styling.
 Wrapping rows and grids remain deferred; the subsequent math work is tracked in
@@ -16,29 +16,29 @@ Typed component scopes now route flat props at construction for arrows, axes,
 plots, legends, titles, and captions. Public `prefix_split`/`prefix_join` helpers
 support custom components. Nested settings remain compatible; scopes preserve
 owner geometry props and merge shared/specific part settings per property.
-See [scoped props](../gum-next-core/README.md#scoped-component-props).
+See [scoped props](../gum-jsx-core/README.md#scoped-component-props).
 
 Stages 1–5 are implemented in this directory, with
 unit and layout checks, JSX evaluation, measured and wrapping text, ordinary shapes,
 Box/Frame/Fit composition, HStack/VStack/Spacer, and runnable
-[docs examples](../gum-next-docs/README.md). Stage 6(a), positioned Group, is
+[docs examples](../gum-jsx-docs/README.md). Stage 6(a), positioned Group, is
 also implemented. The plotting slice followed 6(a); stage 6(b), wrapping stacks,
 remains deferred.
 The basic rendering CLI now lives in the separate
-[`gum-next-cli` workspace package](../gum-next-cli/README.md), with a `gum`
+[`gum-jsx-cli` workspace package](../gum-jsx-cli/README.md), with a `gum`
 executable. The core retains evaluation, layout,
 SVG serialization, fragment inspection, and its development probes. Examples live
-in gum-next-docs and render through the CLI or editor's docs view.
+in gum-jsx-docs and render through the CLI or editor's docs view.
 The CLI defaults to kitty graphics on stdout, including pipes. An output
 filename or explicit format selects kitty, SVG, PNG, tree, or JSON instead.
-The [`gum-next-png` submodule](../gum-next-png/README.md) provides node-canvas
+The [`gum-jsx-png` submodule](../gum-jsx-png/README.md) provides node-canvas
 PNG and raw-pixel rendering for the CLI. It consumes SVG with outlined glyphs,
 so no legacy environment or font registry is needed at rasterization time.
 Content-sized SVG dimensions moved forward into stage 4: a Box can hug a Square,
 and Svg can hug the whole result, with one layout query per element. A fixed-width
 SVG can also derive its height from a framed, wrapping paragraph.
 The agreed decisions and original legacy assessment are preserved in [DESIGN.md](./DESIGN.md).
-This file tracks scope and status; [README.md](../gum-next-core/README.md) covers usage, implementation
+This file tracks scope and status; [README.md](../gum-jsx-core/README.md) covers usage, implementation
 ownership, and contributor commands. The foundation checkpoint is complete through
 6(a). Overlay and explicit transforms were added with plotting; wrapping/grid milestones below remain
 future work. See [PLOTTING](PLOTTING.md) for the current additions.
@@ -113,9 +113,9 @@ default; a container asks the same layout method for natural or constrained
 geometry. Classes extend `Element` with static layout and optional defaults,
 normalization, and bounds hooks. The inherited constructor keeps construction
 independent of queries; `define_element` uses the same machinery. See
-[custom elements](../gum-next-docs/topics/text/CustomElements.md) and the contracts
-in [element.ts](../gum-next-core/src/engine/element.ts),
-[pass.ts](../gum-next-core/src/engine/pass.ts), and [fragment.ts](../gum-next-core/src/engine/fragment.ts).
+[custom elements](../gum-jsx-docs/topics/text/CustomElements.md) and the contracts
+in [element.ts](../gum-jsx-core/src/engine/element.ts),
+[pass.ts](../gum-jsx-core/src/engine/pass.ts), and [fragment.ts](../gum-jsx-core/src/engine/fragment.ts).
 
 Each axis request distinguishes `natural`, `available(value)`, and `exact(value)`.
 Available space is a budget: a child can report needing more. An exact request fixes the
@@ -139,17 +139,17 @@ followed by element implementation.
 
 | Milestone | Status | Deliverable / completion reference |
 |---|---|---|
-| 1. Contracts and units | Complete | Lengths, references, sizing precedence, and fragments; [contract probes](../gum-next-core/test/fixtures/contracts.ts) distinguish indefinite axes from zero. |
-| 2. Elements and SVG | Complete | Immutable descriptions, queries, JSX, SVG, and CLI; [repeated.jsx](../gum-next-docs/topics/code/repeated.jsx) reuses descriptions and fragments at different placements and sizes. |
-| 3. Text and shapes | Complete | Font measurement, wrapping, styled runs, baselines, glyph paths, and ordinary shapes; [paragraph.jsx](../gum-next-docs/topics/code/paragraph.jsx) and [shape cards](../gum-next-docs/topics/code/shape_cards.jsx). |
-| 4. Box composition | Complete | Box/Frame/Fit and content-sized Svg; [Frame](../gum-next-docs/elements/code/Frame.jsx) and [Box](../gum-next-docs/elements/code/Box.jsx). |
-| 5. Stacks | Complete | HStack/VStack/Spacer, gaps, basis/grow/shrink, min/max, alignment, baselines, and overflow; [HStack](../gum-next-docs/elements/code/HStack.jsx) composes a mixed row. |
-| 6(a). Positioned Group | Complete | A finite canvas with fractional/px/em positions, anchors, nested references, and clipping; [Group](../gum-next-docs/elements/code/Group.jsx). |
+| 1. Contracts and units | Complete | Lengths, references, sizing precedence, and fragments; [contract probes](../gum-jsx-core/test/fixtures/contracts.ts) distinguish indefinite axes from zero. |
+| 2. Elements and SVG | Complete | Immutable descriptions, queries, JSX, SVG, and CLI; [repeated.jsx](../gum-jsx-docs/topics/code/repeated.jsx) reuses descriptions and fragments at different placements and sizes. |
+| 3. Text and shapes | Complete | Font measurement, wrapping, styled runs, baselines, glyph paths, and ordinary shapes; [paragraph.jsx](../gum-jsx-docs/topics/code/paragraph.jsx) and [shape cards](../gum-jsx-docs/topics/code/shape_cards.jsx). |
+| 4. Box composition | Complete | Box/Frame/Fit and content-sized Svg; [Frame](../gum-jsx-docs/elements/code/Frame.jsx) and [Box](../gum-jsx-docs/elements/code/Box.jsx). |
+| 5. Stacks | Complete | HStack/VStack/Spacer, gaps, basis/grow/shrink, min/max, alignment, baselines, and overflow; [HStack](../gum-jsx-docs/elements/code/HStack.jsx) composes a mixed row. |
+| 6(a). Positioned Group | Complete | A finite canvas with fractional/px/em positions, anchors, nested references, and clipping; [Group](../gum-jsx-docs/elements/code/Group.jsx). |
 | 6(b). Wrapping stacks | Next, unimplemented | Wrap measured items into lines, then allocate and align each line with stable references and explicit overflow. |
 | 6. Remaining composition | Pending | Content-sized overlays, a simple grid, and an optional common-height figure policy; separate slices after wrapping. |
 | 7. Stabilize the new core | Pending | Consolidate API documentation, diagnostics, numerical contracts, SVG/browser inspection, and measured layout costs. |
 
-**Milestone 1 established the contracts and defaults.** [defaults.ts](../gum-next-core/src/engine/defaults.ts)
+**Milestone 1 established the contracts and defaults.** [defaults.ts](../gum-jsx-core/src/engine/defaults.ts)
 contains the 16px font and natural shape fallback, 1.2em line height, and 1px stroke.
 The probes cover a fixed viewport, hugging content, a half-width child, tight aspect
 allocations, and insufficient space for padding. Zero-size content remains distinct
@@ -319,7 +319,7 @@ reasonable task is concisely expressible. If it's not, that may be a sign that
 changes are needed.
 
 Use the workspace rendering CLI, `bun run gum`, from the workspace root to rapidly
-try example code, for example `bun run gum gum-next-docs/elements/code/Group.jsx -f tree`.
+try example code, for example `bun run gum gum-jsx-docs/elements/code/Group.jsx -f tree`.
 Browser work remains deferred. Build up the example gallery as you go so we can
 both keep track of coverage.
 

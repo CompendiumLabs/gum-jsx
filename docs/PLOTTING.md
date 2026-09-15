@@ -17,8 +17,8 @@ reference while keeping the fresh immutable source/layout/fragment model.
 Run examples from the workspace root:
 
 ```sh
-bun run gum gum-next-docs/topics/code/plot_wave.jsx -o /tmp/plot.png
-bun run gum gum-next-docs/topics/code/plot_bars.jsx -f tree
+bun run gum gum-jsx-docs/topics/code/plot_wave.jsx -o /tmp/plot.png
+bun run gum gum-jsx-docs/topics/code/plot_bars.jsx -f tree
 ```
 
 ## Implemented slices
@@ -31,17 +31,17 @@ bun run gum gum-next-docs/topics/code/plot_bars.jsx -f tree
 | 4. Plot composition | Linear ticks, axes and independent scale/label/mesh parts, measured margins, titles, legend, bars, BarPlot, and Plot. |
 | 5. Symbolic geometry | Shared scalar/parametric/array sampler; sampled lines, splines, polygons, points, bands, and vector fields. |
 
-The [plotting reference](../gum-next-docs/elements/text/Plot.md),
-[coordinate reference](../gum-next-docs/topics/text/Coordinates.md), and
-[sampling reference](../gum-next-docs/topics/text/Sampling.md) describe the APIs.
+The [plotting reference](../gum-jsx-docs/elements/text/Plot.md),
+[coordinate reference](../gum-jsx-docs/topics/text/Coordinates.md), and
+[sampling reference](../gum-jsx-docs/topics/text/Sampling.md) describe the APIs.
 Every public element has a runnable page. The editor's Plotting category exposes
 plots and their parts.
 
-[Math and array helpers](../gum-next-docs/topics/text/MathHelpers.md), including
+[Math and array helpers](../gum-jsx-docs/topics/text/MathHelpers.md), including
 range, linspace, sin/cos, polar, and seeded random sampling, are available directly
 in JSX and as named imports. Examples use the shared helpers for their data.
 
-[Point inputs](../gum-next-docs/topics/text/PointValues.md) accept `[x,y]` or `{x,y}`,
+[Point inputs](../gum-jsx-docs/topics/text/PointValues.md) accept `[x,y]` or `{x,y}`,
 including mixed lists and length-valued pairs. For example,
 `<CoordLine points={zip(xs, xs.map(sin))} />` uses array helpers directly.
 Marker/field callbacks and generated points retain named coordinates.
@@ -106,17 +106,17 @@ From the workspace root:
 ```sh
 bun run test
 bun run typecheck
-bun --cwd gum-next-docs run check
+bun --cwd gum-jsx-docs run check
 bun run build
 ```
 
-From gum-next-core, also check public declaration emission:
+From gum-jsx-core, also check public declaration emission:
 
 ```sh
-bun tsc --noEmit false --declaration --emitDeclarationOnly --outDir /tmp/gum-next-types
+bun tsc --noEmit false --declaration --emitDeclarationOnly --outDir /tmp/gum-jsx-types
 ```
 
-The [docs showcases](../gum-next-docs/README.md#showcases) include a curve with an
+The [docs showcases](../gum-jsx-docs/README.md#showcases) include a curve with an
 uncertainty band, negative categorical bars, custom markers on a reversed axis,
 a field, and a slide. Use the CLI to render at different widths or inspect SVG,
 PNG, and numerical trees; generated previews are not checked in.

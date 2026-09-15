@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "gum-next",
+      "name": "gum-jsx",
       "devDependencies": {
         "gum-jsx-cli": "workspace:*",
       },

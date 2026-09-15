@@ -2,14 +2,14 @@
 
 Status: phases 1–7 implemented, September 15, 2026. Phase 8 remains planned.
 
-The [math package](../gum-next-math/README.md) now supplies glyphs, signed glue,
+The [math package](../gum-jsx-math/README.md) now supplies glyphs, signed glue,
 rows/columns/boxes, and the first TeX slice, with CLI/editor bindings and
-[runnable examples](../gum-next-docs/topics/text/Math.md). Core carries passive
+[runnable examples](../gum-jsx-docs/topics/text/Math.md). Core carries passive
 math metrics/context and lazy font registration; it does not depend on math.
 KaTeX is pinned to 0.16.47.
 
 Phase 3 adds `MathOp`, `SupSub`, `Frac`, `Sqrt`, and `Bracket`, with
-[ordinary-expression examples](../gum-next-docs/topics/text/MathExpressions.md).
+[ordinary-expression examples](../gum-jsx-docs/topics/text/MathExpressions.md).
 It covers all eight styles, TeX size declarations and `\mathchoice`, scripts,
 operator limits, generalized/continued fractions, binomials, root indices,
 fixed delimiters, and complete left/middle/right delimiter groups. `size_index`
@@ -28,8 +28,8 @@ Fractions expose TeX's ordinary atom class. Tall ordinary delimiters retain
 the planned uniform-scaling fallback; vertical bars and radicals preserve width.
 Extensible-piece assembly remains deferred.
 
-Phase 4 connects [formulas inside prose](../gum-next-docs/topics/text/InlineMath.md)
-and [Gum elements inside formulas](../gum-next-docs/topics/text/MathComposition.md).
+Phase 4 connects [formulas inside prose](../gum-jsx-docs/topics/text/InlineMath.md)
+and [Gum elements inside formulas](../gum-jsx-docs/topics/text/MathComposition.md).
 Core `Text` has generic indivisible element tokens with Unicode break behavior,
 baseline alignment, and line boxes that accommodate logical inline extents.
 Shaping remains cached across widths; reference-dependent element measurement
@@ -50,9 +50,9 @@ covers literal text, kerning, text operands/scripts, nested math, and color.
 The CLI and production-browser galleries include the same mixed-content docs.
 Phase 6 completes TeX text-font command composition on this path.
 
-Phase 5 adds [MathArray](../gum-next-docs/elements/text/MathArray.md),
-[matrices and cases](../gum-next-docs/topics/text/MathArrays.md), and
-[aligned equations](../gum-next-docs/topics/text/AlignedMath.md). Immutable cells
+Phase 5 adds [MathArray](../gum-jsx-docs/elements/text/MathArray.md),
+[matrices and cases](../gum-jsx-docs/topics/text/MathArrays.md), and
+[aligned equations](../gum-jsx-docs/topics/text/AlignedMath.md). Immutable cells
 are measured naturally, then placed using shared column advances and row
 baselines. Row struts, array stretch, pre/post gaps, outer spacing, positive and
 negative row gaps, and leading retain the environment's semantics. Solid,
@@ -81,9 +81,9 @@ bases), CLI raster renders, and the production-browser font/reuse/error checks.
 The display and inline galleries contain 20 and 16 comparisons respectively,
 with all three renderers succeeding; the rendered galleries were inspected.
 
-Phase 6 adds [accents and horizontal decorations](../gum-next-docs/topics/text/MathDecorations.md),
-[box operations](../gum-next-docs/topics/text/MathBoxes.md), and
-[composed fonts and macros](../gum-next-docs/topics/text/MathFonts.md).
+Phase 6 adds [accents and horizontal decorations](../gum-jsx-docs/topics/text/MathDecorations.md),
+[box operations](../gum-jsx-docs/topics/text/MathBoxes.md), and
+[composed fonts and macros](../gum-jsx-docs/topics/text/MathFonts.md).
 `Accent`, `Underline`, `Overline`, `MathStretch`, `HorizBrace`, and `XArrow`
 measure immutable operands before drawing or placing decorations. Wide hats,
 checks, and tildes follow actual width, including figure operands, instead of
@@ -132,9 +132,9 @@ font loading, reuse, dark decorations, errors, and recovery. The inspected
 galleries contain 24 display and 24 inline Gum/KaTeX/LaTeX comparisons, plus 16
 extended Gum/KaTeX comparisons; every requested renderer succeeded.
 
-Phase 7 adds [standalone exports](../gum-next-docs/topics/text/MathExport.md),
-[formula labels on plots](../gum-next-docs/topics/text/MathPlotLabels.md), and
-[math in slides](../gum-next-docs/topics/text/MathSlides.md). `mathToElement`
+Phase 7 adds [standalone exports](../gum-jsx-docs/topics/text/MathExport.md),
+[formula labels on plots](../gum-jsx-docs/topics/text/MathPlotLabels.md), and
+[math in slides](../gum-jsx-docs/topics/text/MathSlides.md). `mathToElement`
 returns an immutable SVG source whose viewport is measured during ordinary
 layout. It includes logical bounds and visible ink, translates negative extents,
 adds Gum-length padding, and gives empty axes a one-pixel floor. Explicit SVG
@@ -169,7 +169,7 @@ standalone library SVG exactly. Eight Gum/KaTeX/LaTeX export comparisons all
 succeeded and their gallery was inspected. Core and PNG need no changes for
 this phase.
 
-The [comparison script](../gum-next-math/scripts/compare.ts) adapts gum-1's tool
+The [comparison script](../gum-jsx-math/scripts/compare.ts) adapts gum-1's tool
 and renders Gum, KaTeX HTML, and pdflatex side by side at equal pixels per em.
 The first ten-formula gallery caught an italic-spacing defect: TeX correction
 must come from font metric data, independently of measured ink overhang. This
@@ -178,12 +178,12 @@ color grouping and text spacing can differ. The script preserves diagnostics
 and exits unsuccessfully if any requested renderer fails.
 
 Verification commands are `bun run test`, `bun run typecheck`, `bun run build`,
-`bun gum-next-math/scripts/check-browser.ts`, and
-`bun run compare --suite -S 48 -o gum-next-math/out/comparison.png`.
+`bun gum-jsx-math/scripts/check-browser.ts`, and
+`bun run compare --suite -S 48 -o gum-jsx-math/out/comparison.png`.
 The remaining sections retain the original architecture review and roadmap.
 
 The recommendation is to retain gum-1's math model and typographic rules in a
-separate `gum-next-math` package, implemented on gum-next's existing
+separate `gum-jsx-math` package, implemented on Gum's existing
 element/layout/fragment protocol. Keep KaTeX for parsing and its font assets;
 use Gum's own layout and glyph outlines for rendering. Prioritize ordinary
 formulas, direct JSX composition, and math inside prose, then complete the
@@ -210,7 +210,7 @@ The review follows the sibling `../../gum-org` checkout, especially:
 | [example corpus][old-corpus], [test runner][old-tests], [comparison tool][old-compare] | Feature examples, strict rendering checks, and comparison with KaTeX and pdflatex. |
 
 Reviewed math revision: `732770e`; legacy core: `a2d449a`; legacy umbrella
-package: `4b6aced`. Gum-next core is `b205edd`. The legacy workspace has local
+package: `4b6aced`. gum-jsx core is `b205edd`. The legacy workspace has local
 manifest/lockfile changes; its **installed KaTeX and workspace lock resolve to
 0.16.47**, while the math package declares `^0.16.33`.
 
@@ -230,7 +230,7 @@ Review-time checks:
   type does not mean every command, field, or combination using it is supported.
 - Ran targeted comparisons for spacing, accents, fractions, limits, unsupported
   nodes, and missing glyphs; findings appear below.
-- Registered all 18 legacy KaTeX TTF faces with gum-next's existing `Fonts` and
+- Registered all 18 legacy KaTeX TTF faces with Gum's existing `Fonts` and
   shaped representative letters, operators, delimiters, and a radical. No font
   library replacement is needed for the initial port.
 
@@ -337,7 +337,7 @@ short external line box.
 element can retain its measured em box and text anchor. An element without
 metrics gets a one-em-high box, as wide as its aspect ratio, centered on the
 axis. This automatic aspect-based adaptation is the old engine's convention,
-not something gum-next should silently reproduce. [Adapters][old-em-layout]
+not something gum-jsx should silently reproduce. [Adapters][old-em-layout]
 
 `MathRow` and `MathCol` use core's shared em stack layout. `place_math` assembles
 explicitly positioned children for scripts, fractions, accents, and limits.
@@ -349,7 +349,7 @@ These operations clone elements with new rectangles and patched metrics.
 Cloning reconstructs elements, so `with_em` also maintains a rebuilding recipe
 to preserve adaptations such as zero width, smash, and script scale. The
 complexity is visible in `rebuild_em`, `EM_ADAPTATION`, and the clone regression
-examples. Immutable fragments let gum-next express these as result data and
+examples. Immutable fragments let gum-jsx express these as result data and
 placements instead.
 
 Prose uses a separate bridge: `ElemSpan` recognizes em-aware children and pins
@@ -407,7 +407,7 @@ or simply “the converter has a branch for this node.”
 
 The review confirmed these concrete gaps:
 
-| Finding | Evidence and consequence for gum-next |
+| Finding | Evidence and consequence for gum-jsx |
 |---|---|
 | Negative kern is lost | `a\!b` and `ab` produce identical SVG in both display and inline modes, even though KaTeX produces a `kern` of `-3mu`. Preserve **signed advance** separately from nonnegative fragment sizes. |
 | Wide hat is a fixed hat | `\widehat{abcdef}` and `\hat{abcdef}` produce identical SVG. `ACCENT_LABEL_FALLBACK` also maps wide check/tilde to fixed glyphs. Treat wide-accent sizing as real work, not completed coverage. |
@@ -415,7 +415,7 @@ The review confirmed these concrete gaps:
 | Explicit limits do not always win | In inline mode `\int\limits_0^1` renders identically to `\int_0^1`. `MathOp` gates its limits flag on display style, and conversion does not preserve all explicit-limit semantics. Distinguish automatic, forced, and disabled limits. |
 | Missing structural constructs | Strict probes fail for `\middle` and `\tag`. The `CD` arrow sample fails on its unsupported arrow label; having an `array`/`xArrow` branch is insufficient. These need enclosing-body, display-width, or table-cell information respectively. |
 | Missing glyphs and decorations | `\origof` fails strict glyph lookup; `\phase{x}` fails strict enclosure handling. Keep unsupported features visible and documented. Font-command fallback, such as `\mathbb{a1A}`, is a separate supported behavior. |
-| Large operators have real overhang | Gum-next's font probe measures Size2 `∮` with advance `0.556em` and rightmost ink at `0.944em`: `0.388em` lies beyond the advance. Gum-1's `MathSpan` does not record that horizontal ink in `hink`. Preserving advance and visible ink separately is essential. |
+| Large operators have real overhang | Gum's font probe measures Size2 `∮` with advance `0.556em` and rightmost ink at `0.944em`: `0.388em` lies beyond the advance. Gum-1's `MathSpan` does not record that horizontal ink in `hink`. Preserving advance and visible ink separately is essential. |
 
 The coverage notes also report script-style fraction/delimiter drift. That
 remains a visual/metric comparison task; this review did not remeasure the
@@ -427,7 +427,7 @@ KaTeX in a browser, and optionally pdflatex at the same em size. Use it as a
 reference harness, with accepted differences recorded per feature. A strict
 render success is a smoke check, not a typography oracle.
 
-## 4. How this fits gum-next
+## 4. How this fits Gum
 
 The [feature inventory][next-features] already lists the desired public math
 elements. Existing `src/lib/math.ts` and `test/math.ts` contain numeric helpers;
@@ -448,7 +448,7 @@ they are unrelated to formula typesetting and should retain that role.
 
 ### Recommended package boundary
 
-Add `gum-next-math` as another Bun workspace package and, following this
+Add `gum-jsx-math` as another Bun workspace package and, following this
 workspace's repository structure, a separate repository/submodule when that
 package is established. It depends on core and a pinned KaTeX version. Core
 must not import KaTeX or depend on math. CLI/editor explicitly compose core
@@ -463,7 +463,7 @@ skew, and geometry data.
 A suggested split, to avoid recreating the legacy monolith:
 
 ```text
-gum-next-math/src/
+gum-jsx-math/src/
   index.ts          public elements, bindings, and helper exports
   parse.ts          KaTeX adapter and conversion to immutable math descriptions
   types.ts          math source/context types and atom semantics
@@ -602,7 +602,7 @@ comes later.
 
 ### Phase 1 — Package, metrics, and glyphs
 
-Establish `gum-next-math`, workspace wiring, the parser dependency baseline,
+Establish `gum-jsx-math`, workspace wiring, the parser dependency baseline,
 and the narrow core protocol additions. Implement font registration/loading,
 glyph coverage inspection, context/cache identity, atom metrics, explicit
 placement helpers, `MathSpan`, `MathSymbol`, and `MathRule`.
@@ -651,7 +651,7 @@ integration small by using `evaluate`'s existing scope option.
   an exact small box reports overflow and does not rescale glyphs.
 
 Primary work: math parsing, spacing, row/box elements, errors, evaluator-host
-bindings, and focused examples in `gum-next-docs`.
+bindings, and focused examples in `gum-jsx-docs`.
 
 ### Phase 3 — Ordinary mathematical expressions
 
@@ -781,7 +781,7 @@ immutable source description: its natural viewport is determined during normal
 layout. SVG helpers create/use a pass and font resources; async helpers preload
 first. PNG/kitty conveniences stay in their existing host packages.
 
-Add a `gum-tex` entry point in `gum-next-cli` using the shared rendering path.
+Add a `gum-tex` entry point in `gum-jsx-cli` using the shared rendering path.
 Finish editor font loading, bindings/completions, errors, and math documentation
 navigation. Add examples for formula labels on axes/plots and math in slides.
 Update the feature inventory only as behavior becomes available.
@@ -806,7 +806,7 @@ unnecessary.
 
 ### Phase 8 — Parity review and stabilization
 
-Migrate the legacy examples to gum-next syntax, then run a coverage audit
+Migrate the legacy examples to Gum syntax, then run a coverage audit
 against the pinned parser. Keep a matrix of node types, commands, significant
 fields, environments, and explicit unsupported cases. Record intentional
 differences from gum-1 alongside the examples that demonstrate them.
@@ -864,7 +864,7 @@ The main decisions proposed for this review are:
 | Package/dependency scope | Separate math workspace/submodule; KaTeX parser/fonts behind one pinned adapter; no core dependency on math. |
 | Engine integration | Ordinary layout queries and fragments, with a small transported math context and passive atom metric record. |
 | Rendering | Fontkit outlines and existing drawing primitives; retain independent logical advance and ink. |
-| Authoring | Preserve familiar math element names and direct JSX composition; use gum-next units and explicit fitting for figures. |
+| Authoring | Preserve familiar math element names and direct JSX composition; use gum-jsx units and explicit fitting for figures. |
 | Prose | Generic inline-element support in `Text`, with line height expanded by logical extents and formulas kept indivisible. |
 | Error behavior | Explicit failures by default; optional visible editor diagnostics. No silent dropped nodes. |
 | First implementation checkpoint | Phases 1–4: core math protocol, ordinary formulas, and composition in both directions. |
@@ -891,18 +891,18 @@ phase is phase 8: parity review, performance measurement, and stabilization.
 [old-design]: ../../gum-org/gum-jsx-math/docs/design.md
 [old-coverage]: ../../gum-org/gum-jsx-math/docs/katex.md
 [next-features]: FEATURES.md
-[next-element]: ../gum-next-core/src/engine/element.ts
-[next-pass]: ../gum-next-core/src/engine/pass.ts
-[next-fragment]: ../gum-next-core/src/engine/fragment.ts
-[next-fonts]: ../gum-next-core/src/engine/fonts.ts
-[next-text]: ../gum-next-core/src/elems/text.ts
-[next-box]: ../gum-next-core/src/elems/box.ts
-[next-stack]: ../gum-next-core/src/elems/stack.ts
-[next-svg-element]: ../gum-next-core/src/elems/svg.ts
-[next-svg]: ../gum-next-core/src/svg.ts
-[next-eval]: ../gum-next-core/src/eval.ts
-[next-edit]: ../gum-next-edit/src/gum.ts
-[next-png]: ../gum-next-png/src/render.ts
-[next-document]: ../gum-next-core/src/elems/document.ts
-[next-axis]: ../gum-next-core/src/elems/axis.ts
-[next-plot]: ../gum-next-core/src/elems/plot.ts
+[next-element]: ../gum-jsx-core/src/engine/element.ts
+[next-pass]: ../gum-jsx-core/src/engine/pass.ts
+[next-fragment]: ../gum-jsx-core/src/engine/fragment.ts
+[next-fonts]: ../gum-jsx-core/src/engine/fonts.ts
+[next-text]: ../gum-jsx-core/src/elems/text.ts
+[next-box]: ../gum-jsx-core/src/elems/box.ts
+[next-stack]: ../gum-jsx-core/src/elems/stack.ts
+[next-svg-element]: ../gum-jsx-core/src/elems/svg.ts
+[next-svg]: ../gum-jsx-core/src/svg.ts
+[next-eval]: ../gum-jsx-core/src/eval.ts
+[next-edit]: ../gum-jsx-edit/src/gum.ts
+[next-png]: ../gum-jsx-png/src/render.ts
+[next-document]: ../gum-jsx-core/src/elems/document.ts
+[next-axis]: ../gum-jsx-core/src/elems/axis.ts
+[next-plot]: ../gum-jsx-core/src/elems/plot.ts

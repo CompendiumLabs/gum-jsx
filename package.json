@@ -1,5 +1,5 @@
 {
-  "name": "gum-next",
+  "name": "gum-jsx",
   "private": true,
   "workspaces": [
     "gum-jsx-core",
