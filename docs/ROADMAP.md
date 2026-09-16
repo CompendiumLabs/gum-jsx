@@ -5,8 +5,8 @@ immutable layout results. The original scoped roadmap below covers the layout
 foundation. A subsequent [basic plotting slice](PLOTTING.md) now implements
 geometry, coordinates, text composition/slides, plots, and symbolic sampling.
 Arrow and field shafts now account for stroke caps at their head tips; the
-[arrow gallery](../gum-jsx-docs/topics/code/arrow_caps.jsx) covers the cap and route variants.
-[Network, Node, and Edge](../gum-jsx-docs/elements/text/Network.md) now connect
+[arrow gallery](../gum-jsx-docs/docs/gallery/code/arrow_caps.jsx) covers the cap and route variants.
+[Network, Node, and Edge](../gum-jsx-docs/docs/elements/text/Network.md) now connect
 completed node frames through text reflow, padding, fitting, and affine transforms.
 Edges support explicit ports, waypoints, self loops, and Arrow head styling.
 Wrapping rows and grids remain deferred; the subsequent math work is tracked in
@@ -113,7 +113,7 @@ default; a container asks the same layout method for natural or constrained
 geometry. Classes extend `Element` with static layout and optional defaults,
 normalization, and bounds hooks. The inherited constructor keeps construction
 independent of queries; `define_element` uses the same machinery. See
-[custom elements](../gum-jsx-docs/topics/text/CustomElements.md) and the contracts
+[custom elements](../gum-jsx-docs/docs/gallery/text/CustomElements.md) and the contracts
 in [element.ts](../gum-jsx-core/src/engine/element.ts),
 [pass.ts](../gum-jsx-core/src/engine/pass.ts), and [fragment.ts](../gum-jsx-core/src/engine/fragment.ts).
 
@@ -140,11 +140,11 @@ followed by element implementation.
 | Milestone | Status | Deliverable / completion reference |
 |---|---|---|
 | 1. Contracts and units | Complete | Lengths, references, sizing precedence, and fragments; [contract probes](../gum-jsx-core/test/fixtures/contracts.ts) distinguish indefinite axes from zero. |
-| 2. Elements and SVG | Complete | Immutable descriptions, queries, JSX, SVG, and CLI; [repeated.jsx](../gum-jsx-docs/topics/code/repeated.jsx) reuses descriptions and fragments at different placements and sizes. |
-| 3. Text and shapes | Complete | Font measurement, wrapping, styled runs, baselines, glyph paths, and ordinary shapes; [paragraph.jsx](../gum-jsx-docs/topics/code/paragraph.jsx) and [shape cards](../gum-jsx-docs/topics/code/shape_cards.jsx). |
-| 4. Box composition | Complete | Box/Frame/Fit and content-sized Svg; [Frame](../gum-jsx-docs/elements/code/Frame.jsx) and [Box](../gum-jsx-docs/elements/code/Box.jsx). |
-| 5. Stacks | Complete | HStack/VStack/Spacer, gaps, basis/grow/shrink, min/max, alignment, baselines, and overflow; [HStack](../gum-jsx-docs/elements/code/HStack.jsx) composes a mixed row. |
-| 6(a). Positioned Group | Complete | A finite canvas with fractional/px/em positions, anchors, nested references, and clipping; [Group](../gum-jsx-docs/elements/code/Group.jsx). |
+| 2. Elements and SVG | Complete | Immutable descriptions, queries, JSX, SVG, and CLI; [repeated.jsx](../gum-jsx-docs/docs/gallery/code/repeated.jsx) reuses descriptions and fragments at different placements and sizes. |
+| 3. Text and shapes | Complete | Font measurement, wrapping, styled runs, baselines, glyph paths, and ordinary shapes; [paragraph.jsx](../gum-jsx-docs/docs/gallery/code/paragraph.jsx) and [shape cards](../gum-jsx-docs/docs/gallery/code/shape_cards.jsx). |
+| 4. Box composition | Complete | Box/Frame/Fit and content-sized Svg; [Frame](../gum-jsx-docs/docs/elements/code/Frame.jsx) and [Box](../gum-jsx-docs/docs/elements/code/Box.jsx). |
+| 5. Stacks | Complete | HStack/VStack/Spacer, gaps, basis/grow/shrink, min/max, alignment, baselines, and overflow; [HStack](../gum-jsx-docs/docs/elements/code/HStack.jsx) composes a mixed row. |
+| 6(a). Positioned Group | Complete | A finite canvas with fractional/px/em positions, anchors, nested references, and clipping; [Group](../gum-jsx-docs/docs/elements/code/Group.jsx). |
 | 6(b). Wrapping stacks | Next, unimplemented | Wrap measured items into lines, then allocate and align each line with stable references and explicit overflow. |
 | 6. Remaining composition | Pending | Content-sized overlays, a simple grid, and an optional common-height figure policy; separate slices after wrapping. |
 | 7. Stabilize the new core | Pending | Consolidate API documentation, diagnostics, numerical contracts, SVG/browser inspection, and measured layout costs. |
@@ -319,7 +319,7 @@ reasonable task is concisely expressible. If it's not, that may be a sign that
 changes are needed.
 
 Use the workspace rendering CLI, `bun run gum`, from the workspace root to rapidly
-try example code, for example `bun run gum gum-jsx-docs/elements/code/Group.jsx -f tree`.
+try example code, for example `bun run gum gum-jsx-docs/docs/elements/code/Group.jsx -f tree`.
 Browser work remains deferred. Build up the example gallery as you go so we can
 both keep track of coverage.
 

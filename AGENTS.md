@@ -14,7 +14,7 @@ Run `bun install` from the top level. The root `package.json` provides shared co
 # Examples
 
 Keep JSX examples readable with indented, multiline nested elements, following
-the formatting in `gum-jsx-docs/elements/code`. Put compound math operands on
+the formatting in `gum-jsx-docs/docs/elements/code`. Put compound math operands on
 separate lines rather than compressing an expression's element tree onto one line.
 
 # Prior Work

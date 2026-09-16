@@ -319,7 +319,7 @@ reexecute callbacks. Adaptive sampling and discontinuity detection are deferred.
   coordinates and inherited font sizes, preserve source layering and annotations,
   and follow node boundaries through fitting, padding, and arbitrary affine transforms.
   Nested networks have separate ID scopes. See the
-  [connection example](../gum-jsx-docs/topics/code/network_connections.jsx).
+  [connection example](../gum-jsx-docs/docs/gallery/code/network_connections.jsx).
 - [ ] Shared node/edge defaults through prefixed Network props, and arbitrary
   node outlines beyond rounded rectangles and ellipses.
 
@@ -452,10 +452,10 @@ direct JavaScript use.
 - [x] Seeded random helpers **`setSeed`**, **`random`**, **`uniform`**,
   **`normal`**, and **`integer`**.
 
-The [math reference](../gum-jsx-docs/topics/text/MathHelpers.md) covers the helper
+The [math reference](../gum-jsx-docs/docs/gallery/text/MathHelpers.md) covers the helper
 set and links to runnable examples. Generated arrays are bounded and frozen,
 2D helpers return native points, and random streams belong to individual
-evaluations. See [migration notes](../gum-jsx-docs/topics/text/Migration.md#numeric-helpers)
+evaluations. See [migration notes](../gum-jsx-docs/docs/gallery/text/Migration.md#numeric-helpers)
 for the precise differences in range, singleton linspace, and integer endpoints.
 
 ## Inspection, rendering, and export
