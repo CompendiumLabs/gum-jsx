@@ -5,6 +5,7 @@
     "gum-jsx-core",
     "gum-jsx-math",
     "gum-jsx-png",
+    "gum-jsx-pdf",
     "gum-jsx-cli",
     "gum-jsx-edit",
     "gum-jsx-docs"

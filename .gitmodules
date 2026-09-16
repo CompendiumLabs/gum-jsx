@@ -16,3 +16,6 @@
 [submodule "gum-jsx-png"]
 	path = gum-jsx-png
 	url = git@github.com:CompendiumLabs/gum-jsx-png
+[submodule "gum-jsx-pdf"]
+	path = gum-jsx-pdf
+	url = git@github.com:CompendiumLabs/gum-jsx-pdf

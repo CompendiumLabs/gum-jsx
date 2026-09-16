@@ -7,7 +7,6 @@
     },
     "gum-jsx-cli": {
       "name": "@gum-jsx/cli",
-      "version": "0.1.0",
       "bin": {
         "gum": "src/cli.ts",
         "gum-tex": "src/tex.ts",
@@ -50,7 +49,6 @@
     },
     "gum-jsx-edit": {
       "name": "@gum-jsx/edit",
-      "version": "0.1.0",
       "dependencies": {
         "@codemirror/lang-javascript": "^6.2.5",
         "@codemirror/language": "^6.12.4",
@@ -76,7 +74,6 @@
     },
     "gum-jsx-math": {
       "name": "@gum-jsx/math",
-      "version": "0.1.0",
       "dependencies": {
         "@gum-jsx/core": "workspace:*",
         "katex": "0.16.47",
@@ -89,9 +86,15 @@
         "typescript": "^7",
       },
     },
+    "gum-jsx-pdf": {
+      "name": "@gum-jsx/pdf",
+      "devDependencies": {
+        "@types/bun": "latest",
+        "typescript": "^7",
+      },
+    },
     "gum-jsx-png": {
       "name": "@gum-jsx/png",
-      "version": "0.1.0",
       "dependencies": {
         "canvas": "^3.2.3",
       },
@@ -136,6 +139,8 @@
     "@gum-jsx/edit": ["@gum-jsx/edit@workspace:gum-jsx-edit"],
 
     "@gum-jsx/math": ["@gum-jsx/math@workspace:gum-jsx-math"],
+
+    "@gum-jsx/pdf": ["@gum-jsx/pdf@workspace:gum-jsx-pdf"],
 
     "@gum-jsx/png": ["@gum-jsx/png@workspace:gum-jsx-png"],
 
