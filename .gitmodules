@@ -19,3 +19,6 @@
 [submodule "gum-jsx-pdf"]
 	path = gum-jsx-pdf
 	url = git@github.com:CompendiumLabs/gum-jsx-pdf
+[submodule "gum-jsx-mark"]
+	path = gum-jsx-mark
+	url = git@github.com:CompendiumLabs/gum-jsx-mark
