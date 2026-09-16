@@ -10,9 +10,11 @@
       "bin": {
         "gum": "src/cli.ts",
         "gum-tex": "src/tex.ts",
+        "gum-mark": "src/mark.ts",
       },
       "dependencies": {
         "@gum-jsx/core": "workspace:*",
+        "@gum-jsx/mark": "workspace:*",
         "@gum-jsx/math": "workspace:*",
         "@gum-jsx/pdf": "workspace:*",
         "@gum-jsx/png": "workspace:*",
@@ -71,6 +73,19 @@
         "tailwindcss": "^4.3.3",
         "typescript": "^7.0.2",
         "vite": "^8.3.0",
+      },
+    },
+    "gum-jsx-mark": {
+      "name": "@gum-jsx/mark",
+      "dependencies": {
+        "@gum-jsx/core": "workspace:*",
+        "@gum-jsx/math": "workspace:*",
+        "@gum-jsx/png": "workspace:*",
+        "marked": "^18.0.11",
+      },
+      "devDependencies": {
+        "@types/bun": "latest",
+        "typescript": "^7",
       },
     },
     "gum-jsx-math": {
@@ -148,6 +163,8 @@
     "@gum-jsx/docs": ["@gum-jsx/docs@workspace:gum-jsx-docs"],
 
     "@gum-jsx/edit": ["@gum-jsx/edit@workspace:gum-jsx-edit"],
+
+    "@gum-jsx/mark": ["@gum-jsx/mark@workspace:gum-jsx-mark"],
 
     "@gum-jsx/math": ["@gum-jsx/math@workspace:gum-jsx-math"],
 
