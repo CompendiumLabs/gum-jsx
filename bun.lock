@@ -14,6 +14,7 @@
       "dependencies": {
         "@gum-jsx/core": "workspace:*",
         "@gum-jsx/math": "workspace:*",
+        "@gum-jsx/pdf": "workspace:*",
         "@gum-jsx/png": "workspace:*",
         "commander": "^14.0.3",
       },
@@ -89,6 +90,9 @@
     "gum-jsx-pdf": {
       "name": "@gum-jsx/pdf",
       "devDependencies": {
+        "@gum-jsx/core": "workspace:*",
+        "@gum-jsx/math": "workspace:*",
+        "@gum-jsx/png": "workspace:*",
         "@types/bun": "latest",
         "typescript": "^7",
       },

@@ -19,6 +19,6 @@
     "visual-test": "bun --filter @gum-jsx/cli visual-test",
     "visual-report": "bun --filter @gum-jsx/cli visual-report",
     "typecheck": "bun run --workspaces typecheck",
-    "test": "bun --filter @gum-jsx/core test && bun --filter @gum-jsx/math test && bun --filter @gum-jsx/cli test && bun --filter @gum-jsx/docs check && bun --filter @gum-jsx/edit check"
+    "test": "bun --filter @gum-jsx/core test && bun --filter @gum-jsx/math test && bun --filter @gum-jsx/pdf test && bun --filter @gum-jsx/cli test && bun --filter @gum-jsx/docs check && bun --filter @gum-jsx/edit check"
   }
 }

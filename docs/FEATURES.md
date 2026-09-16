@@ -533,11 +533,13 @@ public API. Run `bun run gum` from the workspace root.
   no external rasterizer command or font registration.
 - [x] Default stdout to kitty graphics, as in the original gum command;
   explicit formats and output file extensions take precedence.
+- [x] Single-page vector PDF output from `gum` and `gum-tex`, selected with
+  `-f pdf` or a `.pdf` filename, with document title and background options.
 - [ ] Batteries-included `gum` command with automatic output format selection,
   SVG/PNG/PDF/kitty/layout/JSON formats, theme, background, raster size, zoom,
   depth/select inspection, strictness, seed, and original unit-size options.
 - [ ] Live `gum --dev` terminal refresh while a source file changes.
-- [x] `gum-tex` command for standalone TeX to SVG, PNG, kitty, tree, or JSON;
+- [x] `gum-tex` command for standalone TeX to SVG, PNG, PDF, kitty, tree, or JSON;
   literal/file/stdin input, font size, padding, macros, and explicit fitting.
 - [ ] Multi-file and directory deck loading with natural filename ordering.
 - [ ] Deck `index.json` for explicit slide order, shared prelude, and document
