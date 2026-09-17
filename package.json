@@ -15,6 +15,7 @@
     "gum": "bun gum-jsx-cli/src/cli.ts",
     "gum-tex": "bun gum-jsx-cli/src/tex.ts",
     "gum-mark": "bun gum-jsx-cli/src/mark.ts",
+    "skill": "bun --filter @gum-jsx/docs skill",
     "dev": "bun --filter @gum-jsx/edit dev",
     "build": "bun --filter @gum-jsx/edit build",
     "compare": "bun gum-jsx-math/scripts/compare.ts",
