@@ -9,7 +9,8 @@
     "gum-jsx-mark",
     "gum-jsx-cli",
     "gum-jsx-edit",
-    "gum-jsx-docs"
+    "gum-jsx-docs",
+    "gum-jsx-mcp"
   ],
   "scripts": {
     "gum": "bun gum-jsx-cli/src/cli.ts",
