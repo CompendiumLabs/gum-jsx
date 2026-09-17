@@ -22,3 +22,6 @@
 [submodule "gum-jsx-mark"]
 	path = gum-jsx-mark
 	url = git@github.com:CompendiumLabs/gum-jsx-mark
+[submodule "gum-jsx-mcp"]
+	path = gum-jsx-mcp
+	url = git@github.com:CompendiumLabs/gum-jsx-mcp
