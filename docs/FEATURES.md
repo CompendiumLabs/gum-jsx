@@ -315,6 +315,8 @@ reexecute callbacks. Adaptive sampling and discontinuity detection are deferred.
 - [x] **`Edge`** — arrow between node IDs or node instances; infer attachment
   sides, trim to node boundaries, route straight, curved, or rounded paths, and
   style shaft and heads independently.
+- [x] **Generic nodes** — any element with an `id` is an edge endpoint; boxes and
+  basic shapes connect at their visible outline and other elements at their allocation.
 - [x] **`Network`** — lay out nodes before resolving edges, establish Graph
   coordinates and inherited font sizes, preserve source layering and annotations,
   and follow node boundaries through fitting, padding, and arbitrary affine transforms.
