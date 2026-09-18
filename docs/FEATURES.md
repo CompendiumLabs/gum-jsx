@@ -203,7 +203,9 @@ lengths, and explicit `Fit` remain the foundation.
 - [ ] **`Verbatim`** — preserved whitespace, tabs, and monospace defaults.
 - [ ] **`Bold`**, **`Italic`** — text convenience wrappers. Their behavior is
   available through ordinary `font_weight` and `font_style` props.
-- [ ] Emoji measurement and host-font fallback behavior.
+- [x] Emoji measurement and host-font fallback behavior. A bundled metrics face
+  measures emoji clusters, which the SVG keeps as live text for the host's Noto
+  Color Emoji or system emoji font. Other faces can register with `fallback: true`.
 
 ### Text-aware layout
 
