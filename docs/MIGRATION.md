@@ -30,9 +30,9 @@ cover those slices in detail.
 | Text that scales down to fit its box | Text reflows at a fixed font size and reports overflow; wrap it in **Fit** to scale it |
 | Bold / Italic wrappers | `font-weight` / `font-style` on **Text** or **Span** |
 | TextBox / TextFrame / TextCol / TextRow | Same names; text reflows at the allocated width and font size stays fixed |
-| LabelBox | A content-hugging **TextBox** (`width="fit"`) |
+| LabelBox | A **TextBox**, content-sized by default |
 | Absolute | Ordinary `px(...)` width and height |
-| fit flag on an element | Explicit **Fit** wrapper |
+| fit flag on an element | `fit` on a composition; whole standalone formulas shrink automatically |
 | Line points as coordinate pairs | **Line** `from` / `to`; **Polyline** or **Polygon** `points`. All accept `[x, y]` or `{ x, y }` |
 | SVG path strings and the MoveCmd / LineCmd / CubicSplineCmd constructors | **Path** commands built with move_to, line_to, quad_to, curve_to, close_path. Arc and corner commands are absent |
 | Graph clones geometry into a coord | Explicit coordinate context; **CoordLine** and the plotting marks map their data |
