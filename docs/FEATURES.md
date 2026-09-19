@@ -459,7 +459,7 @@ direct JavaScript use.
 The [math reference](../gum-jsx-docs/docs/gallery/text/MathHelpers.md) covers the helper
 set and links to runnable examples. Generated arrays are bounded and frozen,
 2D helpers return native points, and random streams belong to individual
-evaluations. See [migration notes](../gum-jsx-docs/docs/gallery/text/Migration.md#numeric-helpers)
+evaluations. See [migration notes](./MIGRATION.md#numeric-helpers)
 for the precise differences in range, singleton linspace, and integer endpoints.
 
 ## Inspection, rendering, and export
