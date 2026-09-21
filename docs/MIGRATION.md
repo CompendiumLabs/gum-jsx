@@ -26,7 +26,7 @@ cover those slices in detail.
 | Stack with `direc` | **HStack** / **VStack**; there is no public Stack |
 | Automatic stack figure fitting, share, even | Explicit `basis` / `grow` / `shrink` and chosen dimensions; **Spacer** for flexible space |
 | spacing and direction-sensitive justify / valign | `gap`, cross-axis `align`, main-axis `justify`, and `align-self` on a direct child |
-| Text scale / justify | `font-size` / `text-align` |
+| Text scale / justify | `font-size` / `justify` |
 | Text that scales down to fit its box | Text reflows at a fixed font size and reports overflow; wrap it in **Fit** to scale it |
 | Bold / Italic wrappers | `font-weight` / `font-style` on **Text** or **Span** |
 | TextBox / TextFrame / TextCol / TextRow | Same names; text reflows at the allocated width and font size stays fixed |
