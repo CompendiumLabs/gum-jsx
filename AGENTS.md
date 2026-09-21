@@ -11,6 +11,11 @@ This is a Bun workspace. Each package is a separate Git repository included as a
 
 Run `bun install` from the top level. The root `package.json` provides shared commands, and `bun.lock` is the workspace lockfile.
 
+Every package exposes `bun run test`. Keep tests and test runners in its `test/`
+directory; docs examples stay in their existing collections. From the workspace
+root, `bun run test` runs every package's suite sequentially. Use `bun run typecheck`
+for the separate TypeScript checks.
+
 # Examples
 
 Keep JSX examples readable with indented, multiline nested elements, following

@@ -178,7 +178,7 @@ color grouping and text spacing can differ. The script preserves diagnostics
 and exits unsuccessfully if any requested renderer fails.
 
 Verification commands are `bun run test`, `bun run typecheck`, `bun run build`,
-`bun gum-jsx-math/scripts/check-browser.ts`, and
+`bun --filter @gum-jsx/math test:browser`, and
 `bun run compare --suite -S 48 -o gum-jsx-math/out/comparison.png`.
 The remaining sections retain the original architecture review and roadmap.
 

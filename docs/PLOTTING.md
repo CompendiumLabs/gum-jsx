@@ -106,7 +106,7 @@ From the workspace root:
 ```sh
 bun run test
 bun run typecheck
-bun --cwd gum-jsx-docs run check
+bun --cwd gum-jsx-docs run test
 bun run build
 ```
 
