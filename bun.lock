@@ -111,6 +111,7 @@
         "@gum-jsx/core": "workspace:*",
         "@gum-jsx/docs": "workspace:*",
         "@gum-jsx/math": "workspace:*",
+        "@gum-jsx/png": "workspace:*",
         "@modelcontextprotocol/ext-apps": "^1.7.5",
         "@modelcontextprotocol/sdk": "^1.30.0",
         "zod": "^4.5.4",
