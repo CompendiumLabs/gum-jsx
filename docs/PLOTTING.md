@@ -88,8 +88,9 @@ domains. Long categorical labels may need fewer ticks or rotation. Tiny plots
 can have zero-sized data areas and retain overflow. Legends occupy the top-right
 data corner and can cover marks.
 
-Wrapping rows, Grid/TextGrid, arbitrary element-level transform shorthand,
-edge-attached titles, and other unchecked details in FEATURES remain deferred.
+Wrapping rows and focused Grid/TextGrid layout are now implemented; see
+[Grid](../gum-jsx-docs/docs/elements/text/Grid.md). Arbitrary element-level transform
+shorthand, edge-attached titles, and other unchecked details in FEATURES remain deferred.
 Pixel sizing already covers the old Absolute use case.
 
 ## Verification and examples

@@ -217,7 +217,9 @@ Most of the original surface now has a counterpart, often with a different API:
 
 ## What is not ported?
 
-- Layout: Grid, TextGrid, and an optional common-height figure policy.
+- Layout: the optional common-height figure policy and legacy Grid aspect/track
+  inference. [Grid](../gum-jsx-docs/docs/elements/text/Grid.md) and TextGrid now use
+  explicit column counts or length/auto track arrays with content-sized rows.
   Use `HStack wrap` or `TextRow wrap` for wrapping rows; there is no HWrap alias.
 - Text: TextLine, Verbatim, and native selectable SVG text. Use `whitespace="pre"`
   with the `mono` family for preformatted text.

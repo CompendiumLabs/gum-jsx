@@ -104,8 +104,10 @@ lengths, and explicit `fit` remain the foundation.
   text, and nested containers.
 - [x] **`HWrap` capability** — `HStack wrap` and `TextRow wrap` form rows at an
   offered width, with `gap`, `line_gap`, and per-line flex allocation. No HWrap alias.
-- [ ] **`Grid`** — row/column grid with inferred or explicit track proportions,
-  spacing, missing-cell fillers, and an inferred overall aspect.
+- [x] **`Grid`** — shared columns with an explicit count for equal widths or a
+  length/auto track array, content-sized rows, separate gaps, and cell alignment.
+  **Basic:** use an empty Box for a missing cell; spans, CSS track sizing, automatic
+  column counts, and inferred overall aspect remain deferred.
 - [x] **`Points`** — clone a configurable point shape at a list of coordinates,
   with scalar, pair, or functional point sizes.
 - [x] **`Anchor`** — place a child around a zero-width or zero-height anchor line.
@@ -211,7 +213,8 @@ lengths, and explicit `fit` remain the foundation.
 - [x] **`TextStack`** — em-based mixed text/figure stack.
 - [x] **`TextCol`**, **`TextRow`** — text-aware column and row with inherited
   type scale, wrapping, fixed-size children, and shared remaining space.
-- [ ] **`TextGrid`** — equal text columns filled row by row.
+- [x] **`TextGrid`** — Grid with string/number conversion and em-based gaps,
+  filled row by row with text wrapping at the selected column widths.
 - [x] **`TextFigure`** — figure with an em-sized image area and caption.
 - [x] **`Bullets`** — wrapped bulleted and nested lists with shared indentation,
   marker customization, and item spacing.
@@ -569,14 +572,15 @@ public API. Run `bun run gum` from the workspace root.
 ## Suggested dependency order
 
 Steps 1–5 now have basic implementations; [PLOTTING](PLOTTING.md) records the
-slice and remaining limits. Grid and advanced unchecked details remain
-deferred. This sequence still records dependencies rather than parity targets.
+slice and remaining limits. Grid/TextGrid now provide focused shared-column
+layout; advanced unchecked details remain deferred. This sequence still records
+dependencies rather than parity targets.
 
 The exact milestones belong in `ROADMAP.md`; this order only records major
 feature dependencies exposed by the original system.
 
 1. Finish general composition: remaining placement, transforms, and coordinate
-   mapping (except for grid).
+   mapping, and shared-column grids.
 2. Complete geometry and reusable path primitives, then data-coordinate graphs.
 3. Add text-aware composition, labels, and slide structure on the shared
    baseline/axis protocol.
@@ -592,4 +596,4 @@ feature dependencies exposed by the original system.
 
 ## Save For Later
 
-- Grid/TextGrid and optional common-height figure allocation
+- Advanced grid tracks/spans and optional common-height figure allocation

@@ -11,7 +11,8 @@ Arrow and field shafts now account for stroke caps at their head tips; the
 [Network, Node, and Edge](../gum-jsx-docs/docs/elements/text/Network.md) now connect
 completed node frames through text reflow, padding, fitting, and affine transforms.
 Edges support explicit ports, waypoints, self loops, and Arrow head styling.
-Wrapping rows are implemented through `HStack wrap`; grids remain deferred; the subsequent math work is tracked in
+Wrapping rows are implemented through `HStack wrap`; Grid/TextGrid now share column
+widths across content-sized rows; the subsequent math work is tracked in
 [MATH.md](./MATH.md).
 
 Typed component scopes now route flat props at construction for arrows, axes,
@@ -42,8 +43,9 @@ SVG can also derive its height from a framed, wrapping paragraph.
 The agreed decisions and original legacy assessment are preserved in [DESIGN.md](./DESIGN.md).
 This file tracks scope and status; [core API reference](../gum-jsx-core/API.md) covers usage, implementation
 ownership, and contributor commands. The foundation checkpoint is complete through
-6(b). Overlay and explicit transforms were added with plotting; grid and
-optional common-height allocation remain future work. See [PLOTTING](PLOTTING.md) for the current additions.
+6(b), with focused Grid/TextGrid layout added for 2.0. Overlay and explicit
+transforms were added with plotting; optional common-height allocation remains
+future work. See [PLOTTING](PLOTTING.md) for the current additions.
 
 **The agreed direction is a Flutter/SwiftUI synthesis.** Parents control allocation and
 position; children answer layout requests with geometry. A parent may make more than one
@@ -148,7 +150,8 @@ followed by element implementation.
 | 5. Stacks | Complete | HStack/VStack/Spacer, gaps, basis/grow/shrink, min/max, alignment, baselines, and overflow; [HStack](../gum-jsx-docs/docs/elements/code/HStack.jsx) composes a mixed row. |
 | 6(a). Positioned Group | Complete | A finite canvas with fractional/px/em positions, anchors, nested references, and clipping; [Group](../gum-jsx-docs/docs/elements/code/Group.jsx). |
 | 6(b). Wrapping stacks | Complete | `HStack wrap` / `TextRow wrap`, per-line flex, `line_gap`, and stable references; see [stack wrapping tests](../gum-jsx-core/test/stack_wrap.ts). |
-| 6. Remaining composition | Pending | A simple grid and an optional common-height figure policy. Overlay and wrapping stacks are implemented. |
+| 6(c). Grids | Complete | Grid/TextGrid with equal, length, and auto columns, content-sized rows, gaps, and cell alignment; see [grid tests](../gum-jsx-core/test/grid.ts). |
+| 6. Remaining composition | Pending | An optional common-height figure policy. Overlay, wrapping stacks, and focused grids are implemented. |
 | 7. Stabilize the new core | Pending | Consolidate API documentation, diagnostics, numerical contracts, SVG/browser inspection, and measured layout costs. |
 
 **Milestone 1 established the contracts and defaults.** [defaults.ts](../gum-jsx-core/src/engine/defaults.ts)
@@ -257,8 +260,8 @@ The gallery includes the mixed row nested in columns at two widths, completely n
 stack composition, flex limits and shrinkage, baselines, distributed packing, and stretch.
 
 **Milestone 6 is partially complete.** Positioned Group is implemented as 6(a).
-Wrapping stacks remain deferred in 6(b). The plotting slice added Overlay;
-grid tracks and the optional common-height figure policy remain separate work.
+Wrapping stacks are implemented in 6(b), followed by focused grids in 6(c).
+The plotting slice added Overlay; the optional common-height figure policy remains deferred.
 Keep reflow into a region distinct from fitting an already laid-out drawing into it.
 
 Stage 6(a) implements Group as a positioned canvas. Dimensions and finite offers
@@ -277,12 +280,16 @@ per-line growth/shrinkage and cross-axis alignment. `line_gap` controls row spac
 See the [HStack reference](../gum-jsx-docs/docs/elements/text/HStack.md) and
 [wrapping tests](../gum-jsx-core/test/stack_wrap.ts).
 
+Stage 6(c) implements Grid/TextGrid: equal columns divide a finite width or use the
+widest natural cell; explicit length/auto tracks retain their selected widths.
+Rows hug cells measured at those widths, with stable cell references and a bounded
+vertical fill/stretch pass. See the [Grid reference](../gum-jsx-docs/docs/elements/text/Grid.md).
+
 Remaining composition slices are:
 
 - Implemented with plotting: Overlay has one explicit sizing child and non-sizing
   decorations. Group continues to provide layering on a finite canvas.
-- A simple grid with explicit columns and fixed or weighted tracks. Full CSS track
-  sizing is deferred.
+- Advanced grid track sizing, spans, and automatic column counts remain deferred.
 - Common-height figure allocation as a named optional row policy. Solve straightforward
   aspect-only cases directly. If mixed text/figure fitting needs search, document the
   assumptions, bound the work, reuse prepared content, and retain the last known feasible

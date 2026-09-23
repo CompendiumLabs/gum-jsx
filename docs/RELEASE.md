@@ -50,10 +50,19 @@ Constructor TypeScript types and existing value/layout checks remain in place.
 These are scope decisions, not automatic requirements for 2.0:
 
 - [x] Include decks, shared preludes, and multipage PDF.
-- [ ] Decide whether CLI watch mode ships in 2.0.
-- [ ] Decide whether Grid/TextGrid and SVG image embedding ship in 2.0.
+- [x] Omit CLI watch/live-preview mode from 2.0.
+- [x] Include focused Grid/TextGrid layout in 2.0.
+- [ ] Decide whether SVG image embedding ships in 2.0.
 - [x] Explicitly document selectable text and PDF emoji limitations ([migration](./MIGRATION.md#layout-contracts), [fonts](../gum-jsx-docs/docs/gallery/text/Fonts.md#fallback-faces-and-emoji)).
 - [x] Explicitly document linear-only plot axes and unsupported equation numbering/tags ([plotting](./PLOTTING.md), [math](./MATH.md)).
+
+Scope decision (2026-09-23): omit CLI watch/live-preview mode from 2.0.
+The CLI remains a one-shot renderer; use the web editor for live authoring previews.
+
+Scope decision (2026-09-23): include Grid and TextGrid with explicit column counts,
+equal/length/auto column widths, content-sized rows, gaps, and cell alignment.
+Spans, automatic column counts, CSS track sizing, and inferred overall aspect
+remain deferred. See the [Grid reference](../gum-jsx-docs/docs/elements/text/Grid.md).
 
 ## Final validation and publication
 
