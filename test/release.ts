@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { pack } from '../scripts/release'
 import { checkBrowser } from './release-browser'
+import { pdfImageChecks } from './release-pdf'
 
 const directory = mkdtempSync(join(tmpdir(), 'gum-release-'))
 const keep = process.argv.includes('--keep')
@@ -58,7 +59,7 @@ try {
 
   await Bun.write(join(directory, 'consumer.tsx'), `
 import assert from 'node:assert/strict'
-import { evaluate, render_element, px, Fonts, Text } from '@gum-jsx/core'
+import { evaluate, render_element, px, Fonts, Text, PngImage } from '@gum-jsx/core'
 import { mathToSvg } from '@gum-jsx/math'
 import { rasterize_svg, rasterize_pixels } from '@gum-jsx/png'
 import { select_svg } from '@gum-jsx/png/selection'
@@ -78,6 +79,7 @@ assert.equal(png.toString('hex', 0, 8), '89504e470d0a1a0a')
 assert.ok(rasterize_pixels(result.svg).data.length > 0)
 assert.ok(select_svg(result.svg, { x: 0, y: 0, width: 5, height: 5 }, result.size).includes('<svg'))
 assert.ok(new TextDecoder().decode(render_pdf(result.fragment)).startsWith('%PDF-'))
+${pdfImageChecks}
 assert.ok(displayMarkdown('# Hello').includes('Hello'))
 assert.ok(getElements().tags.includes('Plot'))
 assert.ok(getGuides().tags.includes('Gum'))
@@ -108,7 +110,7 @@ export default function Figure() { return <GUM.Text>Packed React CLI</GUM.Text> 
   // Browser consumers must supply core font assets for runtime URL loading.
   // Math fonts are static imports and are copied by the bundler itself.
   await Bun.write(join(directory, 'browser.ts'), `
-export { Fonts, render_element, Text } from '@gum-jsx/core'
+export { Fonts, render_element, Text, PngImage } from '@gum-jsx/core'
 export { mathToSvgAsync } from '@gum-jsx/math'
 export { render_pdf } from '@gum-jsx/pdf'
 export { Gum } from '@gum-jsx/react'
@@ -120,7 +122,7 @@ export { select_svg } from '@gum-jsx/png/selection'
   assert.equal(result.outputs.filter(output => output.path.endsWith('.ttf')).length, 18)
   console.log('Packed browser entry points bundle with all 18 math font assets')
   await checkBrowser(directory)
-  console.log('Release artifact checks passed; PDF transparency patch remains a separate release gate.')
+  console.log('Release artifact checks passed, including the documented tiny RGB PNG limitation.')
 } finally {
   if (keep) console.log(`Artifacts and consumer retained in ${directory}`)
   else rmSync(directory, { recursive: true, force: true })

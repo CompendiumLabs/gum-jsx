@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { join, resolve } from 'node:path'
+import { pdfImageChecks } from './release-pdf'
 
 // Run against only the installed tarballs and their emitted browser assets.
 export async function checkBrowser(directory: string): Promise<void> {
@@ -7,7 +8,7 @@ export async function checkBrowser(directory: string): Promise<void> {
   assert.ok(chrome, 'Chromium is required for release checks; set GUM_CHROME to its path')
   const html = `<!doctype html><html><body><pre id="status">Loading</pre>
 <script type="module">
-import { Fonts, Text, render_element, mathToSvgAsync, render_pdf } from '/browser/browser.js';
+import { Fonts, Text, PngImage, render_element, mathToSvgAsync, render_pdf } from '/browser/browser.js';
 try {
   const fonts = new Fonts();
   await fonts.load();
@@ -16,6 +17,7 @@ try {
   const math = await mathToSvgAsync(String.raw\`\\frac{x}{y}\`);
   if (!math.includes('<path')) throw Error('Math outlines missing');
   if (!new TextDecoder().decode(render_pdf(text.fragment)).startsWith('%PDF-')) throw Error('PDF failed');
+  ${pdfImageChecks}
   document.body.dataset.result = 'passed';
   document.querySelector('#status').textContent = 'Passed';
 } catch (error) {

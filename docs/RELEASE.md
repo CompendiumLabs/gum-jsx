@@ -21,13 +21,17 @@ Publishing and release tags are separate final steps.
 - [x] Verify browser bundling and font asset delivery from the packaged libraries.
 - [x] Document build, pack, verification, and publication order.
 
-## 3. PDF dependency patch
+## 3. PDF decoder scope
 
-- [ ] Carry the tiny-RGB PNG transparency fix into installations outside this workspace.
-- [ ] Exercise the regression against the published PDF artifact without root patches.
+- [x] Use unmodified `fast-png` and remove the workspace dependency patch.
+- [x] Document the accepted tiny-RGB transparency limitation and RGBA workaround.
+- [x] Verify supported PNG images and the accepted rejection in packed Bun and browser consumers.
 
-The workspace currently patches `fast-png`; release verification must not hide
-that requirement. This remains a release blocker until resolved.
+Scope decision (2026-09-22): accept `fast-png` 8.0.0's rejection of RGB PNGs with
+one or two pixels and a `tRNS` transparency key. This is no longer a release
+blocker. Ordinary RGBA PNGs (including transparent 1×1 images) and larger RGB
+images with transparency keys remain supported. Convert affected inputs to RGBA.
+Revisit the rejection tests when a future decoder release fixes the issue.
 
 ## 4. Prop diagnostics
 
@@ -120,8 +124,9 @@ consumer, and exercises library entry points, all four commands, browser exports
 and delivery of all 25 bundled font faces. It checks licenses and dependency
 versions and ensures dependencies do not resolve back into the workspace.
 Use `bun run release:check --offline` with a populated Bun cache, or add `--keep`
-to retain the consumer for inspection. It deliberately does not apply the
-workspace PDF patch: the tiny-RGB regression remains the separate gate in item 3.
+to retain the consumer for inspection. PNG-to-PDF checks cover supported RGBA
+and RGB transparency-key images plus the accepted one- and two-pixel RGB
+rejection, in both Bun and the browser. No dependency patches are applied.
 
 `release:pack` writes tarballs and `artifacts.json` to `dist/release`. Packing
 rewrites `workspace:*` dependencies to the coordinated version. Native packages
@@ -140,6 +145,9 @@ On 2026-09-22, with Bun 1.4.2 on Linux:
   matrix examples and the editor browser previews were visually inspected.
 - The editor browser regression and isolated packed-consumer checks passed,
   including all four CLIs, native PNG/PDF, browser text/math/PDF, and font loading.
+- After removing the decoder patch, packed Bun and browser consumers verified
+  RGBA and larger RGB transparency-key images, and the documented rejection of
+  one- and two-pixel RGB transparency keys at both 8- and 16-bit depths.
 
 These are preparation results. Rerun the final checklist against the exact
 candidate after resolving remaining blockers. The editor build still reports

@@ -512,7 +512,9 @@ for the precise differences in range, singleton linspace, and integer endpoints.
 - [ ] Multipage documents, page labels/bookmarks, and broader document metadata.
 - [ ] Embedded fonts and searchable/selectable text. Current output uses outlines;
   live color-font text such as emoji is rejected.
-- [ ] Release the PNG transparency decoder fix independently of the workspace patch.
+- [x] Use unmodified `fast-png`, with the accepted limitation that one- and
+  two-pixel RGB PNGs using a `tRNS` transparency key cannot be exported. RGBA
+  images are unaffected; an upstream decoder fix can remove this limitation.
 
 ## React integration
 

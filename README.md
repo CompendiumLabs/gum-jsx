@@ -14,22 +14,14 @@ they do not require React.
 
 ## Get started
 
-This repository contains the current Gum implementation as a Bun workspace.
-2.0 publishes the scoped `@gum-jsx/*` packages; the workspace root, editor, and
-MCP application remain private. The release candidate is being prepared as
-`2.0.0-beta.0`; use a checkout until it is published.
-Install Bun 1.4.2 or newer and Git, then clone the workspace and its packages:
+With Bun 1.4.2 or newer, install the CLI:
 
 ```sh
-git clone https://github.com/CompendiumLabs/gum-jsx.git
-cd gum-jsx
-git -c url."https://github.com/".insteadOf=git@github.com: submodule update --init --recursive
-bun install
+bun install @gum-jsx/cli
 ```
 
-The submodule command uses HTTPS for the repository's SSH remotes, so a public
-checkout does not require a GitHub SSH key. If you already cloned recursively,
-only `bun install` is needed.
+The CLI includes the core renderer, TeX, Markdown, and PNG/PDF exporters. It
+provides the `gum`, `gum-tex`, and `gum-mark` commands, ready to run with Bun.
 
 Save this as `figure.jsx`:
 
@@ -55,7 +47,7 @@ Save this as `figure.jsx`:
 </Plot>
 ```
 
-Render it from the workspace root:
+Render it:
 
 ```sh
 bun run gum figure.jsx -o figure.svg
@@ -90,10 +82,11 @@ and SVG support. PDF output preserves vector paths and embedded PNG images;
 text is outlined and is not searchable or selectable. See the
 [CLI](gum-jsx-cli/README.md) and [PDF](gum-jsx-pdf/README.md) references for details.
 
-**Browser editor.** Run `bun run dev` and open the printed URL to edit JSX with a
-live SVG preview. The `/docs` page provides searchable, editable examples.
+**Browser editor.** From a [development checkout](#development), run `bun run dev`
+and open the printed URL to edit JSX with a live SVG preview. The `/docs` page
+provides searchable, editable examples.
 
-**Library.** Evaluate JSX and render it to SVG from a Bun script in this workspace:
+**Library.** Evaluate JSX and render it to SVG from a Bun script:
 
 ```ts
 import { evaluate, render_element } from '@gum-jsx/core'
@@ -105,18 +98,17 @@ if (result.kind === 'svg') {
 }
 ```
 
-This checkout example imports the local source entry point. In a consuming
-workspace package, declare `@gum-jsx/core` as a dependency and import from
-`@gum-jsx/core`. You can also construct elements directly in TypeScript. The core and math
-renderers support browser hosts with preloaded font resources. Add
+You can also construct elements directly in TypeScript. The core and math
+renderers support browser hosts with preloaded font resources. Use
 [@gum-jsx/math](gum-jsx-math/README.md) for TeX or
 [@gum-jsx/react](gum-jsx-react/README.md) to compose figures as React components.
 Evaluated JSX executes JavaScript in the host environment; use trusted source
 or an application-provided isolation boundary.
 
-**Coding agents and MCP.** `bun run skill` builds a portable authoring skill from
-the maintained documentation. The [MCP server](gum-jsx-mcp/README.md) provides
-documentation tools, PNG inspection, and an embedded figure viewer.
+**Coding agents and MCP.** From a development checkout, `bun run skill` builds a
+portable authoring skill from the maintained documentation. The
+[MCP server](gum-jsx-mcp/README.md) provides documentation tools, PNG inspection,
+and an embedded figure viewer.
 
 ## Packages
 
@@ -135,19 +127,19 @@ Each package is a separate repository, developed together through Git submodules
 | [@gum-jsx/docs](gum-jsx-docs/README.md) | Guides, element references, gallery sources, and skill generation. |
 | [@gum-jsx/mcp](gum-jsx-mcp/README.md) | MCP tools and an MCP Apps figure viewer. |
 
-## Release packages
-
-Once the candidate is published, install the commands with
-`bun install -g @gum-jsx/cli@beta`, or add the library packages you need with
-`bun add @gum-jsx/core@beta @gum-jsx/math@beta`. React's CLI comes from
-`@gum-jsx/react@beta`. There is no 2.0 umbrella `gum-jsx` package.
-
-Packages ship TypeScript source for Bun and compatible browser bundlers. Direct
-Node execution is not part of the 2.0 support contract. Browser hosts must arrange
-font assets and preload them before layout. See the
-[release checklist](docs/RELEASE.md) for packaging commands and remaining gates.
-
 ## Development
+
+Clone the workspace and its package submodules:
+
+```sh
+git clone https://github.com/CompendiumLabs/gum-jsx.git
+cd gum-jsx
+git -c url."https://github.com/".insteadOf=git@github.com: submodule update --init --recursive
+bun install
+```
+
+The submodule command uses HTTPS for the repository's SSH remotes, so a public
+checkout does not require a GitHub SSH key.
 
 Run shared commands from the workspace root:
 
@@ -162,5 +154,4 @@ To work on one package, use its scripts, for example
 `bun --filter @gum-jsx/core test`. Package READMEs cover additional checks and
 dependencies. The [design](docs/DESIGN.md), [roadmap](docs/ROADMAP.md), and
 [feature map](docs/FEATURES.md) describe implementation decisions and planned work.
-For code written against earlier Gum versions, see the
-[migration notes](docs/MIGRATION.md).
+The [release checklist](docs/RELEASE.md) covers packaging and publication checks.
