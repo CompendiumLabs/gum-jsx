@@ -335,6 +335,8 @@ reexecute callbacks. Adaptive sampling and discontinuity detection are deferred.
   header.
 - [ ] **`SvgImage`** — embed SVG markup, infer aspect from dimensions or
   `viewBox`, and map its inner document into an element rectangle.
+  **Deferred:** will not implement for now; excluded from 2.0. Convert external
+  SVG artwork to PNG for `PngImage`.
 - [ ] **`LoadImage`** — evaluation-only image element supplied by a host
   `loadFile` callback.
 - [ ] CSV table parsing through **`parseTable`** and evaluation-local

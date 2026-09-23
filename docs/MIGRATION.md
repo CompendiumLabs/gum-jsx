@@ -224,7 +224,8 @@ Most of the original surface now has a counterpart, often with a different API:
 - Text: TextLine, Verbatim, and native selectable SVG text. Use `whitespace="pre"`
   with the `mono` family for preformatted text.
 - Images and data: SvgImage, LoadImage, `loadFile`, and the parseTable /
-  loadTable CSV helpers.
+  loadTable CSV helpers. SvgImage is explicitly deferred beyond 2.0; convert
+  external SVG artwork to PNG and embed it with PngImage.
 - Language: plugins and the isolated Env, strict rendering mode,
   boolean shorthand props, and automatic wrapping of a top-level fragment or
   array. Hosts do wrap a single bare element in **Svg**.

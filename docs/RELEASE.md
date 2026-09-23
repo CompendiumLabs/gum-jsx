@@ -52,7 +52,7 @@ These are scope decisions, not automatic requirements for 2.0:
 - [x] Include decks, shared preludes, and multipage PDF.
 - [x] Omit CLI watch/live-preview mode from 2.0.
 - [x] Include focused Grid/TextGrid layout in 2.0.
-- [ ] Decide whether SVG image embedding ships in 2.0.
+- [x] Defer SVG image embedding (`SvgImage`); omit it from 2.0.
 - [x] Explicitly document selectable text and PDF emoji limitations ([migration](./MIGRATION.md#layout-contracts), [fonts](../gum-jsx-docs/docs/gallery/text/Fonts.md#fallback-faces-and-emoji)).
 - [x] Explicitly document linear-only plot axes and unsupported equation numbering/tags ([plotting](./PLOTTING.md), [math](./MATH.md)).
 
@@ -63,6 +63,10 @@ Scope decision (2026-09-23): include Grid and TextGrid with explicit column coun
 equal/length/auto column widths, content-sized rows, gaps, and cell alignment.
 Spans, automatic column counts, CSS track sizing, and inferred overall aspect
 remain deferred. See the [Grid reference](../gum-jsx-docs/docs/elements/text/Grid.md).
+
+Scope decision (2026-09-23): do not implement SVG image embedding for now.
+`SvgImage` is outside the 2.0 scope. Convert external SVG artwork to PNG and use
+`PngImage` when embedding is needed.
 
 ## Final validation and publication
 
