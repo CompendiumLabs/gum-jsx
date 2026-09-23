@@ -24,7 +24,12 @@
     "visual-test": "bun --filter @gum-jsx/cli visual-test",
     "visual-report": "bun --filter @gum-jsx/cli visual-report",
     "typecheck": "bun run --workspaces typecheck",
-    "test": "bun run --workspaces --sequential test"
+    "test": "bun run test:imports && bun run --workspaces --sequential test",
+    "test:imports": "bun test/imports.ts",
+    "release:pack": "bun scripts/release.ts",
+    "release:check": "bun test/release.ts",
+    "props:generate": "node gum-jsx-core/scripts/prop-schemas.mjs && node gum-jsx-core/scripts/prop-schemas.mjs --package=gum-jsx-math",
+    "props:check": "node gum-jsx-core/scripts/prop-schemas.mjs --check && node gum-jsx-core/scripts/prop-schemas.mjs --package=gum-jsx-math --check"
   },
   "patchedDependencies": {
     "fast-png@8.0.0": "gum-jsx-pdf/patches/fast-png@8.0.0.patch"

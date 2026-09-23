@@ -1,7 +1,7 @@
 # Migration from original Gum
 
 gum-jsx is a ground-up rewrite, not a drop-in replacement for the original Gum
-(gum-org). Layout follows a flexbox-like model with explicit sizes: parents own
+(`gum-old`). Layout follows a flexbox-like model with explicit sizes: parents own
 allocation and position, and children answer layout requests with geometry. The
 examples in [gum-jsx-docs](../gum-jsx-docs/README.md) use the current API exclusively.
 
@@ -9,6 +9,18 @@ This page maps original conventions onto current ones. [FEATURES](./FEATURES.md)
 is the element-by-element inventory, [ROADMAP](./ROADMAP.md) records the layout
 contracts and milestones, and [PLOTTING](./PLOTTING.md) and [MATH](./MATH.md)
 cover those slices in detail.
+
+## Release packages and runtimes
+
+2.0 publishes only `@gum-jsx/*` packages. The workspace root remains private;
+there is no new `gum-jsx` umbrella install. The CLI package supplies `gum`,
+`gum-tex`, and `gum-mark`; React supplies `gum-react`.
+
+Release candidates use coordinated `2.0.0-beta.0` versions and the `beta` tag.
+Packages ship TypeScript source. The tested native runtime is Bun 1.4.2 or newer;
+core, math, PDF, React, and PNG's selection subpath also support TypeScript-aware
+browser bundlers. Direct Node execution is not part of this release contract.
+See [RELEASE.md](./RELEASE.md) for artifact verification and remaining gates.
 
 ## Props and elements
 
@@ -19,15 +31,16 @@ cover those slices in detail.
 | size / xsize / ysize / pos / rect | `width` / `height`; `x` / `y` / `anchor` for direct **Group** children |
 | Group contains its positioned children automatically | **Group** needs a finite canvas and its children never size it; **Overlay** hugs its first child and layers the rest |
 | Rectangle | **Rect** |
-| rounded | `radius` |
+| rounded | `border-radius` in JSX, or `border_radius` in constructor props |
 | Box border / fill, with `border-*` and `fill-*` subunit attributes | `border-width` / `border-color` / `background` |
 | Padding as a scalar, `[h, v]`, or `[left, top, right, bottom]` in em | `[h, v]` / `[t, b, l, r]`, `{ h, v }`, `{ t, b, l, r }`, or full side names; values are lengths. Note the different four-value order |
 | Boolean padding, margin, border, and rounded | Explicit lengths; wrap in an outer **Box** for space outside the border |
+| HWrap | **HStack** with `wrap`, `gap`, and `line-gap` |
 | Stack with `direc` | **HStack** / **VStack**; there is no public Stack |
 | Automatic stack figure fitting, share, even | Explicit `basis` / `grow` / `shrink` and chosen dimensions; **Spacer** for flexible space |
 | spacing and direction-sensitive justify / valign | `gap`, cross-axis `align`, main-axis `justify`, and `align-self` on a direct child |
 | Text scale / justify | `font-size` / `justify` |
-| Text that scales down to fit its box | Text reflows at a fixed font size and reports overflow; wrap it in **Fit** to scale it |
+| Text that scales down to fit its box | Text reflows at a fixed font size and reports overflow; set `fit` on it to scale the completed text |
 | Bold / Italic wrappers | `font-weight` / `font-style` on **Text** or **Span** |
 | TextBox / TextFrame / TextCol / TextRow | Same names; text reflows at the allocated width and font size stays fixed |
 | LabelBox | A **TextBox**, content-sized by default |
@@ -51,6 +64,20 @@ name the same prop. JavaScript objects and spreads use underscore keys. See
 [Style](../gum-jsx-docs/docs/gallery/text/Style.md) for the prop vocabulary and
 scoped component props.
 
+## Prop errors
+
+Built-in constructors now reject unknown prop names before normalization, in JSX
+and direct JavaScript. For example, `paddding` suggests `padding`.
+JSX errors retain source sites. Use the
+supported `text-*`, `title-*`, and axis scopes for generated children; for example,
+`TextBox` needs `text-whitespace="pre"`, while `Text` takes `whitespace="pre"`.
+
+Parent-owned props such as `grow`, `basis`, `x`, `y`, and `anchor` remain valid.
+Custom functions and element subclasses keep their own prop vocabulary; validation
+is registered for exact built-in constructors. Custom classes may opt in with
+`register_props`. This is prop-name validation, not a general permissive/strict
+rendering mode; existing value and layout checks continue to apply.
+
 ## Layout contracts
 
 The original engine inferred sizes and aspects; the current one asks the author
@@ -64,7 +91,7 @@ to establish them. The rules most likely to surprise a ported figure are:
 - **Box** `width` and `height` measure the border box: content, padding, and
   border. Borders draw inside it, and there is no margin prop.
 - Making a container smaller reflows, constrains, or records overflow. It never
-  scales content or typography; only **Fit** scales a completed fragment.
+  scales content or typography; `fit` explicitly scales a completed fragment (root maxima may also bound a preview).
 - Stack `grow` and `shrink` default to zero, so nothing stretches unless asked.
   A tall **Svg** does not make a **VStack**'s children grow.
 - Stacks do not solve for a composite aspect. A height-only column of unsized
@@ -96,7 +123,7 @@ pass produces fragments, and the serializer consumes fragments.
 | evaluateGum `seed` | The evaluate `seed` option; each evaluation has its own stream |
 | evaluateGum `prelude`, `strict`, `loadFile`, `debug` | Not ported |
 | `gum.use(math)` plugin registration | `evaluate(source, { scope: math })` plus a `createMathFonts()` font resource on the pass |
-| `new Square({ rounded: true })`, children always an array | `new Square({ radius: px(10) })`; `children` may be a single element |
+| `new Square({ rounded: true })`, children always an array | `new Square({ border_radius: px(10) })`; `children` may be a single element |
 | layoutRows / layoutSvg placement report | `inspect_fragment`, or the CLI's `tree` and `json` formats |
 | rasterizeSvg from gum-jsx/render | `rasterize_svg` / `rasterize_pixels` from @gum-jsx/png |
 
@@ -115,7 +142,7 @@ replace the original element registration with `Element` subclasses and
 | @gum-jsx/math | [@gum-jsx/math](../gum-jsx-math/README.md), supplied as evaluation scope rather than a plugin |
 | @gum-jsx/node | [@gum-jsx/png](../gum-jsx-png/README.md) for rasterization; kitty output lives in the CLI |
 | @gum-jsx/react | [@gum-jsx/react](../gum-jsx-react/README.md): `GUM`, `<Gum>`, `createGumRoot`, and the `gum-react` command |
-| @gum-jsx/pdf, asynchronous `renderPdf` over one or more pages | [@gum-jsx/pdf](../gum-jsx-pdf/README.md): synchronous `render_pdf(fragment)` for a single page, in Bun or the browser |
+| @gum-jsx/pdf, asynchronous `renderPdf` over one or more pages | [@gum-jsx/pdf](../gum-jsx-pdf/README.md): synchronous `render_pdf(fragment)` for a single page in Bun or a browser bundle |
 | @gum-jsx/mark | [@gum-jsx/mark](../gum-jsx-mark/README.md): `displayMarkdown` and the `gum-mark` command |
 | @gum-jsx/docs | [@gum-jsx/docs](../gum-jsx-docs/README.md): element pages, guides, gallery, and the generated skill |
 | gum-mcp | [@gum-jsx/mcp](../gum-jsx-mcp/README.md) |
@@ -162,7 +189,8 @@ A few contracts are deliberate:
 - Color interpolation clamps to its endpoint colors. Generated arrays and points
   are frozen; user-owned objects are not frozen by these helpers.
 - `tau` joins the original `e`, `pi`, `phi`, `r2d`, and `d2r` constants. The
-  `moji` / `cmoji` and `mathrm`-style font constants are not ported.
+  `moji` / `cmoji` are not ported. Math font constants such as `mathrm`,
+  `mathbf`, and `mathbb` are exported by `@gum-jsx/math`.
 
 ## What has been ported?
 
@@ -197,9 +225,8 @@ Most of the original surface now has a counterpart, often with a different API:
 
 ## What is not ported?
 
-- Layout: wrapping rows (HWrap), Grid, and TextGrid. Wrapping stacks are the
-  next roadmap milestone, followed by a simple grid and an optional
-  common-height figure policy.
+- Layout: Grid, TextGrid, and an optional common-height figure policy.
+  Use `HStack wrap` or `TextRow wrap` for wrapping rows; there is no HWrap alias.
 - Text: TextLine, Verbatim, and native selectable SVG text. Use `whitespace="pre"`
   with the `mono` family for preformatted text.
 - Images and data: SvgImage, LoadImage, `loadFile`, and the parseTable /

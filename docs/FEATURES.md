@@ -1,8 +1,8 @@
 # Original gum feature inventory
 
 This is the parity inventory for the fresh gum implementation. It records the
-public elements and supporting capabilities of the original `gum-org` workspace
-(see `../gum-org`) so that features can be restored, redesigned, or explicitly
+public elements and supporting capabilities of the original `gum-old` workspace
+(see `../gum-old`) so that features can be restored, redesigned, or explicitly
 retired without being forgotten.
 
 The original sources of truth are `gum-jsx-core/src/env.ts` (`CORE_ELEMS`),
@@ -14,14 +14,14 @@ fresh core will choose a different API.
 Checkboxes describe current capability coverage in the fresh core:
 
 - `[x]` means the essential capability is implemented, although the API may differ.
-- `[-]` means the capability is will not be implemented.
+- `[-]` means the capability is intentionally retired.
 - `[ ]` means work or an explicit product decision remains.
 - A note beginning with **Partial** names useful infrastructure that exists but
   does not yet cover the original feature.
 
 This is a feature ledger, not a requirement to reproduce old architecture. The
 fresh parent-owned layout protocol, immutable descriptions and fragments, pixel
-lengths, and explicit `Fit` remain the foundation.
+lengths, and explicit `fit` remain the foundation.
 
 ## Language and evaluation
 
@@ -50,17 +50,18 @@ lengths, and explicit `Fit` remain the foundation.
   registration and derived environments with independent settings.
 - [x] Add inherited light and dark palettes with semantic per-element paint
   defaults, a light web default, and CLI theme selection (dark for kitty).
-- [ ] Restore boolean shorthand values such as `padding`, `rounded`, `spacing`, and `grid`.
+- [-] Boolean shorthands for length-valued padding, rounding, and spacing. Use
+  explicit lengths. Actual boolean props such as `grid`, `wrap`, and `debug` remain valid.
 - [ ] Restore strict rendering mode, with permissive visual fallbacks in normal
   mode and typed failures in strict mode.
-- [ ] Restore deterministic evaluation-local random streams, separately from
-  renderer-generated identifiers.
+- [x] Deterministic evaluation-local random streams through `evaluate(..., { seed })`
+  and `setSeed`, separate from renderer-generated identifiers.
 - [ ] Restore host-provided `loadFile`, `loadTable(path)`, and `<LoadImage>`
   bindings.
-- [ ] Decide whether hyphenated JSX props and compound subunit props such as
-  `axis-stroke-width`, `node-fill`, and `title-font-size` remain part of the
-  language. **Partial:** the new parser handles JSX, but compound prop routing
-  has not been rebuilt.
+- [x] Hyphenated JSX attributes normalize to underscores. Typed compound scopes
+  such as `axis-stroke-width` and `title-font-size` configure generated parts.
+- [x] Built-in constructors reject unknown props with spelling suggestions;
+  custom element classes remain extensible. This does not restore legacy visual fallbacks.
 
 ## Core layout and composition model
 
@@ -88,7 +89,7 @@ lengths, and explicit `Fit` remain the foundation.
   Original per-element shorthand and automatic orientation policies are deferred.
 - [x] Content-sized overlay composition in which one child sizes the container
   and decorations layer over it.
-- [ ] Debug placement stencils showing allocated and realized rectangles.
+- [x] `debug` overlays show allocated and content rectangles without changing layout.
 
 ## Foundation and layout elements
 
@@ -103,8 +104,8 @@ lengths, and explicit `Fit` remain the foundation.
   implementation exists behind `HStack` and `VStack`.
 - [x] **`HStack`**, **`VStack`** — horizontal and vertical flow for figures,
   text, and nested containers.
-- [ ] **`HWrap`** — measured items wrapped into horizontal rows at an available
-  width, with separate horizontal and vertical gaps.
+- [x] **`HWrap` capability** — `HStack wrap` and `TextRow wrap` form rows at an
+  offered width, with `gap`, `line_gap`, and per-line flex allocation. No HWrap alias.
 - [ ] **`Grid`** — row/column grid with inferred or explicit track proportions,
   spacing, missing-cell fillers, and an inferred overall aspect.
 - [x] **`Points`** — clone a configurable point shape at a list of coordinates,
@@ -119,9 +120,9 @@ lengths, and explicit `Fit` remain the foundation.
   participates in proportional layout. **API choice:** ordinary px() width and
   height cover this capability; no separate Absolute element is needed.
 - [x] **`Spacer`** — empty flexible stack item.
-- [x] **`Fit`** — fresh-core replacement for explicitly scaling completed
-  content into a box; this was behavior spread across original elements rather
-  than a standalone original tag.
+- [x] **Fitting** — put `fit` on an element to shrink the completed drawing;
+  `fit="contain"` permits enlargement and `fit="cover"` fills and clips.
+  The earlier standalone Fit element has been removed.
 
 ## Geometry elements
 
@@ -200,8 +201,8 @@ lengths, and explicit `Fit` remain the foundation.
   style, mixed spans, and indivisible inline elements with expanding line boxes.
 - [ ] **`TextLine`** — public single-line normalized span container. The fresh
   `Text` owns line construction internally.
-- [ ] **`Verbatim`** — preserved whitespace, tabs, and monospace defaults.
-- [ ] **`Bold`**, **`Italic`** — text convenience wrappers. Their behavior is
+- [x] **`Verbatim` capability** — `Text whitespace="pre" font-family={mono}`; no alias.
+- [x] **`Bold`**, **`Italic`** — text convenience wrappers. Their behavior is
   available through ordinary `font_weight` and `font_style` props.
 - [x] Emoji measurement and host-font fallback behavior. A bundled metrics face
   measures emoji clusters, which the SVG keeps as live text for the host's Noto
@@ -329,7 +330,7 @@ reexecute callbacks. Adaptive sampling and discontinuity detection are deferred.
 
 ## Images and external data
 
-- [ ] **`PngImage`** — embed a PNG data URI and infer its aspect from the PNG
+- [x] **`PngImage`** — embed a PNG data URI and infer its aspect from the PNG
   header.
 - [ ] **`SvgImage`** — embed SVG markup, infer aspect from dimensions or
   `viewBox`, and map its inner document into an element rectangle.
@@ -409,7 +410,7 @@ KaTeX/LaTeX comparison tooling. See [the math roadmap](MATH.md).
   text/layout while preserving a shared axis/baseline protocol.
 - [x] Standalone synchronous and asynchronous `mathToElement` and `mathToSvg`,
   with caller-owned font resources, selective base/full preload, natural ink
-  viewports, and explicit clipping or `Fit` sizing.
+  viewports, and explicit clipping or `fit` sizing.
 - [ ] Preserve or explicitly reconsider the original known omissions:
   `\middle`, display-margin `\tag`, arrows in the `CD` environment, three
   exotic enclosures, several missing-font symbols, script-style metric drift,
@@ -432,10 +433,11 @@ direct JavaScript use.
   **`darkgray`**, and **`slate`**.
 - [x] Supported font and weight constants **`sans`**, **`mono`**, **`light`**,
   **`regular`**, and **`bold`**.
-- [ ] Emoji font constants **`moji`**, **`cmoji`**; math additionally supplied
-  **`mathrm`**, **`mathit`**, **`mathbf`**, **`mathbb`**, **`mathcal`**,
-  **`mathfrak`**, **`mathscr`**, **`mathsf`**, **`mathtt`**, and
-  **`boldsymbol`**.
+- [x] Math font constants including `mathrm`, `mathit`, `mathbf`, `mathbb`,
+  `mathcal`, `mathfrak`, `mathscr`, `mathsf`, `mathtt`, and `boldsymbol` are exported
+  by `@gum-jsx/math`.
+- [-] Emoji constants `moji` and `cmoji`; core uses a fallback metrics face and
+  the display host supplies its emoji font.
 - [x] Array creation and manipulation: **`range`**, **`linspace`**,
   **`enumerate`**, **`repeat`**, **`meshgrid`**, **`lingrid`**, **`zip`**,
   **`reshape`**, **`split`**, **`concat`**, and **`slice`**.
@@ -496,31 +498,31 @@ for the precise differences in range, singleton linspace, and integer endpoints.
 - [x] Kitty graphics protocol encoding for PNG or RGBA pixels in
   `gum-jsx-cli`, including chunking, image/placement IDs, terminal cell
   dimensions, cursor movement, and virtual-placement controls.
-- [ ] Unicode placeholder text grids for kitty images under pagers and
+- [x] Unicode placeholder text grids for kitty images under pagers and
   multiplexers.
-- [ ] ANSI text styling, PNG dimension reading, terminal cell-size queries, and
+- [x] ANSI text styling, PNG dimension reading, terminal cell-size queries, and
   stdin collection.
 
 ### Vector PDF package
 
-- [ ] Render one or more SVG elements directly to vector PDF pages.
-- [ ] Embed registered text and math fonts and embedded PNG images.
-- [ ] Support page labels/bookmarks, per-page base directories, transparent or
-  colored backgrounds, and document title/author/subject/creator metadata.
-- [ ] Run the same PDF API in Node, Bun, and browsers.
+- [x] Export one completed fragment as a vector PDF page, with embedded PNG images.
+- [x] Transparent or colored page backgrounds, Unicode document title, physical
+  scale, and configurable output precision.
+- [x] Synchronous export in Bun and browser bundles.
+- [ ] Multipage documents, page labels/bookmarks, and broader document metadata.
+- [ ] Embedded fonts and searchable/selectable text. Current output uses outlines;
+  live color-font text such as emoji is rejected.
+- [ ] Release the PNG transparency decoder fix independently of the workspace patch.
 
 ## React integration
 
-- [ ] **`GUM`** proxy exposing every element registered in the selected `Env` as
-  a React host component.
-- [ ] **`createGumRoot`** custom reconciler root, including insert, reorder,
-  update, text-node, unmount, and environment handling.
-- [ ] **`<Gum>`** browser component that owns a host div, renders responsive SVG,
-  and rerenders on React updates with size/theme/environment props.
-- [ ] Compose user-defined React components, fragments, arrays, conditionals,
-  and mapped children into gum elements.
-- [ ] `gum-react` CLI for rendering a TSX default export with size, theme,
-  unit-size, current-directory, and math support.
+- [x] `GUM` supplies core and math components; custom classes can be wrapped with
+  `createGumComponent` or supplied in an element registry. There is no legacy Env.
+- [x] `createGumRoot` supports rendering, updates, text nodes, unmount, and font loading.
+- [x] `<Gum>` renders browser SVG with size, theme, and font resource props.
+- [x] User-defined React components, fragments, arrays, conditionals, and mapped children.
+- [x] `gum-react` renders a TSX default export with maximum size, theme, and a
+  base directory for relative raw imports. The legacy unit-size option is retired.
 
 ## Command-line and authoring workflows
 
@@ -539,9 +541,9 @@ public API. Run `bun run gum` from the workspace root.
   explicit formats and output file extensions take precedence.
 - [x] Single-page vector PDF output from `gum` and `gum-tex`, selected with
   `-f pdf` or a `.pdf` filename, with document title and background options.
-- [ ] Batteries-included `gum` command with automatic output format selection,
-  SVG/PNG/PDF/kitty/layout/JSON formats, theme, background, raster size, zoom,
-  depth/select inspection, strictness, seed, and original unit-size options.
+- [x] `@gum-jsx/cli` includes the output backends, math, themes, backgrounds,
+  raster ratios, and pixel selection. Original unit-size is retired; CLI seed,
+  filtered/depth-limited inspection, and a legacy strict/fallback mode remain absent.
 - [ ] Live `gum --dev` terminal refresh while a source file changes.
 - [x] `gum-tex` command for standalone TeX to SVG, PNG, PDF, kitty, tree, or JSON;
   literal/file/stdin input, font size, padding, macros, and explicit fitting.
@@ -553,26 +555,26 @@ public API. Run `bun run gum` from the workspace root.
 
 ## Markdown and documentation workflows
 
-- [ ] `gum-mark` / **`displayMarkdown`** terminal renderer for Markdown with ANSI
+- [x] `gum-mark` / **`displayMarkdown`** terminal renderer for Markdown with ANSI
   text, fenced gum blocks, linked PNG/SVG/JSX images, inline and display TeX,
   image sizing options, and kitty placeholders under a pager.
-- [ ] Documentation package containing an API page and runnable example per
+- [x] Documentation package containing an API page and runnable example per
   element, gallery examples, generated model skill, and metadata usable by a
   documentation site.
-- [ ] Strict gallery/test runner that renders every docs, gallery, and regression
+- [x] Gallery/test runner that renders every docs, gallery, and regression
   example and produces a browsable comparison report.
 
 ## Suggested dependency order
 
 Steps 1–5 now have basic implementations; [PLOTTING](PLOTTING.md) records the
-slice and remaining limits. Wrapping/grid and advanced unchecked details remain
+slice and remaining limits. Grid and advanced unchecked details remain
 deferred. This sequence still records dependencies rather than parity targets.
 
 The exact milestones belong in `ROADMAP.md`; this order only records major
 feature dependencies exposed by the original system.
 
 1. Finish general composition: remaining placement, transforms, and coordinate
-   mapping (except for wrapping rows and grid).
+   mapping (except for grid).
 2. Complete geometry and reusable path primitives, then data-coordinate graphs.
 3. Add text-aware composition, labels, and slide structure on the shared
    baseline/axis protocol.
@@ -588,4 +590,4 @@ feature dependencies exposed by the original system.
 
 ## Save For Later
 
-- wrapping rows, grid
+- Grid/TextGrid and optional common-height figure allocation

@@ -1,4 +1,6 @@
-# Fresh core implementation roadmap
+# Core implementation roadmap
+
+For the 2.0 release gates and package contract, see [RELEASE.md](./RELEASE.md).
 
 The new core uses immutable element descriptions, explicit layout requests, and
 immutable layout results. The original scoped roadmap below covers the layout
@@ -9,21 +11,21 @@ Arrow and field shafts now account for stroke caps at their head tips; the
 [Network, Node, and Edge](../gum-jsx-docs/docs/elements/text/Network.md) now connect
 completed node frames through text reflow, padding, fitting, and affine transforms.
 Edges support explicit ports, waypoints, self loops, and Arrow head styling.
-Wrapping rows and grids remain deferred; the subsequent math work is tracked in
+Wrapping rows are implemented through `HStack wrap`; grids remain deferred; the subsequent math work is tracked in
 [MATH.md](./MATH.md).
 
 Typed component scopes now route flat props at construction for arrows, axes,
 plots, legends, titles, and captions. Public `prefix_split`/`prefix_join` helpers
 support custom components. Nested settings remain compatible; scopes preserve
 owner geometry props and merge shared/specific part settings per property.
-See [scoped props](../gum-jsx-core/README.md#scoped-component-props).
+See [scoped props](../gum-jsx-core/API.md#scoped-component-props).
 
 Stages 1–5 are implemented in this directory, with
 unit and layout checks, JSX evaluation, measured and wrapping text, ordinary shapes,
-Box/Frame/Fit composition, HStack/VStack/Spacer, and runnable
+Box/Frame with element-level fitting composition, HStack/VStack/Spacer, and runnable
 [docs examples](../gum-jsx-docs/README.md). Stage 6(a), positioned Group, is
 also implemented. The plotting slice followed 6(a); stage 6(b), wrapping stacks,
-remains deferred.
+is also implemented.
 The basic rendering CLI now lives in the separate
 [`gum-jsx-cli` workspace package](../gum-jsx-cli/README.md), with a `gum`
 executable. The core retains evaluation, layout,
@@ -38,10 +40,10 @@ Content-sized SVG dimensions moved forward into stage 4: a Box can hug a Square,
 and Svg can hug the whole result, with one layout query per element. A fixed-width
 SVG can also derive its height from a framed, wrapping paragraph.
 The agreed decisions and original legacy assessment are preserved in [DESIGN.md](./DESIGN.md).
-This file tracks scope and status; [README.md](../gum-jsx-core/README.md) covers usage, implementation
+This file tracks scope and status; [core API reference](../gum-jsx-core/API.md) covers usage, implementation
 ownership, and contributor commands. The foundation checkpoint is complete through
-6(a). Overlay and explicit transforms were added with plotting; wrapping/grid milestones below remain
-future work. See [PLOTTING](PLOTTING.md) for the current additions.
+6(b). Overlay and explicit transforms were added with plotting; grid and
+optional common-height allocation remain future work. See [PLOTTING](PLOTTING.md) for the current additions.
 
 **The agreed direction is a Flutter/SwiftUI synthesis.** Parents control allocation and
 position; children answer layout requests with geometry. A parent may make more than one
@@ -82,7 +84,7 @@ Preserve them when adding the remaining containers:
 | What if that reference is indefinite? | `measure_length` can retain a tagged dependency, but LayoutPass resolves source sizing before calling an element, even on a natural request. A nonzero fraction without its basis reports a property-path error. Zero needs no basis. General percentage-cycle solving is deferred. |
 | What do fractional shape coordinates reference? | The shape's own resolved content rectangle. Scalar geometric lengths such as a circle radius, stroke width, or circular corner radius use its shorter side; two-axis radii resolve per axis. Graph now supplies explicit data-coordinate mapping. |
 | What do `Box.width` and `height` include? | The border box: content, padding, and border. Borders occupy space and draw inside the border box. For space outside the decoration, wrap the Box in another Box with padding. |
-| Does making a box smaller scale its contents? | Ordinary layout reflows, constrains, or records overflow. An explicit `Fit` operation may scale a completed fragment, including its text and strokes. |
+| Does making a box smaller scale its contents? | Ordinary layout reflows, constrains, or records overflow. An explicit `fit` prop may scale a completed fragment, including its text and strokes. |
 | Who reads flex and position props? | The immediate stack reads `basis`/`grow`/`shrink`/`align_self`; the immediate Group reads `x`/`y`/`anchor`. They do not inherit or acquire behavior in LayoutPass. |
 | Does every empty container hug to zero? | Empty Box/Svg/stacks follow ordinary zero-content sizing. Group requires a finite canvas even when empty; its children never determine the viewport. |
 
@@ -91,7 +93,7 @@ container that still hugs an axis cannot use its as-yet-unknown result as that a
 The initial rule deliberately makes such dependencies visible: use absolute lengths on
 that axis or establish its size. This keeps the first engine free of implicit fixed-point
 iteration. The reference basis travels separately from the trial allocation in a query.
-Group and Fit explicitly commit to selected finite axes from offers before querying
+Group and fitted elements explicitly commit to selected finite axes from offers before querying
 children, so those axes can become references. That is an element policy, not a
 reason to promote every available offer to a reference inside LayoutPass.
 
@@ -142,11 +144,11 @@ followed by element implementation.
 | 1. Contracts and units | Complete | Lengths, references, sizing precedence, and fragments; [contract probes](../gum-jsx-core/test/fixtures/contracts.ts) distinguish indefinite axes from zero. |
 | 2. Elements and SVG | Complete | Immutable descriptions, queries, JSX, SVG, and CLI; [repeated.jsx](../gum-jsx-docs/docs/gallery/code/repeated.jsx) reuses descriptions and fragments at different placements and sizes. |
 | 3. Text and shapes | Complete | Font measurement, wrapping, styled runs, baselines, glyph paths, and ordinary shapes; [paragraph.jsx](../gum-jsx-docs/docs/gallery/code/paragraph.jsx) and [shape cards](../gum-jsx-docs/docs/gallery/code/shape_cards.jsx). |
-| 4. Box composition | Complete | Box/Frame/Fit and content-sized Svg; [Frame](../gum-jsx-docs/docs/elements/code/Frame.jsx) and [Box](../gum-jsx-docs/docs/elements/code/Box.jsx). |
+| 4. Box composition | Complete | Box/Frame with element-level fitting and content-sized Svg; [Frame](../gum-jsx-docs/docs/elements/code/Frame.jsx) and [Box](../gum-jsx-docs/docs/elements/code/Box.jsx). |
 | 5. Stacks | Complete | HStack/VStack/Spacer, gaps, basis/grow/shrink, min/max, alignment, baselines, and overflow; [HStack](../gum-jsx-docs/docs/elements/code/HStack.jsx) composes a mixed row. |
 | 6(a). Positioned Group | Complete | A finite canvas with fractional/px/em positions, anchors, nested references, and clipping; [Group](../gum-jsx-docs/docs/elements/code/Group.jsx). |
-| 6(b). Wrapping stacks | Next, unimplemented | Wrap measured items into lines, then allocate and align each line with stable references and explicit overflow. |
-| 6. Remaining composition | Pending | Content-sized overlays, a simple grid, and an optional common-height figure policy; separate slices after wrapping. |
+| 6(b). Wrapping stacks | Complete | `HStack wrap` / `TextRow wrap`, per-line flex, `line_gap`, and stable references; see [stack wrapping tests](../gum-jsx-core/test/stack_wrap.ts). |
+| 6. Remaining composition | Pending | A simple grid and an optional common-height figure policy. Overlay and wrapping stacks are implemented. |
 | 7. Stabilize the new core | Pending | Consolidate API documentation, diagnostics, numerical contracts, SVG/browser inspection, and measured layout costs. |
 
 **Milestone 1 established the contracts and defaults.** [defaults.ts](../gum-jsx-core/src/engine/defaults.ts)
@@ -201,7 +203,7 @@ its pixel stroke width. Fitting a complete drawing is an explicit transform.
 
 **Milestone 4 built Box from shared operations.** Deflation/inflation, common size
 selection, positioning, border/background geometry, and clipping are implemented;
-Fit handles uniform scaling. Box has one layout content child. Use a stack for flow
+The element-level `fit` prop handles uniform scaling. Box has one layout content child. Use a stack for flow
 or Group for a positioned canvas; a content-sized overlay is still future work.
 Rectangular and rounded frames are supported. Decoration does not determine content size.
 
@@ -216,7 +218,7 @@ Spacing inside and outside decoration uses explicit nested Boxes. The layout pas
 handles shared style, sizing, queries, validation, and caching; composition belongs
 to elements. There is no shared margin prop or automatic wrapper. Each Box owns its
 border box and establishes its own child references. Clip and border fragments are
-plain results, not reconstructed elements. Fit measures naturally and applies one uniform transform.
+plain results, not reconstructed elements. Element-level fitting measures naturally and applies one uniform transform.
 The completion gallery includes fully hugging and nested boxes, inside rounded borders,
 clipped overflow, and one paragraph at two widths. Content-sized root axes are included
 here; unresolved percentage dependencies remain explicit errors.
@@ -268,16 +270,12 @@ canvas; em positions use the child's local font. Anchors position completed chil
 allocations, and nested groups establish independent local references. Paint order
 follows source order, and optional canvas clipping preserves overflow. The gallery
 covers resized drawings, nested anchor demonstrations, and shared clipped artwork.
-The later plotting slice added content-sized Overlay. Stage 6(b), wrapping stacks,
-remains deferred.
-
-For **6(b), wrapping stacks**, first specify how the container chooses a line width,
-forms lines, and treats an item wider than a line. Decide when that width becomes a
-percentage reference and keep it stable during probes and per-line allocation. Reuse
-the pure flex allocator where its contract applies; line formation remains container
-policy. Cover gaps at line boundaries, per-line growth/shrinkage, text reflow after
-width allocation, baseline/cross alignment, and explicit overflow. A completion example
-should wrap the same set of mixed cards at two widths without rebuilding descriptions.
+The later plotting slice added content-sized Overlay. Stage 6(b) is implemented:
+`HStack wrap` forms rows from flex bases and the offered width, then applies
+per-line growth/shrinkage and cross-axis alignment. `line_gap` controls row spacing;
+`TextRow wrap` retains baseline alignment. Natural-width requests stay on one row.
+See the [HStack reference](../gum-jsx-docs/docs/elements/text/HStack.md) and
+[wrapping tests](../gum-jsx-core/test/stack_wrap.ts).
 
 Remaining composition slices are:
 
@@ -320,7 +318,7 @@ changes are needed.
 
 Use the workspace rendering CLI, `bun run gum`, from the workspace root to rapidly
 try example code, for example `bun run gum gum-jsx-docs/docs/elements/code/Group.jsx -f tree`.
-Browser work remains deferred. Build up the example gallery as you go so we can
+The editor and MCP viewer provide browser previews. Build up the example gallery as you go so we can
 both keep track of coverage.
 
 1. Use snake_case for functions and PascalCase for class/type/interface names.
