@@ -7,7 +7,7 @@
     },
     "gum-jsx-cli": {
       "name": "@gum-jsx/cli",
-      "version": "2.0.0-beta.0",
+      "version": "2.0.0-beta.1",
       "bin": {
         "gum": "src/cli.ts",
         "gum-tex": "src/tex.ts",
@@ -28,7 +28,7 @@
     },
     "gum-jsx-core": {
       "name": "@gum-jsx/core",
-      "version": "2.0.0-beta.0",
+      "version": "2.0.0-beta.1",
       "dependencies": {
         "acorn": "^8.15.0",
         "acorn-jsx": "^5.3.2",
@@ -46,7 +46,7 @@
     },
     "gum-jsx-docs": {
       "name": "@gum-jsx/docs",
-      "version": "2.0.0-beta.0",
+      "version": "2.0.0-beta.1",
       "devDependencies": {
         "@gum-jsx/core": "workspace:*",
         "@gum-jsx/math": "workspace:*",
@@ -82,7 +82,7 @@
     },
     "gum-jsx-mark": {
       "name": "@gum-jsx/mark",
-      "version": "2.0.0-beta.0",
+      "version": "2.0.0-beta.1",
       "dependencies": {
         "@gum-jsx/core": "workspace:*",
         "@gum-jsx/math": "workspace:*",
@@ -96,7 +96,7 @@
     },
     "gum-jsx-math": {
       "name": "@gum-jsx/math",
-      "version": "2.0.0-beta.0",
+      "version": "2.0.0-beta.1",
       "dependencies": {
         "@gum-jsx/core": "workspace:*",
         "katex": "0.16.47",
@@ -128,7 +128,7 @@
     },
     "gum-jsx-pdf": {
       "name": "@gum-jsx/pdf",
-      "version": "2.0.0-beta.0",
+      "version": "2.0.0-beta.1",
       "dependencies": {
         "@gum-jsx/core": "workspace:*",
         "fast-png": "^8.0.0",
@@ -143,7 +143,7 @@
     },
     "gum-jsx-png": {
       "name": "@gum-jsx/png",
-      "version": "2.0.0-beta.0",
+      "version": "2.0.0-beta.1",
       "dependencies": {
         "canvas": "^3.2.3",
       },
@@ -154,7 +154,7 @@
     },
     "gum-jsx-react": {
       "name": "@gum-jsx/react",
-      "version": "2.0.0-beta.0",
+      "version": "2.0.0-beta.1",
       "bin": {
         "gum-react": "scripts/gum-react.tsx",
       },

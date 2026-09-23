@@ -16,6 +16,7 @@ Publishing and release tags are separate final steps.
 - [x] Define the umbrella-package policy and supported runtimes.
 - [x] Limit published files and include fonts, documentation assets, and licenses.
 - [x] Verify packed manifests contain usable dependency versions and entry points.
+- [x] Use concrete sibling versions in source manifests so npm publication preserves installable dependencies.
 - [x] Install packed artifacts in an isolated consumer and exercise CLI and library usage.
 - [x] Verify browser bundling and font asset delivery from the packaged libraries.
 - [x] Document build, verification, and publication order.
@@ -91,7 +92,7 @@ Only scoped packages are published, in this dependency order:
 7. `@gum-jsx/docs`
 8. `@gum-jsx/cli`
 
-All eight currently use `2.0.0-beta.0`, public access, and the `beta` tag.
+All eight release candidates now use `2.0.0-beta.1`, public access, and the `beta` tag.
 The root `gum-jsx` workspace, editor, and MCP application remain private.
 No umbrella package is published. The CLI provides `gum`, `gum-tex`, and
 `gum-mark`; React provides `gum-react`.
@@ -128,7 +129,7 @@ bun run rehearse
 Browser checks need Chromium; set `GUM_CHROME` if it is not on PATH.
 
 `bun run rehearse` runs [scripts/rehearse.sh](../scripts/rehearse.sh). It publishes
-the eight public packages to a temporary Verdaccio registry, then installs the
+the eight public packages with npm to a temporary Verdaccio registry, then installs the
 CLI into a fresh Bun project before adding React and docs separately. Checks
 cover the four executables, library entry points, packaged fonts and docs,
 PNG-to-PDF support and its accepted limitation, browser bundling, npm dependency
@@ -146,9 +147,14 @@ another port:
 KEEP=1 PORT=4874 bun run rehearse
 ```
 
+`bun run release:check` validates source manifests without publishing. It runs
+as the first step of the root `bun run test` command and again in rehearsal,
+rejecting local dependency protocols and mismatched sibling versions.
+
 Packages ship source, so the editor build is a browser regression check rather
-than a prerequisite for publication. Bun's publish command packs each package
-and rewrites its `workspace:*` dependencies to concrete versions.
+than a prerequisite for publication. Public source manifests pin sibling packages
+to the same prerelease version; this is required even when publishing with npm,
+which preserves dependency ranges from the source manifest.
 
 ## Verification recorded during preparation
 
@@ -206,8 +212,8 @@ documentation and this validation record.
   globally with `@beta`. Documentation checks passed again, and the updated
   public tarballs passed a fresh consumer installation and browser/API checks.
 
-No registry publication or release tagging was performed. Packed-consumer checks
-used local tarballs and explicit dependency overrides; the local-registry
+At that point, no registry publication or release tagging had been performed.
+Packed-consumer checks used local tarballs and explicit dependency overrides; the local-registry
 `rehearse` script was not run because it performs publication. Registry installs
 remain part of the deliberately pending publication step. Validation logs,
 tarballs, consumer fixtures, and browser captures were retained in
@@ -217,19 +223,44 @@ tarballs, consumer fixtures, and browser captures were retained in
 Rerun affected checks if package contents, versions, or release scope change
 before publication.
 
+## beta.0 registry incident
+
+The subsequently published `2.0.0-beta.0` packages retained `workspace:*` in
+their registry metadata. This breaks installation of the CLI and other dependent
+packages, despite the earlier Bun-packed tarballs having concrete dependencies.
+Published npm versions cannot be replaced. The repair candidate is the coordinated
+`2.0.0-beta.1` set, with explicit sibling versions in every source manifest.
+The registry currently points both `beta` and `latest` at the broken beta.0 CLI;
+when publication is authorized, publish beta.1 under `beta`, verify a fresh
+registry-only install, and correct `latest` deliberately rather than leaving it
+on the broken version. No beta.1 package has been published to the public registry.
+
+For beta.1, the frozen workspace install, all package tests and typechecks, and
+the editor build passed. All eight npm-packed manifests contain concrete sibling
+versions. An isolated npm consumer installed those tarballs with local overrides
+and ran the CLI to render SVG. The full rehearsal also passed: npm published all
+eight packages only to temporary loopback Verdaccio, and fresh Bun, npm, and
+isolated global consumers succeeded. Installation from the public registry remains
+unverified until beta.1 is published. Bun's lockfile may still record workspace
+links for local checkout resolution; the source and npm-packed manifests are the
+release contract.
+
 ## Publication procedure
 
-After the unchecked release gates are resolved, coordinate the package versions
-and dist-tag, update the lockfile, and rerun verification. Publish from each
-public package directory in the order above. For example, from `gum-jsx-core`:
+After the unchecked release gates are resolved, check every source and packed
+manifest for local dependency protocols, update the lockfile, and rerun
+verification. Publish from each public package directory in the order above.
+For example, from `gum-jsx-core`:
 
 ```sh
 bun publish --access public --tag beta
 ```
 
 Repeat for each subsequent package only after its dependencies are available.
-Verify a new registry-only consumer without local tarball overrides, including
-native installation and CLI commands. Commit/tag each package and the workspace
+After each publish, inspect `npm view @gum-jsx/<name>@beta dependencies --json`
+and reject any local dependency protocol. Verify a new registry-only consumer
+without local tarball overrides, including native installation and CLI commands.
+Commit/tag each package and the workspace
 with its matching submodule pointers according to the release workflow. A stable
 2.0 release requires `2.0.0` versions and an explicit decision to publish to
 `latest`.

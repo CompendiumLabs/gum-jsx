@@ -16,6 +16,7 @@ for tool in bun node npm curl tar setsid; do
 done
 
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/gum-rehearse.XXXXXX")
+mkdir -p "$WORK/tmp"
 VPID=
 say() { printf '\n== %s\n' "$*"; }
 fail() { printf 'FAIL: %s\n' "$*" >&2; exit 1; }
@@ -38,15 +39,19 @@ runlog() {
 # Fresh caches prevent same-version packages from a previous rehearsal or npm
 # satisfying an install. Do not change the caller's npmrc or global Bun paths.
 export BUN_INSTALL_CACHE_DIR="$WORK/bun-cache" npm_config_cache="$WORK/npm-cache"
+export BUN_TMPDIR="$WORK/tmp"
 export npm_config_userconfig="$WORK/.npmrc" npm_config_globalconfig="$WORK/global.npmrc"
 export BUN_INSTALL_GLOBAL_DIR="$WORK/global" BUN_INSTALL_BIN="$WORK/global/bin"
+# All npm operations inherit the loopback registry even if a later command
+# accidentally omits --registry. The temporary npmrc below carries only its token.
+export npm_config_registry="$REG"
 touch "$npm_config_userconfig" "$npm_config_globalconfig"
 
 say 'prepare publication workspace'
 PUBLISH="$WORK/publish"
 mkdir -p "$PUBLISH"
 cp "$ROOT/package.json" "$PUBLISH/package.json"
-# Bun reads the workspace lockfile when replacing workspace:* during publish.
+# Keep the lockfile with the publication copy for reproducible local resolution.
 cp "$ROOT/bun.lock" "$PUBLISH/bun.lock"
 for pkg in "${ORDER[@]}"; do
     mkdir -p "$PUBLISH/gum-jsx-$pkg"
@@ -54,6 +59,7 @@ for pkg in "${ORDER[@]}"; do
         --exclude=dist --exclude=out --exclude=skills --exclude=.npmrc \
         --exclude=.env --exclude='.env.*' -cf - . | tar -C "$PUBLISH/gum-jsx-$pkg" -xf -
 done
+runlog manifests.log bun "$ROOT/scripts/check-release-manifests.ts" "$PUBLISH"
 # Publishing from copies lets us force the local registry even when a package
 # gains a publishConfig.registry, without modifying any source manifests.
 VERSION=$(bun -e '
@@ -96,7 +102,8 @@ packages:
     proxy: npmjs
 log: { type: file, path: $WORK/verdaccio.log, level: warn }
 YAML
-# Gum packages have no upstream fallback; missing local publications must fail.
+# Gum packages have no upstream fallback; only third-party dependencies can be
+# fetched through Verdaccio's npmjs proxy. All publishes target this loopback URL.
 setsid bunx verdaccio@6 --config "$WORK/config.yaml" --listen "127.0.0.1:$PORT" > "$WORK/verdaccio.out" 2>&1 &
 VPID=$!
 for ((attempt=0; attempt<90; attempt++)); do
@@ -114,8 +121,20 @@ cp "$WORK/.npmrc" "$PUBLISH/.npmrc"
 
 for pkg in "${ORDER[@]}"; do
     say "publish @gum-jsx/$pkg@$VERSION locally"
-    (cd "$PUBLISH/gum-jsx-$pkg" && runlog "publish-$pkg.log" bun publish --access public --tag rehearsal --registry "$REG")
-    runlog "metadata-$pkg.log" npm view "@gum-jsx/$pkg@$VERSION" version --registry "$REG"
+    (cd "$PUBLISH/gum-jsx-$pkg" && runlog "publish-$pkg.log" npm publish --access public --tag rehearsal --registry "$REG")
+    runlog "metadata-$pkg.log" npm view "@gum-jsx/$pkg@$VERSION" --json --registry "$REG"
+    bun -e '
+const [file, name, version] = process.argv.slice(1);
+const result = JSON.parse(await Bun.file(file).text());
+const metadata = Array.isArray(result) ? result[0] : result;
+if (metadata.version !== version) throw Error(`Published ${name} has version ${metadata.version}`);
+for (const [dependency, range] of Object.entries(metadata.dependencies ?? {})) {
+  if (/^(workspace:|link:|file:)/.test(range))
+    throw Error(`Published ${name} contains a local dependency: ${dependency}@${range}`);
+  if (dependency.startsWith("@gum-jsx/") && range !== version)
+    throw Error(`Published ${name} must pin ${dependency} to ${version}, got ${range}`);
+}
+' "$WORK/metadata-$pkg.log" "@gum-jsx/$pkg" "$VERSION"
 done
 
 say 'install CLI into a fresh Bun project'
