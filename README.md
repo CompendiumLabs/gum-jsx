@@ -14,10 +14,10 @@ they do not require React.
 
 ## Get started
 
-With Bun 1.4.2 or newer, install the CLI:
+For the 2.0 prerelease, use Bun 1.4.2 or newer on Linux x64 and install the CLI:
 
 ```sh
-bun install @gum-jsx/cli
+bun install -g @gum-jsx/cli@beta
 ```
 
 The CLI includes the core renderer, TeX, Markdown, and PNG/PDF exporters. It

@@ -70,12 +70,12 @@ Scope decision (2026-09-23): do not implement SVG image embedding for now.
 
 ## Final validation and publication
 
-- [ ] Run all workspace tests and typechecks after the final changes.
-- [ ] Build and inspect the editor, documentation previews, and visual report.
-- [ ] Run browser and packed-consumer checks on the release candidate.
-- [ ] Verify native PNG installation on the supported operating systems.
-- [ ] Resolve every release blocker or record an explicit scope decision.
-- [ ] Review release notes and version numbers.
+- [x] Run all workspace tests and typechecks after the final changes.
+- [x] Build and inspect the editor, documentation previews, and visual report.
+- [x] Run browser and packed-consumer checks on the release candidate.
+- [x] Verify native PNG installation on the supported platform: Linux x64.
+- [x] Resolve every release blocker or record an explicit scope decision.
+- [x] Review release notes and version numbers.
 - [ ] Publish packages in dependency order, verify registry installs, then tag the release.
 
 ## Package and runtime contract
@@ -97,11 +97,14 @@ No umbrella package is published. The CLI provides `gum`, `gum-tex`, and
 `gum-mark`; React provides `gum-react`.
 
 Artifacts contain TypeScript source and declared entry points, licensed fonts,
-and the documentation assets needed at runtime. Bun 1.4.2 or newer is the
-supported native runtime. Core, math, PDF, React, and `@gum-jsx/png/selection`
+and the documentation assets needed at runtime. Bun 1.4.2 or newer on Linux x64
+is the supported native runtime for this prerelease. Core, math, PDF, React, and `@gum-jsx/png/selection`
 are checked with a TypeScript-aware browser bundler. Direct Node execution is
-outside this release contract. PNG rasterization uses native node-canvas;
-installation on other operating systems still needs verification.
+outside this release contract. PNG rasterization uses native node-canvas.
+
+Scope decision (2026-09-23): limit verified native support for this prerelease to
+Linux x64. macOS and Windows native installation are outside this release's
+support contract and are no longer gates for this prerelease.
 
 Browser applications must serve core's `src/fonts` assets at the URLs relative
 to their emitted module (or register font bytes/URLs themselves). Math's 18
@@ -164,9 +167,55 @@ On 2026-09-22, with Bun 1.4.2 on Linux:
   CLI-only installation, React/docs usage, browser bundling, npm resolution,
   and isolated global commands.
 
-These are preparation results. Rerun the final checklist against the exact
-candidate after resolving remaining blockers. The editor build still reports
-large bundle chunks; this is an optimization follow-up, not a failed build.
+The editor build still reports large bundle chunks; this is an optimization
+follow-up, not a failed build.
+
+## Final validation recorded on 2026-09-23
+
+All non-publication gates passed for `2.0.0-beta.0` on the agreed Linux x64 native
+support scope. Validation used Bun 1.4.2 and Chromium 153.0.8010.52. The source
+workspace started at `23bba13`; subsequent changes were the platform/install
+documentation and this validation record.
+
+- A fresh workspace copy, with a new dependency cache and no `node_modules`,
+  installed with `bun install --frozen-lockfile`. All ten package test suites,
+  all workspace typechecks, and the production editor build passed.
+- The visual report rendered all 223 examples with zero failures. Browser
+  captures of the production editor, Grid documentation/preview, and visual
+  report were inspected. The production browser regression passed, including
+  loading all 25 font faces once, concurrent rendering, browser/library SVG
+  agreement, and error recovery.
+- `bun pm pack` created all eight public tarballs. Their versions, public/beta
+  metadata, concrete dependency versions, entry points, and license files were
+  checked. Versions remain coordinated at `2.0.0-beta.0`; no version bump was made.
+- A fresh CLI-only tarball consumer rendered SVG, native PNG, PDF, a two-page
+  Grid/TextGrid PDF, TeX, and terminal Markdown. React and docs were installed
+  separately and their APIs, bundled assets, Grid bindings, and generated skill
+  references passed. A five-page deck and a single slide with its shared prelude
+  also rendered successfully.
+- The installed packages passed browser bundling and actual Chromium rendering
+  of core/math/fonts, Grid/TextGrid, React, PNG selection, and PDF output. Both Bun
+  and browser consumers checked PNG alpha masks and the accepted tiny-RGB
+  transparency-key decoder rejection. Native PNG installation and rendering
+  passed on Linux x64.
+- npm 12.0.2 installed the tarballs with lifecycle scripts disabled and linked all
+  four executables. An isolated global Bun installation rendered SVG/PDF and
+  React output without changing the user's global installation.
+- Release notes and runtime scope were reconciled in MIGRATION and package docs.
+  The root and generated authoring instructions now install the prerelease CLI
+  globally with `@beta`. Documentation checks passed again, and the updated
+  public tarballs passed a fresh consumer installation and browser/API checks.
+
+No registry publication or release tagging was performed. Packed-consumer checks
+used local tarballs and explicit dependency overrides; the local-registry
+`rehearse` script was not run because it performs publication. Registry installs
+remain part of the deliberately pending publication step. Validation logs,
+tarballs, consumer fixtures, and browser captures were retained in
+`/tmp/gum-final-validation.F00E0U`; the generated visual report is in
+`gum-jsx-cli/visual-report/dist/`.
+
+Rerun affected checks if package contents, versions, or release scope change
+before publication.
 
 ## Publication procedure
 

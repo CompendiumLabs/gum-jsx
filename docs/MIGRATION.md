@@ -17,8 +17,10 @@ there is no new `gum-jsx` umbrella install. The CLI package supplies `gum`,
 `gum-tex`, and `gum-mark`; React supplies `gum-react`.
 
 Release candidates use coordinated `2.0.0-beta.0` versions and the `beta` tag.
-Packages ship TypeScript source. The tested native runtime is Bun 1.4.2 or newer;
-core, math, PDF, React, and PNG's selection subpath also support TypeScript-aware
+Packages ship TypeScript source. The supported native runtime for this prerelease
+is Bun 1.4.2 or newer on Linux x64. Native macOS/Windows installation is outside
+this prerelease's verified scope. Core, math, PDF, React, and PNG's selection subpath
+also support TypeScript-aware
 browser bundlers. Direct Node execution is not part of this release contract.
 See [RELEASE.md](./RELEASE.md) for artifact verification and remaining gates.
 
