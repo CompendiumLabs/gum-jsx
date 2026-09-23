@@ -49,7 +49,8 @@ Constructor TypeScript types and existing value/layout checks remain in place.
 
 These are scope decisions, not automatic requirements for 2.0:
 
-- [ ] Decide whether decks, shared preludes, multipage PDF, and CLI watch mode ship in 2.0.
+- [x] Include decks, shared preludes, and multipage PDF.
+- [ ] Decide whether CLI watch mode ships in 2.0.
 - [ ] Decide whether Grid/TextGrid and SVG image embedding ship in 2.0.
 - [x] Explicitly document selectable text and PDF emoji limitations ([migration](./MIGRATION.md#layout-contracts), [fonts](../gum-jsx-docs/docs/gallery/text/Fonts.md#fallback-faces-and-emoji)).
 - [x] Explicitly document linear-only plot axes and unsupported equation numbering/tags ([plotting](./PLOTTING.md), [math](./MATH.md)).

@@ -40,7 +40,7 @@ lengths, and explicit `fit` remain the foundation.
   construction sites.
 - [ ] Accept a top-level JSX fragment or array of elements and wrap it in the
   root `Svg` automatically.
-- [ ] Provide shared preludes: evaluate declarations once and reuse their
+- [x] Provide shared preludes: evaluate declarations once and reuse their
   bindings across figures or slides.
 - [x] Allow hosts to inject extra bindings into evaluated code. The fresh
   `scope` option covers the original evaluation `bindings` capability.
@@ -507,7 +507,8 @@ for the precise differences in range, singleton linspace, and integer endpoints.
 - [x] Transparent or colored page backgrounds, Unicode document title, physical
   scale, and configurable output precision.
 - [x] Synchronous export in Bun and browser bundles.
-- [ ] Multipage documents, page labels/bookmarks, and broader document metadata.
+- [x] Multipage documents from an ordered array of fragments with independent page sizes.
+- [ ] Page labels/bookmarks and broader document metadata.
 - [ ] Embedded fonts and searchable/selectable text. Current output uses outlines;
   live color-font text such as emoji is rejected.
 - [x] Use unmodified `fast-png`, with the accepted limitation that one- and
@@ -547,11 +548,12 @@ public API. Run `bun run gum` from the workspace root.
 - [ ] Live `gum --dev` terminal refresh while a source file changes.
 - [x] `gum-tex` command for standalone TeX to SVG, PNG, PDF, kitty, tree, or JSON;
   literal/file/stdin input, font size, padding, macros, and explicit fitting.
-- [ ] Multi-file and directory deck loading with natural filename ordering.
-- [ ] Deck `index.json` for explicit slide order, shared prelude, and document
+- [x] Multi-file and directory deck loading for PDF output with natural filename ordering.
+- [x] Deck `index.json` for explicit slide order, shared prelude, and document
   title; automatically apply a neighboring deck prelude when rendering one
   slide.
-- [ ] Vector PDF deck output with slide titles or filenames as bookmarks.
+- [x] Vector PDF deck output.
+- [ ] Slide titles or filenames as PDF bookmarks.
 
 ## Markdown and documentation workflows
 

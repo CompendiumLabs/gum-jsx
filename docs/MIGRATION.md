@@ -112,7 +112,8 @@ pass produces fragments, and the serializer consumes fragments.
 | evaluateGum `theme` and Svg arguments | render_element `defaults` / `overrides` viewport props |
 | evaluateGum `bindings` | The evaluate `scope` option |
 | evaluateGum `seed` | The evaluate `seed` option; each evaluation has its own stream |
-| evaluateGum `prelude`, `strict`, `loadFile`, `debug` | Not ported |
+| evaluateGum `prelude` | `evaluate_prelude(code)` returns bindings for `evaluate` scope; CLI decks load a manifest prelude |
+| evaluateGum `strict`, `loadFile`, `debug` | Not ported |
 | `gum.use(math)` plugin registration | `evaluate(source, { scope: math })` plus a `createMathFonts()` font resource on the pass |
 | `new Square({ rounded: true })`, children always an array | `new Square({ border_radius: px(10) })`; `children` may be a single element |
 | layoutRows / layoutSvg placement report | `inspect_fragment`, or the CLI's `tree` and `json` formats |
@@ -133,7 +134,7 @@ replace the original element registration with `Element` subclasses and
 | @gum-jsx/math | [@gum-jsx/math](../gum-jsx-math/README.md), supplied as evaluation scope rather than a plugin |
 | @gum-jsx/node | [@gum-jsx/png](../gum-jsx-png/README.md) for rasterization; kitty output lives in the CLI |
 | @gum-jsx/react | [@gum-jsx/react](../gum-jsx-react/README.md): `GUM`, `<Gum>`, `createGumRoot`, and the `gum-react` command |
-| @gum-jsx/pdf, asynchronous `renderPdf` over one or more pages | [@gum-jsx/pdf](../gum-jsx-pdf/README.md): synchronous `render_pdf(fragment)` for a single page in Bun or a browser bundle |
+| @gum-jsx/pdf, asynchronous `renderPdf` over one or more pages | [@gum-jsx/pdf](../gum-jsx-pdf/README.md): synchronous `render_pdf(fragmentOrPages)` for one or more pages in Bun or a browser bundle |
 | @gum-jsx/mark | [@gum-jsx/mark](../gum-jsx-mark/README.md): `displayMarkdown` and the `gum-mark` command |
 | @gum-jsx/docs | [@gum-jsx/docs](../gum-jsx-docs/README.md): element pages, guides, gallery, and the generated skill |
 | gum-mcp | [@gum-jsx/mcp](../gum-jsx-mcp/README.md) |
@@ -222,7 +223,7 @@ Most of the original surface now has a counterpart, often with a different API:
   with the `mono` family for preformatted text.
 - Images and data: SvgImage, LoadImage, `loadFile`, and the parseTable /
   loadTable CSV helpers.
-- Language: plugins and the isolated Env, shared preludes, strict rendering mode,
+- Language: plugins and the isolated Env, strict rendering mode,
   boolean shorthand props, and automatic wrapping of a top-level fragment or
   array. Hosts do wrap a single bare element in **Svg**.
 - Plotting: axes use linear scales. Log and date scales, minor ticks, label
@@ -235,8 +236,7 @@ Most of the original surface now has a counterpart, often with a different API:
   node outlines beyond rounded rectangles and ellipses.
 - Math: automatic equation numbering, explicit tags, and `CD` diagrams.
 - Hosts: the browser export package, the VS Code extension, the zoomSvg helpers,
-  `gum --dev`, multi-page PDF with bookmarks, and multi-file decks with a shared
-  prelude.
+  `gum --dev` and PDF bookmarks.
 
 The original placement conveniences (rect, pos, size, rad, xrect, yrect, expand)
 and the public path command classes are retired rather than deferred.

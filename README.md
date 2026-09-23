@@ -50,9 +50,9 @@ Save this as `figure.jsx`:
 Render it:
 
 ```sh
-bun run gum figure.jsx -o figure.svg
-bun run gum figure.jsx -o figure.png --ratio 2
-bun run gum figure.jsx -o figure.pdf
+gum figure.jsx -o figure.svg
+gum figure.jsx -o figure.png --ratio 2
+gum figure.jsx -o figure.pdf
 ```
 
 ![Sine wave rendered from the JSX above](docs/images/readme-plot.svg)
@@ -71,10 +71,11 @@ graphics protocol. Use `-f svg` for SVG on stdout, or `-f tree --stats` to inspe
 layout. The CLI includes math and Markdown commands:
 
 ```sh
-bun run gum figure.jsx
-bun run gum figure.jsx -f tree --stats
-bun run gum-tex 'e^{i\pi}+1=0' -o euler.svg
-bun run gum-mark notes.md
+gum figure.jsx
+gum figure.jsx -f tree --stats
+gum slides/ -o talk.pdf
+gum-tex 'e^{i\pi}+1=0' -o euler.svg
+gum-mark notes.md
 ```
 
 PNG and terminal rendering use node-canvas, which needs its native dependencies
