@@ -9,7 +9,6 @@ Publishing and release tags are separate final steps.
 - [x] Replace obsolete unscoped package imports with declared `@gum-jsx/*` dependencies.
 - [x] Check source, tests, scripts, examples, and generated authoring instructions.
 - [x] Verify a clean workspace without old dependency aliases.
-- [x] Add a repeatable check that catches undeclared workspace imports.
 
 ## 2. Package contract and release artifacts
 
@@ -19,7 +18,7 @@ Publishing and release tags are separate final steps.
 - [x] Verify packed manifests contain usable dependency versions and entry points.
 - [x] Install packed artifacts in an isolated consumer and exercise CLI and library usage.
 - [x] Verify browser bundling and font asset delivery from the packaged libraries.
-- [x] Document build, pack, verification, and publication order.
+- [x] Document build, verification, and publication order.
 
 ## 3. PDF decoder scope
 
@@ -33,13 +32,10 @@ blocker. Ordinary RGBA PNGs (including transparent 1×1 images) and larger RGB
 images with transparency keys remain supported. Convert affected inputs to RGBA.
 Revisit the rejection tests when a future decoder release fixes the issue.
 
-## 4. Prop diagnostics
+## 4. Prop validation scope
 
-- [x] Diagnose unknown built-in props, including common spelling mistakes.
-- [x] Suggest close spelling matches for unknown props.
-- [x] Preserve supported scoped props, parent-owned layout metadata, and custom elements.
-- [x] Cover diagnostics through JSX and direct constructors with focused tests.
-- [x] Document the diagnostic behavior and extension contract.
+Scope decision: omit runtime unknown-prop detection and generated prop metadata.
+Constructor TypeScript types and existing value/layout checks remain in place.
 
 ## 5. Migration and documentation
 
@@ -106,32 +102,36 @@ From a fresh recursive checkout, with no existing `node_modules`:
 bun install --frozen-lockfile
 bun run test
 bun run typecheck
-bun run props:check
 bun run build
 bun run visual-report
 bun run --cwd gum-jsx-math test:browser
-bun run release:check
-bun run release:pack
+bun run rehearse
 ```
 
-`props:check` needs Node for the development-only TypeScript 7.0.2 schema
-generator. After changing constructor input types, run `bun run props:generate`
-and check in the resulting registrations and schemas.
-
 Browser checks need Chromium; set `GUM_CHROME` if it is not on PATH.
-`release:check` packs every public package, installs the tarballs in a temporary
-consumer, and exercises library entry points, all four commands, browser exports,
-and delivery of all 25 bundled font faces. It checks licenses and dependency
-versions and ensures dependencies do not resolve back into the workspace.
-Use `bun run release:check --offline` with a populated Bun cache, or add `--keep`
-to retain the consumer for inspection. PNG-to-PDF checks cover supported RGBA
-and RGB transparency-key images plus the accepted one- and two-pixel RGB
-rejection, in both Bun and the browser. No dependency patches are applied.
 
-`release:pack` writes tarballs and `artifacts.json` to `dist/release`. Packing
-rewrites `workspace:*` dependencies to the coordinated version. Native packages
-ship source, so the editor build is a browser regression check rather than a
-prerequisite for assembling their tarballs.
+`bun run rehearse` runs [scripts/rehearse.sh](../scripts/rehearse.sh). It publishes
+the eight public packages to a temporary Verdaccio registry, then installs the
+CLI into a fresh Bun project before adding React and docs separately. Checks
+cover the four executables, library entry points, packaged fonts and docs,
+PNG-to-PDF support and its accepted limitation, browser bundling, npm dependency
+resolution without lifecycle scripts, and an isolated global Bun installation.
+The separate browser regression above checks actual browser rendering.
+
+The rehearsal requires Bun, Node/npm, curl, tar, and `setsid`, plus network access
+to download Verdaccio and external dependencies. Gum packages are resolved only
+from the local registry. It uses temporary publication copies, credentials,
+caches, and global directories; source manifests and personal npm configuration
+are unchanged. Set `KEEP=1` to retain logs and artifacts or `PORT=4874` to choose
+another port:
+
+```sh
+KEEP=1 PORT=4874 bun run rehearse
+```
+
+Packages ship source, so the editor build is a browser regression check rather
+than a prerequisite for publication. Bun's publish command packs each package
+and rewrites its `workspace:*` dependencies to concrete versions.
 
 ## Verification recorded during preparation
 
@@ -139,8 +139,6 @@ On 2026-09-22, with Bun 1.4.2 on Linux:
 
 - A fresh temporary workspace installed with the frozen lockfile and passed
   every package's tests, typechecks, and the editor production build.
-- Import checks and generated prop-schema checks passed (89 core constructors,
-  36 math constructors).
 - All 221 visual examples rendered successfully. The corrected typography and
   matrix examples and the editor browser previews were visually inspected.
 - The editor browser regression and isolated packed-consumer checks passed,
@@ -148,6 +146,9 @@ On 2026-09-22, with Bun 1.4.2 on Linux:
 - After removing the decoder patch, packed Bun and browser consumers verified
   RGBA and larger RGB transparency-key images, and the documented rejection of
   one- and two-pixel RGB transparency keys at both 8- and 16-bit depths.
+- The local-registry rehearsal passed for all eight public packages: fresh
+  CLI-only installation, React/docs usage, browser bundling, npm resolution,
+  and isolated global commands.
 
 These are preparation results. Rerun the final checklist against the exact
 candidate after resolving remaining blockers. The editor build still reports
@@ -156,12 +157,11 @@ large bundle chunks; this is an optimization follow-up, not a failed build.
 ## Publication procedure
 
 After the unchecked release gates are resolved, coordinate the package versions
-and dist-tag, update the lockfile, rerun verification, and pack the final candidate.
-Review `dist/release/artifacts.json` and publish those exact tarballs in the order
-above. For example, the first candidate package would be:
+and dist-tag, update the lockfile, and rerun verification. Publish from each
+public package directory in the order above. For example, from `gum-jsx-core`:
 
 ```sh
-bun publish --access public --tag beta dist/release/gum-jsx-core-2.0.0-beta.0.tgz
+bun publish --access public --tag beta
 ```
 
 Repeat for each subsequent package only after its dependencies are available.
@@ -169,4 +169,4 @@ Verify a new registry-only consumer without local tarball overrides, including
 native installation and CLI commands. Commit/tag each package and the workspace
 with its matching submodule pointers according to the release workflow. A stable
 2.0 release requires `2.0.0` versions and an explicit decision to publish to
-`latest`; the preparation scripts never publish or create tags.
+`latest`.

@@ -60,8 +60,6 @@ lengths, and explicit `fit` remain the foundation.
   bindings.
 - [x] Hyphenated JSX attributes normalize to underscores. Typed compound scopes
   such as `axis-stroke-width` and `title-font-size` configure generated parts.
-- [x] Built-in constructors reject unknown props with spelling suggestions;
-  custom element classes remain extensible. This does not restore legacy visual fallbacks.
 
 ## Core layout and composition model
 

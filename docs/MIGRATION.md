@@ -64,19 +64,10 @@ name the same prop. JavaScript objects and spreads use underscore keys. See
 [Style](../gum-jsx-docs/docs/gallery/text/Style.md) for the prop vocabulary and
 scoped component props.
 
-## Prop errors
-
-Built-in constructors now reject unknown prop names before normalization, in JSX
-and direct JavaScript. For example, `paddding` suggests `padding`.
-JSX errors retain source sites. Use the
-supported `text-*`, `title-*`, and axis scopes for generated children; for example,
-`TextBox` needs `text-whitespace="pre"`, while `Text` takes `whitespace="pre"`.
-
-Parent-owned props such as `grow`, `basis`, `x`, `y`, and `anchor` remain valid.
-Custom functions and element subclasses keep their own prop vocabulary; validation
-is registered for exact built-in constructors. Custom classes may opt in with
-`register_props`. This is prop-name validation, not a general permissive/strict
-rendering mode; existing value and layout checks continue to apply.
+Use the supported `text-*`, `title-*`, and axis scopes for generated children;
+for example, `TextBox` needs `text-whitespace="pre"`, while `Text` takes
+`whitespace="pre"`. Unknown prop names are not checked at runtime. Existing
+value and layout checks still apply.
 
 ## Layout contracts
 

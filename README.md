@@ -148,6 +148,7 @@ bun run test          # Every package's suite, sequentially
 bun run typecheck     # TypeScript checks across all packages
 bun run build         # Production browser editor and docs viewer
 bun run visual-test   # Searchable HTML report of rendered examples
+bun run rehearse      # Publish to a temporary local registry and check fresh installs
 ```
 
 To work on one package, use its scripts, for example
