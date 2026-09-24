@@ -4,7 +4,7 @@ Status: phases 1–7 implemented, September 15, 2026. Phase 8 remains planned.
 
 The [math package](../gum-jsx-math/README.md) now supplies glyphs, signed glue,
 rows/columns/boxes, and the first TeX slice, with CLI/editor bindings and
-[runnable examples](../gum-jsx-docs/docs/gallery/text/Math.md). Core carries passive
+[runnable examples](../gum-jsx-docs/docs/guides/text/math.md). Core carries passive
 math metrics/context and lazy font registration; it does not depend on math.
 KaTeX is pinned to 0.16.47.
 
@@ -83,7 +83,7 @@ with all three renderers succeeding; the rendered galleries were inspected.
 
 Phase 6 adds [accents and horizontal decorations](../gum-jsx-docs/docs/gallery/text/MathDecorations.md),
 [box operations](../gum-jsx-docs/docs/gallery/text/MathBoxes.md), and
-[composed fonts and macros](../gum-jsx-docs/docs/gallery/text/MathFonts.md).
+[composed fonts and macros](../gum-jsx-docs/docs/guides/text/math_fonts.md).
 `Accent`, `Underline`, `Overline`, `MathStretch`, `HorizBrace`, and `XArrow`
 measure immutable operands before drawing or placing decorations. Wide hats,
 checks, and tildes follow actual width, including figure operands, instead of
@@ -132,7 +132,7 @@ font loading, reuse, dark decorations, errors, and recovery. The inspected
 galleries contain 24 display and 24 inline Gum/KaTeX/LaTeX comparisons, plus 16
 extended Gum/KaTeX comparisons; every requested renderer succeeded.
 
-Phase 7 adds [standalone exports](../gum-jsx-docs/docs/gallery/text/MathExport.md),
+Phase 7 adds [standalone exports](../gum-jsx-docs/docs/guides/text/math_export.md),
 [formula labels on plots](../gum-jsx-docs/docs/gallery/text/MathPlotLabels.md), and
 [math in slides](../gum-jsx-docs/docs/gallery/text/MathSlides.md). `mathToElement`
 returns an immutable SVG source whose viewport is measured during ordinary

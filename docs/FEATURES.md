@@ -461,7 +461,7 @@ direct JavaScript use.
 - [x] Seeded random helpers **`setSeed`**, **`random`**, **`uniform`**,
   **`normal`**, and **`integer`**.
 
-The [math reference](../gum-jsx-docs/docs/gallery/text/MathHelpers.md) covers the helper
+The [math reference](../gum-jsx-docs/docs/guides/text/math_helpers.md) covers the helper
 set and links to runnable examples. Generated arrays are bounded and frozen,
 2D helpers return native points, and random streams belong to individual
 evaluations. See [migration notes](./MIGRATION.md#numeric-helpers)

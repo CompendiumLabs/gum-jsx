@@ -54,7 +54,7 @@ These are scope decisions, not automatic requirements for 2.0:
 - [x] Omit CLI watch/live-preview mode from 2.0.
 - [x] Include focused Grid/TextGrid layout in 2.0.
 - [x] Defer SVG image embedding (`SvgImage`); omit it from 2.0.
-- [x] Explicitly document selectable text and PDF emoji limitations ([migration](./MIGRATION.md#layout-contracts), [fonts](../gum-jsx-docs/docs/gallery/text/Fonts.md#fallback-faces-and-emoji)).
+- [x] Explicitly document selectable text and PDF emoji limitations ([migration](./MIGRATION.md#layout-contracts), [fonts](../gum-jsx-docs/docs/guides/text/fonts.md#fallback-faces-and-emoji)).
 - [x] Explicitly document linear-only plot axes and unsupported equation numbering/tags ([plotting](./PLOTTING.md), [math](./MATH.md)).
 
 Scope decision (2026-09-23): omit CLI watch/live-preview mode from 2.0.
@@ -110,7 +110,7 @@ support contract and are no longer gates for this prerelease.
 Browser applications must serve core's `src/fonts` assets at the URLs relative
 to their emitted module (or register font bytes/URLs themselves). Math's 18
 static font imports must be emitted by the bundler. See the
-[font guide](../gum-jsx-docs/docs/gallery/text/Fonts.md).
+[font guide](../gum-jsx-docs/docs/guides/text/fonts.md).
 
 ## Repeatable verification
 

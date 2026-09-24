@@ -8,7 +8,7 @@ Use Gum as a command-line tool, a TypeScript library, or through its browser
 editor and React bindings. JSX figures use ordinary JavaScript functions and data;
 they do not require React.
 
-[Getting started](gum-jsx-docs/docs/gallery/text/Gum.md) ·
+[Getting started](gum-jsx-docs/docs/guides/text/gum.md) ·
 [Documentation and gallery](gum-jsx-docs/README.md) ·
 [CLI reference](gum-jsx-cli/README.md)
 
@@ -61,8 +61,8 @@ Elements, units, and helpers such as `Plot`, `px`, `sin`, and `tau` are already 
 scope. Use `px(24)` for pixels, `em(1.5)` for font-relative lengths, and fractions
 such as `0.5` for relative sizes. Gum measures text and composes layouts with
 boxes, stacks, and positioned canvases. Start with the
-[units](gum-jsx-docs/docs/gallery/text/Units.md) and
-[sizing](gum-jsx-docs/docs/gallery/text/Sizing.md) guides.
+[units](gum-jsx-docs/docs/guides/text/units.md) and
+[sizing](gum-jsx-docs/docs/guides/text/sizing.md) guides.
 
 ## Ways to use Gum
 

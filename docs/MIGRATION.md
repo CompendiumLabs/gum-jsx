@@ -62,8 +62,8 @@ and alignment have different contracts, styles use a limited vocabulary, and
 
 JSX attributes accept dashes or underscores, so `border-width` and `border_width`
 name the same prop. JavaScript objects and spreads use underscore keys. See
-[JSX](../gum-jsx-docs/docs/gallery/text/JSX.md) and
-[Style](../gum-jsx-docs/docs/gallery/text/Style.md) for the prop vocabulary and
+[JSX](../gum-jsx-docs/docs/guides/text/jsx.md) and
+[Style](../gum-jsx-docs/docs/guides/text/style.md) for the prop vocabulary and
 scoped component props.
 
 Use the supported `text-*`, `title-*`, and axis scopes for generated children;
@@ -96,9 +96,9 @@ to establish them. The rules most likely to surprise a ported figure are:
 - Text is emitted as glyph outlines, so output needs no installed fonts and is
   not selectable. Emoji remain live text for the host's emoji font.
 
-See [Units](../gum-jsx-docs/docs/gallery/text/Units.md),
-[Sizing](../gum-jsx-docs/docs/gallery/text/Sizing.md),
-[Stack](../gum-jsx-docs/docs/gallery/text/Stack.md), and
+See [Units](../gum-jsx-docs/docs/guides/text/units.md),
+[Sizing](../gum-jsx-docs/docs/guides/text/sizing.md),
+[Stack](../gum-jsx-docs/docs/guides/text/stack.md), and
 [layout choices](../gum-jsx-docs/docs/gallery/text/layout_choices.md) for natural
 sizing versus explicit flex.
 
@@ -121,9 +121,9 @@ pass produces fragments, and the serializer consumes fragments.
 | layoutRows / layoutSvg placement report | `inspect_fragment`, or the CLI's `tree` and `json` formats |
 | rasterizeSvg from gum-jsx/render | `rasterize_svg` / `rasterize_pixels` from @gum-jsx/png |
 
-See [Rendering](../gum-jsx-docs/docs/gallery/text/Rendering.md),
-[Math](../gum-jsx-docs/docs/gallery/text/Math.md), and
-[custom elements](../gum-jsx-docs/docs/gallery/text/CustomElements.md), which
+See [Rendering](../gum-jsx-docs/docs/guides/text/rendering.md),
+[Math](../gum-jsx-docs/docs/guides/text/math.md), and
+[custom elements](../gum-jsx-docs/docs/guides/text/custom_elements.md), which
 replace the original element registration with `Element` subclasses and
 `define_element`.
 
@@ -157,17 +157,17 @@ replace the original element registration with `Element` subclasses and
 | — | `-f pdf` or a `.pdf` output filename |
 
 Stdout still defaults to kitty graphics, and the output extension still selects
-the format. See the [CLI guide](../gum-jsx-docs/docs/gallery/text/CLI.md).
+the format. See the [CLI guide](../gum-jsx-docs/docs/guides/text/cli.md).
 
 ## Numeric helpers
 
 The original core's public math, array, vector, complex, color, and random
 helpers are available in JSX and as imports. See
-[Math helpers](../gum-jsx-docs/docs/gallery/text/MathHelpers.md),
-[Arrays](../gum-jsx-docs/docs/gallery/text/Arrays.md),
-[Vectors](../gum-jsx-docs/docs/gallery/text/Vectors.md),
-[Colors](../gum-jsx-docs/docs/gallery/text/Colors.md), and
-[Random](../gum-jsx-docs/docs/gallery/text/Random.md) for the full reference.
+[Math helpers](../gum-jsx-docs/docs/guides/text/math_helpers.md),
+[Arrays](../gum-jsx-docs/docs/guides/text/arrays.md),
+[Vectors](../gum-jsx-docs/docs/guides/text/vectors.md),
+[Colors](../gum-jsx-docs/docs/guides/text/colors.md), and
+[Random](../gum-jsx-docs/docs/guides/text/random.md) for the full reference.
 A few contracts are deliberate:
 
 - range uses an excluded stop and includes every step before it, including a
@@ -208,9 +208,9 @@ Most of the original surface now has a counterpart, often with a different API:
   an `id`, using [Edge](../gum-jsx-docs/docs/elements/text/Edge.md).
 - Math: [Latex](../gum-jsx-docs/docs/elements/text/Latex.md),
   [Tex](../gum-jsx-docs/docs/elements/text/Tex.md), the full math element tree, and
-  the `gum-tex` command. See [Math](../gum-jsx-docs/docs/gallery/text/Math.md).
+  the `gum-tex` command. See [Math](../gum-jsx-docs/docs/guides/text/math.md).
 - Images and themes: [PngImage](../gum-jsx-docs/docs/elements/text/PngImage.md) and
-  the light and dark palettes in [Themes](../gum-jsx-docs/docs/gallery/text/Themes.md).
+  the light and dark palettes in [Themes](../gum-jsx-docs/docs/guides/text/themes.md).
 - Hosts: the CLI with SVG, PNG, PDF, kitty, tree, and JSON output; React
   bindings; vector PDF; Markdown in the terminal; and the web editor.
 - The old gallery figures, ported as showcases such as

@@ -216,7 +216,7 @@ assert.ok(rasterize_pixels(result.svg).data.length > 0);
 assert.ok(select_svg(result.svg, { x: 0, y: 0, width: 5, height: 5 }, result.size).includes('<svg'));
 assert.ok(displayMarkdown('# Hello').includes('Hello'));
 assert.ok(getElements().tags.includes('Plot'));
-assert.ok(getGuides().tags.includes('Gum'));
+assert.ok(getGuides().tags.includes('gum'));
 assert.ok(buildSkillFiles().size > 0);
 assert.ok((await Bun.file(`${elementsCodeDir}/Frame.jsx`).text()).includes('<Frame'));
 const root = createGumRoot();

@@ -32,16 +32,16 @@ bun run gum gum-jsx-docs/docs/gallery/code/plot_bars.jsx -f tree
 | 5. Symbolic geometry | Shared scalar/parametric/array sampler; sampled lines, splines, polygons, points, bands, and vector fields. |
 
 The [plotting reference](../gum-jsx-docs/docs/elements/text/Plot.md),
-[coordinate reference](../gum-jsx-docs/docs/gallery/text/Coordinates.md), and
-[sampling reference](../gum-jsx-docs/docs/gallery/text/Sampling.md) describe the APIs.
+[coordinate reference](../gum-jsx-docs/docs/guides/text/coordinates.md), and
+[sampled curve reference](../gum-jsx-docs/docs/elements/text/SymLine.md) describe the APIs.
 Every public element has a runnable page. The editor's Plotting category exposes
 plots and their parts.
 
-[Math and array helpers](../gum-jsx-docs/docs/gallery/text/MathHelpers.md), including
+[Math and array helpers](../gum-jsx-docs/docs/guides/text/math_helpers.md), including
 range, linspace, sin/cos, polar, and seeded random sampling, are available directly
 in JSX and as named imports. Examples use the shared helpers for their data.
 
-[Point inputs](../gum-jsx-docs/docs/gallery/text/PointValues.md) accept `[x,y]` or `{x,y}`,
+[Point inputs](../gum-jsx-docs/docs/guides/text/point_values.md) accept `[x,y]` or `{x,y}`,
 including mixed lists and length-valued pairs. For example,
 `<CoordLine points={zip(xs, xs.map(sin))} />` uses array helpers directly.
 Marker/field callbacks and generated points retain named coordinates.
