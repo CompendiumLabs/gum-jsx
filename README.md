@@ -8,9 +8,8 @@ Use Gum as a command-line tool, a TypeScript library, or through its browser
 editor and React bindings. JSX figures use ordinary JavaScript functions and data;
 they do not require React.
 
-[Getting started](gum-jsx-docs/docs/guides/text/gum.md) ·
-[Documentation and gallery](gum-jsx-docs/README.md) ·
-[CLI reference](gum-jsx-cli/README.md)
+[Start with the CLI](https://github.com/CompendiumLabs/gum-jsx-cli#readme) ·
+[Documentation and gallery](https://compendiumlabs.ai/gum)
 
 ## Get started
 
