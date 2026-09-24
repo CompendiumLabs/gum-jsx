@@ -9,7 +9,7 @@ math metrics/context and lazy font registration; it does not depend on math.
 KaTeX is pinned to 0.16.47.
 
 Phase 3 adds `MathOp`, `SupSub`, `Frac`, `Sqrt`, and `Bracket`, with
-[ordinary-expression examples](../gum-jsx-docs/docs/gallery/text/MathExpressions.md).
+[ordinary-expression examples](../gum-jsx-docs/docs/gallery/text/math_expressions.md).
 It covers all eight styles, TeX size declarations and `\mathchoice`, scripts,
 operator limits, generalized/continued fractions, binomials, root indices,
 fixed delimiters, and complete left/middle/right delimiter groups. `size_index`
@@ -28,8 +28,8 @@ Fractions expose TeX's ordinary atom class. Tall ordinary delimiters retain
 the planned uniform-scaling fallback; vertical bars and radicals preserve width.
 Extensible-piece assembly remains deferred.
 
-Phase 4 connects [formulas inside prose](../gum-jsx-docs/docs/gallery/text/InlineMath.md)
-and [Gum elements inside formulas](../gum-jsx-docs/docs/gallery/text/MathComposition.md).
+Phase 4 connects [formulas inside prose](../gum-jsx-docs/docs/gallery/text/inline_math.md)
+and [Gum elements inside formulas](../gum-jsx-docs/docs/gallery/text/math_composition.md).
 Core `Text` has generic indivisible element tokens with Unicode break behavior,
 baseline alignment, and line boxes that accommodate logical inline extents.
 Shaping remains cached across widths; reference-dependent element measurement
@@ -51,8 +51,8 @@ The CLI and production-browser galleries include the same mixed-content docs.
 Phase 6 completes TeX text-font command composition on this path.
 
 Phase 5 adds [MathArray](../gum-jsx-docs/docs/elements/text/MathArray.md),
-[matrices and cases](../gum-jsx-docs/docs/gallery/text/MathArrays.md), and
-[aligned equations](../gum-jsx-docs/docs/gallery/text/AlignedMath.md). Immutable cells
+[matrices and cases](../gum-jsx-docs/docs/gallery/text/math_arrays.md), and
+[aligned equations](../gum-jsx-docs/docs/gallery/text/aligned_math.md). Immutable cells
 are measured naturally, then placed using shared column advances and row
 baselines. Row struts, array stretch, pre/post gaps, outer spacing, positive and
 negative row gaps, and leading retain the environment's semantics. Solid,
@@ -81,8 +81,8 @@ bases), CLI raster renders, and the production-browser font/reuse/error checks.
 The display and inline galleries contain 20 and 16 comparisons respectively,
 with all three renderers succeeding; the rendered galleries were inspected.
 
-Phase 6 adds [accents and horizontal decorations](../gum-jsx-docs/docs/gallery/text/MathDecorations.md),
-[box operations](../gum-jsx-docs/docs/gallery/text/MathBoxes.md), and
+Phase 6 adds [accents and horizontal decorations](../gum-jsx-docs/docs/gallery/text/math_decorations.md),
+[box operations](../gum-jsx-docs/docs/gallery/text/math_boxes.md), and
 [composed fonts and macros](../gum-jsx-docs/docs/guides/text/math_fonts.md).
 `Accent`, `Underline`, `Overline`, `MathStretch`, `HorizBrace`, and `XArrow`
 measure immutable operands before drawing or placing decorations. Wide hats,
@@ -133,8 +133,8 @@ galleries contain 24 display and 24 inline Gum/KaTeX/LaTeX comparisons, plus 16
 extended Gum/KaTeX comparisons; every requested renderer succeeded.
 
 Phase 7 adds [standalone exports](../gum-jsx-docs/docs/guides/text/math_export.md),
-[formula labels on plots](../gum-jsx-docs/docs/gallery/text/MathPlotLabels.md), and
-[math in slides](../gum-jsx-docs/docs/gallery/text/MathSlides.md). `mathToElement`
+[formula labels on plots](../gum-jsx-docs/docs/gallery/text/math_plot_labels.md), and
+[math in slides](../gum-jsx-docs/docs/gallery/text/math_slides.md). `mathToElement`
 returns an immutable SVG source whose viewport is measured during ordinary
 layout. It includes logical bounds and visible ink, translates negative extents,
 adds Gum-length padding, and gives empty axes a one-pixel floor. Explicit SVG
