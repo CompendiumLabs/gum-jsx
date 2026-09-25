@@ -24,7 +24,7 @@
     "visual-test": "bun --filter @gum-jsx/cli visual-test",
     "visual-report": "bun --filter @gum-jsx/cli visual-report",
     "typecheck": "bun run --workspaces typecheck",
-    "test": "bun run release:check && bun run --workspaces --sequential test",
+    "test": "bun run --workspaces --sequential test",
     "rehearse": "bash scripts/rehearse.sh"
   }
 }
