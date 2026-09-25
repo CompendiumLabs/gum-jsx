@@ -15,6 +15,7 @@
       },
       "dependencies": {
         "@gum-jsx/core": "workspace:*",
+        "@gum-jsx/maps": "2.0.0-beta.1",
         "@gum-jsx/mark": "workspace:*",
         "@gum-jsx/math": "workspace:*",
         "@gum-jsx/pdf": "workspace:*",
@@ -49,6 +50,7 @@
       "version": "2.0.0-beta.1",
       "devDependencies": {
         "@gum-jsx/core": "workspace:*",
+        "@gum-jsx/maps": "2.0.0-beta.1",
         "@gum-jsx/math": "workspace:*",
         "@types/bun": "latest",
         "typescript": "^7",
@@ -60,6 +62,7 @@
         "@codemirror/lang-javascript": "^6.2.5",
         "@codemirror/view": "^6.43.11",
         "@gum-jsx/core": "workspace:*",
+        "@gum-jsx/maps": "2.0.0-beta.1",
         "@gum-jsx/math": "workspace:*",
         "@uiw/react-codemirror": "^4.25.11",
         "react": "^19.3.0",
@@ -128,6 +131,7 @@
       "dependencies": {
         "@gum-jsx/core": "workspace:*",
         "@gum-jsx/docs": "workspace:*",
+        "@gum-jsx/maps": "2.0.0-beta.1",
         "@gum-jsx/math": "workspace:*",
         "@gum-jsx/png": "workspace:*",
         "@modelcontextprotocol/ext-apps": "^1.7.5",
