@@ -28,3 +28,6 @@
 [submodule "gum-jsx-react"]
 	path = gum-jsx-react
 	url = git@github.com:CompendiumLabs/gum-jsx-react
+[submodule "gum-jsx-maps"]
+	path = gum-jsx-maps
+	url = git@github.com:CompendiumLabs/gum-jsx-maps
