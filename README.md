@@ -13,7 +13,8 @@ they do not require React.
 
 ## Get started
 
-For the 2.0 prerelease, use Bun 1.4.2 or newer on Linux x64 and install the CLI:
+For the 2.0 prerelease, use Bun 1.4.2 or newer on Linux x64, macOS, or Windows
+and install the CLI:
 
 ```sh
 bun install -g @gum-jsx/cli@beta

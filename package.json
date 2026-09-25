@@ -11,13 +11,13 @@
     "gum-jsx-cli",
     "gum-jsx-edit",
     "gum-jsx-docs",
-    "gum-jsx-mcp"
+    "gum-jsx-mcp",
+    "gum-jsx-maps"
   ],
   "scripts": {
     "gum": "bun gum-jsx-cli/src/cli.ts",
     "gum-tex": "bun gum-jsx-cli/src/tex.ts",
     "gum-mark": "bun gum-jsx-cli/src/mark.ts",
-    "skill": "bun --filter @gum-jsx/docs skill",
     "dev": "bun --filter @gum-jsx/edit dev",
     "build": "bun --filter @gum-jsx/edit build",
     "compare": "bun gum-jsx-math/scripts/compare.ts",
@@ -25,7 +25,6 @@
     "visual-report": "bun --filter @gum-jsx/cli visual-report",
     "typecheck": "bun run --workspaces typecheck",
     "test": "bun run release:check && bun run --workspaces --sequential test",
-    "release:check": "bun scripts/check-release-manifests.ts",
     "rehearse": "bash scripts/rehearse.sh"
   }
 }
