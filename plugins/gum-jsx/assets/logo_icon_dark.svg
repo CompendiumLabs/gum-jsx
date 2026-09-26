@@ -1,17 +1,1 @@
-<svg viewBox="-1 -1 34 34" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans" font-weight="300" width="32" height="32" fill="none" stroke="white">
-<defs>
-<mask id="mask-ln13h9a6">
-<rect x="0" y="2.03" width="32" height="27.93" fill="white" stroke="none" />
-<polygon points="-6.6,7.71 31.8,16.69 38.6,24.29 0.2,15.31" fill="black" stroke="none" />
-<ellipse cx="19.84" cy="9.85" rx="1.12" ry="1.12" fill="black" stroke="none" />
-</mask>
-</defs>
-<path d="M 25.6,0 L 6.4,0 A 6.4,6.4 0 0 0 0,6.4 L 0,6.4  L 0,25.6 A 6.4,6.4 0 0 0 6.4,32 L 6.4,32  L 25.6,32 A 6.4,6.4 0 0 0 32,25.6 L 32,25.6  L 32,6.4 L 32,6.4 A 6.4,6.4 0 0 0 25.6,0 " stroke-width="1" fill="#1f1f1f" stroke="none" />
-<g mask="url(#mask-ln13h9a6)">
-<ellipse cx="16" cy="16" rx="7.26" ry="7.26" fill="white" stroke="none" />
-</g>
-<polygon points="5.08,11.14 26.84,16.23 27.56,17.03 5.8,11.94" fill="white" stroke="none" />
-<polygon points="0.28,11.35 30.04,18.31 30.76,19.1 1,12.14" fill="white" stroke="none" />
-<polygon points="4.44,13.65 26.52,18.81 27.24,19.61 5.16,14.44" fill="white" stroke="none" />
-<polygon points="6.36,15.42 31,21.19 31.72,21.98 7.08,16.22" fill="white" stroke="none" />
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" overflow="hidden"><defs><clipPath id="gum-clip-0" clipPathUnits="userSpaceOnUse"><rect x="0" y="0" width="512" height="512"/></clipPath><clipPath id="gum-clip-1" clipPathUnits="userSpaceOnUse"><rect x="0" y="0" width="481.28" height="481.28" rx="96.256" ry="96.256"/></clipPath></defs><g clip-path="url(#gum-clip-0)"><g transform="translate(15.36 15.36)"><rect x="0" y="0" width="481.28" height="481.28" rx="96.256" ry="96.256" fill="#1f1f1f" stroke="none" stroke-width="0" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4"/><g clip-path="url(#gum-clip-1)"><g transform="translate(131.4496 131.4496)"><ellipse cx="109.1904" cy="109.1904" rx="109.1904" ry="109.1904" fill="#ffffff" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4"/></g><g transform="translate(281.5488 131.2992)"><ellipse cx="16.8448" cy="16.8448" rx="16.8448" ry="16.8448" fill="#1f1f1f" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4"/></g><path d="M-99.264 115.9584L478.272 251.0176L580.544 365.3216L3.008 230.2624Z" fill="#1f1f1f" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4"/><path d="M76.4032 167.5456L403.6736 244.0992L414.5024 256.1312L87.232 179.5776Z" fill="#ffffff" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4"/><path d="M4.2112 170.704L451.8016 275.3824L462.6304 287.264L15.04 182.5856Z" fill="#ffffff" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4"/><path d="M66.7776 205.296L398.8608 282.9024L409.6896 294.9344L77.6064 217.1776Z" fill="#ffffff" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4"/><path d="M95.6544 231.9168L466.24 318.6976L477.0688 330.5792L106.4832 243.9488Z" fill="#ffffff" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4"/></g></g></g></svg>

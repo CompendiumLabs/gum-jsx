@@ -55,10 +55,10 @@ files; release ZIP attachments remain useful snapshots for separate distribution
 - [ ] **Shorten the listing description.** The current `shortDescription` is
   48 characters; final directory submission allows 30. Suggested replacement:
   `Diagrams, plots, and slides`.
-- [ ] **Increase the branding image dimensions.** The current SVG declares
-  32×32 dimensions and a 34×34 viewBox. Directory branding must be square and
-  at least 48×48. Produce a qualifying SVG while preserving its appearance;
-  SVG is an accepted format. Both `logo` and `composerIcon` reference this asset.
+- [x] **Increase the branding image dimensions.** The SVG now declares
+  512×512 dimensions and a matching viewBox, preserving the original appearance.
+  Its editable [Gum JSX source](../plugins/gum-jsx/assets/logo_icon_dark.jsx)
+  is retained beside the SVG. Both `logo` and `composerIcon` reference this asset.
 - [ ] **Make first-use requirements clear.** State in the public listing and
   skill setup instructions that rendering requires Bun and the Gum CLI in the
   execution environment. Test the setup from a clean directory outside this

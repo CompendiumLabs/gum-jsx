@@ -23,7 +23,17 @@ complete plugin. The build scripts remain in `gum-jsx-docs/scripts/`.
 `plugin:pack` rebuilds the skill before packaging it; a separate build is optional.
 The ZIP is written to `dist/gum-jsx-plugin.zip` with the plugin manifest at
 the archive root. The ZIP is ignored by Git and can be attached to a release.
-The plugin icon lives in `assets/logo_icon_dark.svg`.
+The plugin icon lives in `assets/logo_icon_dark.svg`. Its editable Gum JSX source
+is `assets/logo_icon_dark.jsx`, reconstructed from the original logo. It renders
+at 512×512 while retaining the original proportions and transparent margin.
+Change the source's `size` constant to adjust the output dimensions, then
+regenerate the SVG from the top-level repository:
+
+```sh
+bun run gum plugins/gum-jsx/assets/logo_icon_dark.jsx -o plugins/gum-jsx/assets/logo_icon_dark.svg
+```
+
+Repack after regenerating the icon to include the new SVG in the release ZIP.
 
 ## Install for testing
 
