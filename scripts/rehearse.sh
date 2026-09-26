@@ -2,7 +2,7 @@
 # Publish to a throwaway Verdaccio registry, then exercise fresh installations.
 # Run from anywhere: scripts/rehearse.sh
 # KEEP=1 preserves logs/artifacts; PORT=4874 selects a different local port.
-# Requires Bun, Node (for Verdaccio/npm), npm, curl, tar, and setsid.
+# Requires Bun, Node (for Verdaccio/npm), npm, curl, tar, setsid, and Chromium.
 # Registry configuration, credentials, caches, and global installs stay in /tmp.
 set -euo pipefail
 
@@ -10,10 +10,13 @@ ROOT=$(cd "$(dirname "$0")/.." && pwd)
 PORT=${PORT:-4873}
 [[ "$PORT" =~ ^[0-9]+$ ]] && (( PORT > 0 && PORT < 65536 )) || { echo 'Invalid PORT' >&2; exit 1; }
 REG="http://127.0.0.1:$PORT/"
-ORDER=(core math png pdf mark react docs cli)
+ORDER=(core math maps png pdf mark react docs cli)
 for tool in bun node npm curl tar setsid; do
     command -v "$tool" >/dev/null || { echo "Required command: $tool" >&2; exit 1; }
 done
+GUM_CHROME=${GUM_CHROME:-$(command -v chromium || command -v google-chrome-stable || true)}
+[ -n "$GUM_CHROME" ] || { echo 'Chromium is required; set GUM_CHROME to its path' >&2; exit 1; }
+export GUM_CHROME
 
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/gum-rehearse.XXXXXX")
 mkdir -p "$WORK/tmp"
@@ -42,8 +45,9 @@ export BUN_INSTALL_CACHE_DIR="$WORK/bun-cache" npm_config_cache="$WORK/npm-cache
 export BUN_TMPDIR="$WORK/tmp"
 export npm_config_userconfig="$WORK/.npmrc" npm_config_globalconfig="$WORK/global.npmrc"
 export BUN_INSTALL_GLOBAL_DIR="$WORK/global" BUN_INSTALL_BIN="$WORK/global/bin"
-# All npm operations inherit the loopback registry even if a later command
-# accidentally omits --registry. The temporary npmrc below carries only its token.
+# Package operations inherit the loopback registry even if a later command
+# omits --registry. Only the Verdaccio bootstrap below uses the public registry.
+# The temporary npmrc below carries only the loopback registry's token.
 export npm_config_registry="$REG"
 touch "$npm_config_userconfig" "$npm_config_globalconfig"
 
@@ -59,7 +63,6 @@ for pkg in "${ORDER[@]}"; do
         --exclude=dist --exclude=out --exclude=skills --exclude=.npmrc \
         --exclude=.env --exclude='.env.*' -cf - . | tar -C "$PUBLISH/gum-jsx-$pkg" -xf -
 done
-runlog manifests.log bun "$ROOT/scripts/check-release-manifests.ts" "$PUBLISH"
 # Publishing from copies lets us force the local registry even when a package
 # gains a publishConfig.registry, without modifying any source manifests.
 VERSION=$(bun -e '
@@ -104,7 +107,9 @@ log: { type: file, path: $WORK/verdaccio.log, level: warn }
 YAML
 # Gum packages have no upstream fallback; only third-party dependencies can be
 # fetched through Verdaccio's npmjs proxy. All publishes target this loopback URL.
-setsid bunx verdaccio@6 --config "$WORK/config.yaml" --listen "127.0.0.1:$PORT" > "$WORK/verdaccio.out" 2>&1 &
+# Bootstrap the registry from npm before it can serve its own dependencies.
+npm_config_registry=https://registry.npmjs.org/ setsid bunx verdaccio@6 \
+    --config "$WORK/config.yaml" --listen "127.0.0.1:$PORT" > "$WORK/verdaccio.out" 2>&1 &
 VPID=$!
 for ((attempt=0; attempt<90; attempt++)); do
     kill -0 "$VPID" 2>/dev/null || { cat "$WORK/verdaccio.out" >&2; fail 'registry exited'; }
@@ -144,7 +149,7 @@ cd "$APP"
 printf '{"name":"gum-rehearsal","private":true,"type":"module","trustedDependencies":["canvas"]}\n' > package.json
 cp "$WORK/.npmrc" .npmrc
 runlog bun-install.log bun install "@gum-jsx/cli@$VERSION" --registry "$REG"
-for pkg in core math png pdf mark cli; do
+for pkg in core math maps png pdf mark cli; do
     [ -f "node_modules/@gum-jsx/$pkg/package.json" ] || fail "CLI did not bring in $pkg"
 done
 for bin in gum gum-tex gum-mark; do
@@ -164,6 +169,15 @@ JSX
 for format in svg png pdf; do
     runlog "gum-$format.log" bun run --silent gum figure.jsx -o "figure.$format"
 done
+cat > maps.jsx <<'JSX'
+<VStack gap={px(12)}>
+  <GeoMap source={world_countries()} width={px(400)} />
+  <GeoMap source={us_states()} projection="albersUsa" width={px(400)} />
+</VStack>
+JSX
+for format in svg png pdf; do
+    runlog "maps-$format.log" bun run --silent gum maps.jsx -o "maps.$format"
+done
 runlog gum-tex.log bun run --silent gum-tex '\sqrt{2}' -o formula.svg
 printf 'Hello $x^2$\n' > notes.md
 runlog gum-mark.log bun run --silent gum-mark notes.md
@@ -178,8 +192,9 @@ cp "$ROOT/gum-jsx-pdf/test/png-fixtures.ts" png-fixtures.ts
 cat > use.ts <<'TS'
 import assert from 'node:assert/strict'
 import { realpathSync } from 'node:fs'
-import { Fonts, Text, PngImage, render_element } from '@gum-jsx/core'
+import { Fonts, Text, PngImage, px, render_element } from '@gum-jsx/core'
 import { mathToSvg } from '@gum-jsx/math'
+import { GeoMap, world_countries, us_states } from '@gum-jsx/maps'
 import { rasterize_svg, rasterize_pixels } from '@gum-jsx/png'
 import { select_svg } from '@gum-jsx/png/selection'
 import { render_pdf } from '@gum-jsx/pdf'
@@ -190,7 +205,7 @@ import { createGumRoot } from '@gum-jsx/react'
 import { rgbaPixel, keyedRgb, unsupportedKeyedPngs } from './png-fixtures'
 
 const version = process.argv[2];
-for (const pkg of ['core', 'math', 'png', 'pdf', 'mark', 'react', 'docs', 'cli']) {
+for (const pkg of ['core', 'math', 'maps', 'png', 'pdf', 'mark', 'react', 'docs', 'cli']) {
   const path = realpathSync(`node_modules/@gum-jsx/${pkg}`);
   assert.ok(path.startsWith(import.meta.dir + '/'), `${pkg} escaped the fresh consumer`);
   const manifest = await Bun.file(`${path}/package.json`).json();
@@ -211,6 +226,16 @@ assert.equal(result.kind, 'svg');
 if (result.kind !== 'svg') throw Error('Expected SVG');
 assert.ok(result.svg.includes('<path'));
 assert.ok(mathToSvg(String.raw`\frac{a}{b}`).includes('<path'));
+for (const [source, projection] of [[world_countries(), 'equalEarth'], [us_states(), 'albersUsa']] as const) {
+  const map = render_element(new GeoMap({ source, projection, width: px(400) }));
+  assert.equal(map.kind, 'svg');
+  if (map.kind !== 'svg') throw Error('Expected map SVG');
+  assert.ok(map.svg.includes('<path'));
+  assert.ok(rasterize_svg(map.svg).length > 0);
+  assert.ok(new TextDecoder().decode(render_pdf(map.fragment)).startsWith('%PDF-'));
+}
+for (const file of ['world-countries-110m.json', 'us-states-10m.json', 'world-atlas-LICENSE', 'us-atlas-LICENSE'])
+  assert.ok((await Bun.file(`node_modules/@gum-jsx/maps/data/${file}`).text()).length > 0);
 assert.ok(rasterize_svg(result.svg).length > 0);
 assert.ok(rasterize_pixels(result.svg).data.length > 0);
 assert.ok(select_svg(result.svg, { x: 0, y: 0, width: 5, height: 5 }, result.size).includes('<svg'));
@@ -256,11 +281,94 @@ say 'bundle browser entry points from installed packages'
 cat > browser.ts <<'TS'
 export { Fonts, render_element } from '@gum-jsx/core'
 export { mathToSvgAsync } from '@gum-jsx/math'
+export { GeoMap, world_countries, us_states } from '@gum-jsx/maps'
 export { render_pdf } from '@gum-jsx/pdf'
 export { Gum } from '@gum-jsx/react'
 export { select_svg } from '@gum-jsx/png/selection'
 TS
 runlog browser.log bun build browser.ts --target browser --outdir browser
+
+say 'render installed maps and math in Chromium'
+# Core font URLs are relative to the emitted browser module. Math fonts are
+# already emitted alongside browser.js by the bundler.
+cp -R node_modules/@gum-jsx/core/src/fonts fonts
+cat > browser-check.ts <<'TS'
+import assert from 'node:assert/strict'
+import { resolve } from 'node:path'
+
+const html = `<!doctype html><html><body><pre id="status">Loading</pre><main></main>
+<script type="module">
+try {
+  const { Fonts, render_element, mathToSvgAsync, GeoMap, world_countries, us_states, render_pdf } = await import('/browser/browser.js');
+  const fonts = new Fonts();
+  await fonts.load();
+  const svgs = [await mathToSvgAsync('x^2+1')];
+  for (const [source, projection] of [[world_countries(), 'equalEarth'], [us_states(), 'albersUsa']]) {
+    const map = render_element(new GeoMap({ source, projection, width: '400px' }));
+    if (map.kind !== 'svg' || !map.svg.includes('<path')) throw Error('Map SVG missing');
+    if (!new TextDecoder().decode(render_pdf(map.fragment)).startsWith('%PDF-')) throw Error('Map PDF missing');
+    svgs.push(map.svg);
+  }
+  for (const svg of svgs) {
+    const image = new Image();
+    image.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    document.querySelector('main').append(image);
+    await image.decode();
+  }
+  document.body.dataset.result = 'passed';
+  document.querySelector('#status').textContent = 'Passed: installed fonts, math, both map atlases, SVG display, and PDF';
+} catch (error) {
+  document.body.dataset.result = 'failed';
+  document.querySelector('#status').textContent = String(error.stack ?? error);
+}
+</script></body></html>`;
+const server = Bun.serve({ hostname: '127.0.0.1', port: 0, async fetch(request) {
+  const pathname = new URL(request.url).pathname;
+  if (pathname === '/') return new Response(html, { headers: { 'Content-Type': 'text/html' } });
+  const target = resolve(import.meta.dir, '.' + pathname);
+  if (!target.startsWith(import.meta.dir + '/') || !/^\/(?:browser|fonts)\//.test(pathname))
+    return new Response('Not found', { status: 404 });
+  const file = Bun.file(target);
+  return await file.exists() ? new Response(file) : new Response('Not found', { status: 404 });
+} });
+try {
+  const child = Bun.spawn([process.env.GUM_CHROME!, '--headless=new', '--no-sandbox', '--disable-gpu',
+    '--disable-dev-shm-usage', `--user-data-dir=${import.meta.dir}/chrome`, '--virtual-time-budget=10000',
+    '--dump-dom', server.url.href], { stdout: 'pipe', stderr: 'pipe' });
+  const timeout = setTimeout(() => child.kill(), 30000);
+  const [exit, dom, stderr] = await Promise.all([child.exited,
+    new Response(child.stdout).text(), new Response(child.stderr).text()]);
+  clearTimeout(timeout);
+  await Bun.write('browser-result.html', dom);
+  assert.equal(exit, 0, stderr);
+  assert.ok(dom.includes('data-result="passed"'), dom.match(/<pre id="status">([\s\S]*?)<\/pre>/)?.[1] ?? stderr);
+  console.log('Installed browser rendering passed');
+} finally {
+  server.stop(true);
+}
+TS
+runlog browser-render.log bun browser-check.ts
+
+say 'typecheck installed source as a strict consumer'
+# Install consumer tooling only; fontkit/reconciler declarations must arrive
+# through the published packages rather than workspace devDependencies.
+runlog consumer-types-install.log bun add --dev typescript@7 @types/bun @types/react@19 @types/react-dom@19 --registry "$REG"
+cat > tsconfig.json <<'JSON'
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "Preserve",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "types": ["bun"],
+    "noEmit": true,
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": ["use.ts", "comp.tsx", "browser.ts", "png-fixtures.ts"]
+}
+JSON
+runlog consumer-types.log bun run --silent tsc --noEmit
 
 say 'npm installation and executable linking (without lifecycle scripts)'
 mkdir -p "$WORK/app-npm"

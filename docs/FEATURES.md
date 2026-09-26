@@ -44,6 +44,8 @@ lengths, and explicit `fit` remain the foundation.
   bindings across figures or slides.
 - [x] Allow hosts to inject extra bindings into evaluated code. The fresh
   `scope` option covers the original evaluation `bindings` capability.
+- [x] Reuse scope, seed, and name defaults through `Evaluator`; load named
+  package/local-module bindings with the CLI's repeatable `--plugin` option.
 - [ ] Restore an isolated `Env` abstraction containing element registrations,
   bindings, fonts, theme, strictness, text scale, and random streams.
 - [ ] Restore plugins of the form `{ elems, bindings, fonts }`, including
@@ -188,8 +190,9 @@ lengths, and explicit `fit` remain the foundation.
 - [ ] Arbitrary SVG presentation attributes on every element, including dash
   arrays, opacity, filters, CSS classes, IDs, and data attributes. **Partial:**
   core paint, stroke_dasharray, and per-drawing opacity are implemented.
-- [ ] General masks, custom clip shapes, shared definitions, and style/metadata
-  nodes. **Partial:** rectangular and rounded fragment clips are implemented.
+- [ ] General masks, arbitrary element-level clip props, shared definitions,
+  and style/metadata nodes. **Partial:** rectangular, rounded, and custom
+  fragment `clip_path` clips are implemented in SVG and PDF.
 
 ## Text and document elements
 

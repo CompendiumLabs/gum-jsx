@@ -16,13 +16,40 @@ cover those slices in detail.
 there is no new `gum-jsx` umbrella install. The CLI package supplies `gum`,
 `gum-tex`, and `gum-mark`; React supplies `gum-react`.
 
-Release candidates use coordinated `2.0.0-beta.1` versions and the `beta` tag.
-Packages ship TypeScript source. The supported native runtime for this prerelease
-is Bun 1.4.2 or newer on Linux x64. Native macOS/Windows installation is outside
-this prerelease's verified scope. Core, math, PDF, React, and PNG's selection subpath
-also support TypeScript-aware
+Release candidates use coordinated `2.0.0-beta.2` versions and the `beta` tag.
+Packages ship TypeScript source. Native rendering has been tested with Bun 1.4.2
+or newer on Linux x64, macOS, and Windows. Core, math, maps, PDF, React, and PNG's
+selection subpath also support TypeScript-aware
 browser bundlers. Direct Node execution is not part of this release contract.
 See [RELEASE.md](./RELEASE.md) for artifact verification and remaining gates.
+
+## Changes from beta.1 to beta.2
+
+- The CLI, editor, and MCP host now include `@gum-jsx/maps`: `GeoMap`, GeoJSON
+  and TopoJSON sources, and bundled country/state atlases. Maps support filtering,
+  feature styles, fitting, bounds, and projected child annotations. See the
+  [maps guide](../gum-jsx-docs/docs/guides/text/maps.md).
+- `Evaluator` holds reusable scope, seed, and source-name defaults. Evaluation
+  returns the source's value; use `render_element` or `layout_element` separately
+  for layout and rendering. A fresh local scope and random stream are created
+  for each call; `evaluate_prelude` explicitly shares declarations.
+- `gum --plugin <module>` loads named exports from a package or local module,
+  resolved from the caller's project. Math and maps are already in scope.
+  This does not restore the old `{ elems, bindings, fonts }`/Env plugin protocol.
+- `Graph` supports pair-to-pair projections with explicit output-space limits;
+  `GeoMap` supplies a fitted geographic projection to its children. See
+  [projections](../gum-jsx-docs/docs/guides/text/projections.md).
+- Fragments accept `clip_path` commands, including intersections with rectangular
+  clips, in SVG and PDF. This is a fragment API; arbitrary element-level clip
+  props and general masks remain deferred.
+- `gum` accepts multiple JSX inputs in order as PDF pages; directories and
+  multiple files default to PDF. With no viewport overrides, JSX receives a
+  640 × 480 offer, while authored sizes and content sizing remain effective.
+  The `--natural` option has been removed. A single explicit `-W` or `-H` leaves
+  the other axis governed by source sizing or content. Standalone TeX retains
+  natural sizing.
+- Core and React now install the fontkit and reconciler declarations needed
+  to typecheck their published TypeScript source in a strict consumer.
 
 ## Props and elements
 
@@ -134,6 +161,7 @@ replace the original element registration with `Element` subclasses and
 | gum-jsx, the batteries-included package and commands | No umbrella re-export; import the scoped packages. [@gum-jsx/cli](../gum-jsx-cli/README.md) ships the `gum`, `gum-tex`, and `gum-mark` commands |
 | @gum-jsx/core | [@gum-jsx/core](../gum-jsx-core/README.md) |
 | @gum-jsx/math | [@gum-jsx/math](../gum-jsx-math/README.md), supplied as evaluation scope rather than a plugin |
+| Geographic data and maps | [@gum-jsx/maps](../gum-jsx-maps/README.md), included by the CLI and available to library consumers |
 | @gum-jsx/node | [@gum-jsx/png](../gum-jsx-png/README.md) for rasterization; kitty output lives in the CLI |
 | @gum-jsx/react | [@gum-jsx/react](../gum-jsx-react/README.md): `GUM`, `<Gum>`, `createGumRoot`, and the `gum-react` command |
 | @gum-jsx/pdf, asynchronous `renderPdf` over one or more pages | [@gum-jsx/pdf](../gum-jsx-pdf/README.md): synchronous `render_pdf(fragmentOrPages)` for one or more pages in Bun or a browser bundle |
@@ -228,15 +256,18 @@ Most of the original surface now has a counterpart, often with a different API:
 - Images and data: SvgImage, LoadImage, `loadFile`, and the parseTable /
   loadTable CSV helpers. SvgImage is explicitly deferred beyond 2.0; convert
   external SVG artwork to PNG and embed it with PngImage.
-- Language: plugins and the isolated Env, strict rendering mode,
-  boolean shorthand props, and automatic wrapping of a top-level fragment or
-  array. Hosts do wrap a single bare element in **Svg**.
+- Language: the legacy `{ elems, bindings, fonts }` plugin protocol and isolated
+  Env, strict rendering mode, boolean shorthands for length props, and automatic
+  wrapping of a top-level fragment or array. Hosts do wrap a single bare element
+  in **Svg**. Use `gum --plugin` for named module bindings or `Evaluator` scope
+  for host-provided bindings.
 - Plotting: axes use linear scales. Log and date scales, minor ticks, label
   collision avoidance, adaptive sampling, and discontinuity detection are not
   implemented.
 - Geometry: arc and corner path commands, custom Spline endpoint directions,
-  advanced ArrowHead barbs, general masks and custom clip shapes, and arbitrary
-  SVG attributes beyond paint, dashes, and opacity.
+  advanced ArrowHead barbs, general masks and arbitrary element-level clip props,
+  and arbitrary SVG attributes beyond paint, dashes, and opacity. Custom fragment
+  `clip_path` commands are supported in SVG and PDF.
 - Networks: shared node and edge defaults through prefixed Network props, and
   node outlines beyond rounded rectangles and ellipses.
 - Math: automatic equation numbering, explicit tags, and `CD` diagrams.
