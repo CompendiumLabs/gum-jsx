@@ -52,26 +52,31 @@ files; release ZIP attachments remain useful snapshots for separate distribution
 
 ## Resolve before submission
 
-- [ ] **Shorten the listing description.** The current `shortDescription` is
-  48 characters; final directory submission allows 30. Suggested replacement:
-  `Diagrams, plots, and slides`.
+- [x] **Shorten the listing description.** The `shortDescription` is now
+  `Diagrams, plots, and slides`, within the 30-character submission limit.
 - [x] **Increase the branding image dimensions.** The SVG now declares
   512×512 dimensions and a matching viewBox, preserving the original appearance.
   Its editable [Gum JSX source](../plugins/gum-jsx/assets/logo_icon_dark.jsx)
   is retained beside the SVG. Both `logo` and `composerIcon` reference this asset.
-- [ ] **Make first-use requirements clear.** State in the public listing and
-  skill setup instructions that rendering requires Bun and the Gum CLI in the
-  execution environment. Test the setup from a clean directory outside this
-  workspace. Preserve a useful authoring workflow when local rendering is
-  unavailable, and never claim an output was rendered without running it.
-- [ ] **Use a reproducible CLI version.** The current skill recommends
-  `@gum-jsx/cli@beta`. For the submitted plugin, use the exact release tested
-  with its bundled references, currently `2.0.0-beta.2`, and revisit that pin
-  when publishing plugin updates.
-- [ ] **Finish the public listing.** Review the name, descriptions, category,
-  publisher name, icon, and three starter prompts. Add a useful support link,
-  such as the project's issue tracker. Explain the supported execution
-  environments and setup without promising rendering on untested hosts.
+- [x] **Make first-use requirements clear.** The listing, README, and skill
+  explain that rendering requires Bun and a separate Gum CLI installation.
+  The skill checks PATH and the project for an existing CLI; if neither is
+  available, it asks for a global or local install choice before proceeding.
+  Users who decline installation or cannot run commands can still receive JSX
+  source, with rendering clearly reported as not performed. Both install commands
+  passed clean-directory checks outside this workspace on Linux x64.
+- [x] **Use a reproducible CLI version.** New-install commands use the tested
+  `@gum-jsx/cli@2.0.0-beta.2`; local installs save it as an exact development
+  dependency. Revisit this pin when publishing plugin updates.
+- [x] **Finish the public listing.** The manifest lists **Gum JSX** by
+  **Compendium Labs** in **Developer Tools**, with the 512×512 icon and three
+  concrete starter prompts for a system diagram, data plot, and mathematical
+  slide deck. The descriptions cover editable JSX, export formats, CLI setup,
+  tested native platforms, and the source-only workflow when rendering is
+  unavailable. Support points to the public
+  [Gum JSX issue tracker](https://github.com/CompendiumLabs/gum-jsx/issues).
+  Listing text lengths, prompt uniqueness, brand-color contrast, and icon
+  dimensions have been checked against the final submission limits.
 
 The [validation reference](https://developers.openai.com/plugins/deploy/submission-errors)
 documents the description and image limits. It makes website, support, privacy,
@@ -84,6 +89,14 @@ appropriate policy information remains worthwhile.
 The release audit exercised the Gum packages and renderers. Plugin verification
 also needs to exercise skill selection, setup, reference access, and completion
 of user requests through the installed plugin.
+
+On 2026-09-26, both documented CLI install commands passed smoke checks using
+published npm packages in temporary directories outside this workspace. The
+global check used isolated global package and binary directories. Checks covered
+missing-CLI detection, installed-command discovery, CLI help, and SVG, PNG, and
+PDF output. The local manifest recorded the exact version; the global install
+created no project manifest. Conversation tests through the installed plugin
+remain below.
 
 - [ ] Build and install the final plugin from a local marketplace.
 - [ ] Start a new task and test outside the source workspace, without relying

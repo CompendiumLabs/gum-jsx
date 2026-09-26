@@ -1,9 +1,26 @@
 # CLI
 
 The `gum` command evaluates JSX, lays out the result, and writes SVG, PNG, PDF,
-kitty graphics, a fragment tree, or JSON. Once the 2.0 candidate is published,
-install it with `bun install -g @gum-jsx/cli@beta`. In a workspace checkout,
-run `bun install` at the root and use `bun run gum` instead of `gum`.
+kitty graphics, a fragment tree, or JSON. Rendering requires Bun
+and the Gum CLI; installing the authoring plugin does not install them.
+
+Check for an existing `gum` on PATH and in the project's `node_modules/.bin/`
+(or workspace root). Confirm it is the JSX renderer with `--help` and reuse it,
+preferring the project-local copy. If the CLI is missing, ask the user to choose
+a global or local install before proceeding:
+
+- Global: `bun install -g @gum-jsx/cli@2.0.0-beta.2`, then use `gum`.
+- Local: `bun add --dev --exact @gum-jsx/cli@2.0.0-beta.2` in the project
+  directory, then use `./node_modules/.bin/gum` or an existing project script.
+
+If Bun also needs installation, follow the
+[Bun setup instructions](https://bun.sh/docs/installation). After installation,
+verify the selected CLI with `--help`. If installation is declined or command
+execution is unavailable, provide source and instructions without claiming to
+have rendered it.
+
+The examples below assume `gum` is on PATH; substitute the local executable when
+needed. In a Gum workspace checkout, use `bun run gum` instead of `gum`.
 Save the example below as `figure.jsx`:
 
 ```sh

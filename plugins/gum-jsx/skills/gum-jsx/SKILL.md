@@ -279,17 +279,40 @@ sandbox. Only evaluate trusted source or use a separate isolation boundary.
 
 ## CLI setup
 
-Use an existing Gum CLI when available, or install the scoped prerelease CLI.
-Native rendering has been tested with Bun 1.4.2 or newer on Linux x64, macOS,
-and Windows.
+Rendering requires **Bun and an installed Gum CLI**. Installing
+this skill or plugin does not install either dependency. Native rendering has
+been tested on Linux x64, macOS, and Windows.
 
-```sh
-bun install -g @gum-jsx/cli@beta
-```
+Before rendering:
 
-This provides the `gum`, `gum-tex`, and `gum-mark` commands. The examples assume
-they are available on your PATH. In a workspace checkout, run `bun install` at
-the root and use `bun run gum` (or `bun run gum-tex`) instead.
+1. Check for `gum` on PATH (`command -v gum`, or `Get-Command gum` in
+   PowerShell) and a project-local executable in `node_modules/.bin/`, including
+   the workspace root when applicable. Inspect the project's `package.json`
+   for `@gum-jsx/cli` and existing Gum scripts. Run the selected executable with
+   `--help` to confirm it is the JSX renderer with SVG, PNG, and PDF output.
+   Reuse a working installation; prefer the project-local one when both exist.
+   Do not use `bunx` or `npx` to check availability, since they can install packages.
+2. If neither installation is available, ask whether the user wants a **global
+   install** (available across projects) or a **local install** (adds the CLI to
+   the current project's development dependencies). Wait for their choice, then
+   carry out that installation. If they have already chosen a scope in this
+   conversation, use it without asking again.
+
+Use the tested CLI release for a new installation:
+
+- **Global:** `bun install -g @gum-jsx/cli@2.0.0-beta.2`. Use `gum` afterward;
+  if its binary directory is not on PATH, use the installed executable's full path.
+- **Local:** run `bun add --dev --exact @gum-jsx/cli@2.0.0-beta.2` in the chosen
+  project directory. Use `./node_modules/.bin/gum` afterward (the corresponding
+  local executable on Windows), or the project's existing Gum script.
+
+Verify the installed command with `--help`, then render the requested figure.
+The examples below use `gum`; substitute the selected local executable or
+project script as needed. The installation also provides `gum-tex` and `gum-mark`.
+In a Gum source workspace, use the existing `bun run gum` script.
+
+If the user declines installation or the host cannot run commands, provide the
+JSX source and rendering instructions, and state that it has not been rendered.
 
 ## Render with the CLI
 
