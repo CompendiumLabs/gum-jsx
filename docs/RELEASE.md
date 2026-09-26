@@ -1,11 +1,52 @@
 # Gum 2.0 release readiness
 
+## Final beta.2 verification — 2026-09-25
+
+**All public-package release checks passed.** Verification started from the clean,
+committed workspace `22d1e9d5b110abd44530e01985501fd55732ece3` and the exact eleven
+submodule revisions recorded by that commit. A fresh Git-archive copy contained
+no existing dependencies or build output; installation used an empty Bun cache.
+The frozen install succeeded and left `bun.lock` byte-for-byte unchanged.
+
+Environment: Linux x64, Bun 1.4.2, Node 26.9.0, npm 12.0.2, TypeScript 7.0.2,
+and Google Chrome 151.0.7922.173.
+
+| Final check | Result |
+| --- | --- |
+| Fresh `bun install --frozen-lockfile` | Passed, including native dependencies. |
+| Workspace tests and typechecks | All eleven packages passed both. |
+| Editor production build and browser regression | Passed, including all 25 font faces, concurrent rendering, SVG parity, repeat rendering, and error recovery. |
+| Visual report | 212 examples rendered with zero failures; all 212 report cards loaded in Chrome. The editor, report, and representative maps, projections, Grid, typography, and math examples were visually inspected. |
+| PDF visual integration | Ten PDFs and a 12-page deck validated. SVG/PDF raster comparisons passed, including path clips; maximum mean channel error was 0.651/255. |
+| Nine npm tarballs | All use `2.0.0-beta.2`, public/beta metadata, valid entry points, and concrete sibling pins. Checked licenses, font assets, map atlases/notices, docs assets, and the required consumer declarations; recorded SHA-256 hashes. |
+| Full local-registry rehearsal | All nine packages published only to temporary Verdaccio. Fresh CLI-only, React/docs, native maps/PNG/PDF, installed browser rendering, strict consumer TypeScript, npm linking, and isolated global commands passed without local dependency overrides. |
+| MCP build and real HTTP workflow | Build passed. Full HTTP verification passed after the test-only correction described below. |
+
+The extra MCP real-client check uncovered one stale fixture:
+[test/verify-tools.ts](../gum-jsx-mcp/test/verify-tools.ts) requested the old
+documentation name `Style`; the current tool contract and unit tests use
+`guides/style`. Corrected that one string and reran the real HTTP workflow,
+including docs, PNG rasterization, viewer handoff/resources, and invalid-input
+errors. It passed. This change affects only the private MCP verifier; all public
+packages were verified without source changes. The verifier correction and this
+verification record are follow-up changes to the committed release preparation.
+
+Artifacts, source revision inventory, tarball hashes, logs, and browser captures
+are retained in `/tmp/gum-beta2-final.ws39r5wa/`. The independent installation
+rehearsal is retained in `/tmp/gum-rehearse.V12XSe/`. These paths are temporary.
+The existing editor chunk-size warning remains a nonblocking optimization item.
+macOS/Windows checks were not repeated in this Linux run.
+
+The release preparation is committed and pushed. Public npm publication,
+public-registry-only installation/dist-tag verification, and release tags remain
+pending. No public publication or release tagging was performed by this audit.
+
 ## beta.2 preparation — 2026-09-25
 
 Target: `2.0.0-beta.2`, a small stabilization release on the way to 2.0.
 The seven findings from the audit of workspace `e8bb974` have been addressed
-according to the review comments. Source changes and verification are complete;
-public publication and Git release commits/tags remain separate release steps.
+according to the review comments. The preparation changes were committed and
+pushed as `22d1e9d`; public publication and release tags remain separate steps.
 
 ### Resolve before beta.2
 
@@ -122,9 +163,9 @@ is in `gum-jsx-math/out/browser.png`. Temporary artifacts are diagnostic aids,
 not permanent release evidence. Prior PDF visual comparison results are recorded
 below; PDF rendering code was unchanged during this preparation.
 
-Public registry publication, registry-only install verification, dist-tag checks,
-and matching release commits/tags have not been performed. Those remain the final
-release steps after choosing to publish these changes.
+The preparation changes have since been committed and pushed. Public registry
+publication, registry-only install verification, dist-tag checks, and release
+tags remain the final release steps after choosing to publish these changes.
 
 ### Follow-ups that need not expand beta.2
 
