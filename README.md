@@ -106,10 +106,20 @@ renderers support browser hosts with preloaded font resources. Use
 Evaluated JSX executes JavaScript in the host environment; use trusted source
 or an application-provided isolation boundary.
 
-**Coding agents and MCP.** From a development checkout, `bun run skill` builds a
-portable authoring skill from the maintained documentation. The
+**Coding agents and MCP.** From the workspace root, `bun run plugin:build` generates the
+[plugin's authoring skill](plugins/gum-jsx/README.md) from the maintained
+documentation. `bun run plugin:pack` rebuilds it and packages the plugin ZIP. The
 [MCP server](gum-jsx-mcp/README.md) provides documentation tools, PNG inspection,
 and an embedded figure viewer.
+
+To install the beta plugin from GitHub:
+
+```sh
+codex plugin marketplace add CompendiumLabs/gum-jsx
+codex plugin add gum-jsx@gum-jsx-beta
+```
+
+Start a new task after installation. Rendering uses the Gum CLI described above.
 
 ## Packages
 

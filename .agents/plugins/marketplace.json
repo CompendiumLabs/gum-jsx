@@ -1,0 +1,20 @@
+{
+  "name": "gum-jsx-beta",
+  "interface": {
+    "displayName": "Gum JSX Beta"
+  },
+  "plugins": [
+    {
+      "name": "gum-jsx",
+      "source": {
+        "source": "local",
+        "path": "./plugins/gum-jsx"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

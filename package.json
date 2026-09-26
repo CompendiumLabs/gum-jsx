@@ -20,6 +20,8 @@
     "gum-mark": "bun gum-jsx-cli/src/mark.ts",
     "dev": "bun --filter @gum-jsx/edit dev",
     "build": "bun --filter @gum-jsx/edit build",
+    "plugin:build": "bun gum-jsx-docs/scripts/plugin-build.ts",
+    "plugin:pack": "bun gum-jsx-docs/scripts/plugin-pack.ts",
     "compare": "bun gum-jsx-math/scripts/compare.ts",
     "visual-test": "bun --filter @gum-jsx/cli visual-test",
     "visual-report": "bun --filter @gum-jsx/cli visual-report",

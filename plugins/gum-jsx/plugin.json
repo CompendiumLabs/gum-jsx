@@ -1,0 +1,35 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "gum-jsx",
+  "version": "0.2.0",
+  "description": "Create diagrams, plots, mathematical figures, and slides with Gum JSX.",
+  "author": {
+    "name": "Compendium Labs",
+    "url": "https://github.com/CompendiumLabs"
+  },
+  "homepage": "https://github.com/CompendiumLabs/gum-jsx",
+  "repository": "https://github.com/CompendiumLabs/gum-jsx",
+  "license": "MIT",
+  "keywords": ["gum-jsx", "diagrams", "plots", "svg", "slides"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Gum JSX",
+        "shortDescription": "Create diagrams, plots, and slides with Gum JSX.",
+        "longDescription": "Author Gum JSX figures with bundled references and render local SVG, PNG, and PDF files with the Gum CLI.",
+        "developerName": "Compendium Labs",
+        "category": "Developer Tools",
+        "capabilities": ["Write"],
+        "websiteURL": "https://github.com/CompendiumLabs/gum-jsx",
+        "defaultPrompt": [
+          "Create a clear diagram of this system with Gum JSX.",
+          "Plot these data as a Gum JSX figure.",
+          "Make a slide explaining this concept."
+        ],
+        "brandColor": "#2858A5",
+        "composerIcon": "./assets/logo_icon_dark.svg",
+        "logo": "./assets/logo_icon_dark.svg"
+      }
+    }
+  }
+}
