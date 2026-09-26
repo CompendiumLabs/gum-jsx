@@ -178,6 +178,7 @@
       },
       "dependencies": {
         "@gum-jsx/core": "2.0.0-beta.2",
+        "@gum-jsx/maps": "2.0.0-beta.2",
         "@gum-jsx/math": "2.0.0-beta.2",
         "@types/react-reconciler": "^0.33.0",
         "commander": "^14.0.3",
