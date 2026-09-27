@@ -27,6 +27,10 @@
     "visual-report": "bun --filter @gum-jsx/cli visual-report",
     "typecheck": "bun run --workspaces typecheck",
     "test": "bun run --workspaces test",
+    "perf": "bun test/perf.ts",
+    "perf:core": "bun gum-jsx-core/test/perf/run.ts",
+    "perf:math": "bun gum-jsx-math/test/perf/run.ts",
+    "perf:maps": "bun gum-jsx-maps/test/perf/run.ts",
     "rehearse": "bash scripts/rehearse.sh"
   }
 }

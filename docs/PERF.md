@@ -2,7 +2,95 @@
 
 Measured on September 27, 2026, using the 66-case core, math, and maps suite.
 
-## Findings and priorities
+## Optimization follow-up: priorities 1–3
+
+The first implementation pass improves shared core code. Math and maps benefit
+without changes to their layout implementations. A fresh full run before these
+changes and a full run afterward used the same 66 cases, machine, runtime, and
+benchmark settings described below. The earlier baseline tables remain unchanged.
+
+### Changes
+
+1. **Reuse owned geometry.** Private weak sets identify paths, drawings, and
+   fragments produced by core. Constructors reuse validated immutable records;
+   external records still go through copying and validation. `path_bounds` scans
+   coordinates without allocating a replacement path. Layout metadata attaches
+   to an owned fragment without recalculating its drawing and placement bounds.
+   Stroke bounds also stop scanning once enough segments establish a miter join.
+2. **Reduce SVG number formatting.** Integers bypass the rounding round trip.
+   Each formatter caches up to 4,096 fractional values, reusing strings for
+   repeated glyph coordinates. The precision and resulting output are unchanged.
+   Caching stops if fewer than 64 of the first 512 fractional values hit the cache;
+   this avoids a measured slowdown on line plots with mostly unique coordinates.
+   The entry limit bounds retained cache growth; peak memory usage has not been
+   benchmarked.
+3. **Reduce work before cache lookup.** Each layout pass remembers an element's
+   resolved style for its most recent immutable inherited style. Serialized style
+   keys are reused, and requests use a smaller key representation. Caller-created
+   styles are resolved again so mutable inputs remain observable. Resource epochs,
+   reference sizes, coordinate/projection contexts, and math contexts remain part
+   of cache identity.
+
+### Measured results
+
+Mean latency in milliseconds; speedup is the before/after ratio. These are
+combined results from all three changes, not additive estimates of their effects.
+
+| Case | Before (ms) | After (ms) | Speedup |
+| --- | ---: | ---: | ---: |
+| `core/layout/shapes-1000` | 18.940 | 12.236 | 1.55× |
+| `core/layout/text-grid-100` | 34.466 | 13.941 | 2.47× |
+| `core/layout/styled-paragraph` | 52.865 | 18.382 | 2.88× |
+| `core/layout/scatter-plot-2000` | 18.834 | 10.007 | 1.88× |
+| `math/layout/matrix-8x8` | 25.164 | 15.705 | 1.60× |
+| `maps/layout/world-prepared-resource` | 20.914 | 8.195 | 2.55× |
+| `maps/layout/states-albers` | 56.205 | 36.657 | 1.53× |
+| `core/svg/text-grid-100` | 22.147 | 5.392 | 4.11× |
+| `core/svg/styled-paragraph` | 44.882 | 26.284 | 1.71× |
+| `math/svg/matrix-8x8` | 4.297 | 1.423 | 3.02× |
+| `core/render/jsx-grid-100` | 65.419 | 26.282 | 2.49× |
+| `math/render/inline-prose-20-formulas` | 30.790 | 14.372 | 2.14× |
+| `maps/render/states-choropleth` | 53.478 | 42.438 | 1.26× |
+
+The three root cache-hit cases fall from **2.7–2.9 µs to about 0.9 µs**
+(2.97–3.22× faster). An intermediate run with geometry changes alone measured
+scatter layout at 13.91 ms; style and query changes bring it down to 10.01 ms.
+The scatter diagnostic still reports 2,032 queries, 33 layouts, and 1,999 hits:
+the gain comes from less work per query and placement, with the same cache reuse.
+
+Untimed allocation diagnostics confirm the removed work. Paragraph command
+freezes fall from 269,442 to 89,814, and total freezes from 699,267 to 240,196.
+The states map falls from 102,552 command freezes to 25,638. Both now freeze each
+final path command once in these workloads.
+
+Across the final full run, no case is more than 4.4% slower; that largest change
+is in unchanged matrix parsing. Construction, parsing, and map preparation remain
+within the variation seen in the original repeated runs. SVG map ratios range
+from 0.99× to 1.09×, consistent with fewer repeated coordinates. Line-plot SVG
+serialization is unchanged at 1.151 ms after adding the cache cutoff.
+
+Targeted and intermediate runs checked the gains during implementation; the
+table uses one final full run. For example, repeated states-layout measurements
+ranged from 33.6 to 36.7 ms. Treat the numbers as point estimates, with the large
+text and geometry gains providing stronger evidence than small timing changes.
+
+### Correctness and remaining work
+
+- All 66 benchmark outputs match the baseline: object keys were sorted before
+  comparing complete construction/layout results, and SVG strings match exactly.
+- Root `bun run test` and `bun run typecheck` pass across all 11 packages.
+- Added regressions cover external mutable and shallow-frozen geometry, fragment
+  metadata and connection ownership, mutable inherited styles, invalid inputs,
+  and number formatting across rounding boundaries and cache capacity.
+- This pass preserves output size. Reusing glyph outlines through SVG definitions,
+  reducing placement aggregation further, and optimizing geographic projection
+  remain possible follow-ups. The baseline profiles below have not been rerun
+  after optimization, so their percentage shares describe the original code.
+
+## Original findings and priorities
+
+The profiles and original result tables below describe the code before the
+optimization follow-up above.
 
 **The first optimization target is repeated geometry construction in core.**
 Drawing and fragment creation repeatedly copy, validate, and freeze data that
@@ -238,10 +326,11 @@ behavior, inset regions, and shared borders when making those changes.
 
 ## Next measurements
 
-Start with the bounds traversal and owned-geometry experiments, then SVG number
-formatting, then query keys/fragment placement. Run the affected cases and the
-full suite after each change. Preserve the current input sizes so comparisons
-remain useful. Track SVG size and geometry/query counts as well as latency.
+Repeat CPU profiling after the changes above to locate the remaining costs in
+paragraph serialization, placement aggregation, and geographic projection.
+Preserve the current input sizes so comparisons remain useful. Track SVG size
+and geometry/query counts as well as latency, and measure peak/retained memory
+separately before expanding any cache.
 
 Add matched controls where the current suite is incomplete:
 

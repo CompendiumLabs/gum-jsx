@@ -157,6 +157,7 @@ Run shared commands from the workspace root:
 ```sh
 bun run test          # Every package's suite, sequentially
 bun run typecheck     # TypeScript checks across all packages
+bun run perf          # Core, math, and maps benchmarks, sequentially
 bun run build         # Production browser editor and docs viewer
 bun run visual-test   # Searchable HTML report of rendered examples
 bun run rehearse      # Publish to a temporary local registry and check fresh installs
@@ -167,3 +168,37 @@ To work on one package, use its scripts, for example
 dependencies. The [design](docs/DESIGN.md), [roadmap](docs/ROADMAP.md), and
 [feature map](docs/FEATURES.md) describe implementation decisions and planned work.
 The [release checklist](docs/RELEASE.md) covers packaging and publication checks.
+
+### Performance
+
+```sh
+bun run perf                 # All suites, measured sequentially
+bun run perf:core            # Core only
+bun run perf:math            # Math only
+bun run perf:maps            # Maps only
+bun run perf --list          # List case names without preparing fixtures
+bun run perf --smoke         # Exercise every case twice without timing
+bun run perf --filter '^core/layout/'
+bun run perf --json > /tmp/gum-perf.json
+```
+
+Each of these packages also exposes `bun run perf` from its own directory, with
+the same options. The suites use Mitata for warmup, sampling, and latency
+statistics. Inputs are deterministic and maps use bundled atlases. Construction,
+fresh-pass layout, SVG serialization, full renders, and cache hits have separate
+cases so their costs can be compared. Fonts are warmed except in explicitly named
+fresh-provider cases.
+
+See the [core](gum-jsx-core/test/perf/README.md),
+[math](gum-jsx-math/test/perf/README.md), and
+[maps](gum-jsx-maps/test/perf/README.md) workload notes for exact timing boundaries.
+Run on an idle machine, save JSON reports before and after a change, and compare
+the same case names on the same hardware and Bun version. JSON timings are in
+nanoseconds. Record Git revisions with reports and repeat runs to check noise;
+performance results are separate from correctness tests.
+
+For a CPU profile of selected cases:
+
+```sh
+bun --cpu-prof --cpu-prof-dir=/tmp test/perf.ts --filter '^core/layout/'
+```
