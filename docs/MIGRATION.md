@@ -89,10 +89,11 @@ gum blocks, and MCP rendering. React primitives retain constructor prop types,
 including contextual numeric projection callbacks and inferred Points callback
 fields. Tuple/object expressions and spreads need no JSX grammar changes.
 
-Element placement now uses `pos={[x, y]}` or `pos={{x, y}}`. Legacy `x` and `y`
-source props report a migration error. A position override replaces the entire
-value, so update component defaults and spreads together. Custom components may
-consume `x` and `y` as input parameters, then produce `pos` during construction.
+Element placement now uses `pos={[x, y]}` or `pos={{x, y}}`. The `x` and `y`
+props receive the same handling as other unknown props. A position override
+replaces the entire value, so update component defaults and spreads together.
+Custom components may consume `x` and `y` as input parameters, then produce
+`pos` during construction.
 
 An omitted `pos` uses the parent's unpositioned behavior. In Graph, explicit
 `pos={[0, 0]}` maps data zero, while `pos={[px(0), px(0)]}` stays at local zero.

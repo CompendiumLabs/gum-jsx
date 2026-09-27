@@ -445,8 +445,8 @@ Nested **Group**s establish new local canvases.
 
 Supplied positions need both components. For example, use `pos={[0.5, 0]}`
 for a horizontal offset, or `pos={{x: em(1), y: px(20)}}` for local lengths.
-Legacy `x` and `y` placement props report a migration error. A `pos` override
-replaces the entire value, including when it comes from a prop spread.
+A `pos` override replaces the entire value, including when it comes from a prop
+spread.
 
 Set `clip` on **Group** to hide content outside its rectangle. Clipping defaults to
 false and does not erase reported overflow. **Svg** still clips at the outer viewport.

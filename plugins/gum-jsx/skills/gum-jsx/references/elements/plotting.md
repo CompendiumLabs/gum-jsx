@@ -434,10 +434,10 @@ For a custom annotation space, for example:
 </Graph>
 ```
 
-Legacy `x`/`y` placement props report a migration error. Built-in marks and
-parametric `f(t)` samples accept the same named records. Points callbacks receive
-the complete source record before projection; any nonfinite dimension creates
-a gap. Scalar Fill boundaries and Field vector arithmetic stay Cartesian.
+Built-in marks and parametric `f(t)` samples accept the same named records.
+Points callbacks receive the complete source record before projection; any
+nonfinite dimension creates a gap. Scalar Fill boundaries and Field vector
+arithmetic stay Cartesian.
 
 Callbacks must be pure and stable for the lifetime of the element. They run
 during layout, unlike construction-time style callbacks. Elements project only

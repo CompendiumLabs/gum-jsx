@@ -175,10 +175,9 @@ general geometric clipping remain outside this change.
    positions, and resolved pixel points. Named callback destructuring receives
    contextual numeric types under strict TypeScript. Cross-element inference
    from a JSX parent's projection is outside this contract.
-5. **Legacy props.** Remove built-in `x`/`y` placement support in this release,
-   with useful migration errors where those props would otherwise be silently
-   ignored. Custom component parameters may still be named `x` and `y`; migrate
-   their placement forwarding deliberately.
+5. **Placement props.** Built-in placement uses `pos`. The `x` and `y` props
+   receive the same handling as other unknown props. Custom component parameters
+   may still be named `x` and `y`; migrate their placement forwarding deliberately.
 
 ### Core names selected for step 1
 
@@ -228,27 +227,26 @@ the existing polar example uses the new callback signature. Step 2 below adds
 - [x] Update Group, Overlay, Graph child placement, Network bounds, and Node
       defaults. Preserve child font references, anchors, and allocation rules.
 - [x] Preserve the difference between omitted positions and explicit zero.
-- [x] Add diagnostics and migrate constructor props, JSX, component forwarding,
-      and placement tests.
+- [x] Migrate constructor props, JSX, component forwarding, and placement tests.
 
 Primary files: `gum-jsx-core/src/elems/{group,placement,graph,network}.ts` and
 the shared element prop contract.
 
-Element construction rejects legacy `x`/`y` in stored source props, including
-spreads. Custom components can consume those input parameters during building or
-normalization and produce `pos`. A supplied position is atomic; overrides do
-not merge its components with defaults. Invalid local positions report `pos`
-diagnostics, and both tuple and record forms use the child's local font.
+The `x` and `y` props receive ordinary unknown-prop handling. Custom components
+can consume those input parameters during building or normalization and produce
+`pos`. A supplied position is atomic; overrides do not merge its components with
+defaults. Invalid local positions report `pos` diagnostics, and both tuple and
+record forms use the child's local font.
 
 The explicit-limits bounds change moved forward from step 3 because projected
 Node annotations already need it. Step 3 extends named positions to mark geometry;
 step 4 adds geographic dimension aliases.
 
 Validation: workspace tests, typechecks, and public declaration emission pass.
-Nine new placement checks cover units, omitted/data/local zero, named and hidden
-annotations, Node bounds/defaults, source snapshots, atomic overrides, invalid
-positions, migration errors, and custom component inputs. All 426 SVG snapshots
-(213 docs examples at two viewport sizes) match the pre-migration output exactly.
+Seven placement checks cover units, omitted/data/local zero, named and hidden
+annotations, Node bounds/defaults, source snapshots, atomic overrides, and invalid
+positions. All 426 SVG snapshots (213 docs examples at two viewport sizes) match
+the pre-migration output exactly.
 
 ### 3. Preserve general coordinates through marks and sampling
 
@@ -303,12 +301,12 @@ map's `center`, and geographic helper arrays keep their existing formats.
 The workspace audit found stale map and graph references, which now describe
 the implemented contract. Runnable map routes and city annotations use named
 records; generated plugin references were rebuilt. Remaining placement-like
-`x`/`y` occurrences belong to migration examples, negative tests, historical
-design notes, or custom component inputs that explicitly produce `pos`.
+`x`/`y` occurrences belong to migration examples, historical design notes, or
+custom component inputs that explicitly produce `pos`.
 
-Integration tests cover records, tuple aliases, spreads, callbacks, and legacy
-diagnostics through React, the editor, CLI, Markdown, and MCP. React's prop
-extraction now selects the ordinary constructor overload, preserving contextual
+Integration tests cover records, tuple aliases, spreads, and callbacks through
+React, the editor, CLI, Markdown, and MCP. React's prop extraction now selects
+the ordinary constructor overload, preserving contextual
 projection types and inferred Points fields while accepting React elements in
 element-valued props and callback results. Its registry declarations refer to
 exported constructor types so declaration emission remains portable.
@@ -341,8 +339,8 @@ Validation completed on 2026-09-27:
   without falling back to their source. It covers named callback destructuring,
   immutable and inferred Points fields, tuple and local-length callbacks,
   parametric sampling, projection composition, GeoMap children, and React
-  callbacks returning elements. Negative checks reject legacy placement,
-  tuple projection results, and length-valued named dimensions.
+  callbacks returning elements. Negative checks reject tuple projection results
+  and length-valued named dimensions.
 - All 426 existing SVG snapshots (213 examples at two viewport sizes) match
   the pre-migration output exactly. The new
   [three-dimensional helix](../gum-jsx-docs/docs/gallery/code/projection_3d.jsx)
