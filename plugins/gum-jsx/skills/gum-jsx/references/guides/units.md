@@ -32,7 +32,7 @@ as local lengths. See [Coordinates](coordinates.md).
 | `height`, `min-height`, `max-height` | Established parent content height |
 | Horizontal / vertical `padding` | Corresponding established parent axis |
 | Stack `basis` and `gap` | Established main-axis length of the stack |
-| **Group** child's `x` / `y` | Whole **Group** width / height |
+| **Group** child's `pos` components | Whole **Group** width / height |
 | Shape point `x` / `y` | Shape's own resolved width / height |
 | Scalar shape `radius`, `border-radius`, and `stroke-width` | Shorter side of the shape |
 | **Box** `border-width` | Shorter established parent side; both axes must be known |

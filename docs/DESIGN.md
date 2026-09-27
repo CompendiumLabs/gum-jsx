@@ -25,7 +25,7 @@ The final decisions made during implementation are:
 | Ownership | “Keep the layout pass ice cold.” LayoutPass resolves style/sizing and owns queries, caches, resources, and diagnostics. Containers interpret their own policies and direct-child metadata. |
 | Spacing and decoration | Box has one content child; its width includes padding and its inside border. External spacing uses another Box's padding. There is no shared margin prop, automatic wrapper, or built-in Box overlay behavior. |
 | Stacks | Growth and shrinkage are explicit, both defaulting to zero. Basis, preferred sizes, and min/max resolve in the child's local font. Fractional lengths remain distinct from flex weights. Text reflows at allocated widths. |
-| Positioned composition | Group selects a finite canvas before child layout, then reads direct-child `x`, `y`, and `anchor`. It does not hug child bounds or infer a baseline. Unresolved canvas axes are errors, even when empty. |
+| Positioned composition | Group selects a finite canvas before child layout, then reads direct-child `pos` and `anchor`. It does not hug child bounds or infer a baseline. Unresolved canvas axes are errors, even when empty. |
 | Scaling and SVG | Fit explicitly scales a completed fragment, including glyphs and strokes. Ordinary layout reflows or resizes. The SVG serializer removes identity/attribute-free groups while preserving meaningful transforms, labels, and clips. |
 | Text | Glyph outlines and accessible labels are implemented. Native selectable SVG text and automatic font fitting remain deferred. |
 

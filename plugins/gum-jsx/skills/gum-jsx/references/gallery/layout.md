@@ -108,9 +108,9 @@ The child box includes its inside border when determining its anchor. See
           <Mesh2D xticks={10} yticks={10} />
           <HLine />
           <VLine />
-          <Rect x={0.5} y={0.5} anchor={anchor} width={0.4} height={0.3}
+          <Rect pos={[0.5, 0.5]} anchor={anchor} width={0.4} height={0.3}
             fill={blue} stroke={none} opacity={0.75} border-radius={em(0.3)} />
-          <Circle x={0.5} y={0.5} anchor="center" width={em(0.5)}
+          <Circle pos={[0.5, 0.5]} anchor="center" width={em(0.5)}
             fill={black} stroke={white} />
         </Group>
         <Text font-size={em(0.9)}>x = 0.5, y = 0.5</Text>
@@ -148,8 +148,8 @@ See [Group](../elements/layout.md#Group) for canvas clipping,
 // its fragment tree still records the full positioned allocations and overflow.
 const artwork = [
   <Rect fill={lightgray} stroke={none} />,
-  <Rect x={-0.1} y={0.3} width={0.45} height={0.45} fill={blue} stroke={none} />,
-  <Circle x={0.9} y={0.5} anchor="center" width={0.5} fill={red} stroke={none} />,
+  <Rect pos={[-0.1, 0.3]} width={0.45} height={0.45} fill={blue} stroke={none} />,
+  <Circle pos={[0.9, 0.5]} anchor="center" width={0.5} fill={red} stroke={none} />,
 ]
 
 return <Box fit color={slate} padding={em(2)}>
@@ -296,7 +296,7 @@ const Node = ({ title, detail, color, ...attr }) => (
 
 const ArrowBox = ({ text = "", color = white, ...attr }) => <Group {...attr}>
   <Arrow stroke={color} from={[0, 0.5]} to={[1, 0.5]} />
-  <Text x={0.5} y={1} anchor="center" color={color}>{text}</Text>
+  <Text pos={[0.5, 1]} anchor="center" color={color}>{text}</Text>
 </Group>
 
 const Diagram = ({ ...attr }) => <HStack align="center" {...attr}>
@@ -705,12 +705,12 @@ const Window = ({ title, children, padding = em(0.5), ...props }) => (
 return <Slide fit font-size={px(10)} aspect={1.5} padding={em(1.1)}>
   <Frame border-radius={em(0.85)} clip border-width={em(0.1)} background={lightgray}>
     <Group>
-      <Window title="Data Viz" x={0.06} y={0.31} width={0.67} padding={0}>
+      <Window title="Data Viz" pos={[0.06, 0.31]} width={0.67} padding={0}>
         <Plot aspect={1.9} xlim={[0, tau]} ylim={[-1.2, 1.2]}>
           <SymLine fy={sin} xlim={[0, tau]} stroke={blue} stroke-width={em(0.15)} />
         </Plot>
       </Window>
-      <VStack x={0.64} y={0.05} width={0.33} gap={em(0.75)}>
+      <VStack pos={[0.64, 0.05]} width={0.33} gap={em(0.75)}>
         {messages.map(({ title, body }) => (
           <Window title={title}>
             <Text>{body}</Text>

@@ -1,5 +1,36 @@
 # Gum 2.0 release readiness
 
+## Breaking coordinate change before 2.0 — 2026-09-27
+
+The accepted [coordinate roadmap](./COORDS.md) replaces element placement `x`/`y`
+with atomic `pos` values. Projection callbacks take and return numeric records
+or return null. Tuples always expand to `{x, y}`. Marks, samplers, and marker
+callbacks preserve named dimensions through projection; GeoMap children accept
+`{lon, lat}` with tuple and `{x, y}` aliases. Mixed geographic/Cartesian names
+are rejected. Scalar Fill boundaries and vector arithmetic remain Cartesian.
+
+The workspace examples and host integrations use the new contract, including
+React callback typing. Migration instructions are in [MIGRATION.md](./MIGRATION.md#coordinate-contract-migration).
+All five roadmap steps are complete. Final validation passed on Linux:
+
+| Coordinate validation | Result |
+| --- | --- |
+| Workspace tests and typechecks | All eleven packages passed; docs rendered 214 examples at four widths and five bounded sizes. |
+| Public declarations and strict consumers | Core, math, maps, and React emitted declarations. A separate consumer passed against emitted declarations with full declaration checking, and against source entry points. Named callbacks, immutable Points fields, React element callbacks, and invalid-input type checks passed. |
+| Existing SVG output | All 426 pre-migration snapshots matched exactly. The new three-dimensional helix added two snapshots. |
+| Visual report and inspection | 213 examples rendered with zero failures. Cartesian placement, Network connections, polar curves, GeoMap annotations, and the new helix were visually inspected. |
+| Editor and plugin | Production build and plugin reference generation passed. The existing editor chunk-size warning remains nonblocking. |
+
+The new [helix example](../gum-jsx-docs/docs/gallery/code/projection_3d.jsx)
+demonstrates `{x, y, z}` across sampled curves, markers, axes, and annotation
+positions. Step 5 of [COORDS.md](./COORDS.md#5-validate-the-release-change)
+records the checks in detail. Temporary validation artifacts are in
+`/tmp/gum-coords5/`.
+
+Earlier beta verification below records the versions and revisions tested at
+that time. Package versions have not been changed for this coordinate migration;
+publication and release tagging remain separate release steps.
+
 ## Final beta.2 verification — 2026-09-25
 
 **All public-package release checks passed.** Verification started from the clean,

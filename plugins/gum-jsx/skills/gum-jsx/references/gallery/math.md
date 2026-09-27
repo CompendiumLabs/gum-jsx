@@ -821,7 +821,7 @@ return (
   >
     <SymLine fy={sin} xlim={[0, tau]} stroke={blue} stroke-width={px(2.5)} />
     <SymLine fy={cos} xlim={[0, tau]} stroke={red} stroke-width={px(2.5)} />
-    <Legend x={pi} y={1} anchor="start">
+    <Legend pos={[pi, 1]} anchor="start">
       <LegendItem badge-color={blue}><Tex>{String.raw`\sin x`}</Tex></LegendItem>
       <LegendItem badge-color={red}><Tex>{String.raw`\cos x`}</Tex></LegendItem>
     </Legend>
@@ -1023,7 +1023,7 @@ const paint = palette(blue, red, [0, halves.length - 1])
 const HalfSquare = () => (
   <Group width={em(2.2)} height={em(2.2)}>
     {halves.map(([x0, y0, x1, y1], i) => (
-      <Rect x={x0} y={y0} width={x1 - x0} height={y1 - y0} fill={paint(i)} stroke={none} />
+      <Rect pos={[x0, y0]} width={x1 - x0} height={y1 - y0} fill={paint(i)} stroke={none} />
     ))}
     <Rect fill={none} stroke={slate} stroke-width={em(0.03)} />
   </Group>
@@ -1232,19 +1232,17 @@ const SurfaceDiagram = (props) => (
     {normals.map(([base, tip]) => (
       <Arrow from={base} to={tip} stroke={purple} stroke-width={px(2)} head-size={px(12)} />
     ))}
-    <Latex x={0.48} y={0.5} anchor="center" font-size={em(1.6)} color={purple}>
+    <Latex pos={[0.48, 0.5]} anchor="center" font-size={em(1.6)} color={purple}>
       S
     </Latex>
     <Latex
-      x={0.05}
-      y={0.55}
+      pos={[0.05, 0.55]}
       anchor="center"
       font-size={em(1.25)}
       color={blue}
     >{String.raw`\partial S`}</Latex>
     <Latex
-      x={0.56}
-      y={0.17}
+      pos={[0.56, 0.17]}
       anchor="center"
       font-size={em(1.25)}
       color={purple}

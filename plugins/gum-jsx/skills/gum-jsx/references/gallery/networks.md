@@ -20,11 +20,10 @@ See [Network](../elements/networks.md#Network).
 
 ```jsx
 // Four economic sectors connected by explicit, boundary-aware flows.
-const Sector = ({ id, x, y, color, children }) =>
+const Sector = ({ id, pos, color, children }) =>
   <Node
       id={id}
-      x={x}
-      y={y}
+      pos={pos}
       width={em(8)}
       height={em(3.5)}
       text-justify="center"
@@ -45,10 +44,9 @@ const Linkage = ({ start, end, start_side, end_side, ...attr }) =>
     {...attr}
   />
 
-const Label = ({ x, y, children }) =>
+const Label = ({ pos, children }) =>
   <TextBox
-    x={x}
-    y={y}
+    pos={pos}
     anchor="center"
     padding={em(0.35)}
     font-size={em(0.8)}
@@ -64,16 +62,16 @@ return <Box fit font-size={px(12)} padding={em(1.6)}>
       <Linkage start="govt" end="cons" start-side="right" end-side="bottom" radius={em(0.5)} points={[[1.6, 0.85]]} />
       <Linkage start="trade" end="prod" start-side="left" end-side="top" radius={em(0.5)} points={[[0.4, 0.15]]} />
       <Linkage start="trade" end="cons" start-side="right" end-side="top" radius={em(0.5)} points={[[1.6, 0.15]]} />
-      <Sector id="trade" x={1} y={0.15} color={yellow}>Foreign Trade</Sector>
-      <Sector id="prod" x={0.4} y={0.5} color={blue}>Producers (Firms)</Sector>
-      <Sector id="cons" x={1.6} y={0.5} color={green}>Consumers (Households)</Sector>
-      <Sector id="govt" x={1} y={0.85} color={red}>Government</Sector>
-      <Label x={1} y={0.42}>Goods + Services →</Label>
-      <Label x={1} y={0.58}>← Wages, Rent, Profit</Label>
-      <Label x={0.6} y={0.8}>Subsidies / Taxes</Label>
-      <Label x={1.4} y={0.8}>Transfers / Taxes</Label>
-      <Label x={0.6} y={0.2}>Imports / Exports</Label>
-      <Label x={1.4} y={0.2}>Transfers</Label>
+      <Sector id="trade" pos={[1, 0.15]} color={yellow}>Foreign Trade</Sector>
+      <Sector id="prod" pos={[0.4, 0.5]} color={blue}>Producers (Firms)</Sector>
+      <Sector id="cons" pos={[1.6, 0.5]} color={green}>Consumers (Households)</Sector>
+      <Sector id="govt" pos={[1, 0.85]} color={red}>Government</Sector>
+      <Label pos={[1, 0.42]}>Goods + Services →</Label>
+      <Label pos={[1, 0.58]}>← Wages, Rent, Profit</Label>
+      <Label pos={[0.6, 0.8]}>Subsidies / Taxes</Label>
+      <Label pos={[1.4, 0.8]}>Transfers / Taxes</Label>
+      <Label pos={[0.6, 0.2]}>Imports / Exports</Label>
+      <Label pos={[1.4, 0.2]}>Transfers</Label>
     </Network>
   </VStack>
 </Box>
@@ -132,18 +130,18 @@ and produce a layout error when referenced by an edge.
   <Edge start="padded" end="turned" start-side="bottom" end-side="right" />
   <Edge start="turned" end="fitted" start-side="top" end-side="bottom" start-loc={0.3} />
   <Node
-    fit="contain" id="fitted" x={0.25} y={0.7} anchor="center"
+    fit="contain" id="fitted" pos={[0.25, 0.7]} anchor="center"
     width={em(5)} height={em(2)} max-width={0.4} max-height={0.35}
     border-color={blue} background={white} debug
   >
     Fitted
   </Node>
-  <Box x={0.72} y={0.7} anchor="center" padding={em(1)} debug>
+  <Box pos={[0.72, 0.7]} anchor="center" padding={em(1)} debug>
     <Node id="padded" border-color={blue} background={white}>
       Padded
     </Node>
   </Box>
-  <Rotate x={0.55} y={0.25} anchor="center" angle={-22} debug>
+  <Rotate pos={[0.55, 0.25]} anchor="center" angle={-22} debug>
     <Node id="turned" border-color={blue} background={white}>
       Rotated node
     </Node>
@@ -196,9 +194,9 @@ to position them by their centers.
   <Edge start="pill" end="stack" start-side="bottom" end-side="top" />
   <Edge start="circle" end="second" start-side="bottom" end-side="left" />
   <Edge start="first" end="inner" start-side="right" end-side="bottom" tension={1.3} />
-  <Circle id="circle" x={0.15} y={0.75} anchor="center" width={em(4)} fill={white} />
-  <Rect id="pill" x={0.5} y={0.75} anchor="center" width={em(8)} height={em(3)} border-radius={0.5} fill={white} />
-  <VStack id="stack" x={0.5} y={0.28} anchor="center" width={em(8)} gap={em(0.4)} align="fill">
+  <Circle id="circle" pos={[0.15, 0.75]} anchor="center" width={em(4)} fill={white} />
+  <Rect id="pill" pos={[0.5, 0.75]} anchor="center" width={em(8)} height={em(3)} border-radius={0.5} fill={white} />
+  <VStack id="stack" pos={[0.5, 0.28]} anchor="center" width={em(8)} gap={em(0.4)} align="fill">
     <TextFrame id="first" padding={em(0.4)} background={white}>
       First
     </TextFrame>
@@ -206,13 +204,13 @@ to position them by their centers.
       Second
     </TextFrame>
   </VStack>
-  <Frame id="inner" x={0.81} y={0.7} anchor="center" width={0.25} height={0.4} border-radius={em(0.5)}>
+  <Frame id="inner" pos={[0.81, 0.7]} anchor="center" width={0.25} height={0.4} border-radius={em(0.5)}>
     <Network xlim={[0, 1]} ylim={[0, 1]} stroke={red} stroke-width={px(1)}>
       <Edge start="a" end="b" tension={1.6} head-open/>
-      <Node id="a" x={0.3} y={0.75} width={em(4)} font-size={em(0.75)} border-color={red}>
+      <Node id="a" pos={[0.3, 0.75]} width={em(4)} font-size={em(0.75)} border-color={red}>
         a
       </Node>
-      <Node id="b" x={0.7} y={0.25} width={em(4)} font-size={em(0.75)} border-color={red}>
+      <Node id="b" pos={[0.7, 0.25]} width={em(4)} font-size={em(0.75)} border-color={red}>
         b
       </Node>
     </Network>
@@ -319,7 +317,7 @@ return <Box fit
           head-size={em(0.5)} head-curve={0.5}
         />
       ))}
-      <VStack x={em(stackX)} width={em(stackWidth)} gap={em(gap)} align="center">
+      <VStack pos={[em(stackX), px(0)]} width={em(stackWidth)} gap={em(gap)} align="center">
         <Node id="output" height={em(terminalHeight)} padding={0} border-width={0}>Output Probabilities</Node>
         <Block id="softmax" label="Softmax" color={red} />
         <Block id="linear" label="Linear" color={red} />
@@ -345,7 +343,7 @@ return <Box fit
         head-size={em(0.5)} head-curve={0.5}
       />
       <TextBox
-        x={em(loopX)} y={em((loopTop + loopBottom) / 2)} anchor="center"
+        pos={[em(loopX), em((loopTop + loopBottom) / 2)]} anchor="center"
         padding={em(0.35)} background={white} border-width={px(1)}
         border-radius={em(0.25)} border-color={darkgray}
       >× N</TextBox>

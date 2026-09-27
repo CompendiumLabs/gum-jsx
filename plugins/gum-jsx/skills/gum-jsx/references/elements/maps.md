@@ -226,15 +226,17 @@ background, but lakes need to be represented as holes or omitted areas in the
 source. A surrounding [Box](layout.md#Box) can supply a separate rectangular
 background outside the projection.
 
-Nest marks and annotations directly inside **GeoMap**. Numeric point pairs use
-`[longitude, latitude]` in degrees; direct-child `x`/`y` anchors use the same
-projection. Children draw above the geography and share its fitted size, padding,
+Nest marks and annotations directly inside **GeoMap**. Use `{lon, lat}` records
+in degrees for mark coordinates and direct-child `pos` values. Tuples
+`[longitude, latitude]` and records `{x: longitude, y: latitude}` are aliases.
+Both components are required, and records cannot mix `lon`/`lat` with `x`/`y`.
+Children draw above the geography and share its fitted size, padding,
 center, rotation, and clipping. For example:
 
 ```jsx
 <GeoMap source={world_countries()} background={lightgray}>
-  <Points points={[[2.35, 48.86]]} point-size={px(8)} fill={red} />
-  <Text x={2.35} y={48.86} anchor={['start', 'end']}>Paris</Text>
+  <Points points={[{lon: 2.35, lat: 48.86}]} point-size={px(8)} fill={red} />
+  <Text pos={{lon: 2.35, lat: 48.86}} anchor={['start', 'end']}>Paris</Text>
 </GeoMap>
 ```
 
@@ -242,8 +244,10 @@ Text and marker shapes keep their ordinary layout sizes and orientations.
 Points hidden by the projection are omitted, and sampled paths break at hidden
 points. Supply an Arrow's intermediate longitude/latitude samples when the route
 should curve; ordinary marks do not automatically resample or split at the
-antimeridian. `space="local"` opts marks out, and tagged x/y lengths position
-annotations in local pixels. Children inherit the map's ordinary styles, so set
+antimeridian. `space="local"` opts marks out, and Cartesian lengths such as
+`pos={[px(12), px(24)]}` position annotations in local pixels. Geographic
+components must be numeric. GeoJSON, TopoJSON, `center`, and the geographic
+helpers retain their array formats. Children inherit the map's ordinary styles, so set
 `stroke` explicitly on route arrows. See [Map routes](../gallery/maps.md#map_routes)
 and [Projections](../guides/projections.md).
 

@@ -36,7 +36,7 @@ See [RELEASE.md](./RELEASE.md) for artifact verification and remaining gates.
 - `gum --plugin <module>` loads named exports from a package or local module,
   resolved from the caller's project. Math and maps are already in scope.
   This does not restore the old `{ elems, bindings, fonts }`/Env plugin protocol.
-- `Graph` supports pair-to-pair projections with explicit output-space limits;
+- `Graph` supports record-to-record projections with explicit output-space limits;
   `GeoMap` supplies a fitted geographic projection to its children. See
   [projections](../gum-jsx-docs/docs/guides/text/projections.md).
 - Fragments accept `clip_path` commands, including intersections with rectangular
@@ -51,13 +51,62 @@ See [RELEASE.md](./RELEASE.md) for artifact verification and remaining gates.
 - Core and React now install the fontkit and reconciler declarations needed
   to typecheck their published TypeScript source in a strict consumer.
 
+## Coordinate contract migration
+
+The migration in [COORDS.md](./COORDS.md) changes Projection callbacks and direct
+calls from pairs to records:
+
+```jsx
+// Before
+const projection = new Projection(([x, y]) => [x + y, y])
+
+// After
+const projection = new Projection(({x, y}) => ({x: x + y, y}))
+```
+
+Direct calls now use `projection.project({x: 1, y: 2})`. Source tuple shorthand
+is still accepted by marks and coordinate helpers; it always expands to `{x, y}`
+before projection. Use `read_coordinate` to expand a tuple for a direct call.
+The `PointPair` projection type is replaced by `Coordinate`, with
+`CoordinateValue` for source shorthand and `CoordinatePosition` for data or
+local-length positions.
+
+Core coordinate helpers, annotation `pos` values, projected mark geometry, and
+parametric `f(t)` samples preserve arbitrary numeric dimensions through a
+projection. Points callbacks receive every source dimension. Use explicit Fill
+boundary arrays for named coordinates; scalar boundaries and Field vector
+arithmetic require Cartesian `{x, y}` sources. Samples with any nonfinite
+dimension become gaps.
+
+GeoMap children now accept `{lon, lat}` in degrees for both marks and `pos`.
+`[longitude, latitude]` and `{x: longitude, y: latitude}` remain aliases. Both
+components are required, and a record cannot mix geographic and Cartesian names.
+Local lengths use Cartesian pairs. GeoJSON, TopoJSON, `GeoMap.center`, and the
+geographic projection helpers keep their array formats.
+
+The same contract works in evaluated JSX, React TSX, the editor, CLI, Markdown
+gum blocks, and MCP rendering. React primitives retain constructor prop types,
+including contextual numeric projection callbacks and inferred Points callback
+fields. Tuple/object expressions and spreads need no JSX grammar changes.
+
+Element placement now uses `pos={[x, y]}` or `pos={{x, y}}`. Legacy `x` and `y`
+source props report a migration error. A position override replaces the entire
+value, so update component defaults and spreads together. Custom components may
+consume `x` and `y` as input parameters, then produce `pos` during construction.
+
+An omitted `pos` uses the parent's unpositioned behavior. In Graph, explicit
+`pos={[0, 0]}` maps data zero, while `pos={[px(0), px(0)]}` stays at local zero.
+When migrating a single-axis Cartesian Graph annotation such as `x={v}`, use
+`pos={[v, px(0)]}` to preserve the previously omitted local axis. Group and
+Overlay can use `pos={[v, 0]}`. Node retains an explicit `[0, 0]` default.
+
 ## Props and elements
 
 | Original convention | Current convention |
 |---|---|
 | Untagged em or stroke-unit lengths; `unit_size` | Explicit `px(...)` / `em(...)`; a raw number is always a fraction. There is no stroke-unit system |
 | Svg `size` and an implicit 500px or 1000px canvas | `width` / `height` in `px(...)`; omitted axes hug the content |
-| size / xsize / ysize / pos / rect | `width` / `height`; `x` / `y` / `anchor` for direct **Group** children |
+| size / xsize / ysize / pos / rect | `width` / `height`; `pos` / `anchor` for direct **Group** children |
 | Group contains its positioned children automatically | **Group** needs a finite canvas and its children never size it; **Overlay** hugs its first child and layers the rest |
 | Rectangle | **Rect** |
 | rounded | `border-radius` in JSX, or `border_radius` in constructor props |
@@ -116,7 +165,7 @@ to establish them. The rules most likely to surprise a ported figure are:
   A tall **Svg** does not make a **VStack**'s children grow.
 - Stacks do not solve for a composite aspect. A height-only column of unsized
   figures stays naturally sized unless the author supplies width or explicit flex.
-- Flex props are read only by the immediate stack, and `x` / `y` / `anchor` only
+- Flex props are read only by the immediate stack, and `pos` / `anchor` only
   by the immediate **Group**. They do not inherit or pass through wrappers.
 - Shapes keep their pixel stroke width when resized. Square and Circle prefer a
   1:1 aspect; Rect and Ellipse fill both offered axes.

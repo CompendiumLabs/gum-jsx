@@ -11,6 +11,7 @@ both forms in one list. Each tuple must contain exactly two coordinates.
 
 | Input | Where it works |
 | --- | --- |
+| `pos` | Placement by **Group**, **Overlay**, **Graph**, **Network**, and **GeoMap** |
 | `from`, `to`, `center`, `origin`, `tip` | **Line**, **Circle**/**Ellipse**, **Arc**, **Arrow**, **Ray**, **ArrowHead**, and their conveniences |
 | `points` and `fill` boundary lists | **Polyline**/**Polygon**, **CoordLine**, **Spline**, **RoundedLine**, **Points**, **Arrow**, **Fill**/**HFill**/**VFill** |
 | Segment endpoints | `segments={[[[0, 0], [1, 1]], [[0, 1], [1, 0]]]}` |
@@ -29,6 +30,13 @@ the keywords start/center/end: `anchor={['end', 0.5]}`. **Box** alignment also a
 fill and stretch. Stack align/justify remain single-axis values. See [Group](../elements/layout.md#Group)
 for the distinction between placing an element and arranging its contents.
 
+`pos` also accepts named numeric records in a projected Graph, such as
+`pos={{theta: pi / 4, r: 1}}`. The callback receives every supplied dimension.
+Local Cartesian positions require both components, and an omitted `pos` uses
+the parent's unpositioned behavior. Projected marks accept the same records,
+including `{x, y, z}` for a projection that reduces three dimensions to two.
+Line and Polyline opt in with `space="data"`; local shapes and sizes stay Cartesian.
+
 [Array helpers](arrays.md) can feed point lists directly:
 
 ```jsx
@@ -41,13 +49,17 @@ return <Plot>
 
 Null and nonfinite coordinates keep their existing gap behavior: lines and fills
 split their paths, and **Points** omits missing markers. Inferred limits ignore these
-gaps. Malformed tuples raise an error.
+gaps. Every numeric dimension is checked, including dimensions a projection
+does not use. Malformed tuples and nonnumeric named dimensions raise an error.
 
-**Points** callbacks always receive an `{x, y}` record, even for tuple inputs.
+**Points** callbacks receive the complete frozen source record; tuple inputs
+become `{x, y}`. For example, `point-size={({r}) => px(2 * r)}` can use a named
+polar radius before projection.
 **Field** shape callbacks likewise receive records in `sample.point` and
 `sample.vector`. Callbacks keep original input indices and execute once at
-construction. Generated points from polar, vector arithmetic, sampling, splines,
-and coordinate mapping also remain `{x, y}` records.
+construction. Parametric `f(t)` samples preserve arbitrary numeric records.
+Cartesian vector helpers, spline helpers, and resolved coordinate mapping
+continue to return `{x, y}` records.
 
 In TypeScript, `PointValue` is the numeric input union and `PositionValue` also
 allows px/em coordinates. For a separately declared array, annotate its point
@@ -62,6 +74,11 @@ const endpoint: PositionValue = [px(12), 0.5]
 const markers = new Points({ points: data })
 const line = new Line({ from: endpoint, to: [1, 0.5] })
 ```
+
+Use `Coordinate` for numeric records, `CoordinateValue` for numeric records or
+tuples, and `CoordinatePosition` for projected inputs that may also contain local
+Cartesian lengths. `Points` infers callback field types from its input points;
+`SymPoints` callbacks use numeric `Coordinate` records.
 
 ## Example
 

@@ -54,7 +54,7 @@ Each entry includes its runnable JSX example.
 - [BarPlot](elements/plotting.md#BarPlot) — Combine bars, axes, labels, and other plot features in one chart.
 - [Bars](elements/plotting.md#Bars) — Draw a series of vertical bars from values, positions, and baselines.
 - [Field](elements/plotting.md#Field) — Draw vectors=[{point,vector},...], with either {x,y} or [x,y] for each point and vector.
-- [Graph](elements/plotting.md#Graph) — A finite canvas with data coordinates and optional point-pair projection.
+- [Graph](elements/plotting.md#Graph) — A finite canvas with data coordinates and an optional projection.
 - [HAxis](elements/plotting.md#HAxis) — HAxis draws a baseline, ticks, and labels.
 - [HBar](elements/plotting.md#HBar) — Draw one horizontal bar at a specified value and position.
 - [HBars](elements/plotting.md#HBars) — Draw a series of horizontal bars from values, positions, and baselines.

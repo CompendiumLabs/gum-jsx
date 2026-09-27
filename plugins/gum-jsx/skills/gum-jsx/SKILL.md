@@ -157,11 +157,18 @@ hand-tuned offsets.
   size content-based rows; use absolute lengths or fill/stretch instead.
 - `Group` is a finite positioning canvas, not a content-hugging box. Establish
   both axes with dimensions, finite offers, or one dimension plus aspect. Its
-  children use `x`, `y`, and `anchor`, with top-left origin and y pointing down.
+  children use `pos={[x, y]}` or `pos={{x, y}}` and `anchor`, with top-left origin and y pointing down.
   In `Graph`, `Plot`, and `Network`, bare numeric positions are data coordinates,
   with y pointing up by default. Unit strings and `px`/`em` positions are local
   lengths; widths and font sizes also use layout units. Give positioned shapes
   explicit sizes: each receives an offer for the whole canvas.
+- Projected Graph marks, annotations, and parametric `f(t)` samples accept named
+  numeric records such as `{theta, r}` or `{x, y, z}`. Projection callbacks map
+  records to records or null; Graph needs final `x` and `y` plus explicit limits.
+  GeoMap children use `{lon, lat}` in degrees; `[longitude, latitude]` and `{x, y}`
+  remain aliases. Keep one complete naming scheme per geographic record. Local
+  tagged lengths still use Cartesian pairs. Use two explicit Fill boundary
+  arrays for named coordinates; scalar baselines and Field vectors are Cartesian.
 - Scoped props such as `title-font-size`, `xaxis-label-color`, and `head-open`
   configure parts created by their owner. Use only the scopes in that owner's
   reference. Function-valued sampling props such as `SymLine fy` are consumed

@@ -6,8 +6,8 @@ Glyphs, strokes, padding, guides, and network connections scale together.
 
 ```jsx
 <Group fit width={em(20)} height={em(10)}>
-  <Text x={em(1)} y={em(1)}>A fixed composition</Text>
-  <Circle x={em(10)} y={em(5)} width={em(3)} />
+  <Text pos={[em(1), em(1)]}>A fixed composition</Text>
+  <Circle pos={[em(10), em(5)]} width={em(3)} />
 </Group>
 ```
 

@@ -42,6 +42,7 @@ Each entry includes its runnable JSX example.
 - [Regional changes](gallery/plotting.md#plot_bars) — Categorical ticks, positive and negative bars, and functional bar colors.
 - [Manual Plot](gallery/plotting.md#plot_manual) — A sine plot assembled from a Graph, Mesh2D, HAxis, and VAxis, rather than the higher-level Plot component.
 - [A slide with a plot](gallery/plotting.md#plot_slide) — A slide composes a measured title, figure, and caption at a stable type scale.
+- [Three-dimensional projection](gallery/plotting.md#projection_3d) — Project a three-dimensional helix, markers, axes, and labels into one graph.
 - [Slick Bars](gallery/plotting.md#slick_bars) — Rounded bars, angled category labels, and percentage annotations form a styled bar chart.
 - [The Nexus](gallery/plotting.md#the_nexus) — Ten phase-shifted cosine wave packets share a Gaussian envelope and form a colored interference pattern over a fine grid.
 

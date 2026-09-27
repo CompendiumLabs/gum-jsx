@@ -87,7 +87,7 @@ Preserve them when adding the remaining containers:
 | What do fractional shape coordinates reference? | The shape's own resolved content rectangle. Scalar geometric lengths such as a circle radius, stroke width, or circular corner radius use its shorter side; two-axis radii resolve per axis. Graph now supplies explicit data-coordinate mapping. |
 | What do `Box.width` and `height` include? | The border box: content, padding, and border. Borders occupy space and draw inside the border box. For space outside the decoration, wrap the Box in another Box with padding. |
 | Does making a box smaller scale its contents? | Ordinary layout reflows, constrains, or records overflow. An explicit `fit` prop may scale a completed fragment, including its text and strokes. |
-| Who reads flex and position props? | The immediate stack reads `basis`/`grow`/`shrink`/`align_self`; the immediate Group reads `x`/`y`/`anchor`. They do not inherit or acquire behavior in LayoutPass. |
+| Who reads flex and position props? | The immediate stack reads `basis`/`grow`/`shrink`/`align_self`; the immediate Group reads `pos`/`anchor`. They do not inherit or acquire behavior in LayoutPass. |
 | Does every empty container hug to zero? | Empty Box/Svg/stacks follow ordinary zero-content sizing. Group requires a finite canvas even when empty; its children never determine the viewport. |
 
 A finite available-space offer is not automatically a definite percentage reference. A
@@ -267,7 +267,7 @@ Keep reflow into a region distinct from fitting an already laid-out drawing into
 Stage 6(a) implements Group as a positioned canvas. Dimensions and finite offers
 establish its rectangle before any child query; a preferred aspect can derive one
 axis. Unresolved canvas axes are explicit errors, including for empty groups.
-Children use ordinary width/height sizing plus x/y/anchor metadata read only by
+Children use ordinary width/height sizing plus pos/anchor metadata read only by
 their immediate Group parent. Fractional positions and extents refer to the full
 canvas; em positions use the child's local font. Anchors position completed child
 allocations, and nested groups establish independent local references. Paint order

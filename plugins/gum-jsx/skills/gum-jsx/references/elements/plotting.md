@@ -319,6 +319,9 @@ Draw `vectors=[{point,vector},...]`, with either `{x,y}` or `[x,y]` for each
 point and vector. Each endpoint is point + scale ×
 vector. scale defaults to 1; normalize divides by magnitude before scaling.
 Zero/nonfinite vectors are omitted. Origins and endpoints both affect limits.
+Points and vectors require exactly two Cartesian coordinates; named or additional
+dimensions are rejected. The computed origins and endpoints can then pass
+through the graph's projection.
 
 Default glyphs are arrows, with `head-size` `px(5)`, `head-width` 1.3, and ordinary
 stroke style. Directions are computed after mapping, so flips and unequal axis
@@ -368,7 +371,7 @@ records in sample.point and sample.vector, including for tuple inputs.
 | `flip-y` | `true` | Reverse vertical screen mapping for Cartesian y-up coordinates |
 | `padding` | `0` | Inferred-limit fractions: scalar, side/axis object, `[h, v]`, or `[t, b, l, r]` |
 | `clip` | `false` | Clip children to the graph frame |
-| `projection` | None | Pure `([x, y]) => [u, v]` callback, or a core `Projection` |
+| `projection` | None | Pure record-to-record callback returning `{x, y}` or `null`, or a core `Projection` |
 
 A finite canvas with a linear data coordinate system by default. **Graph** infers limits from
 graphable children or accepts `xlim={[min,max]}`, `ylim={[min,max]}`, or
@@ -400,23 +403,41 @@ fractional geometry; set `space="data"` to use the graph's coordinate mapping.
 `space="local"` opts out; `space="data"` requires a coordinate context.
 px/em geometry stays local.
 
-Direct-child x/y positions are data coordinates; omitted positions are at the
-local origin. Use x/y/anchor with **Text** for upright annotations, and px/em sizes
+Direct-child numeric `pos` values are data coordinates; omitted positions are at
+the local origin. Use `pos` and `anchor` with **Text** for upright annotations, and px/em sizes
 for fixed geometry. Annotations do not affect inferred limits. Strokes, markers,
 and fonts keep their layout sizes on resize.
 
-With `projection`, each numeric pair is transformed before the usual limits and
-flips map it to pixels. For polar data, use
-`projection={([theta, r]) => [r * cos(theta), r * sin(theta)]}`. Supply both
+With `projection`, numeric records retain every dimension and tuples expand to
+`{x, y}` before the usual limits and flips map them to pixels. For `{theta, r}`
+polar data, use `projection={({theta, r}) => ({x: r * cos(theta), y: r * sin(theta)})}`. Supply both
 `xlim` and `ylim` (or `coord`) in the **output** coordinate space; custom
 projections do not infer limits. A square canvas with limits `[-1, 1]` on both
 axes displays a unit polar disk.
 
-Numeric child `x`/`y` annotations use the same projection. If only one numeric
-position is given, the other defaults to data zero; if both are omitted, the
-child stays at the local origin. Two tagged lengths bypass projection; mixing
+Numeric child `pos` annotations use the same projection. Tuples expand to
+`{x, y}`; named records such as `{theta, r}` or `{x, y, z}` reach the callback
+with every dimension intact. Cartesian positions require both components.
+Omitting `pos` keeps the child at the local origin; `pos={[0, 0]}` maps data zero.
+Two tagged lengths bypass projection; mixing
 a data number with a tagged length is an error. `space="local"` still opts marks
 out. A callback may return `null` to hide a point or break a sampled path.
+
+For a custom annotation space, for example:
+
+```jsx
+<Graph
+  xlim={[-1, 1]} ylim={[-1, 1]}
+  projection={({theta, r}) => ({x: r * cos(theta), y: r * sin(theta)})}
+>
+  <Text pos={{theta: pi / 4, r: 0.8}} anchor="center">45°</Text>
+</Graph>
+```
+
+Legacy `x`/`y` placement props report a migration error. Built-in marks and
+parametric `f(t)` samples accept the same named records. Points callbacks receive
+the complete source record before projection; any nonfinite dimension creates
+a gap. Scalar Fill boundaries and Field vector arithmetic stay Cartesian.
 
 Callbacks must be pure and stable for the lifetime of the element. They run
 during layout, unlike construction-time style callbacks. Elements project only
@@ -451,7 +472,7 @@ return (
         point-size={(p, i) => px(8 + i * 2)}
         shape={<Square fill={blue} stroke={white} stroke-width={px(1)} />}
       />
-      <Text x={8} y={7.25} anchor={['center', 'end']} font-size={em(0.9)} color={blue}>Peak</Text>
+      <Text pos={[8, 7.25]} anchor={['center', 'end']} font-size={em(0.9)} color={blue}>Peak</Text>
       <HAxis lim={[10, 0]} />
       <VAxis lim={[0, 8]} />
     </Graph>
@@ -1284,7 +1305,7 @@ boundaries contribute to limits. Callbacks execute once at construction.
 
 | Property | Default | Meaning |
 |---|---|---|
-| `f` | — | Parametric `t => {x,y}` function |
+| `f` | — | Parametric function returning a numeric coordinate record, `[x,y]`, or null |
 | `fx` / `fy` | — | Coordinate functions or constants |
 | `xlim` / `ylim` / `tlim` | `[0, 1]` | Sampling ranges when corresponding arrays are absent |
 | `xvals` / `yvals` / `tvals` | — | Explicit coordinate or parameter arrays |
@@ -1296,6 +1317,9 @@ Sample a function at the specified values and draw with [CoordLine](geometry.md#
 Null/nonfinite samples split paths or omit markers.
 Use fy for y=`f(x)`, fx for x=`f(y)`, or `f(t)` for parametric points. Limits here
 control sampling; enclosing **Graph**/**Plot** limits control the view.
+Named records such as `{theta, r}` retain every dimension until the enclosing
+Graph projects them. Any nonfinite dimension creates a gap. `fx`, `fy`,
+`xvals`, and `yvals` retain their Cartesian meanings.
 
 All **CoordLine** styling options are available.
 Construction stores immutable sampled data; resizing never executes callbacks.
@@ -1325,7 +1349,7 @@ Construction stores immutable sampled data; resizing never executes callbacks.
 
 | Property | Default | Meaning |
 |---|---|---|
-| `f` | — | Parametric `t => {x,y}` function |
+| `f` | — | Parametric function returning a numeric coordinate record, `[x,y]`, or null |
 | `fx` / `fy` | — | Coordinate functions or constants |
 | `xlim` / `ylim` / `tlim` | `[0, 1]` | Sampling ranges when corresponding arrays are absent |
 | `xvals` / `yvals` / `tvals` | — | Explicit coordinate or parameter arrays |
@@ -1338,6 +1362,9 @@ Use the sampling options described by [SymLine](plotting.md#SymLine) and draw wi
 Null/nonfinite samples split paths or omit markers.
 Use fy for y=`f(x)`, fx for x=`f(y)`, or `f(t)` for parametric points. Limits here
 control sampling; enclosing **Graph**/**Plot** limits control the view.
+Named records such as `{theta, r}` retain every dimension until the enclosing
+Graph projects them. Any nonfinite dimension creates a gap. `fx`, `fy`,
+`xvals`, and `yvals` retain their Cartesian meanings.
 
 All **Points** styling options are available. shape and `point-size` functions run once per finite sample.
 Construction stores immutable sampled data; resizing never executes callbacks.
@@ -1369,7 +1396,7 @@ Construction stores immutable sampled data; resizing never executes callbacks.
 
 | Property | Default | Meaning |
 |---|---|---|
-| `f` | — | Parametric `t => {x,y}` function |
+| `f` | — | Parametric function returning a numeric coordinate record, `[x,y]`, or null |
 | `fx` / `fy` | — | Coordinate functions or constants |
 | `xlim` / `ylim` / `tlim` | `[0, 1]` | Sampling ranges when corresponding arrays are absent |
 | `xvals` / `yvals` / `tvals` | — | Explicit coordinate or parameter arrays |
@@ -1380,6 +1407,9 @@ Use the sampling options described by [SymLine](plotting.md#SymLine) and draw wi
 Each finite run closes into a polygon.
 Use fy for y=`f(x)`, fx for x=`f(y)`, or `f(t)` for parametric points. Limits here
 control sampling; enclosing **Graph**/**Plot** limits control the view.
+Named records such as `{theta, r}` retain every dimension until the enclosing
+Graph projects them. Any nonfinite dimension creates a gap. `fx`, `fy`,
+`xvals`, and `yvals` retain their Cartesian meanings.
 
 All **CoordLine** styling options are available.
 Construction stores immutable sampled data; resizing never executes callbacks.
@@ -1410,7 +1440,7 @@ Construction stores immutable sampled data; resizing never executes callbacks.
 
 | Property | Default | Meaning |
 |---|---|---|
-| `f` | — | Parametric `t => {x,y}` function |
+| `f` | — | Parametric function returning a numeric coordinate record, `[x,y]`, or null |
 | `fx` / `fy` | — | Coordinate functions or constants |
 | `xlim` / `ylim` / `tlim` | `[0, 1]` | Sampling ranges when corresponding arrays are absent |
 | `xvals` / `yvals` / `tvals` | — | Explicit coordinate or parameter arrays |
@@ -1423,6 +1453,9 @@ Use the sampling options described by [SymLine](plotting.md#SymLine) and draw wi
 Null/nonfinite samples split paths or omit markers.
 Use fy for y=`f(x)`, fx for x=`f(y)`, or `f(t)` for parametric points. Limits here
 control sampling; enclosing **Graph**/**Plot** limits control the view.
+Named records such as `{theta, r}` retain every dimension until the enclosing
+Graph projects them. Any nonfinite dimension creates a gap. `fx`, `fy`,
+`xvals`, and `yvals` retain their Cartesian meanings.
 
 All **Spline** styling options are available.
 Construction stores immutable sampled data; resizing never executes callbacks.

@@ -61,13 +61,13 @@ placed node boundaries, regardless of the waypoint coordinate space.
       start="loop" end="loop" stroke={blue} head-curve={0.7}
       points={[[1.9, 0.1], [1.8, 0.5], [1.5, 0.5]]}
     />
-    <Node id="a" x={0} y={1} background={white}>
+    <Node id="a" pos={[0, 1]} background={white}>
       Start
     </Node>
-    <Node id="b" x={2.8} y={1} background={white}>
+    <Node id="b" pos={[2.8, 1]} background={white}>
       Finish
     </Node>
-    <Node id="loop" x={1.4} y={0} background={white}>
+    <Node id="loop" pos={[1.4, 0]} background={white}>
       Retry
     </Node>
   </Network>
@@ -109,7 +109,9 @@ its label. Edges attach to the resulting frame after that wrapping finishes.
 
 Sizing and coordinate options follow [Graph](plotting.md#Graph): a natural network is
 480×320, finite offers establish the canvas, and an aspect derives a missing axis.
-Inference includes the numeric x/y of each child, intermediate edge points, and graphable marks.
+Inference includes the numeric Cartesian components of each child's `pos`,
+intermediate edge points, and graphable marks. Positions accept `[x, y]` or
+`{x, y}`; tagged lengths stay local and do not contribute to limits.
 Inferred padding is a fraction of the data span, so it does not reserve a measured
 margin for every label. Use explicit limits or surrounding **Box** padding when
 you need a particular margin. Use explicit limits for nodes inside nested layouts.
@@ -139,16 +141,16 @@ provide; it does not automatically arrange nodes or avoid intervening obstacles.
     <Edge start="parse" end="output" />
     <Edge start="parse" end="errors" />
     <Edge start="errors" end="source" start-side="left" end-side="bottom" />
-    <Node id="source" x={0} y={1} border-color={blue} background={white}>
+    <Node id="source" pos={[0, 1]} border-color={blue} background={white}>
       Source
     </Node>
-    <Node id="parse" x={1.4} y={1} width={em(7)} border-color={blue} background={white}>
+    <Node id="parse" pos={[1.4, 1]} width={em(7)} border-color={blue} background={white}>
       Build syntax tree
     </Node>
-    <Node id="output" x={2.8} y={1} border-color={blue} background={white}>
+    <Node id="output" pos={[2.8, 1]} border-color={blue} background={white}>
       Output
     </Node>
-    <Node id="errors" x={1.4} y={0} border-color={red} color={red} background={white}>
+    <Node id="errors" pos={[1.4, 0]} border-color={red} color={red} background={white}>
       Report errors
     </Node>
   </Network>
@@ -164,8 +166,8 @@ provide; it does not automatically arrange nodes or avoid intervening obstacles.
 | Property | Default | Meaning |
 |---|---|---|
 | `id` | — | Nonempty identifier used by edges, as on any other element |
-| `x` / `y` | `0` / `0` | Position in the parent coordinate system |
-| `anchor` | `"center"` | Point of the allocated node placed at x/y |
+| `pos` | `[0, 0]` | Position in the parent coordinate system |
+| `anchor` | `"center"` | Point of the allocated node placed at `pos` |
 | `width` | Content-sized | Measure the label; a length sets a wrapping width |
 | `children` | — | Text, inline content, or one existing layout element |
 | `padding` | `em(0.6)` | Space between the label and inside border |
@@ -187,8 +189,8 @@ piping: `text-justify` sets `justify`, and `text-font-size` sets `font-size`.
 
 The `id` is optional for a standalone node, and required to reference it from an
 [Edge](networks.md#Edge). IDs must be unique within the enclosing [Network](networks.md#Network).
-In Network, x/y are graph data coordinates; in **Group** they are layout lengths.
-When wrapping a Node in **Rotate** or another container, put x/y/anchor
+In Network, `pos` contains Cartesian data coordinates; in **Group** it contains local lengths.
+When wrapping a Node in **Rotate** or another container, put `pos` and `anchor`
 on the wrapper to position the whole result.
 
 Connections meet the outer frame, including padding and the inside border.

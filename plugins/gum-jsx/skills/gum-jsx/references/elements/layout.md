@@ -14,7 +14,7 @@ visible child.
 |---|---|---|
 | `align` | `"center"` | Position the child within the **Anchor** frame on both axes |
 
-Use parent-owned x/y/anchor props to position the **Anchor** itself in **Group** or
+Use parent-owned `pos` and `anchor` props to position the **Anchor** itself in **Group** or
 **Graph**. `anchor` selects the wrapper's own attachment point; `align` positions
 its child within the wrapper's frame. Positioning and child sizes remain separate.
 
@@ -26,12 +26,12 @@ its child within the wrapper's frame. Positioning and child sizes remain separat
 // A zero-sized anchor positions text.
 <Box width="fill" aspect={1.65} padding={em(2)}>
   <Group>
-    <Anchor x={0.5} y={0.5} align={["center", "start"]}>
+    <Anchor pos={[0.5, 0.5]} align={["center", "start"]}>
       <TextBox font-size={em(1.1)} border-width={px(1)}>
         Hanging on a point
       </TextBox>
     </Anchor>
-    <Anchor x={0.5} y={0.5}>
+    <Anchor pos={[0.5, 0.5]}>
       <Dot />
     </Anchor>
   </Group>
@@ -82,7 +82,7 @@ reserves its own labels automatically.
   <Group>
     <Attach
       width={0.7}
-      x={0.5} y={0.5} anchor={[0.5, 0.5]}
+      pos={[0.5, 0.5]} anchor={[0.5, 0.5]}
       side="bottom" at={1} child-anchor={1}
       offset={em(0.625)}
       attachment={<Text>Attached caption</Text>}
@@ -418,19 +418,19 @@ Children paint in source order, so put backgrounds and connectors before labels.
 
 | Direct child prop | Default | Meaning |
 |---|---|---|
-| `x` / `y` | `0` | **Anchor** location; fractions use the whole **Group** |
-| `anchor` | `"start"` | Point on the child's allocated rectangle placed at x/y |
+| `pos` | `[0, 0]` | Anchor location as `[x, y]` or `{x, y}` lengths; fractions use the whole **Group** |
+| `anchor` | `"start"` | Point on the child's allocated rectangle placed at `pos` |
 | `width` / `height` | — | Child's preferred size; fractions use the whole **Group** |
 
 **Anchor** accepts start, center, end, a fraction from 0 to 1, or independent x/y
 choices in an object or two-entry tuple. `anchor={[1, 0.5]}` and
 `anchor={['end', 'center']}` both place
-the right-edge midpoint at x/y. A missing object axis defaults to start.
+the right-edge midpoint at `pos`. A missing anchor object axis defaults to start.
 **Anchor** values are dimensionless; px/em and stretch are not anchor values.
 
 **Anchor** describes the element's attachment point for its parent. Its own
 `align` or `justify` describes how it arranges its children. For example, a
-**Box** can use `anchor={[0.5, 0.5]}` to center itself at x/y and `align="end"`
+**Box** can use `anchor={[0.5, 0.5]}` to center itself at `pos` and `align="end"`
 to place its content at the **Box**'s bottom-right corner.
 
 Every child receives an offer for the whole canvas, not only the space to the
@@ -443,10 +443,15 @@ width if needed. Give it a width for a narrower label or region. Position length
 in em use the child's font size.
 Nested **Group**s establish new local canvases.
 
+Supplied positions need both components. For example, use `pos={[0.5, 0]}`
+for a horizontal offset, or `pos={{x: em(1), y: px(20)}}` for local lengths.
+Legacy `x` and `y` placement props report a migration error. A `pos` override
+replaces the entire value, including when it comes from a prop spread.
+
 Set `clip` on **Group** to hide content outside its rectangle. Clipping defaults to
 false and does not erase reported overflow. **Svg** still clips at the outer viewport.
 
-**Group** uses local fractional x/y/anchor positions; **Graph** uses data positions and
+**Group** uses local fractional `pos` values and `anchor`; **Graph** uses data positions and
 **Overlay** places decorations relative to a measured base. **Box** and stacks use their
 own placement rules. Use [Graph](plotting.md#Graph) for data limits and [Rotate](layout.md#Rotate)
 or [TransformBox](layout.md#TransformBox) for explicit transforms. **Group** does not infer
@@ -467,23 +472,21 @@ data limits or perform node/edge lookup.
     stroke-width={px(3)}
   />
   <Circle
-    x={0.2}
-    y={0.45}
+    pos={[0.2, 0.45]}
     anchor="center"
     width={px(64)}
     fill={blue}
     stroke={none}
   />
   <Square
-    x={0.8}
-    y={0.45}
+    pos={[0.8, 0.45]}
     anchor="center"
     width={px(64)}
     fill={red}
     stroke={none}
   />
-  <Text x={0.2} y={0.72} anchor={[0.5, 0.5]}>Source</Text>
-  <Text x={0.8} y={0.72} anchor={['center', 'center']}>Result</Text>
+  <Text pos={[0.2, 0.72]} anchor={[0.5, 0.5]}>Source</Text>
+  <Text pos={[0.8, 0.72]} anchor={['center', 'center']}>Result</Text>
 </Group>
 ```
 
@@ -595,7 +598,7 @@ to reduce its allocation.
 ## Overlay
 
 The first child determines natural size. Other children are decorations:
-they receive that established canvas and use **Group**-style x/y/anchor placement.
+they receive that established canvas and use **Group**-style `pos` and `anchor` placement.
 They contribute ink and overflow without enlarging the allocation. Source order
 is paint order; clip hides outside ink. Unlike **Group**, **Overlay** can hug its base.
 
@@ -612,7 +615,7 @@ is paint order; clip hides outside ink. Unlike **Group**, **Overlay** can hug it
 <Box padding={em(2)}>
   <Overlay>
     <Rect width="fill" aspect={28 / 13} fill={blue} stroke={none} />
-    <Text x={0.5} y={0.5} anchor={[0.5, 0.5]} font-weight={bold}>Measured overlay</Text>
+    <Text pos={[0.5, 0.5]} anchor={[0.5, 0.5]} font-weight={bold}>Measured overlay</Text>
   </Overlay>
 </Box>
 ```

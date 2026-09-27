@@ -220,13 +220,13 @@ return <Plot
     fill={red}
   />
   <Points points={[[0, 0]]} point-size={px(7)} fill={slate} />
-  <Text x={-2.6} y={1.1} anchor="center" color={blue} font-size={em(1.3)}>
+  <Text pos={[-2.6, 1.1]} anchor="center" color={blue} font-size={em(1.3)}>
     real
   </Text>
-  <Text x={1.6} y={-0.4} anchor="center" color={red} font-size={em(1.3)}>
+  <Text pos={[1.6, -0.4]} anchor="center" color={red} font-size={em(1.3)}>
     imag
   </Text>
-  <Tex x={2.1} y={1.6} anchor="center" font-size={em(1.4)}>
+  <Tex pos={[2.1, 1.6]} anchor="center" font-size={em(1.4)}>
     f(x)=x^2+2cx+1
   </Tex>
 </Plot>
@@ -296,7 +296,7 @@ return (
         point-size={(p, i) => px(8 + i * 2)}
         shape={<Square fill={blue} stroke={white} stroke-width={px(1)} />}
       />
-      <Text x={8} y={7.25} anchor={['center', 'end']} font-size={em(0.9)} color={blue}>Peak</Text>
+      <Text pos={[8, 7.25]} anchor={['center', 'end']} font-size={em(0.9)} color={blue}>Peak</Text>
       <HAxis lim={[10, 0]} />
       <VAxis lim={[0, 8]} />
     </Graph>
@@ -455,7 +455,7 @@ function Ribbon({ x0, x1, sourceTop, targetTop, height, color }) {
   const sh = height / hh;
   return (
     <Path
-      x={px(x0)} y={px(top)} width={px(x1 - x0)} height={px(hh)}
+      pos={[px(x0), px(top)]} width={px(x1 - x0)} height={px(hh)}
       commands={[
         move_to(0, sy),
         curve_to(0.42, sy, 0.58, ty, 1, ty),
@@ -471,7 +471,7 @@ function Ribbon({ x0, x1, sourceTop, targetTop, height, color }) {
 function PlotLabel({ x, y, text, size = 20, weight = 400, color = palette.navy, anchor = 'start', width }) {
   return (
     <Text
-      x={px(x)} y={px(y)} anchor={[anchor, 'center']}
+      pos={[px(x), px(y)]} anchor={[anchor, 'center']}
       width={width === undefined ? undefined : px(width)}
       font-size={px(size)} font-weight={weight} color={color}
     >{text}</Text>
@@ -498,19 +498,19 @@ return (
         {groupFlows.map((f, i) => <Ribbon key={`g${i}`} x0={rootX + nodeW} x1={groupX} {...f} />)}
         {leafFlows.map((f, i) => <Ribbon key={`l${i}`} x0={groupX + nodeW} x1={leafX} {...f} />)}
 
-        <Rect x={px(rootX)} y={px(rootTop)} width={px(nodeW)} height={px(rootSpan)} fill={palette.navy} stroke={none} border-radius={px(3)} />
+        <Rect pos={[px(rootX), px(rootTop)]} width={px(nodeW)} height={px(rootSpan)} fill={palette.navy} stroke={none} border-radius={px(3)} />
         {groupNodes.map((g, i) => (
-          <Rect key={`gn${i}`} x={px(groupX)} y={px(g.top)} width={px(nodeW)} height={px(g.height)} fill={g.color} stroke={none} border-radius={px(3)} />
+          <Rect key={`gn${i}`} pos={[px(groupX), px(g.top)]} width={px(nodeW)} height={px(g.height)} fill={g.color} stroke={none} border-radius={px(3)} />
         ))}
         {leafNodes.map((d, i) => (
-          <Rect key={`ln${i}`} x={px(leafX)} y={px(d.top)} width={px(nodeW)} height={px(d.height)} fill={d.color} stroke={none} border-radius={px(3)} />
+          <Rect key={`ln${i}`} pos={[px(leafX), px(d.top)]} width={px(nodeW)} height={px(d.height)} fill={d.color} stroke={none} border-radius={px(3)} />
         ))}
 
         <PlotLabel x={rootX - 21} y={rootTop + rootSpan / 2} text="100%" size={30} weight={700} anchor="end" />
         {groupNodes.map((g, i) => (
           <VStack
             key={`glabel${i}`}
-            x={px(groupX + nodeW + 25)} y={px(g.top + g.height / 2)}
+            pos={[px(groupX + nodeW + 25), px(g.top + g.height / 2)]}
             anchor={['start', 'center']} gap={em(0.2)}
           >
             <Text font-size={px(22)} font-weight={700} color={palette.navy}>{g.name}</Text>
@@ -520,7 +520,7 @@ return (
         {leafNodes.flatMap((d, i) => [
           <VStack
             key={`lname${i}`}
-            x={px(leafX + nodeW + 22)} y={px(d.top + d.height / 2)}
+            pos={[px(leafX + nodeW + 22), px(d.top + d.height / 2)]}
             anchor={['start', 'center']} gap={0}
           >
             {(d.lines || [d.name]).map((line, j) => (
@@ -622,10 +622,10 @@ return (
               xlim={[0, 1]} samples={241}
               stroke={black} stroke-width={px(2.5)}
             />
-            <Tex x={-0.25} y={baseline(index)} anchor="center" font-size={em(1.3)} color={black}>
+            <Tex pos={[-0.25, baseline(index)]} anchor="center" font-size={em(1.3)} color={black}>
               {`n=${n}`}
             </Tex>
-            <Tex x={1.23} y={baseline(index)} anchor="center" font-size={em(1.3)} color={black}>
+            <Tex pos={[1.23, baseline(index)]} anchor="center" font-size={em(1.3)} color={black}>
               {`E_{${n}}`}
             </Tex>
           </>
@@ -741,6 +741,94 @@ See [Slide](../elements/text.md#Slide) for options.
 
 ---
 
+<a id="projection_3d"></a>
+
+## Three-dimensional projection
+
+Each point in this figure carries `{x, y, z}`. One orthographic projection on
+[Graph](../elements/plotting.md#Graph) maps these three dimensions to `{x, y}`
+on the page. The graph's limits describe that output space.
+
+[SymLine](../elements/plotting.md#SymLine) samples the helix in three dimensions.
+The axes use the same source records in Arrow's `from` and `to`, while Text
+annotations use `pos`. Points receives the full source record in its
+`point-size` callback, so marker sizes can depend on `z` before projection.
+Use named records for three-dimensional inputs; tuples always mean `[x, y]`.
+
+Gum draws the projected paths in child order. This example does not compute
+surface visibility or depth sorting. Line widths, marker shapes, and text
+remain ordinary two-dimensional drawing geometry. See the
+[projection guide](../guides/projections.md) for the coordinate contract
+and geometry rules.
+
+<a id="projection_3d-example"></a>
+
+### Example
+
+```jsx
+// A shared projection maps three-dimensional source records onto the page.
+const project = ({x, y, z}) => ({
+  x: (x - y) * sqrt(3) / 2,
+  y: z - (x + y) / 2,
+})
+const helix = t => ({x: cos(t), y: sin(t), z: 0.9 * t / tau})
+const origin = {x: 0, y: 0, z: 0}
+const axes = [
+  {label: 'x', tip: {x: 1.6, y: 0, z: 0}, labelPos: {x: 1.8, y: 0, z: 0}},
+  {label: 'y', tip: {x: 0, y: 1.6, z: 0}, labelPos: {x: 0, y: 1.8, z: 0}},
+  {label: 'z', tip: {x: 0, y: 0, z: 2.5}, labelPos: {x: 0, y: 0, z: 2.7}},
+]
+
+return (
+  <TextBox width={em(32)} font-size={px(20)} padding={em(1.3)} background={white} fit>
+    <TextCol gap={em(0.8)}>
+      <Text font-size={em(1.5)} font-weight={bold}>Three dimensions, one projection</Text>
+      <Text font-size={em(0.8)} color={slate}>
+        A helix, markers, axes, and labels share x, y, and z coordinates.
+      </Text>
+      <Graph
+        aspect={1} projection={project}
+        xlim={[-1.9, 1.9]} ylim={[-1, 2.8]}
+      >
+        <SymLine
+          f={t => ({x: cos(t), y: sin(t), z: 0})}
+          tlim={[0, tau]} samples={121}
+          stroke={lightgray} stroke-width={em(0.06)}
+        />
+        {axes.map(({label, tip, labelPos}) => (
+          <>
+            <Arrow
+              from={origin} to={tip}
+              stroke={slate} stroke-width={em(0.06)} head-size={em(0.4)}
+            />
+            <Text pos={labelPos} anchor="center" color={slate}>{label}</Text>
+          </>
+        ))}
+        <SymLine
+          f={helix} tlim={[0, 2 * tau]} samples={241}
+          stroke={blue} stroke-width={em(0.16)}
+        />
+        <Points
+          points={linspace(0, 2 * tau, 9).map(helix)}
+          point-size={({z}) => em(0.25 + 0.12 * z)} fill={blue}
+        />
+        <Text pos={{x: 1.15, y: 0, z: 0.2}} anchor={['start', 'center']} font-size={em(0.75)}>
+          start
+        </Text>
+        <Text pos={{x: 1.15, y: 0, z: 1.8}} anchor={['start', 'center']} font-size={em(0.75)}>
+          end
+        </Text>
+      </Graph>
+      <Text font-size={em(0.75)} color={slate}>
+        The projection sets position; source z controls marker size.
+      </Text>
+    </TextCol>
+  </TextBox>
+)
+```
+
+---
+
 <a id="slick_bars"></a>
 
 ## Slick Bars
@@ -798,7 +886,7 @@ return <BarPlot
   fill={blue}
 >
   {values.map((value, index) => (
-    <Text x={index} y={value} anchor={["center", "end"]}>
+    <Text pos={[index, value]} anchor={["center", "end"]}>
       {value + "%"}
     </Text>
   ))}

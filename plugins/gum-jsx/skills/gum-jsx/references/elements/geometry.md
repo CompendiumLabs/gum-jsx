@@ -15,6 +15,9 @@
 An ellipse segment with center, scalar or paired radius, and start/end angles in degrees. Defaults: center {x:0.5,y:0.5}, radius 0.5, angles 0–360. The span may be at most one turn. In data space, numeric radii are data distances and flips affect orientation. Cubic pieces approximate the ellipse.
 
 Center and paired radii accept `{x,y}` or `[x,y]`.
+Under projection, the center also accepts arbitrary numeric records. Projected
+radii must be local lengths, such as `px(20)`; use sampled CoordLine points for
+a curve defined in the source coordinate space.
 
 Inside [Graph](plotting.md#Graph), numeric geometry uses data coordinates; outside it,
 geometry uses local fractions/px/em. `space="local"` opts out of an ambient graph,
@@ -110,6 +113,10 @@ Inside [Graph](plotting.md#Graph), numeric geometry uses data coordinates; outsi
 geometry uses local fractions/px/em. `space="local"` opts out of an ambient graph,
 and `space="data"` requires one. Pixel strokes keep their size.
 
+Projected point inputs also accept named numeric records such as `{theta, r}`
+or `{x, y, z}`; GeoMap uses `{lon, lat}`. Every dimension reaches the projection.
+See [Projections](../guides/projections.md) for units and visibility rules.
+
 <a id="Arrow-example"></a>
 
 ### Example
@@ -172,6 +179,10 @@ Point inputs accept `{x,y}` or `[x,y]`; see [Point values](../guides/point_value
 Inside [Graph](plotting.md#Graph), numeric geometry uses data coordinates; outside it,
 geometry uses local fractions/px/em. `space="local"` opts out of an ambient graph,
 and `space="data"` requires one. Pixel strokes keep their size.
+
+Projected point inputs also accept named numeric records such as `{theta, r}`
+or `{x, y, z}`; GeoMap uses `{lon, lat}`. Every dimension reaches the projection.
+See [Projections](../guides/projections.md) for units and visibility rules.
 
 <a id="ArrowHead-example"></a>
 
@@ -300,6 +311,10 @@ Inside [Graph](plotting.md#Graph), numeric geometry uses data coordinates; outsi
 geometry uses local fractions/px/em. `space="local"` opts out of an ambient graph,
 and `space="data"` requires one. Pixel strokes keep their size.
 
+Projected point inputs also accept named numeric records such as `{theta, r}`
+or `{x, y, z}`; GeoMap uses `{lon, lat}`. Every dimension reaches the projection.
+See [Projections](../guides/projections.md) for units and visibility rules.
+
 <a id="CoordLine-example"></a>
 
 ### Example
@@ -328,7 +343,7 @@ and `space="data"` requires one. Pixel strokes keep their size.
 | `center` | `[0.5, 0.5]` | Center in the **Dot**'s local rectangle |
 | `radius` | `0.5` | Radius relative to the shorter side, or a px/em length |
 
-A filled **Circle** with a preferred 6px diameter and no stroke. Use width/height for other sizes, and x/y/anchor in **Group** or **Graph** for positioning. **Points** creates marker sets.
+A filled **Circle** with a preferred 6px diameter and no stroke. Use width/height for other sizes, and `pos` with `anchor` in **Group** or **Graph** for positioning. **Points** creates marker sets.
 
 <a id="Dot-example"></a>
 
@@ -413,9 +428,12 @@ outline can instead be constructed with [Path](geometry.md#Path).
 Fill a region between points and boundary, arrays of `{x,y}` records or `[x,y]` tuples. boundary
 may be a scalar baseline (default 0). Arrays must have matching lengths; a gap
 in either boundary splits the whole region.
+Both arrays may use arbitrary numeric records under a projection. A nonfinite
+dimension or a null projection on either side splits both boundaries together.
 
 direction defaults to vertical (horizontal for **HFill**). For vertical fills a
-scalar supplies y; for horizontal fills it supplies x. **VFill** is the vertical
+scalar supplies y; for horizontal fills it supplies x. Scalar boundaries require
+exactly Cartesian `{x,y}` or `[x,y]` inputs. **VFill** is the vertical
 convenience. Defaults: pale blue fill, no stroke.
 
 Numeric geometry follows [Graph](plotting.md#Graph) and participates in limits, including
@@ -539,14 +557,14 @@ outside it. Set dimensions explicitly for a predictable rule or connector.
 Use [Arrow](geometry.md#Arrow) for arrowheads or [Network](networks.md#Network) and
 [Edge](networks.md#Edge) for connections between named elements.
 
-Set `space="data"` to project both endpoint pairs through the enclosing
+Set `space="data"` to project both endpoints through the enclosing
 [Graph](plotting.md#Graph), Plot, or [GeoMap](maps.md#GeoMap):
 
 ```jsx
 <GeoMap source={world_countries()}>
   <Line
     space="data"
-    from={[-9.14, 38.72]} to={[23.73, 37.98]}
+    from={{lon: -9.14, lat: 38.72}} to={{lon: 23.73, lat: 37.98}}
     stroke={blue} stroke-width={px(2)}
   />
 </GeoMap>
@@ -560,6 +578,9 @@ to ordinary Graph/Plot limit inference; custom projections still need explicit
 output limits. Tagged px/em/% pairs remain local, and a custom projection rejects
 pairs mixing a data number with a tagged length. Stroke lengths retain their
 ordinary layout meaning. See [Projections](../guides/projections.md).
+
+Data inputs may use arbitrary numeric records, including `{theta, r}` and
+`{x, y, z}`, when the enclosing projection interprets those names.
 
 <a id="Line-example"></a>
 
@@ -683,7 +704,8 @@ of the current API.
 | `shape` | `Circle` | Marker **Element** or `(point, index) => Element` callback |
 | `space` | Automatic | Use ambient data coordinates or local geometry |
 
-Repeat a marker at each `{x,y}` or `[x,y]` in points. The forms can be mixed.
+Repeat a marker at each `{x,y}` or `[x,y]` in points. Projected graphs also accept
+named numeric records such as `{theta, r}` and `{x, y, z}`. The forms can be mixed.
 Null/nonfinite entries are omitted
 without changing callback indices. Positions use ambient [Graph](plotting.md#Graph)
 coordinates or local fractions outside it.
@@ -693,8 +715,8 @@ shorter frame side; `{x,y}` or `[x,y]` sizes resolve per axis. It may be a (poin
 function returning a scalar or pair. shape is an **Element** or (point,index) function;
 the default is **Circle**.
 
-Callbacks always receive `{x,y}` records, including for tuple inputs, and execute
-once at construction. Shapes receive exact marker dimensions
+Callbacks receive complete frozen source records; tuples expand to `{x,y}`.
+They execute once at construction, retaining original indices. Shapes receive exact marker dimensions
 and a cleared data context, then are centered on their points. The same immutable
 shape can be reused everywhere. **Rotate** and **TransformBox** pass those dimensions
 through to their wrapped shape before transforming it. Defaults: black fill, no
@@ -817,26 +839,28 @@ Set `space="data"` to project each supplied vertex through the enclosing
 required. Numeric vertices contribute to ordinary Graph/Plot limit inference;
 custom projections still require explicit output limits. Tagged px/em/% pairs
 bypass data mapping, while a custom projection rejects mixed data/length pairs.
+Data inputs also accept named numeric records such as `{theta, r}` or `{x, y, z}`.
 
 ```jsx
 <Graph
   aspect={1} xlim={[-1, 1]} ylim={[-1, 1]}
-  projection={([theta, r]) => [r * cos(theta), r * sin(theta)]}
+  projection={({theta, r}) => ({x: r * cos(theta), y: r * sin(theta)})}
 >
   <Polyline
     space="data"
-    points={linspace(0, tau, 121).map(theta => [theta, 0.8])}
+    points={linspace(0, tau, 121).map(theta => ({theta, r: 0.8}))}
     fill={none} stroke={blue} stroke-width={px(2)}
   />
 </Graph>
 ```
 
 Only supplied vertices are projected; add enough samples for curved routes.
-A projection returning `null` breaks the path, so visible vertices on opposite
+A null sample, any nonfinite dimension, or a projection returning `null` breaks
+the path, so visible vertices on opposite
 sides of a hidden point are not joined. Stroke widths remain ordinary layout
 lengths. See [Projections](../guides/projections.md).
-[CoordLine](geometry.md#CoordLine) uses ambient data coordinates by default and also
-accepts explicit null gaps; [SymLine](plotting.md#SymLine) supplies function sampling.
+[CoordLine](geometry.md#CoordLine) uses ambient data coordinates by default;
+[SymLine](plotting.md#SymLine) supplies function sampling.
 
 Paint is inherited. Set `fill={none}` for a line chart: if you supply a fill,
 SVG fills the area as though the last point were connected to the first even
@@ -894,6 +918,10 @@ Point inputs accept `{x,y}` or `[x,y]`; see [Point values](../guides/point_value
 Inside [Graph](plotting.md#Graph), numeric geometry uses data coordinates; outside it,
 geometry uses local fractions/px/em. `space="local"` opts out of an ambient graph,
 and `space="data"` requires one. Pixel strokes keep their size.
+
+Projected point inputs also accept named numeric records such as `{theta, r}`
+or `{x, y, z}`; GeoMap uses `{lon, lat}`. Every dimension reaches the projection.
+See [Projections](../guides/projections.md) for units and visibility rules.
 
 <a id="Ray-example"></a>
 
@@ -1006,6 +1034,10 @@ Inside [Graph](plotting.md#Graph), numeric geometry uses data coordinates; outsi
 geometry uses local fractions/px/em. `space="local"` opts out of an ambient graph,
 and `space="data"` requires one. Pixel strokes keep their size.
 
+Projected point inputs also accept named numeric records such as `{theta, r}`
+or `{x, y, z}`; GeoMap uses `{lon, lat}`. Every dimension reaches the projection.
+See [Projections](../guides/projections.md) for units and visibility rules.
+
 <a id="RoundedLine-example"></a>
 
 ### Example
@@ -1100,6 +1132,10 @@ Inside [Graph](plotting.md#Graph), numeric geometry uses data coordinates; outsi
 geometry uses local fractions/px/em. `space="local"` opts out of an ambient graph,
 and `space="data"` requires one. Pixel strokes keep their size.
 
+Projected point inputs also accept named numeric records such as `{theta, r}`
+or `{x, y, z}`; GeoMap uses `{lon, lat}`. Every dimension reaches the projection.
+See [Projections](../guides/projections.md) for units and visibility rules.
+
 <a id="Segments-example"></a>
 
 ### Example
@@ -1137,6 +1173,10 @@ Point inputs accept `{x,y}` or `[x,y]`; see [Point values](../guides/point_value
 Inside [Graph](plotting.md#Graph), numeric geometry uses data coordinates; outside it,
 geometry uses local fractions/px/em. `space="local"` opts out of an ambient graph,
 and `space="data"` requires one. Pixel strokes keep their size.
+
+Projected point inputs also accept named numeric records such as `{theta, r}`
+or `{x, y, z}`; GeoMap uses `{lon, lat}`. Every dimension reaches the projection.
+See [Projections](../guides/projections.md) for units and visibility rules.
 
 <a id="Spline-example"></a>
 

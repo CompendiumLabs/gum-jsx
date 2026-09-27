@@ -102,7 +102,7 @@ return <TextBox
         stroke={color} stroke-width={px(2.5)} />)}
       <Points points={zip(xs, ys)}
         point-size={px(9)} fill={blue} stroke={white} stroke-width={px(1)} />
-      <Legend x={3.9} y={1.2} anchor={["center", "start"]} font-size={em(0.9)}>
+      <Legend pos={[3.9, 1.2]} anchor={["center", "start"]} font-size={em(0.9)}>
         {entries.map(({ label, color, ...options }) =>
           <LegendItem {...options} badge-color={color}>
             {label}
