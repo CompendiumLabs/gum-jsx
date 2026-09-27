@@ -149,8 +149,8 @@ const Panel = ({ title, anchor, note }) => (
     <Text font-weight={bold}>{title}</Text>
     <Group width={em(9)} height={em(7)}>
       <Rect fill={lightgray} stroke={none} border-radius={em(0.4)} />
-      <Line from={[0, 0.5]} to={[1, 0.5]} stroke={gray} stroke-dasharray={em(0.2)} />
-      <Line from={[0.5, 0]} to={[0.5, 1]} stroke={gray} stroke-dasharray={em(0.2)} />
+      <Line from={[0, 0.5]} to={[1, 0.5]} stroke={darkgray} stroke-dasharray={em(0.2)} />
+      <Line from={[0.5, 0]} to={[0.5, 1]} stroke={darkgray} stroke-dasharray={em(0.2)} />
       <Rect
         pos={[0.5, 0.5]}
         anchor={anchor}
