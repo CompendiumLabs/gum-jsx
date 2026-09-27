@@ -40,17 +40,86 @@ The arrow's supplied samples follow the same projection as the points.
 Source records can carry any number of numeric dimensions. The
 [three-dimensional helix](../gallery/plotting.md#projection_3d) uses `{x, y, z}`
 for a sampled curve, marker callbacks, axes, and label positions. Its Graph
-maps every source position with one orthographic projection:
+maps every source position with one helper:
 
 ```jsx
-projection={({x, y, z}) => ({
-  x: (x - y) * sqrt(3) / 2,
-  y: z - (x + y) / 2,
-})}
+projection={isometric_projection()}
 ```
 
 Only the final output used by Graph needs Cartesian `x` and `y`. Named records
 also let intermediate projections use other names before that final mapping.
+
+## Standard 3D projections
+
+These core helpers are available directly in JSX and as named imports from
+`@gum-jsx/core`. Each returns an immutable `Projection` that can be shared among
+Graphs. Inputs require finite numeric `x`, `y`, and `z`; extra numeric dimensions
+are allowed. Camera positions and vectors use the exported `Point3` record type.
+Tuples keep their two-dimensional `{x, y}` meaning and cannot supply `z`.
+
+| Helper | Options and defaults |
+| --- | --- |
+| `isometric_projection()` | Fixed isometric view; each source unit axis projects to length `1`, with `120°` between axes. |
+| `orthographic_projection({azimuth, elevation})` | Defaults to `azimuth: 45`, `elevation: 30`, in degrees. Projects onto a plane through the origin; depth does not change size. |
+| `perspective_projection({eye, target, up, focal_length, near})` | Requires `eye`. Defaults to `target: {x: 0, y: 0, z: 0}`, `up: {x: 0, y: 0, z: 1}`, `focal_length: 1`, `near: 0.01`. |
+
+### Isometric and orthographic views
+
+`isometric_projection()` uses `x′ = (x − y) √3 / 2` and
+`y′ = z − (x + y) / 2`. It is a uniformly scaled orthographic view with equal
+foreshortening of the three axes.
+
+For `orthographic_projection`, angles describe the **direction of sight**.
+Azimuth turns from positive x toward positive y; elevation tilts the sight
+direction toward positive z and must be between `-90` and `90` degrees.
+For example, `azimuth: 90, elevation: 0` looks along positive y, displaying x
+horizontally and z vertically. At either pole, azimuth still selects the page's
+horizontal orientation. Projected x points right and projected y points up
+with Graph's default flips. Distances within the projection plane retain their
+source scale.
+
+### Perspective cameras
+
+```jsx
+<Graph
+  aspect={1} xlim={[-1, 1]} ylim={[-1, 1]}
+  projection={perspective_projection({
+    eye: {x: 4, y: 4, z: 3},
+    target: {x: 0, y: 0, z: 0},
+    focal_length: 1,
+    near: 0.01,
+  })}
+>
+  <CoordLine
+    points={[
+      {x: 1, y: 0, z: 0},
+      {x: 0, y: 1, z: 0},
+      {x: 0, y: 0, z: 1},
+    ]}
+    stroke={blue}
+  />
+</Graph>
+```
+
+`eye` looks toward `target`; the camera uses `up` to orient the page. The default
+is z-up. The eye and target must differ, and `up` must be nonzero and not parallel
+to the direction of sight. A camera looking straight along z can use
+`up: {x: 0, y: 1, z: 0}`. Camera options are copied when the helper is created;
+later changes to the input objects do not affect it.
+
+In the camera frame, output is `{x: focal_length * horizontal / depth,
+y: focal_length * vertical / depth}`. Depth is distance along the direction of
+sight from the eye. `focal_length` and `near` must be positive finite numbers in
+source coordinate units. Points with `depth <= near` return `null`, including
+points behind the camera. This omits markers and annotations and splits sampled
+paths using the existing visibility rules. Segments crossing the near plane
+are not geometrically clipped; supply suitable samples or split them explicitly.
+
+All three helpers return output coordinates for Graph's explicit limits. To
+preserve their proportions, match the Graph aspect to the ratio of its x and y
+limit spans. Projection affects positions; marker dimensions, stroke widths,
+text orientation, and child drawing order follow the usual rules. Depth sorting
+and surface visibility require separate handling.
 
 ## Annotations inside GeoMap
 

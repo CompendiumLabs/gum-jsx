@@ -745,9 +745,10 @@ See [Slide](../elements/text.md#Slide) for options.
 
 ## Three-dimensional projection
 
-Each point in this figure carries `{x, y, z}`. One orthographic projection on
-[Graph](../elements/plotting.md#Graph) maps these three dimensions to `{x, y}`
-on the page. The graph's limits describe that output space.
+Each point in this figure carries `{x, y, z}`. The core
+`isometric_projection()` helper on [Graph](../elements/plotting.md#Graph) maps
+these three dimensions to `{x, y}` on the page, with equal scale along all three
+source axes. The graph's limits describe that output space.
 
 [SymLine](../elements/plotting.md#SymLine) samples the helix in three dimensions.
 The axes use the same source records in Arrow's `from` and `to`, while Text
@@ -767,10 +768,6 @@ and geometry rules.
 
 ```jsx
 // A shared projection maps three-dimensional source records onto the page.
-const project = ({x, y, z}) => ({
-  x: (x - y) * sqrt(3) / 2,
-  y: z - (x + y) / 2,
-})
 const helix = t => ({x: cos(t), y: sin(t), z: 0.9 * t / tau})
 const origin = {x: 0, y: 0, z: 0}
 const axes = [
@@ -787,7 +784,7 @@ return (
         A helix, markers, axes, and labels share x, y, and z coordinates.
       </Text>
       <Graph
-        aspect={1} projection={project}
+        aspect={1} projection={isometric_projection()}
         xlim={[-1.9, 1.9]} ylim={[-1, 2.8]}
       >
         <SymLine
