@@ -12,6 +12,7 @@ Each page includes its runnable JSX example.
 - [Themes](guides/themes.md) — Apply a light or dark theme to a complete figure.
 - [Units](guides/units.md) — Lengths accept numbers, helper calls, and unit strings.
 - [Fitting](guides/fitting.md) — Put fit on a composition that should scale as a complete drawing.
+- [Positioning](guides/positioning.md) — Place elements with pos and anchor in local or data coordinates.
 - [Stacks](guides/stack.md) — Explain flex sizing, wrapping, and alignment in HStack and VStack.
 - [Point values](guides/point_values.md) — Point inputs accept either [x, y] or {x, y} in JSX and host code.
 - [Projections](guides/projections.md) — Project coordinates for polar plots, map annotations, and custom elements.

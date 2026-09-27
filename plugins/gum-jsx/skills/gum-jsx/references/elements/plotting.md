@@ -403,10 +403,15 @@ fractional geometry; set `space="data"` to use the graph's coordinate mapping.
 `space="local"` opts out; `space="data"` requires a coordinate context.
 px/em geometry stays local.
 
-Direct-child numeric `pos` values are data coordinates; omitted positions are at
-the local origin. Use `pos` and `anchor` with **Text** for upright annotations, and px/em sizes
+Direct-child numeric `pos` values are data coordinates. Children with `pos`
+default to `anchor="center"`; without `pos`, they default to `anchor="start"`
+at the local origin. Use `anchor="start"` for a positioned child's top-left corner.
+Use `pos` and `anchor` with **Text** for upright annotations, and px/em sizes
 for fixed geometry. Annotations do not affect inferred limits. Strokes, markers,
 and fonts keep their layout sizes on resize.
+
+See [Positioning](../guides/positioning.md) for the shared `pos` and
+`anchor` rules, including local lengths and placement of wrapped content.
 
 With `projection`, numeric records retain every dimension and tuples expand to
 `{x, y}` before the usual limits and flips map them to pixels. For `{theta, r}`

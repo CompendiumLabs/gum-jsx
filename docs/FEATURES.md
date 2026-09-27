@@ -112,7 +112,6 @@ lengths, and explicit `fit` remain the foundation.
   column counts, and inferred overall aspect remain deferred.
 - [x] **`Points`** — clone a configurable point shape at a list of coordinates,
   with scalar, pair, or functional point sizes.
-- [x] **`Anchor`** — place a child around a zero-width or zero-height anchor line.
   **Basic:** the child's measured allocation is aligned around a point or line;
   visible ink and overflow are retained.
 - [x] **`Attach`** — attach a child outside a selected side of another box with

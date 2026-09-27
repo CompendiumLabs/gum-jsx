@@ -173,8 +173,8 @@ column, while `second` still addresses the frame inside it. A nested Network is
 different: it keeps its node IDs private, so the outer network can reach the
 identified frame around it but not `a` or `b`.
 
-Only Node defaults to a centered anchor. Set `anchor="center"` on other elements
-to position them by their centers.
+All elements with `pos` default to a centered anchor. Use `anchor="start"`
+to position an element by its top-left corner.
 
 <a id="network_shapes-example"></a>
 
@@ -194,9 +194,9 @@ to position them by their centers.
   <Edge start="pill" end="stack" start-side="bottom" end-side="top" />
   <Edge start="circle" end="second" start-side="bottom" end-side="left" />
   <Edge start="first" end="inner" start-side="right" end-side="bottom" tension={1.3} />
-  <Circle id="circle" pos={[0.15, 0.75]} anchor="center" width={em(4)} fill={white} />
-  <Rect id="pill" pos={[0.5, 0.75]} anchor="center" width={em(8)} height={em(3)} border-radius={0.5} fill={white} />
-  <VStack id="stack" pos={[0.5, 0.28]} anchor="center" width={em(8)} gap={em(0.4)} align="fill">
+  <Circle id="circle" pos={[0.15, 0.75]} width={em(4)} fill={white} />
+  <Rect id="pill" pos={[0.5, 0.75]} width={em(8)} height={em(3)} border-radius={0.5} fill={white} />
+  <VStack id="stack" pos={[0.5, 0.28]} width={em(8)} gap={em(0.4)} align="fill">
     <TextFrame id="first" padding={em(0.4)} background={white}>
       First
     </TextFrame>
@@ -204,7 +204,7 @@ to position them by their centers.
       Second
     </TextFrame>
   </VStack>
-  <Frame id="inner" pos={[0.81, 0.7]} anchor="center" width={0.25} height={0.4} border-radius={em(0.5)}>
+  <Frame id="inner" pos={[0.81, 0.7]} width={0.25} height={0.4} border-radius={em(0.5)}>
     <Network xlim={[0, 1]} ylim={[0, 1]} stroke={red} stroke-width={px(1)}>
       <Edge start="a" end="b" tension={1.6} head-open/>
       <Node id="a" pos={[0.3, 0.75]} width={em(4)} font-size={em(0.75)} border-color={red}>
@@ -317,7 +317,7 @@ return <Box fit
           head-size={em(0.5)} head-curve={0.5}
         />
       ))}
-      <VStack pos={[em(stackX), px(0)]} width={em(stackWidth)} gap={em(gap)} align="center">
+      <VStack pos={[em(stackX), px(0)]} anchor="start" width={em(stackWidth)} gap={em(gap)} align="center">
         <Node id="output" height={em(terminalHeight)} padding={0} border-width={0}>Output Probabilities</Node>
         <Block id="softmax" label="Softmax" color={red} />
         <Block id="linear" label="Linear" color={red} />

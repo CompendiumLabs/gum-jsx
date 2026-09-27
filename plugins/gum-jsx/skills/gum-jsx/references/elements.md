@@ -4,7 +4,6 @@ Each entry includes its runnable JSX example.
 
 ## Layout
 
-- [Anchor](elements/layout.md#Anchor) — A zero-size point or line frame around a naturally measured child.
 - [Attach](elements/layout.md#Attach) — Attach an Element outside one content child.
 - [Box](elements/layout.md#Box) — Add padding, a background, an inside border, optional rounded clipping, and alignment around one content element.
 - [Frame](elements/layout.md#Frame) — Surround one element with padding, background, and a default border.

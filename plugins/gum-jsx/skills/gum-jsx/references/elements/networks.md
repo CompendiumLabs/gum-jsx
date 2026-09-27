@@ -99,8 +99,12 @@ edges first to paint them behind nodes.
 Edges meet the visible outline of boxes, frames, rectangles, squares, circles,
 and ellipses, including rounded corners. Every other element connects at the
 rectangle of its allocation. A [TitleFrame](text.md#TitleFrame)'s outline spans its
-overhanging title, so an edge from above meets a centered title. Only Node defaults to a centered anchor, so set
-`anchor="center"` on other elements to position them by their centers.
+overhanging title, so an edge from above meets a centered title. All elements with
+`pos` default to a centered anchor. Set `anchor="start"` to position an element
+by its top-left corner.
+
+See [Positioning](../guides/positioning.md) for anchor values and the
+distinction between data positions and local layout lengths.
 
 Node positions use data coordinates. Fonts, frame padding, borders, and arrowheads
 use ordinary px/em/fractional layout lengths. Changing the canvas size moves the

@@ -455,7 +455,7 @@ function Ribbon({ x0, x1, sourceTop, targetTop, height, color }) {
   const sh = height / hh;
   return (
     <Path
-      pos={[px(x0), px(top)]} width={px(x1 - x0)} height={px(hh)}
+      pos={[px(x0), px(top)]} anchor="start" width={px(x1 - x0)} height={px(hh)}
       commands={[
         move_to(0, sy),
         curve_to(0.42, sy, 0.58, ty, 1, ty),
@@ -498,12 +498,12 @@ return (
         {groupFlows.map((f, i) => <Ribbon key={`g${i}`} x0={rootX + nodeW} x1={groupX} {...f} />)}
         {leafFlows.map((f, i) => <Ribbon key={`l${i}`} x0={groupX + nodeW} x1={leafX} {...f} />)}
 
-        <Rect pos={[px(rootX), px(rootTop)]} width={px(nodeW)} height={px(rootSpan)} fill={palette.navy} stroke={none} border-radius={px(3)} />
+        <Rect pos={[px(rootX), px(rootTop)]} anchor="start" width={px(nodeW)} height={px(rootSpan)} fill={palette.navy} stroke={none} border-radius={px(3)} />
         {groupNodes.map((g, i) => (
-          <Rect key={`gn${i}`} pos={[px(groupX), px(g.top)]} width={px(nodeW)} height={px(g.height)} fill={g.color} stroke={none} border-radius={px(3)} />
+          <Rect key={`gn${i}`} pos={[px(groupX), px(g.top)]} anchor="start" width={px(nodeW)} height={px(g.height)} fill={g.color} stroke={none} border-radius={px(3)} />
         ))}
         {leafNodes.map((d, i) => (
-          <Rect key={`ln${i}`} pos={[px(leafX), px(d.top)]} width={px(nodeW)} height={px(d.height)} fill={d.color} stroke={none} border-radius={px(3)} />
+          <Rect key={`ln${i}`} pos={[px(leafX), px(d.top)]} anchor="start" width={px(nodeW)} height={px(d.height)} fill={d.color} stroke={none} border-radius={px(3)} />
         ))}
 
         <PlotLabel x={rootX - 21} y={rootTop + rootSpan / 2} text="100%" size={30} weight={700} anchor="end" />

@@ -1,45 +1,5 @@
 # Layout elements
 
-<a id="Anchor"></a>
-
-## Anchor
-
-A zero-size point or line frame around a naturally measured child. With no
-dimensions it measures 0×0; width/height or exact requests can establish a
-line or rectangle. align defaults to center and accepts a single alignment
-value, an `{x,y}` object, or an `[x,y]` tuple. Ink and overflow retain the
-visible child.
-
-| Property | Default | Meaning |
-|---|---|---|
-| `align` | `"center"` | Position the child within the **Anchor** frame on both axes |
-
-Use parent-owned `pos` and `anchor` props to position the **Anchor** itself in **Group** or
-**Graph**. `anchor` selects the wrapper's own attachment point; `align` positions
-its child within the wrapper's frame. Positioning and child sizes remain separate.
-
-<a id="Anchor-example"></a>
-
-### Example
-
-```jsx
-// A zero-sized anchor positions text.
-<Box width="fill" aspect={1.65} padding={em(2)}>
-  <Group>
-    <Anchor pos={[0.5, 0.5]} align={["center", "start"]}>
-      <TextBox font-size={em(1.1)} border-width={px(1)}>
-        Hanging on a point
-      </TextBox>
-    </Anchor>
-    <Anchor pos={[0.5, 0.5]}>
-      <Dot />
-    </Anchor>
-  </Group>
-</Box>
-```
-
----
-
 <a id="Attach"></a>
 
 ## Attach
@@ -419,16 +379,24 @@ Children paint in source order, so put backgrounds and connectors before labels.
 | Direct child prop | Default | Meaning |
 |---|---|---|
 | `pos` | `[0, 0]` | Anchor location as `[x, y]` or `{x, y}` lengths; fractions use the whole **Group** |
-| `anchor` | `"start"` | Point on the child's allocated rectangle placed at `pos` |
+| `anchor` | `"center"` with `pos`; `"start"` without | Point on the child's allocated rectangle placed at `pos` |
 | `width` / `height` | — | Child's preferred size; fractions use the whole **Group** |
 
-**Anchor** accepts start, center, end, a fraction from 0 to 1, or independent x/y
+The `anchor` prop accepts start, center, end, a fraction from 0 to 1, or independent x/y
 choices in an object or two-entry tuple. `anchor={[1, 0.5]}` and
 `anchor={['end', 'center']}` both place
 the right-edge midpoint at `pos`. A missing anchor object axis defaults to start.
-**Anchor** values are dimensionless; px/em and stretch are not anchor values.
+Anchor values are dimensionless; px/em and stretch are not anchor values.
 
-**Anchor** describes the element's attachment point for its parent. Its own
+Supplying `pos` centers the child at that point by default. Set `anchor="start"`
+to place its top-left corner there. Without `pos` (or with `pos={undefined}`),
+the default anchor is start at the local origin, so backgrounds and full-canvas
+geometry retain their placement. An explicit `anchor` always takes precedence.
+
+See [Positioning](../guides/positioning.md) for anchor comparisons,
+coordinate systems, and placement of wrapped content.
+
+The `anchor` prop describes the element's attachment point for its parent. Its own
 `align` or `justify` describes how it arranges its children. For example, a
 **Box** can use `anchor={[0.5, 0.5]}` to center itself at `pos` and `align="end"`
 to place its content at the **Box**'s bottom-right corner.
@@ -473,14 +441,12 @@ data limits or perform node/edge lookup.
   />
   <Circle
     pos={[0.2, 0.45]}
-    anchor="center"
     width={px(64)}
     fill={blue}
     stroke={none}
   />
   <Square
     pos={[0.8, 0.45]}
-    anchor="center"
     width={px(64)}
     fill={red}
     stroke={none}
@@ -601,10 +567,15 @@ The first child determines natural size. Other children are decorations:
 they receive that established canvas and use **Group**-style `pos` and `anchor` placement.
 They contribute ink and overflow without enlarging the allocation. Source order
 is paint order; clip hides outside ink. Unlike **Group**, **Overlay** can hug its base.
+Decorations with `pos` default to `anchor="center"`; those without `pos` default
+to `anchor="start"` at the base's local origin. Set an explicit anchor to override.
 
 | Property | Default | Meaning |
 |---|---|---|
 | `clip` | `false` | Clip every layer to the base child's frame |
+
+See [Positioning](../guides/positioning.md) for `pos`, `anchor`, and
+the distinction between placement and content alignment.
 
 <a id="Overlay-example"></a>
 

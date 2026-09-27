@@ -89,7 +89,7 @@ The three panels stay side by side. Their measured sizes and gaps determine the
 outer size; `fit` on the root preserves the comparison in smaller viewports.
 
 The child box includes its inside border when determining its anchor. See
-[Group](../elements/layout.md#Group) for positioning and reference rules and
+[Positioning](../guides/positioning.md) for placement and coordinate rules and
 [Point values](../guides/point_values.md) for coordinate and anchor forms.
 
 <a id="group_anchors-example"></a>
@@ -148,7 +148,7 @@ See [Group](../elements/layout.md#Group) for canvas clipping,
 // its fragment tree still records the full positioned allocations and overflow.
 const artwork = [
   <Rect fill={lightgray} stroke={none} />,
-  <Rect pos={[-0.1, 0.3]} width={0.45} height={0.45} fill={blue} stroke={none} />,
+  <Rect pos={[-0.1, 0.3]} anchor="start" width={0.45} height={0.45} fill={blue} stroke={none} />,
   <Circle pos={[0.9, 0.5]} anchor="center" width={0.5} fill={red} stroke={none} />,
 ]
 
@@ -705,12 +705,12 @@ const Window = ({ title, children, padding = em(0.5), ...props }) => (
 return <Slide fit font-size={px(10)} aspect={1.5} padding={em(1.1)}>
   <Frame border-radius={em(0.85)} clip border-width={em(0.1)} background={lightgray}>
     <Group>
-      <Window title="Data Viz" pos={[0.06, 0.31]} width={0.67} padding={0}>
+      <Window title="Data Viz" pos={[0.06, 0.31]} anchor="start" width={0.67} padding={0}>
         <Plot aspect={1.9} xlim={[0, tau]} ylim={[-1.2, 1.2]}>
           <SymLine fy={sin} xlim={[0, tau]} stroke={blue} stroke-width={em(0.15)} />
         </Plot>
       </Window>
-      <VStack pos={[0.64, 0.05]} width={0.33} gap={em(0.75)}>
+      <VStack pos={[0.64, 0.05]} anchor="start" width={0.33} gap={em(0.75)}>
         {messages.map(({ title, body }) => (
           <Window title={title}>
             <Text>{body}</Text>

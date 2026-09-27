@@ -1023,7 +1023,7 @@ const paint = palette(blue, red, [0, halves.length - 1])
 const HalfSquare = () => (
   <Group width={em(2.2)} height={em(2.2)}>
     {halves.map(([x0, y0, x1, y1], i) => (
-      <Rect pos={[x0, y0]} width={x1 - x0} height={y1 - y0} fill={paint(i)} stroke={none} />
+      <Rect pos={[x0, y0]} anchor="start" width={x1 - x0} height={y1 - y0} fill={paint(i)} stroke={none} />
     ))}
     <Rect fill={none} stroke={slate} stroke-width={em(0.03)} />
   </Group>

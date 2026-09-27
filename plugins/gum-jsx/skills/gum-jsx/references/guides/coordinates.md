@@ -6,6 +6,8 @@ Unit strings in point coordinates are local lengths: `"50%"` uses half the
 corresponding drawing dimension, and `"10px"` is a pixel offset. They do not pass
 through data-axis mapping. Bare numeric points keep their data meaning.
 
+For placing elements with `pos` and `anchor`, start with [Positioning](positioning.md).
+
 `infer_coordinates(children, options)` returns an immutable
 {xlim,ylim,flip_x,flip_y} record. An optional core `Projection` maps coordinate
 records before the axis mapping. `map_point(point, coordinates, size)` maps to

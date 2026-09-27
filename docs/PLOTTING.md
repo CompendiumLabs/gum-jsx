@@ -25,7 +25,7 @@ bun run gum gum-jsx-docs/docs/gallery/code/plot_bars.jsx -f tree
 
 | Step | Basic implementation |
 |---|---|
-| 1. Composition and coordinates | Content-sized Overlay, Anchor, Attach, Rotate, TransformBox; explicit data context and forward/inverse mapping. |
+| 1. Composition and coordinates | Content-sized Overlay, Attach, Rotate, TransformBox; explicit data context and forward/inverse mapping. |
 | 2. Geometry and graphs | Points, CoordLine, Segments, Arc, Spline, RoundedLine, fills, rays, arrows, shape conveniences, and Graph with inferred or explicit directed limits. |
 | 3. Text and slides | TextStack/Row/Col, TextBox/Frame, TextFigure, Bullets, TitleBox/Frame, and Slide on ordinary text baselines and layout units. |
 | 4. Plot composition | Linear ticks, axes and independent scale/label/mesh parts, measured margins, titles, legend, bars, BarPlot, and Plot. |
