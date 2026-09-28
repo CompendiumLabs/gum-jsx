@@ -157,7 +157,7 @@ Run shared commands from the workspace root:
 ```sh
 bun run test          # Every package's suite, sequentially
 bun run typecheck     # TypeScript checks across all packages
-bun run perf          # Core, math, and maps benchmarks, sequentially
+bun run perf          # Core, math, maps, and demos benchmarks, sequentially
 bun run build         # Production browser editor and docs viewer
 bun run visual-test   # Searchable HTML report of rendered examples
 bun run rehearse      # Publish to a temporary local registry and check fresh installs
@@ -176,6 +176,7 @@ bun run perf                 # All suites, measured sequentially
 bun run perf:core            # Core only
 bun run perf:math            # Math only
 bun run perf:maps            # Maps only
+bun run perf:demos           # Full JSX demos, split by rendering stage
 bun run perf --list          # List case names without preparing fixtures
 bun run perf --smoke         # Exercise every case twice without timing
 bun run perf --filter '^core/layout/'
@@ -190,12 +191,17 @@ cases so their costs can be compared. Fonts are warmed except in explicitly name
 fresh-provider cases.
 
 See the [core](gum-jsx-core/test/perf/README.md),
-[math](gum-jsx-math/test/perf/README.md), and
-[maps](gum-jsx-maps/test/perf/README.md) workload notes for exact timing boundaries.
+[math](gum-jsx-math/test/perf/README.md),
+[maps](gum-jsx-maps/test/perf/README.md), and
+[demos](gum-jsx-docs/test/perf/README.md) workload notes for exact timing boundaries.
 Run on an idle machine, save JSON reports before and after a change, and compare
 the same case names on the same hardware and Bun version. JSON timings are in
 nanoseconds. Record Git revisions with reports and repeat runs to check noise;
 performance results are separate from correctness tests.
+
+`bun run perf:freeze --mode no-freeze` runs the isolated
+[freeze-removal experiment](test/PERF-FREEZE.md) on the same cases. The normal
+perf commands retain production freezing.
 
 For a CPU profile of selected cases:
 

@@ -50,10 +50,11 @@
       "name": "@gum-jsx/docs",
       "version": "2.0.0-beta.2",
       "devDependencies": {
-        "@gum-jsx/core": "workspace:*",
+        "@gum-jsx/core": "2.0.0-beta.2",
         "@gum-jsx/maps": "2.0.0-beta.2",
-        "@gum-jsx/math": "workspace:*",
+        "@gum-jsx/math": "2.0.0-beta.2",
         "@types/bun": "latest",
+        "mitata": "1.0.34",
         "typescript": "^7",
       },
     },

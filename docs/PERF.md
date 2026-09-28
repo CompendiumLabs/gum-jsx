@@ -1,6 +1,351 @@
 # Gum 2.0 performance findings
 
-Measured on September 27, 2026, using the 66-case core, math, and maps suite.
+Latest measurements: September 27, 2026 CDT (September 28 UTC), using 90 cases
+across core, math, maps, and the docs demos. Earlier sections retain their original
+66-case results.
+
+## Freeze removal experiment
+
+**Removing runtime freezing produces substantial gains even with input copying
+and validation retained.** Complete demo renders take 20–46% less time, and
+paragraph layout is about four times faster. Production freezing remains enabled;
+this is an isolated benchmark variant.
+
+### Method
+
+The baseline is the current working tree, including the second optimization pass
+below. Core is based on `952c1d1`, math on `f23e22a`, maps on `187dbcf`, and docs
+on `d6854c1`. Both variants use the same perf case factories and Mitata 1.0.34
+runner, Bun 1.4.2, and AMD Ryzen 9 7900X on Linux.
+
+The experiment replaces `Object.freeze` in Gum's core, math, and maps source with
+identity functions during module loading. It leaves external dependencies and
+the global native function alone. All copying, numeric validation, and existing
+ownership caches remain. Seven reference-box constructors use a WeakSet marker
+so `make_measure` retains its original copy decisions despite the objects being
+unfrozen. An untimed audit checks those decisions against tracking every removed
+freeze. See the [experiment instructions](../test/PERF-FREEZE.md).
+
+Six full runs completed from `2026-09-28 02:18:05` to `02:26:39 UTC`: frozen,
+unfrozen, unfrozen, frozen, frozen, unfrozen. Each run used a fresh process and
+measured all 90 cases. No tests or other benchmark processes ran concurrently.
+CPU frequency was not locked. Tables report the **median of three run means**,
+not a median individual operation or a confidence interval. The
+[complete results](perf-freeze-results.json) retain all per-run means and memory
+measurements.
+
+### Full demos
+
+`bun run perf:demos` now discovers all six `gum-jsx-docs/demos/**/*.jsx` files and
+provides evaluation, layout, SVG-only, and complete-render cases for each. The
+workspace's `bun run perf` includes these 24 additional cases. The docs repository
+also exposes `bun run perf` and `bun run perf:demos`.
+
+These full-render timings include JSX parsing/evaluation, element construction,
+layout with a fresh pass, and SVG serialization at the authored dimensions.
+Source reads and font warmup happen outside timing; no PNG/PDF conversion or
+process startup is included.
+
+| Demo | Frozen (ms) | Unfrozen (ms) | Speedup | Less time |
+| --- | ---: | ---: | ---: | ---: |
+| Route 66 | 82.407 | 58.655 | 1.40× | 28.8% |
+| Silk Road | 51.562 | 36.183 | 1.43× | 29.8% |
+| Spherical Spiral | 93.645 | 50.897 | 1.84× | 45.6% |
+| Winkel Tripel | 68.789 | 41.280 | 1.67× | 40.0% |
+| Winkel Tripel, minimal | 7.003 | 3.902 | 1.79× | 44.3% |
+| Xuanzang's travels | 499.323 | 401.065 | 1.24× | 19.7% |
+
+The complete-render ranges remain separated across all three repeats. For
+example, Spherical Spiral takes 90.19–95.70 ms frozen versus 49.45–51.71 ms
+unfrozen; Xuanzang takes 489.93–507.02 ms versus 389.04–409.52 ms.
+
+Breaking the same demos into stages shows where the gains occur:
+
+| Demo | Evaluation speedup | Layout speedup | SVG speedup |
+| --- | ---: | ---: | ---: |
+| Route 66 | 1.30× | 1.91× | 1.16× |
+| Silk Road | 2.10× | 1.82× | 1.10× |
+| Spherical Spiral | 5.50× | 1.74× | 1.13× |
+| Winkel Tripel | 2.76× | 1.78× | 1.14× |
+| Winkel Tripel, minimal | 3.75× | 1.81× | 1.14× |
+| Xuanzang's travels | 1.21× | 2.04× | 1.15× |
+
+Stage times have different reuse boundaries and should not be added together to
+predict a full render. Evaluation includes data preparation performed by the JSX.
+In particular, Xuanzang still spends 346.2 ms in evaluation without freezing,
+versus 15.4 ms in layout. An untimed diagnostic counted **276 calls to
+`project_geo_point` per evaluation**. The demo passes the raw world source each
+time, and that helper prepares geography and fits a projection on every call.
+Reusing a prepared source and fitted projection is a concrete follow-up target;
+these timings do not isolate how much of evaluation those calls consume.
+
+SVG cases operate on fragments prepared outside timing. Their improvements
+therefore also reflect downstream costs of consuming frozen data. This comparison
+measures the total effect of the variant, including runtime object representation,
+optimization, and ownership-marker costs; it does not isolate only time spent
+inside the native `Object.freeze` call.
+
+### Core, math, and maps
+
+| Case | Frozen (ms) | Unfrozen (ms) | Speedup |
+| --- | ---: | ---: | ---: |
+| `core/layout/shapes-1000` | 9.578 | 7.419 | 1.29× |
+| `core/layout/text-grid-100` | 9.974 | 3.802 | 2.62× |
+| `core/layout/styled-paragraph` | 12.926 | 3.216 | 4.02× |
+| `core/layout/scatter-plot-2000` | 6.642 | 4.525 | 1.47× |
+| `core/render/jsx-grid-100` | 19.689 | 11.182 | 1.76× |
+| `math/layout/matrix-8x8` | 12.077 | 8.878 | 1.36× |
+| `math/render/inline-prose-20-formulas` | 11.635 | 7.915 | 1.47× |
+| `maps/layout/world-prepared-resource` | 7.219 | 3.955 | 1.83× |
+| `maps/layout/states-albers` | 34.911 | 26.380 | 1.32× |
+
+The benefit extends beyond text: core construction improves 1.44–4.01×, math
+layout 1.36–1.45×, and map layout 1.32–2.02×. Source atlas cloning is essentially
+unchanged. The largest median slowdown anywhere in the 90 cases is 1.3%, in
+`maps/data/world-clone`; its repeat ranges overlap. These results do not establish
+equivalent gains in browser runtimes.
+
+### Memory
+
+Two fresh processes per mode and workload ran ten warmup operations, then two
+batches of 30 operations. Only the latest result was retained; `Bun.gc(true)` ran
+after warmup and each batch. These checks ran separately from the timing suites.
+
+| Workload | Frozen peak RSS (MiB) | Unfrozen peak RSS (MiB) | Frozen final heap (MiB) | Unfrozen final heap (MiB) |
+| --- | ---: | ---: | ---: | ---: |
+| Paragraph layout | 218.9–221.4 | 201.5–209.0 | 22.5 | 20.6–20.8 |
+| Route 66 complete render | 414.5–474.9 | 378.6–388.3 | 28.6 | 27.0–27.3 |
+| Xuanzang complete render | 440.7–467.5 | 379.5–380.3 | 28.7–32.3 | 26.8–26.9 |
+
+Peak process memory and heap after the final GC are lower in these unfrozen
+checks. Peak RSS includes startup, JIT compilation, and allocation policy, so
+these short runs do not establish long-term memory behavior. Their shorter
+protocol also differs from the earlier bounds/path stress checks below; compare
+variants within this table.
+
+### Correctness and next step
+
+- All 90 cases have identical output hashes in separate frozen/unfrozen runs.
+  Snapshots include complete SVG strings and canonical source/layout records,
+  with signed zero preserved explicitly. Functions and private cache state are
+  outside the snapshot.
+- The ownership audit passes two executions of every case. Startup checks verify
+  that source snapshots survive edits to caller-owned points and reference boxes,
+  and that invalid geometry is still rejected.
+- All six demos remain unchanged. Normal perf commands retain runtime freezing.
+- Workspace tests and typechecks pass across all 11 packages. A separate
+  TypeScript check also covers the workspace benchmark and experiment scripts.
+
+The gains justify designing a build-time freeze helper while keeping snapshotting
+and validation independent of it. Production adoption would change the runtime
+mutation guarantee: these matching outputs establish behavior for the measured
+workloads, not protection against consumers mutating Gum-owned objects. The
+current experiment adds no production option.
+
+## Second optimization pass: bounds and path construction
+
+Implemented on September 27, 2026 CDT (September 28 UTC), following the profiles
+below. The changes are confined to core's geometry and path helpers:
+
+- `union_rects` collects all four extrema in one pass, avoiding the filter and
+  four intermediate coordinate arrays. Empty unions still return `null`.
+- `transform_rect` handles translations without creating and transforming four
+  corner points. It calculates the translated endpoints before deriving width
+  and height, preserving floating-point rounding and signed-zero behavior.
+  Explicit affine matrices and invalid source corners retain the general path.
+- Numeric path copies and transforms construct validated, frozen commands
+  directly. They avoid the temporary frozen points and object spreads used by
+  the generic mapper. The public `map_path` callback behavior is unchanged, and
+  caller-owned commands still pass through copying and validation.
+
+### Incremental latency results
+
+The before column uses the already-optimized core revision `952c1d1`.
+A saved copy of that core supplied all three
+packages for the before run; a diagnostic verified math and maps used its
+`LayoutPass`. Math and maps source revisions remain `f23e22a` and `187dbcf`.
+
+The table uses two sequential, unprofiled full-suite runs on the same Ryzen/Bun/
+Mitata setup: before at `2026-09-28 01:19:05 UTC` and after at `01:20:40 UTC`.
+All 66 cases completed. CPU frequency was not locked, and these means are point
+estimates. No tests or other benchmarks ran alongside them.
+
+| Case | Before (ms) | After (ms) | Speedup |
+| --- | ---: | ---: | ---: |
+| `core/layout/shapes-1000` | 12.463 | 9.568 | 1.30× |
+| `core/layout/text-grid-100` | 13.724 | 9.504 | 1.44× |
+| `core/layout/styled-paragraph` | 18.246 | 12.534 | 1.46× |
+| `core/layout/scatter-plot-2000` | 9.508 | 6.599 | 1.44× |
+| `core/layout/paragraph-resize-3-widths` | 54.402 | 37.791 | 1.44× |
+| `math/layout/matrix-8x8` | 15.502 | 11.704 | 1.32× |
+| `core/render/jsx-grid-100` | 25.203 | 19.355 | 1.30× |
+| `math/render/inline-prose-20-formulas` | 14.751 | 11.457 | 1.29× |
+| `maps/layout/world-prepared-resource` | 8.069 | 7.286 | 1.11× |
+| `maps/layout/states-albers` | 36.055 | 34.741 | 1.04× |
+
+An intermediate run with only the bounds changes measured scatter at 6.894 ms
+and 1,000 rectangles at 10.102 ms, while paragraph layout remained at 18.166 ms.
+This separates the broad bounds improvement from the subsequent text-path gain.
+The final table measures the combined change; intermediate differences should
+not be treated as additive speedups.
+
+The largest slowdown in the final full comparison is 3.8%, in unchanged quadratic
+parsing. Small changes in parsing, construction, cache hits, and serialization
+are within the variation observed in earlier runs. Albers' 4% improvement is also
+small enough to warrant more repeats before treating it as a reliable gain;
+its projection code was unchanged.
+
+### Allocation and memory checks
+
+Untimed diagnostics show fewer calls to `Object.freeze` per operation:
+
+| Layout | Before | After |
+| --- | ---: | ---: |
+| Styled paragraph | 240,196 | 102,732 |
+| 2,000-point scatter | 96,034 | 77,604 |
+| Prepared world | 39,578 | 21,309 |
+
+Paragraph point-record freezes fall from 142,978 to 5,514. These counts confirm
+the removed temporary records; they are not measurements of allocated bytes.
+
+Memory was checked separately in two fresh processes per version and workload.
+Each process warmed up for 20 operations, then ran two batches of 100 operations,
+keeping the latest fragment and requesting a full Bun GC between batches.
+Peak RSS includes process startup, JIT compilation, and runtime allocation policy.
+
+| Layout | Before peak RSS (MiB) | After peak RSS (MiB) |
+| --- | ---: | ---: |
+| Styled paragraph | 328.0–337.6 | 355.7–356.1 |
+| 2,000-point scatter | 175.1–176.8 | 178.6–182.1 |
+| Prepared world | 185.2–194.3 | 204.0–204.6 |
+
+Heap usage after the final GC was similar or lower: paragraph about 23.9 MiB
+before versus 22.4–22.7 MiB after, scatter about 14.8–14.9 MiB, and world about
+14.5–14.6 MiB. Lower latency comes with **higher peak RSS in these stress checks**.
+The short runs
+do not establish long-term memory behavior; no new cache was introduced.
+
+### Correctness
+
+- All 66 benchmark outputs match the saved baseline. Complete layout and source
+  results were compared after sorting object keys; SVG strings match exactly.
+- New geometry tests compare translation against the general identity-matrix
+  path across signed zero, extreme values, rounded extents, and invalid inputs.
+  They also cover empty/zero-area unions, many rectangles, and immutable output.
+- New numeric-path tests compare every command/control coordinate with the
+  unchanged generic mapper, including affine transforms, nonfinite values,
+  overflow, and ownership behavior.
+- Workspace `bun run test` and `bun run typecheck` pass across all 11 packages.
+
+## CPU profiles after the first optimization pass
+
+This section records the evidence that motivated the second pass above. Its
+timings and profile shares describe core `952c1d1`, before those latest changes.
+
+Refreshed on September 27, 2026 CDT (September 28 UTC). **Bounds aggregation is
+the next shared core target.** Paragraphs remain dominated by outline construction
+and serialization, while Albers maps now spend most of their time in projection.
+Reusing placement records alone would address a much smaller share of the work.
+
+### Method and timings
+
+- Profiled nine workloads twice, each in a separate process: fixture setup,
+  five warmup calls, then at least five seconds of repeated operations. The two
+  profile batches began at `2026-09-28 00:56:39 UTC` and `00:59:06 UTC`.
+- Used the same Ryzen 9 7900X, Bun 1.4.2, and Mitata 1.0.34. Source revisions:
+  workspace `ebea83e`, core `952c1d1`, math `f23e22a`, maps `187dbcf`.
+- Each loop retained 4,849–4,922 samples. Shares are weighted by sampled time
+  within the loop; startup, setup, and warmup are excluded. Categories count a
+  sample once even when a function appears repeatedly in its stack.
+- Ran the same nine benchmarks twice without profiling for latency. These were
+  focused runs, not another full 66-case sweep. All benchmarks and profiles ran
+  sequentially without concurrent agent-launched tests, builds, or benchmarks.
+  CPU frequency was not locked; the largest latency change between repeats was
+  4.23%. Ranges below show the two run means, not confidence intervals.
+- Profile shares are inclusive of callees unless marked **self**. Nested shares
+  overlap and must not be added. About 5–7% of the map profiles is in unknown
+  frames; it remains unattributed. No retained-memory or GC conclusion follows
+  from these profiles.
+
+| Workload | Mean latency across two runs (ms) | Main profile shares across two runs |
+| --- | ---: | --- |
+| `core/layout/shapes-1000` | 12.28–12.82 | `make_fragment` 46.8–46.9%; `union_rects` 12.2–12.5% |
+| `core/layout/styled-paragraph` | 18.28–18.72 | `transform_path` 88.0–88.1%; `Object.freeze` **self** 54.1–54.6% |
+| `core/svg/styled-paragraph` | 27.08–27.28 | `path_data` 82.1–83.3%; number formatting 57.3–58.7% |
+| `core/layout/scatter-plot-2000` | 9.66–10.01 | `make_fragment` 44.3–45.9%; `transform_rect` 29.1–29.4% |
+| `math/layout/matrix-8x8` | 15.50–15.80 | `make_fragment` 43.1–43.5%; `transform_rect` 12.6–12.7% |
+| `maps/layout/states-albers` | 33.56–33.94 | D3 projection/streaming 60.9–61.0%; projection fitting 25.6–25.7% |
+| `maps/layout/world-prepared-resource` | 8.23–8.28 | `copy_path` 46.5–48.3%; D3 projection/streaming 35.7% |
+| `core/render/jsx-grid-100` | 25.49–25.91 | `transform_path` 36.3–37.0%; `make_fragment` 16.2–16.4% |
+| `math/render/inline-prose-20-formulas` | 14.94–15.30 | `make_fragment` 27.6–28.8%; `transform_path` 23.5–25.0% |
+
+### What the profiles change about the next fixes
+
+**1. Start with rectangle transforms and bounds aggregation.**
+[transform_rect](../gum-jsx-core/src/engine/geometry.ts#L208) builds four corner
+arrays, four frozen points, and several temporary arrays even when a placement
+only translates a rectangle. [union_rects](../gum-jsx-core/src/engine/geometry.ts#L180)
+filters its inputs and builds four more arrays to find extrema.
+[make_fragment](../gum-jsx-core/src/engine/fragment.ts#L107) invokes these helpers
+while walking children separately for ink, overflow, and outsets.
+
+A separate untimed diagnostic counted non-null rectangle transformations:
+
+| Layout | Translation only (no matrix) | Axis-aligned matrix | Other affine matrix |
+| --- | ---: | ---: | ---: |
+| 1,000 rectangles | 2,000 | 0 | 0 |
+| 2,000-point scatter | 4,104 | 24 | 3 |
+| 8×8 matrix | 2,192 | 208 | 0 |
+
+Thus 99.3% of scatter's rectangle transformations only translate the bounds.
+A translation fast path and a single-pass bounds union are concrete experiments
+with relevance to shapes, plots, and math. Next, test whether fragment aggregation
+can share more calculations between its child traversals. Preserve finite-value
+validation, null versus zero-area bounds, singular transforms, clipping, and
+outsets. `place_fragment` accounts for only 2.9–3.2% of scatter and about 1% of
+matrix layout, so avoiding placement copies alone has limited headroom.
+
+**2. Reduce temporary objects in path construction before adding more caches.**
+The remaining paragraph cost is concentrated in
+[transform_path/map_path](../gum-jsx-core/src/engine/path.ts#L38). Each coordinate
+callback constructs a frozen point, then `map_path` copies its fields into a
+separately frozen command. Those temporary points and object spreads are worth
+testing with direct construction of validated commands, retaining immutable
+outputs and the generic mapping API's behavior.
+
+This may also help maps: [projected_commands](../gum-jsx-maps/src/path.ts#L54)
+returns mutable command records, so `draw_path` still performs the first ownership
+copy. That copy takes 46.5–48.3% of prepared-world layout and 19.5–20.4% of Albers
+layout. The earlier optimization removed downstream copies; it did not remove
+this initial validation and ownership boundary. A direct command builder is a
+candidate, subject to measurements and the existing mutable-input contract.
+
+**3. Text reuse still has substantial upside, especially for long paragraphs.**
+Paragraph layout spends just 2.6–3.0% in fragment construction now. Reusing scaled
+outlines across positions and reflow widths targets the much larger transformation
+cost. For SVG, investigate serialization of shared paths and eventual `<defs>`/
+`<use>` output. Both ideas need measurements of memory, SVG size, and any extra
+placements, plus visual equivalence checks if output structure changes.
+
+Further general number-cache tuning is less compelling for the full renders:
+number formatting is now about 4% of JSX-grid rendering and 6.7–6.9% of inline-math
+rendering, although it remains 57–59% of the large paragraph's serialization stage.
+The latter still deserves attention as its own workload.
+
+**4. Treat map projection fitting as a separate target.**
+[create_geo_projection](../gum-jsx-maps/src/projection.ts#L128), including
+`fitExtent`, takes about 26% of Albers layout. Streaming the actual paths takes
+another roughly 35%. The prepared-world case spends only about 0.2% in projection
+creation, so an Albers fitting improvement would not apply uniformly to maps.
+Neither profile samples `geo_aspect`; duplicate natural-aspect measurement is
+not the issue in these fixed-size cases. Add matched viewport/border controls
+before experimenting with fit or projected-geometry reuse. These benchmarks use
+fresh passes, so a cache scoped to one pass needs separate resize/restyle cases
+to demonstrate its value.
+
+These profiles led to the rectangle-transform, bounds-union, and direct path
+construction changes reported above. More extensive glyph reuse and map fitting
+remain follow-ups. No runtime code changed during the profile refresh itself.
 
 ## Optimization follow-up: priorities 1–3
 
@@ -84,8 +429,8 @@ text and geometry gains providing stronger evidence than small timing changes.
   and number formatting across rounding boundaries and cache capacity.
 - This pass preserves output size. Reusing glyph outlines through SVG definitions,
   reducing placement aggregation further, and optimizing geographic projection
-  remain possible follow-ups. The baseline profiles below have not been rerun
-  after optimization, so their percentage shares describe the original code.
+  remain possible follow-ups. Updated profiles appear above; the original baseline
+  profiles below remain for comparison.
 
 ## Original findings and priorities
 
@@ -326,11 +671,11 @@ behavior, inset regions, and shared borders when making those changes.
 
 ## Next measurements
 
-Repeat CPU profiling after the changes above to locate the remaining costs in
-paragraph serialization, placement aggregation, and geographic projection.
+Profile the second pass before choosing more changes, focusing on remaining
+fragment traversals, text geometry reuse, SVG serialization, and map fitting.
 Preserve the current input sizes so comparisons remain useful. Track SVG size
-and geometry/query counts as well as latency, and measure peak/retained memory
-separately before expanding any cache.
+and geometry/query counts as well as latency, and investigate the higher peak
+RSS seen in stress tests before expanding any cache.
 
 Add matched controls where the current suite is incomplete:
 
