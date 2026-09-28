@@ -199,9 +199,23 @@ the same case names on the same hardware and Bun version. JSON timings are in
 nanoseconds. Record Git revisions with reports and repeat runs to check noise;
 performance results are separate from correctness tests.
 
-`bun run perf:freeze --mode no-freeze` runs the isolated
-[freeze-removal experiment](test/PERF-FREEZE.md) on the same cases. The normal
-perf commands retain production freezing.
+Compare freezing modes with the regular benchmark commands:
+
+```sh
+GUM_FREEZE=1 bun run perf --json > /tmp/gum-freeze.json
+GUM_FREEZE=0 bun run perf --json > /tmp/gum-no-freeze.json
+GUM_FREEZE=0 bun run perf:demos
+```
+
+Run modes sequentially and alternate their order across repeats.
+
+For production rendering, `NODE_ENV=production` disables runtime freezing while
+retaining input snapshots and validation. `GUM_FREEZE=1` or `0` overrides the
+default before Gum loads. Browser builds use `__GUM_FREEZE__`; Studio and the
+MCP viewer configure this automatically. See the
+[immutability policy](gum-jsx-core/API.md#immutability-policy).
+`bun run test:immutability` runs the workspace tests with freezing both enabled
+and disabled.
 
 For a CPU profile of selected cases:
 

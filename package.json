@@ -28,11 +28,6 @@
     "typecheck": "bun run --workspaces typecheck",
     "test": "bun run --workspaces test",
     "perf": "bun test/perf.ts",
-    "perf:core": "bun gum-jsx-core/test/perf/run.ts",
-    "perf:math": "bun gum-jsx-math/test/perf/run.ts",
-    "perf:maps": "bun gum-jsx-maps/test/perf/run.ts",
-    "perf:demos": "bun gum-jsx-docs/test/perf/run.ts",
-    "perf:freeze": "bun test/perf-freeze.ts",
     "rehearse": "bash scripts/rehearse.sh"
   }
 }

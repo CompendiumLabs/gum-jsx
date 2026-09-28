@@ -1,15 +1,97 @@
 # Gum 2.0 performance findings
 
-Latest measurements: September 27, 2026 CDT (September 28 UTC), using 90 cases
-across core, math, maps, and the docs demos. Earlier sections retain their original
-66-case results.
+Latest measurements: September 27, 2026 CDT (September 28 UTC). The supported
+implementation repeats 12 focused timings and checks all 90 outputs across core,
+math, maps, and the docs demos. Earlier sections retain their full 90-case freeze
+comparison and original 66-case results.
+
+## Supported immutability policy
+
+The benchmark variant is now implemented as a supported core policy. Copying,
+validation, and reference ownership remain independent of runtime freezing.
+Core's exported `freeze_owned` binds once to the native freeze function or an
+identity function; math shares that helper and maps uses core constructors.
+
+- `NODE_ENV=production` disables freezing; other process environments default
+  to enforcement.
+- `GUM_FREEZE=1` or `0` explicitly selects the mode before Gum is imported.
+- Browser bundles can define the boolean `__GUM_FREEZE__`, which takes precedence
+  over process settings. Studio production and MCP viewer builds disable checks
+  by default and honor `GUM_FREEZE` at build time. Unconfigured browsers default
+  to enforcement.
+- `FREEZE_ENABLED` exposes the selected mode. Readonly API types remain the same
+  in either mode; consumers must not mutate shared elements or layout results.
+
+Use the regular benchmark commands to compare modes:
+
+```sh
+GUM_FREEZE=1 bun run perf --json > /tmp/gum-freeze.json
+GUM_FREEZE=0 bun run perf --json > /tmp/gum-no-freeze.json
+GUM_FREEZE=0 bun run perf:demos
+```
+
+Run modes sequentially, alternate their order across repeats, and use the same
+Bun version and inputs. Reference reuse and mutation behavior are covered by
+core tests. See the [API contract](../gum-jsx-core/API.md#immutability-policy).
+
+### Implementation timings
+
+The real implementation retains the gains from the experiment. These are 12
+focused cases, including all six complete demo renders, measured in three fresh
+processes per mode. Run order was frozen, unfrozen, unfrozen, frozen, frozen,
+unfrozen, from `2026-09-28 03:28:54` to `03:30:50 UTC`. The runner uses Bun 1.4.2,
+Mitata 1.0.34, and AMD Ryzen 9 7900X on Linux. No tests or builds ran concurrently;
+CPU frequency was not locked.
+
+The table reports the **median of three run means**. Compare modes within this
+table: the focused selection has different warmup and ordering from the earlier
+full suite. [Implementation results](perf-immutability-results.json) retain every
+run mean and the run metadata. Memory was not measured again.
+
+| Case | Frozen (ms) | Unfrozen (ms) | Speedup |
+| --- | ---: | ---: | ---: |
+| Core text-grid layout, 100 items | 10.242 | 3.661 | 2.80× |
+| Core styled paragraph layout | 13.191 | 3.098 | 4.26× |
+| Core scatter-plot layout, 2,000 points | 7.414 | 4.878 | 1.52× |
+| Core JSX-grid render, 100 items | 21.882 | 11.328 | 1.93× |
+| Math matrix layout, 8×8 | 13.463 | 9.142 | 1.47× |
+| Maps world layout, prepared resource | 7.286 | 3.806 | 1.91× |
+| Route 66 render | 81.588 | 57.360 | 1.42× |
+| Silk Road render | 53.535 | 35.286 | 1.52× |
+| Spherical Spiral render | 95.657 | 47.151 | 2.03× |
+| Winkel Tripel render | 69.775 | 39.888 | 1.75× |
+| Winkel Tripel, minimal render | 7.256 | 3.769 | 1.93× |
+| Xuanzang's travels render | 494.518 | 398.797 | 1.24× |
+
+Paragraph layout takes 76.5% less time; full demo renders take 19.4–50.7% less
+time. These measurements cover Bun; the browser checks below establish correct
+behavior in Chromium, not equivalent browser timing gains.
+
+### Verification
+
+- All 90 perf output hashes match the saved pre-change baseline with checks
+  both enabled and disabled, including full demo SVGs and signed-zero geometry.
+- `bun run test:immutability` passes all 11 workspace package suites in each mode.
+  The tests retain input isolation, validation, and cache checks; freezing
+  assertions follow the selected policy.
+- Startup tests cover defaults, production mode, explicit overrides, invalid
+  settings, and setting changes after import. Browser bundles are checked without
+  Node globals, with both compile-time flags, and with conflicting runtime settings.
+- Workspace typechecks pass. Readonly return types and literal inference are
+  tested in both modes.
+- Production Studio and MCP viewer builds succeed. The Chromium regression
+  verifies the real Studio bundle with checks off and forced on, including exact
+  browser/library SVG agreement and an unchanged native `Object.freeze`.
 
 ## Freeze removal experiment
 
+This section records the initial experiment, before the supported implementation
+above. Its source-loading hook has since been replaced by the runtime policy.
+
 **Removing runtime freezing produces substantial gains even with input copying
 and validation retained.** Complete demo renders take 20–46% less time, and
-paragraph layout is about four times faster. Production freezing remains enabled;
-this is an isolated benchmark variant.
+paragraph layout is about four times faster. Production freezing remained enabled
+at the time of this isolated benchmark experiment.
 
 ### Method
 
@@ -24,7 +106,7 @@ the global native function alone. All copying, numeric validation, and existing
 ownership caches remain. Seven reference-box constructors use a WeakSet marker
 so `make_measure` retains its original copy decisions despite the objects being
 unfrozen. An untimed audit checks those decisions against tracking every removed
-freeze. See the [experiment instructions](../test/PERF-FREEZE.md).
+freeze. The experimental runner and audit have since been removed.
 
 Six full runs completed from `2026-09-28 02:18:05` to `02:26:39 UTC`: frozen,
 unfrozen, unfrozen, frozen, frozen, unfrozen. Each run used a fresh process and
