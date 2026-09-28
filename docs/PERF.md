@@ -49,6 +49,59 @@ GUM_FREEZE=0 bun --cpu-prof --cpu-prof-dir=/tmp test/perf.ts \
 The latter profile also includes runner setup and warmup; select the rendering
 stacks when inspecting it.
 
+### Live text: optional in core and CLI, default in the editor
+
+Core now accepts `text_mode: 'live'` on `render_element` and `layout_element`;
+the default remains `'path'`. The CLI exposes `--text-mode live`. The editor uses
+live text and loads matching browser font faces before displaying the SVG.
+Ordinary text keeps Gum's measured advances, line breaks, baselines, and ink
+bounds. Math and CLI PDF output retain outlines.
+
+The implementation avoids transforming ordinary text paths during layout and
+serializing their coordinates into SVG. First-use Fontkit shaping still computes
+outlines and exact bounds for its cache. A live-text option therefore does not
+remove all cold font work.
+
+Measured Silk Road with Bun 1.4.2 and `GUM_FREEZE=0`, a shared warm font provider,
+and a fresh layout pass per operation. Each stage and mode had 20 warmups and
+15 alternating batches of five operations; values are medians per operation.
+Full rendering includes JSX evaluation, layout, and SVG generation, excluding
+browser painting and file I/O. Stage measurements are independent and are not
+additive; compare modes within this run rather than against older benchmark means.
+
+| Operation | Paths | Live text |
+| --- | ---: | ---: |
+| Layout | 13.0 ms | 12.2 ms |
+| SVG serialization | 18.4 ms | **5.1 ms** |
+| Full evaluate → SVG | 40.0 ms | **21.4 ms** |
+| SVG bytes | 1,081,180 | **462,013** |
+
+Full SVG generation uses **47% less time**, and output is **57% smaller** in
+this comparison. At measurement time, the default Silk Road SVG matched the
+pre-change output exactly. These measurements precede removal of the labeled
+`role="img"` SVG wrappers from both text modes.
+All six demos retain identical fragment geometry across modes. Chrome 151 checks
+of the production editor build verify both modes for all six demos, mixed prose
+and math, and loading of the actual light, regular, bold, and monospace faces.
+Browser shaping and antialiasing can change painted glyphs; pixel equality is
+not promised. A browser or native rasterizer must have the matching fonts for
+live output. The [results](perf-silk-road-live-text-results.json) retain samples,
+sizes, geometry checks, and browser validation.
+
+Subsequent SVG compaction shares font and paint properties across adjacent live
+words with the same style on each line. Each word keeps its measured position in
+a `tspan`. In Silk Road, this reduces font/style blocks from **305 to 71** and
+live SVG size from **454,793 to 421,263 bytes** (7.4% smaller). These sizes include
+the earlier wrapper and font-family quoting cleanups. Chrome checks found
+identical character positions, styles, and rendered pixels before and after
+grouping, including a separate case with overlapping translucent words. Opacity
+stays on individual spans to preserve that compositing.
+
+Moving inherited text defaults to the SVG root reduces Silk Road further to
+**417,573 bytes**. Individual runs omit start anchoring, regular weight, and
+normal style. Browser checks also pass inside a page with inherited bold,
+italic, and end-aligned text settings.
+
 ### PNG export: one raster pass and fast lossless encoding
 
 Both optimizations are implemented. On Silk Road at 1×, SVG-to-PNG conversion
