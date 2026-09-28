@@ -1,9 +1,241 @@
 # Gum 2.0 performance findings
 
-Latest measurements: September 27, 2026 CDT (September 28 UTC). The supported
-implementation repeats 12 focused timings and checks all 90 outputs across core,
-math, maps, and the docs demos. Earlier sections retain their full 90-case freeze
-comparison and original 66-case results.
+Latest measurements: September 28, 2026. The Silk Road follow-up profiles one
+complete demo with freezing disabled, including cold CLI and PNG costs. Earlier sections
+retain the implementation timings, full 90-case freeze comparison, and original
+66-case results.
+
+## Silk Road profile
+
+**SVG number formatting is the largest cost in warm Silk Road renders.** A full
+render in an already-running, warmed process takes about **34.2 ms** with
+`GUM_FREEZE=0`. Serialization accounts for 54% of sampled render time, and the
+number formatter alone accounts for 41%, including its native `toFixed` calls.
+Text outlines produce most of those numbers. A fresh CLI invocation has substantial
+additional startup and first-use costs, measured below.
+
+### Measurements
+
+Measured the existing four Silk Road cases in three fresh processes, using
+Bun 1.4.2, Mitata 1.0.34, and AMD Ryzen 9 7900X on Linux. Values below are medians
+of three run means. Fonts are warm, each layout uses a fresh pass, and full
+renders include JSX parsing and construction. Startup, file I/O, and PNG/PDF
+conversion are excluded. No tests, builds, or other benchmarks ran concurrently;
+CPU frequency was not locked.
+
+| Operation | Time (ms) | Share of full-render CPU samples |
+| --- | ---: | ---: |
+| Evaluate and construct | 3.535 | 11.7% |
+| Layout | 11.570 | 32.6% |
+| Serialize SVG | 17.974 | 54.3% |
+| Complete render | **34.206** | 100% |
+
+The isolated stage timings have different reuse patterns and are not additive.
+CPU shares come from a separate 1 ms sampling profile: 30 warmup renders followed
+by 300 complete renders, retaining only stacks within that measured loop. About
+1.4% falls outside the three stage functions. Inclusive function percentages below
+overlap; they must not be added together. The
+[results](perf-silk-road-results.json) retain all timing means, revisions, sample
+summaries, workload counts, and experiment results.
+
+Reproduce the standard timings and capture a profile with the existing runner:
+
+```sh
+GUM_FREEZE=0 bun run perf --filter 'silk_road' --json > /tmp/silk-road.json
+GUM_FREEZE=0 bun --cpu-prof --cpu-prof-dir=/tmp test/perf.ts \
+  --filter '^demos/render/silk_road/silk_road$'
+```
+
+The latter profile also includes runner setup and warmup; select the rendering
+stacks when inspecting it.
+
+### PNG export: one raster pass and fast lossless encoding
+
+Both optimizations are implemented. On Silk Road at 1×, SVG-to-PNG conversion
+falls from **270.7 ms to 129.0 ms: 52% less time**, with identical decoded pixels.
+The full CLI command falls from **522.1 ms to 382.0 ms: 27% less time**.
+
+| Operation | Previous renderer | One raster pass, standard encoding | One raster pass, fast encoding (default) |
+| --- | ---: | ---: | ---: |
+| In-memory SVG to PNG | 270.7 ms | 169.5 ms | **129.0 ms** |
+| Full cold CLI, PNG stdout discarded | 522.1 ms | 423.2 ms | **382.0 ms** |
+| PNG size | 394,741 bytes | 394,741 bytes | 345,167 bytes |
+
+In-memory timings exclude CLI startup, evaluation, layout, SVG serialization,
+and output I/O. Each mode ran nine measured operations after one warmup, with
+alternating order. CLI timings use nine fresh processes per mode, alternating
+order, and `GUM_FREEZE=0`. All CLI variants use the same temporary Bun preload
+that selects either the previous PNG module or the current implementation;
+output sizes were checked before timing. Measurements used Bun 1.4.2 and
+node-canvas 3.2.3 on the Ryzen 7900X host, without concurrent tests or benchmarks.
+The [PNG results](perf-silk-road-png-results.json) retain the original prototype
+measurements and the implementation results, including all samples and demo checks.
+
+**1. Avoid rasterizing the SVG twice.** The previous
+[rasterizer](../gum-jsx-png/src/render.ts) assigned `Image.src`, then set its
+dimensions before drawing. Node-canvas renders an SVG when it loads the source,
+and renders it again on the next surface access if its dimensions changed.
+Silk Road's logical size is 1824×1151.34. Initial loading truncates that to
+1824×1151, while Gum requests a final 1824×1152 surface. Even at 1×, that
+one-pixel difference triggered another complete rasterization. The original
+component experiment measured about 108 ms loading and 103 ms at `drawImage`.
+
+The implementation reads explicit root dimensions and a valid `viewBox`, sets
+root width and height to the final integer output dimensions, then loads the
+image once. It preserves `viewBox` and `preserveAspectRatio`. Selection prepares
+the cropped source before loading too. SVGs with CSS-controlled dimensions,
+XML preambles, missing viewports, or ambiguous root syntax use the native sizing
+path. The original experiment reduced the final canvas copy to about 0.5 ms.
+
+**2. Use faster PNG encoding.** The default `fast` preset uses compression
+level 3 and `Canvas.PNG_FILTER_NONE`. The `standard` preset retains node-canvas's
+previous level 6 and adaptive filters. Both are lossless. The original component
+experiment reduced encoding alone from 61 ms to 20 ms; simply lowering the
+compression level while retaining adaptive filters took about 44 ms.
+
+The presets are available through `rasterize_svg(svg, { encoding: 'standard' })`
+and both `gum` and `gum-tex`:
+
+```sh
+GUM_FREEZE=0 gum gum-jsx-docs/demos/silk_road/silk_road.jsx -f png > /dev/null
+GUM_FREEZE=0 gum gum-jsx-docs/demos/silk_road/silk_road.jsx -f png --png-encoding standard > /dev/null
+```
+
+Every decoded RGBA byte matched the old renderer for **all six demos at 1× and
+2×**. Standard encoding also reproduced the previous PNG bytes exactly. Focused
+regression tests cover fractional dimensions, nondefault aspect ratios,
+transparency, nested SVGs, backgrounds, crops, and native sizing fallbacks. The
+full workspace test suite and type checks pass.
+
+File-size changes depend on image content. Fast encoding makes this Silk Road
+PNG 12.6% smaller, and all six demos were smaller at 1×. At 2×, Route 66 grows
+6.5% and Xuanzang Travels grows 0.2%, while the other four shrink. Use the
+standard preset when its compression policy is preferable for the input.
+
+### Cold CLI latency is a different workload
+
+The warm benchmark does not predict the latency of a single command. Seven fresh
+process measurements of the user's command reproduce the reported gap:
+
+```sh
+time GUM_FREEZE=0 gum gum-jsx-docs/demos/silk_road/silk_road.jsx -f svg > /dev/null
+```
+
+| Command, freezing disabled | Median wall time |
+| --- | ---: |
+| `gum --help` | 102.7 ms |
+| `gum ... -f svg > /dev/null` | 235.2 ms |
+| Difference | 132.6 ms |
+
+Subtracting help approximates the **cold first-render cost**. It does not remove
+the work that only starts when a figure is rendered. The CLI eagerly imports core,
+math, maps, and export backends before handling help. It then starts rendering
+with empty font and shaping caches and code that has not been exercised by the
+benchmark's warmup.
+
+Three fresh-process probes using the CLI evaluator and equivalent layout options
+give this breakdown. Cold values are medians; warm values are the existing
+benchmark means summarized above. Setup and measurement patterns differ, so this
+is an explanation of the scale of the gap, not an exact subtraction of wall times.
+
+| Figure work | First render | Warm benchmark |
+| --- | ---: | ---: |
+| Evaluate and construct | 17.8 ms | 3.5 ms |
+| Layout, including required font work | 79.3 ms | 11.6 ms |
+| Serialize SVG | 28.3 ms | 18.0 ms |
+| Complete figure operation | **125.4 ms** | **34.2 ms** |
+
+The cold probes range from 122–143 ms for the figure operation. The largest
+difference is layout. Five additional cold CLI sampling profiles show substantial
+time in Fontkit shaping, lazy font-table decoding, and glyph-outline construction.
+Creating the font provider itself takes only about 0.3 ms: fonts are read and
+parsed on demand during layout, and shapes are then cached by text. This is not
+the cost of parsing all the registered math fonts.
+
+In the same probes, the second render with the same provider falls to about
+53 ms. After code warmup, a reused provider averages about 38 ms per render;
+creating a fresh provider for each operation raises that to about 57 ms, with
+layout increasing from 12 to 31 ms. The provider comparison demonstrates a
+recurring font/cache cost; it does not attribute all remaining first-use overhead
+specifically to JIT compilation. These probes intentionally use a different
+sequence from Mitata and should not be compared as a performance regression.
+
+For one-shot CLI performance, investigate eager startup imports and cold
+font/shaping work alongside serialization. Keep separate benchmarks for fresh
+process latency and repeated rendering throughput. The
+[cold measurements](perf-silk-road-cold-results.json) retain process times, phase
+probes, and profile summaries. They use normal OS file caches; no disk cache was
+flushed. SVG output was discarded, and no PNG or terminal rendering was involved
+in the command above.
+
+### 1. The formatter retains early coordinates and misses later repetition
+
+The SVG contains 1,081,180 bytes and makes **107,667 number-formatting calls**.
+Text outlines contribute 83,142 path coordinates, versus 21,524 for the map base
+and its clip, and 1,294 for other paths. The remaining calls write attributes.
+The 66 Text elements produce 305 outline paths; these are already shaped glyphs,
+so warm font shaping is not the dominant cost.
+
+The [number formatter](../gum-jsx-core/src/engine/output_number.ts) keeps the first
+4,096 distinct fractional values for the entire render. Once full, it continues
+looking up those entries but never replaces them. Its initial sampling keeps
+caching enabled for this demo, yet only **7,642 calls hit the cache**. It performs
+98,800 conversions through `String(Number(value.toFixed(10)))`, despite there being
+only 45,099 distinct fractional values. The formatter consumes 41.4% of sampled
+time, including 19.4% inside native `toFixed`. Path serialization overall consumes
+47.7%.
+
+Two temporary experiments changed only the cache policy and checked exact SVG
+equality before every timing run:
+
+| Experiment | Paired baseline (ms) | Variant (ms) | Less time |
+| --- | ---: | ---: | ---: |
+| Increase capacity from 4,096 to 65,536 entries | 36.458 | 32.355 | **11.3%** |
+| Clear and refill when the 4,096-entry cache fills | 35.817 | 33.912 | 5.3% |
+
+Each comparison alternated modes across three runs per mode. Compare each variant
+with its own baseline: these full-render-only processes have different warmup
+from the four-stage run above. The larger cache improved all three pairs, but
+retains more strings; memory was not measured. Clearing and refilling reduced
+conversions to 51,062 while retaining at most 4,096 entries, but its timing ranges
+overlap and one pair regressed. That result needs more investigation.
+
+**First follow-up:** improve the formatter's cache replacement policy and measure
+its allocation cost. Preserve exact rounding and compare across paragraph, math,
+and map cases; simply increasing capacity trades time for retained memory. These
+experiments did not change production code or serialization precision.
+
+### 2. The map prepares and serializes geography it does not display
+
+Geographic path generation consumes 8.4% of sampled full-render time.
+[GeoMap](../gum-jsx-maps/src/map.ts) projects all 177 country features before SVG
+clipping. Of its 178 drawing paths, **124 have bounds entirely outside the map
+viewport**, accounting for 7,569 commands. Those paths still undergo projection,
+validation, and serialization. Viewport clipping or conservative culling could
+avoid some of this work; filtering after projection would save less than rejecting
+irrelevant geography before path generation. Any earlier rejection must preserve
+polygons crossing the viewport and projection boundaries.
+
+[Source preparation](../gum-jsx-maps/src/source.ts) consumes another 4.2%, including
+3.3% in TopoJSON border mesh construction. Silk Road uses `border-mode="none"`, but
+preparation builds both the full and interior border meshes. Preparing those meshes
+only when requested is a small, concrete follow-up. These percentages are observed
+costs, not measured savings from a map optimization.
+
+### 3. Atlas copying remains measurable, with a smaller payoff
+
+[`world_countries()`](../gum-jsx-maps/src/data.ts) clones the bundled atlas on every
+evaluation, consuming 4.7% of sampled time. The GeoMap constructor then snapshots
+its source; recursive `copy_data` across all element construction consumes another
+3.0%. A reusable prepared source supplied through `LayoutPass` resources could
+avoid repeated atlas work for applications rendering the same geography. Input
+snapshot semantics still need to hold for ordinary mutable source props.
+
+The source tree contains 250 elements. The pass makes 261 queries, performs 255
+layouts, and records six cache hits; **GeoMap's layout runs once**. The profile
+does not point to repeated whole-map layout as a primary issue. Text layout takes
+6.6%, while JSX parsing takes 1.9%. Prioritize number formatting, then unused map
+work, before changing the layout protocol or removing more input copying.
 
 ## Supported immutability policy
 
@@ -27,7 +259,7 @@ Use the regular benchmark commands to compare modes:
 ```sh
 GUM_FREEZE=1 bun run perf --json > /tmp/gum-freeze.json
 GUM_FREEZE=0 bun run perf --json > /tmp/gum-no-freeze.json
-GUM_FREEZE=0 bun run perf:demos
+GUM_FREEZE=0 bun run perf --filter '^demos/'
 ```
 
 Run modes sequentially, alternate their order across repeats, and use the same
