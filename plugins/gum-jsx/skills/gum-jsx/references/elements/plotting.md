@@ -15,20 +15,26 @@ your own frame.
 | `interval` | Automatic | Positive fixed step instead of automatic 1/2/5 intervals |
 | `side` | `"bottom"` | Axis edge and orientation |
 | `at` | Frame edge | Data location on the perpendicular axis |
-| `tick-size` | `px(5)` | Tick length |
+| `tick-size` | `em(5/16)` | Tick length |
 | `tick-side` | `"outer"` | `"inner"`, `"outer"`, or an explicit side |
-| `label-offset` | `px(4)` | Gap between ticks and labels |
+| `label-offset` | `em(1/4)` | Gap between ticks and labels |
 | `label-anchor` | Side-dependent | Point on each label attached to its tick position |
 | `format` | `format_tick` | `(value, index) => string` for numeric ticks |
 | `rotate` | `0` | Label rotation in degrees |
 | `labels` | `true` | Draw tick labels |
 | `line` | `true` | Draw the baseline |
 | `arrow` | `false` | Draw a head at the directed endpoint |
-| `arrow-size` | `px(7)` | Arrowhead length |
+| `arrow-size` | `em(7/16)` | Arrowhead length |
 | `arrow-width` | `1.3` | Full arrowhead width divided by its length |
 | `arrow-style` / `arrow-*` | — | Arrowhead shape and paint options |
+| `stroke-width` | `em(1/16)` | Shared baseline and tick thickness |
 | `line-style` / `tick-style` / `label-style` | — | Nested styles for generated parts |
 | `line-*` / `tick-*` / `label-*` | — | Flat overrides for generated-part styles |
+
+Stroke width, tick length, label offset, and arrowhead length scale with the axis's
+inherited `font-size`. At the default 16px font they measure 1px, 5px, 4px, and 7px.
+A `label-font-size` override affects the labels independently. Use explicit
+`px(...)` values to keep a dimension fixed when the font changes.
 
 Pair labels may be strings, numbers, or **Element**s. Out-of-domain ticks are omitted.
 Use `tick-side="inner"` for inward ticks. `"outer"` follows `side`; explicit
@@ -150,8 +156,8 @@ multiple bars as children or use **Bars** for arrays.
 | `grid` | `true` | Draw grid lines at axis ticks |
 | `title` / `xlabel` / `ylabel` | — | String or **Element**; the y title rotates −90° |
 | `legend` | — | **Legend** **Element** or array of **Legend** entries |
-| `margin` | `px(12)` | Extra outer space; accepts [Box padding forms](layout.md#Box) |
-| `label-gap` | `px(8)` | Space between titles and measured axis extents |
+| `margin` | `em(3/4)` | Extra outer space; accepts [Box padding forms](layout.md#Box) |
+| `label-gap` | `em(1/2)` | Space between titles and measured axis extents |
 | `bounds` | `"outer"` | `"frame"` makes the allocation the data area alone; see below |
 | `background` | — | Full-frame background paint |
 | `plot-background` | — | Data-area background paint |
@@ -284,12 +290,15 @@ radii at half its own dimensions. px/em radii keep the same size across bars.
 ```jsx
 // Bars with positive and negative values.
 <Box padding={em(2)}>
-  <Plot aspect={1.5}>
+  <Plot aspect={1.5} xlim={[-0.75, 3.75]} ygrid>
     <Bars
       values={[2, 4, -1, 3]}
       border-radius={em(0.35)}
-      styles={(v) => ({ fill: v < 0 ? red : blue })}
+      styles={(v) => ({
+        border_radius: v < 0 ? {b: em(0.25)} : {t: em(0.25)}
+      })}
     />
+    <HLine space="data" y={0} lim={[-0.75, 3.75]} />
   </Plot>
 </Box>
 ```
@@ -468,8 +477,8 @@ const samples = [
   [8, 7],
 ]
 return (
-  <Box padding={em(1.75)}>
-    <Graph xlim={[10, 0]} ylim={[0, 8]}>
+  <Box padding={em(3)}>
+    <Graph aspect={1.5} xlim={[10, 0]} ylim={[0, 8]}>
       <Mesh2D xlim={[0, 10]} ylim={[0, 8]} />
       <Spline points={samples} stroke={blue} stroke-width={px(2)} />
       <Points
@@ -498,17 +507,18 @@ return (
 | `interval` | Automatic | Positive fixed tick step |
 | `side` | `"bottom"` | Axis edge and orientation |
 | `at` | Frame edge | Data location on the perpendicular axis |
-| `tick-size` | `px(5)` | Tick length |
+| `tick-size` | `em(5/16)` | Tick length |
 | `tick-side` | `"outer"` | `"inner"`, `"outer"`, `"top"`, or `"bottom"` |
-| `label-offset` | `px(4)` | Gap between ticks and labels |
+| `label-offset` | `em(1/4)` | Gap between ticks and labels |
 | `format` | `format_tick` | `(value, index) => string` for numeric ticks |
 | `rotate` | `0` | Label rotation in degrees |
 | `labels` | `true` | Draw tick labels |
 | `line` | `true` | Draw the baseline |
 | `arrow` | `false` | Draw a head at the directed endpoint |
-| `arrow-size` | `px(7)` | Arrowhead length |
+| `arrow-size` | `em(7/16)` | Arrowhead length |
 | `arrow-width` | `1.3` | Full arrowhead width divided by its length |
 | `arrow-style` / `arrow-*` | — | Arrowhead shape and paint options |
+| `stroke-width` | `em(1/16)` | Shared baseline and tick thickness |
 | `line-style` / `tick-style` / `label-style` | — | Nested styles for generated parts |
 | `line-*` / `tick-*` / `label-*` | — | Flat overrides for generated-part styles |
 
@@ -641,9 +651,9 @@ For value-dependent rounding, return `border_radius` from `styles`, for example
 | `lim` | `[0, 1]` | Directed domain used to place the value |
 | `side` | `"bottom"` | Edge and orientation |
 | `at` | Frame edge | Data location on the perpendicular axis |
-| `tick-size` | `px(5)` | Invisible tick length included in label placement |
+| `tick-size` | `em(5/16)` | Invisible tick length included in label placement |
 | `tick-side` | `"outer"` | Tick direction used to position the label |
-| `label-offset` | `px(4)` | Gap after the tick position |
+| `label-offset` | `em(1/4)` | Gap after the tick position |
 | `rotate` | `0` | Label rotation in degrees |
 | `label-style` / `label-*` | — | Nested or flat styles for generated text |
 
@@ -678,9 +688,9 @@ lie in lim. **VLabel** defaults to the left side, **Label** and **HLabel** to th
 | `interval` | Automatic | Positive fixed tick step |
 | `side` | `"bottom"` | Edge and orientation |
 | `at` | Frame edge | Data location on the perpendicular axis |
-| `tick-size` | `px(5)` | Invisible tick length included in label placement |
+| `tick-size` | `em(5/16)` | Invisible tick length included in label placement |
 | `tick-side` | `"outer"` | Tick direction used to position labels |
-| `label-offset` | `px(4)` | Gap after the tick position |
+| `label-offset` | `em(1/4)` | Gap after the tick position |
 | `format` | `format_tick` | `(value, index) => string` for numeric ticks |
 | `rotate` | `0` | Label rotation in degrees |
 | `label-style` / `label-*` | — | Nested or flat styles for generated labels |
@@ -717,6 +727,7 @@ supplies matching limits automatically.
 | `lim` | `[0, 1]` | Directed domain used to place grid lines |
 | `ticks` | `5` | Target count or explicit values / labeled pairs |
 | `interval` | Automatic | Positive fixed tick step |
+| `stroke-width` | `em(1/16)` | Grid thickness, relative to inherited font size |
 | `direction` | `"x"` | Draw vertical lines; may be overridden |
 
 Grid lines at ticks using the count/explicit/interval rules of [Axis](plotting.md#Axis).
@@ -753,8 +764,9 @@ direction. Ambient **Graph** limits map values. Style lines with stroke,
 | `interval` | Automatic | Positive fixed tick step |
 | `side` | `"bottom"` | Edge and orientation |
 | `at` | Frame edge | Data location on the perpendicular axis |
-| `tick-size` | `px(5)` | Tick length |
+| `tick-size` | `em(5/16)` | Tick length |
 | `tick-side` | `"outer"` | `"inner"`, `"outer"`, `"top"`, or `"bottom"` |
+| `stroke-width` | `em(1/16)` | Tick thickness |
 | `tick-style` / `tick-*` | — | Nested or flat styles for ticks |
 
 **HScale** draws ticks only, without a baseline or labels. It defaults to `side="bottom"`.
@@ -791,9 +803,9 @@ supplies matching limits automatically.
 | `lim` | `[0, 1]` | Directed domain used to place the value |
 | `side` | `"bottom"` | Edge and orientation |
 | `at` | Frame edge | Data location on the perpendicular axis |
-| `tick-size` | `px(5)` | Invisible tick length included in label placement |
+| `tick-size` | `em(5/16)` | Invisible tick length included in label placement |
 | `tick-side` | `"outer"` | Tick direction used to position the label |
-| `label-offset` | `px(4)` | Gap after the tick position |
+| `label-offset` | `em(1/4)` | Gap after the tick position |
 | `rotate` | `0` | Label rotation in degrees |
 | `label-style` / `label-*` | — | Nested or flat styles for generated text |
 
@@ -828,9 +840,9 @@ lie in lim. **VLabel** defaults to the left side, **Label** and **HLabel** to th
 | `interval` | Automatic | Positive fixed tick step |
 | `side` | `"bottom"` | Edge and orientation |
 | `at` | Frame edge | Data location on the perpendicular axis |
-| `tick-size` | `px(5)` | Invisible tick length included in label placement |
+| `tick-size` | `em(5/16)` | Invisible tick length included in label placement |
 | `tick-side` | `"outer"` | Tick direction used to position labels |
-| `label-offset` | `px(4)` | Gap after the tick position |
+| `label-offset` | `em(1/4)` | Gap after the tick position |
 | `format` | `format_tick` | `(value, index) => string` for numeric ticks |
 | `rotate` | `0` | Label rotation in degrees |
 | `label-style` / `label-*` | — | Nested or flat styles for generated labels |
@@ -950,6 +962,7 @@ A supplied label **Element** keeps its own style. **Legend** applies its
 | `ticks` | `5` | Target count or explicit values / labeled pairs |
 | `interval` | Automatic | Positive fixed tick step |
 | `direction` | `"x"` | `"x"` draws vertical lines; `"y"` draws horizontal lines |
+| `stroke-width` | `em(1/16)` | Grid thickness, relative to inherited font size |
 
 Grid lines at ticks using the count/explicit/interval rules of [Axis](plotting.md#Axis).
 lim supplies the generation domain (default [0,1]).
@@ -984,6 +997,7 @@ direction. Ambient **Graph** limits map values. Style lines with stroke,
 | `ylim` | `[0, 1]` | Domain for horizontal grid lines |
 | `xticks` | `5` | Target count or explicit x values / labeled pairs |
 | `yticks` | `5` | Target count or explicit y values / labeled pairs |
+| `stroke-width` | `em(1/16)` | Grid thickness, relative to inherited font size |
 
 Combine **HMesh** and **VMesh**. Supply xlim, ylim, xticks, and yticks; each domain
 defaults to [0,1] and each count to 5. The graph provides mapping; these props
@@ -1056,8 +1070,8 @@ axis titles, an optional legend, and an optional background. Limits follow
 | `grid` | `true` | Draw grid lines at axis ticks |
 | `title` / `xlabel` / `ylabel` | — | String or **Element**; the y title rotates −90° |
 | `legend` | — | **Legend** **Element** or array of **Legend** entries |
-| `margin` | `px(12)` | Extra outer space; accepts [Box padding forms](layout.md#Box) |
-| `label-gap` | `px(8)` | Space between titles and measured axis extents |
+| `margin` | `em(3/4)` | Extra outer space; accepts [Box padding forms](layout.md#Box) |
+| `label-gap` | `em(1/2)` | Space between titles and measured axis extents |
 | `bounds` | `"outer"` | `"frame"` makes the allocation the data area alone; see below |
 | `background` | — | Full-frame background paint |
 | `plot-background` | — | Data-area background paint |
@@ -1074,8 +1088,13 @@ axis titles, an optional legend, and an optional background. Limits follow
 Padding uses [Graph's side and axis forms](plotting.md#Graph), with numeric fractions
 of inferred data spans. Explicit limits stay exact.
 
-Fonts inherit from the parent (16px at the root). Margins come from measured axis
-overflow and title sizes.
+Fonts inherit from the parent (16px at the root). Axis and grid strokes default to
+`em(1/16)`, tick lengths to `em(5/16)`, and tick-label offsets to `em(1/4)`.
+These details, `margin`, and `label-gap` scale with `font-size`; changing only the
+plot's width or height keeps them the same size. Label-specific font overrides
+leave axis geometry unchanged. Use `axis-stroke-width`, `tick-stroke-width`, or
+`grid-stroke-width` with `px(...)` for fixed thicknesses.
+Margins come from measured axis overflow and title sizes.
 Text uses `theme:text`, axes use `theme:muted`, and grid lines use `theme:grid`.
 These paints follow the inherited [theme](../guides/themes.md).
 Title and x title wrap at the usable width. Explicit margin adds space to those
@@ -1168,8 +1187,9 @@ return (
 | `interval` | Automatic | Positive fixed tick step |
 | `side` | `"bottom"` | Edge and orientation |
 | `at` | Frame edge | Data location on the perpendicular axis |
-| `tick-size` | `px(5)` | Tick length |
+| `tick-size` | `em(5/16)` | Tick length |
 | `tick-side` | `"outer"` | `"inner"`, `"outer"`, or an explicit side |
+| `stroke-width` | `em(1/16)` | Tick thickness |
 | `tick-style` / `tick-*` | — | Nested or flat styles for ticks |
 
 **Scale** draws ticks only, without a baseline or labels. It defaults to `side="bottom"`.
@@ -1189,6 +1209,70 @@ supplies matching limits automatically.
 <Box padding={em(2)}>
   <Graph xlim={[0, 4]} ylim={[0, 4]}>
     <Scale lim={[0, 4]} ticks={[0, 1, 2, 3, 4]} />
+  </Graph>
+</Box>
+```
+
+---
+
+<a id="SymArrow"></a>
+
+## SymArrow
+
+| Property | Default | Meaning |
+| --- | --- | --- |
+| `f` | — | Parametric function returning a numeric coordinate record, `[x, y]`, or null |
+| `fx` / `fy` | — | Cartesian coordinate functions or constants |
+| `xlim` / `ylim` / `tlim` | `[0, 1]` | Sampling ranges when corresponding arrays are absent |
+| `xvals` / `yvals` / `tvals` | — | Explicit coordinate or parameter arrays |
+| `samples` | `101` | Number of generated samples |
+| `start-head` | `false` | Draw a head at the first sample |
+| `end-head` | `true` | Draw a head at the last sample |
+| `head-size` | `px(9)` | Head length, using layout units |
+| `curve` | `false` | Connect projected samples with a spline |
+| `tension` | `1` | Spline tangent strength when `curve` is true |
+| `radius` | `0` | Rounded-corner radius for a non-curved route |
+| `space` | Automatic | Use ambient data coordinates or local geometry |
+
+Use the sampling options described by [SymLine](plotting.md#SymLine) and draw with
+[Arrow](geometry.md#Arrow). All Arrow styling and `head-*` options are available.
+Sampling supplies the path, so `points`, `from`, and `to` are not inputs.
+Set `start-head` for heads at both ends, or `end-head={false}` to omit the end head.
+
+`f(t)` can return named numeric records such as `{theta, r}`, `{lon, lat}`, or
+`{x, y, z}`. Every dimension reaches the enclosing projection; only the projected
+samples determine shaft geometry and head directions. Head sizes remain layout
+lengths. See [Projections](../guides/projections.md) for a polar spiral.
+`tlim` controls the parameter range; Graph limits describe the projected view.
+`fx`, `fy`, `xvals`, and `yvals` keep their Cartesian meanings.
+
+Null/nonfinite samples and hidden projected points split the shaft. Heads appear
+only at visible original endpoints with a usable segment; cuts do not acquire
+heads. Construction stores immutable sampled data, so resizing never executes
+the sampling callbacks again.
+
+<a id="SymArrow-example"></a>
+
+### Example
+
+```jsx
+// SymArrow samples a polar spiral and projects its path before drawing the heads.
+<Box padding={em(1.5)}>
+  <Graph
+    aspect={1}
+    xlim={[-1.2, 1.2]}
+    ylim={[-1.2, 1.2]}
+    projection={polar_projection()}
+  >
+    <SymArrow
+      f={t => ({theta: 3 * pi * t, r: 0.2 + 0.8 * t})}
+      tlim={[0, 1]}
+      samples={151}
+      start-head
+      head-size={px(12)}
+      stroke={blue}
+      stroke-width={px(3)}
+    />
   </Graph>
 </Box>
 ```
@@ -1327,6 +1411,7 @@ Graph projects them. Any nonfinite dimension creates a gap. `fx`, `fy`,
 `xvals`, and `yvals` retain their Cartesian meanings.
 
 All **CoordLine** styling options are available.
+Use [SymArrow](plotting.md#SymArrow) for the same sampling options with optional arrowheads.
 Construction stores immutable sampled data; resizing never executes callbacks.
 
 <a id="SymLine-example"></a>
@@ -1498,17 +1583,18 @@ Construction stores immutable sampled data; resizing never executes callbacks.
 | `interval` | Automatic | Positive fixed tick step |
 | `side` | `"left"` | Axis edge and orientation |
 | `at` | Frame edge | Data location on the perpendicular axis |
-| `tick-size` | `px(5)` | Tick length |
+| `tick-size` | `em(5/16)` | Tick length |
 | `tick-side` | `"outer"` | `"inner"`, `"outer"`, `"left"`, or `"right"` |
-| `label-offset` | `px(4)` | Gap between ticks and labels |
+| `label-offset` | `em(1/4)` | Gap between ticks and labels |
 | `format` | `format_tick` | `(value, index) => string` for numeric ticks |
 | `rotate` | `0` | Label rotation in degrees |
 | `labels` | `true` | Draw tick labels |
 | `line` | `true` | Draw the baseline |
 | `arrow` | `false` | Draw a head at the directed endpoint |
-| `arrow-size` | `px(7)` | Arrowhead length |
+| `arrow-size` | `em(7/16)` | Arrowhead length |
 | `arrow-width` | `1.3` | Full arrowhead width divided by its length |
 | `arrow-style` / `arrow-*` | — | Arrowhead shape and paint options |
+| `stroke-width` | `em(1/16)` | Shared baseline and tick thickness |
 | `line-style` / `tick-style` / `label-style` | — | Nested styles for generated parts |
 | `line-*` / `tick-*` / `label-*` | — | Flat overrides for generated-part styles |
 
@@ -1641,9 +1727,9 @@ For value-dependent rounding, return `border_radius` from `styles`, for example
 | `lim` | `[0, 1]` | Directed domain used to place the value |
 | `side` | `"left"` | Edge and orientation |
 | `at` | Frame edge | Data location on the perpendicular axis |
-| `tick-size` | `px(5)` | Invisible tick length included in label placement |
+| `tick-size` | `em(5/16)` | Invisible tick length included in label placement |
 | `tick-side` | `"outer"` | Tick direction used to position the label |
-| `label-offset` | `px(4)` | Gap after the tick position |
+| `label-offset` | `em(1/4)` | Gap after the tick position |
 | `rotate` | `0` | Label rotation in degrees |
 | `label-style` / `label-*` | — | Nested or flat styles for generated text |
 
@@ -1678,9 +1764,9 @@ lie in lim. **VLabel** defaults to the left side, **Label** and **HLabel** to th
 | `interval` | Automatic | Positive fixed tick step |
 | `side` | `"left"` | Edge and orientation |
 | `at` | Frame edge | Data location on the perpendicular axis |
-| `tick-size` | `px(5)` | Invisible tick length included in label placement |
+| `tick-size` | `em(5/16)` | Invisible tick length included in label placement |
 | `tick-side` | `"outer"` | Tick direction used to position labels |
-| `label-offset` | `px(4)` | Gap after the tick position |
+| `label-offset` | `em(1/4)` | Gap after the tick position |
 | `format` | `format_tick` | `(value, index) => string` for numeric ticks |
 | `rotate` | `0` | Label rotation in degrees |
 | `label-style` / `label-*` | — | Nested or flat styles for generated labels |
@@ -1717,6 +1803,7 @@ supplies matching limits automatically.
 | `lim` | `[0, 1]` | Directed domain used to place grid lines |
 | `ticks` | `5` | Target count or explicit values / labeled pairs |
 | `interval` | Automatic | Positive fixed tick step |
+| `stroke-width` | `em(1/16)` | Grid thickness, relative to inherited font size |
 | `direction` | `"y"` | Draw horizontal lines; may be overridden |
 
 Grid lines at ticks using the count/explicit/interval rules of [Axis](plotting.md#Axis).
@@ -1753,8 +1840,9 @@ direction. Ambient **Graph** limits map values. Style lines with stroke,
 | `interval` | Automatic | Positive fixed tick step |
 | `side` | `"left"` | Edge and orientation |
 | `at` | Frame edge | Data location on the perpendicular axis |
-| `tick-size` | `px(5)` | Tick length |
+| `tick-size` | `em(5/16)` | Tick length |
 | `tick-side` | `"outer"` | `"inner"`, `"outer"`, `"left"`, or `"right"` |
+| `stroke-width` | `em(1/16)` | Tick thickness |
 | `tick-style` / `tick-*` | — | Nested or flat styles for ticks |
 
 **VScale** draws ticks only, without a baseline or labels. It defaults to `side="left"`.

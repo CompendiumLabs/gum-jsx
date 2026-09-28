@@ -91,7 +91,7 @@ local to the owner and happens once during construction, before layout.
 
 | Owner | Scopes |
 |---|---|
-| **Arrow** / **Field** / **SymField** | `head-` shape and paint options |
+| **Arrow** / **SymArrow** / **Field** / **SymField** | `head-` shape and paint options |
 | **Axis** / **Scale** / **Label** / **Labels**, including directional variants | `line-`, `tick-` styles; `label-` text options |
 | **Plot** / **BarPlot** | `axis-`, `xaxis-`, `yaxis-` axis options; `tick-` styles |
 | **Plot** / **BarPlot** | `label-`, `title-`, `xlabel-`, `ylabel-` text options |

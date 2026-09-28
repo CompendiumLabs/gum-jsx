@@ -51,6 +51,7 @@ and `space="data"` requires one. Pixel strokes keep their size.
 
 A shaft from from/to or through points. curve makes a spline; radius rounds a
 polyline. Both heads follow the original route's endpoint directions.
+Use [SymArrow](plotting.md#SymArrow) to sample a function into an arrow path.
 
 | Property | Default | Meaning |
 | --- | --- | --- |
@@ -505,21 +506,36 @@ the baseline. [SymFill](plotting.md#SymFill) samples function boundaries.
 
 | Property | Default | Meaning |
 |---|---|---|
-| `from` | `[0, 0.5]` | Segment start in the local rectangle |
-| `to` | `[1, 0.5]` | Segment end in the local rectangle |
+| `y` | `0.5` | Fixed y coordinate |
+| `lim` | `[0, 1]` | Start and end x coordinates |
+| `space` | `"local"` | `"data"` maps the endpoints through the enclosing coordinate context |
 
-**HLine** is a local **Line** convenience. **HLine** and **UnitLine** span `x=0` to `x=1` at `y=0.5`;
-**VLine** spans `y=0` to `y=1` at `x=0.5`. `from/to` props can override these defaults. Use
-**CoordLine** for data geometry.
+**HLine** draws from `[lim[0], y]` to `[lim[1], y]`. By default it spans the width
+of its own allocated rectangle at half its height. Position and span accept
+lengths: fractions, px, em, and unit strings such as `"25%"` or `"12px"`.
+Reversed and equal span endpoints are allowed. Geometry does not change the
+element's layout size.
+
+```jsx
+<HLine y={0.3} lim={[0.1, 0.9]} stroke={blue} stroke-width={px(3)} />
+```
+
+Geometry stays local inside a Graph or Plot unless `space="data"` is set. Data
+numbers use the enclosing coordinate context and contribute to limit inference;
+tagged lengths retain [Line](geometry.md#Line)'s local-length behavior. Custom projections
+map the two endpoints, so the resulting segment need not be horizontal on screen.
+
+`from` and `to` are not supported; use **Line** for arbitrary endpoints.
+Use [VLine](geometry.md#VLine) for a fixed x coordinate and a span along y.
 
 <a id="HLine-example"></a>
 
 ### Example
 
 ```jsx
-// The HLine geometry convenience.
+// A horizontal line with a fixed y position and an x span.
 <Box width="fill" aspect={1.6} padding={em(2)}>
-  <HLine fill={blue} stroke={blue} stroke-width={px(3)} />
+  <HLine y={0.3} lim={[0.1, 0.9]} stroke={blue} stroke-width={px(3)} />
 </Box>
 ```
 
@@ -1290,9 +1306,13 @@ A **Polygon** with vertices at top center and both bottom corners. Uses local fr
 | `from` | `[0, 0.5]` | Segment start in the local rectangle |
 | `to` | `[1, 0.5]` | Segment end in the local rectangle |
 
-**UnitLine** is a local **Line** convenience. **HLine** and **UnitLine** span `x=0` to `x=1` at `y=0.5`;
-**VLine** spans `y=0` to `y=1` at `x=0.5`. `from/to` props can override these defaults. Use
-**CoordLine** for data geometry.
+**UnitLine** is a [Line](geometry.md#Line) convenience that defaults to a horizontal
+segment from `x=0` to `x=1` at `y=0.5` in its local rectangle. `from` and `to`
+can override these defaults, and `space="data"` opts into the enclosing coordinate
+context, as on **Line**.
+
+Use [HLine](geometry.md#HLine) or [VLine](geometry.md#VLine) to specify a fixed position and
+`lim` span instead of arbitrary endpoints.
 
 <a id="UnitLine-example"></a>
 
@@ -1354,20 +1374,35 @@ the baseline. [SymFill](plotting.md#SymFill) samples function boundaries.
 
 | Property | Default | Meaning |
 |---|---|---|
-| `from` | `[0.5, 0]` | Segment start in the local rectangle |
-| `to` | `[0.5, 1]` | Segment end in the local rectangle |
+| `x` | `0.5` | Fixed x coordinate |
+| `lim` | `[0, 1]` | Start and end y coordinates |
+| `space` | `"local"` | `"data"` maps the endpoints through the enclosing coordinate context |
 
-**VLine** is a local **Line** convenience. **HLine** and **UnitLine** span `x=0` to `x=1` at `y=0.5`;
-**VLine** spans `y=0` to `y=1` at `x=0.5`. `from/to` props can override these defaults. Use
-**CoordLine** for data geometry.
+**VLine** draws from `[x, lim[0]]` to `[x, lim[1]]`. By default it spans the height
+of its own allocated rectangle at half its width. Position and span accept
+lengths: fractions, px, em, and unit strings such as `"25%"` or `"12px"`.
+Reversed and equal span endpoints are allowed. Geometry does not change the
+element's layout size.
+
+```jsx
+<VLine x={0.7} lim={[0.2, 0.8]} stroke={blue} stroke-width={px(3)} />
+```
+
+Geometry stays local inside a Graph or Plot unless `space="data"` is set. Data
+numbers use the enclosing coordinate context and contribute to limit inference;
+tagged lengths retain [Line](geometry.md#Line)'s local-length behavior. Custom projections
+map the two endpoints, so the resulting segment need not be vertical on screen.
+
+`from` and `to` are not supported; use **Line** for arbitrary endpoints.
+Use [HLine](geometry.md#HLine) for a fixed y coordinate and a span along x.
 
 <a id="VLine-example"></a>
 
 ### Example
 
 ```jsx
-// The VLine geometry convenience.
+// A vertical line with a fixed x position and a y span.
 <Box width="fill" aspect={1.6} padding={em(2)}>
-  <VLine fill={blue} stroke={blue} stroke-width={px(3)} />
+  <VLine x={0.7} lim={[0.2, 0.8]} stroke={blue} stroke-width={px(3)} />
 </Box>
 ```

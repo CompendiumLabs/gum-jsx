@@ -70,6 +70,7 @@ Each entry includes its runnable JSX example.
 - [OuterLabel](elements/plotting.md#OuterLabel) — Place a label outside a chosen frame edge with optional offset and rotation.
 - [Plot](elements/plotting.md#Plot) — Compose graphable children with linear axes, grid lines, measured tick labels, axis titles, an optional legend, and an optional background.
 - [Scale](elements/plotting.md#Scale) — Draw axis ticks without a baseline or labels.
+- [SymArrow](elements/plotting.md#SymArrow) — Sample a function and draw its path with optional arrowheads.
 - [SymField](elements/plotting.md#SymField) — Sample f(x,y) on a rectangular grid and draw it with Field.
 - [SymFill](elements/plotting.md#SymFill) — Sample a band between upper and lower functions or numbers (defaults 1 and 0).
 - [SymLine](elements/plotting.md#SymLine) — Sample a function at the specified values and draw with CoordLine.

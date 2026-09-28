@@ -15,7 +15,7 @@ Each page includes its runnable JSX example.
 - [Positioning](guides/positioning.md) — Place elements with pos and anchor in local or data coordinates.
 - [Stacks](guides/stack.md) — Explain flex sizing, wrapping, and alignment in HStack and VStack.
 - [Point values](guides/point_values.md) — Point inputs accept either [x, y] or {x, y} in JSX and host code.
-- [Projections](guides/projections.md) — Project coordinates for polar plots, map annotations, and custom elements.
+- [Projections](guides/projections.md) — Project coordinates for polar and logarithmic plots, maps, and custom elements.
 - [Making maps](guides/maps.md) — Build a map from geographic data, feature styles, a fitted view, and projected annotations.
 - [Fonts](guides/fonts.md) — Core measures text and converts glyph outlines into paths during layout.
 - [Math authoring](guides/math.md) — Math is available in the CLI and editor through the optional gum-jsx-math package.

@@ -38,6 +38,7 @@ Each entry includes its runnable JSX example.
 - [Flux Capacitance](gallery/plotting.md#flux_capacitance) — A translucent band fills the space between sine and cosine over a full period.
 - [A reversed data axis](gallery/plotting.md#graph_scatter) — Directed limits reverse x while annotations and custom markers remain upright.
 - [Where U.S. GDP Was Produced](gallery/plotting.md#industry_sankey) — A Sankey-style chart divides 2024 U.S. GDP into goods, services, government, and their industry groups.
+- [Logarithmic projection](gallery/plotting.md#log_projection) — Draw a log–log graph with explicit tick labels and logarithmic grid spacing.
 - [Particle in a Box](gallery/plotting.md#particle_box) — Illustrate wavefunctions and energy states in an infinite square well.
 - [Regional changes](gallery/plotting.md#plot_bars) — Categorical ticks, positive and negative bars, and functional bar colors.
 - [Manual Plot](gallery/plotting.md#plot_manual) — A sine plot assembled from a Graph, Mesh2D, HAxis, and VAxis, rather than the higher-level Plot component.
