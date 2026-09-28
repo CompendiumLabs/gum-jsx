@@ -112,8 +112,10 @@ The layout method runs during layout, not construction. Source props are immutab
 snapshots: plain records, arrays, primitive values, and **Element** references.
 Stored props cannot contain functions, font objects, host handles, or caches.
 Behavior belongs to the element type and resources belong to LayoutPass.
-The base constructor freezes the instance, so ordinary instance field
-initializers or assignments after `super()` cannot add mutable state.
+Keep instance state in props or the layout pass. When runtime immutability checks
+are enabled, the base constructor freezes the instance, and ordinary field
+initializers or assignments after `super()` throw. The readonly contract also
+applies with checks disabled; see [immutability and performance](rendering.md#immutability-and-performance).
 
 ## Normalization and components
 

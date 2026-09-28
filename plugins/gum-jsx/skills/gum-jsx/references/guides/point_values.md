@@ -52,9 +52,11 @@ split their paths, and **Points** omits missing markers. Inferred limits ignore 
 gaps. Every numeric dimension is checked, including dimensions a projection
 does not use. Malformed tuples and nonnumeric named dimensions raise an error.
 
-**Points** callbacks receive the complete frozen source record; tuple inputs
+**Points** callbacks receive the complete readonly source record; tuple inputs
 become `{x, y}`. For example, `point-size={({r}) => px(2 * r)}` can use a named
 polar radius before projection.
+Runtime mutation protection follows the host's
+[immutability setting](rendering.md#immutability-and-performance).
 **Field** shape callbacks likewise receive records in `sample.point` and
 `sample.vector`. Callbacks keep original input indices and execute once at
 construction. Parametric `f(t)` samples preserve arbitrary numeric records.

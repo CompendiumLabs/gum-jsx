@@ -4,6 +4,22 @@ The core pipeline has three boundaries: source elements describe intent,
 LayoutPass produces immutable pixel fragments, and render_svg serializes those
 fragments. Rendering does not query elements, resolve units, or load fonts.
 
+## Immutability and performance
+
+Gum copies caller-owned source data and treats elements, geometry, and fragments
+as readonly. Runtime freezing is enabled by default and disabled with
+`NODE_ENV=production`. Set `GUM_FREEZE=1` or `GUM_FREEZE=0` before importing Gum
+to override that default. Both modes retain input snapshots and validation.
+
+The setting is fixed when the library loads. `FREEZE_ENABLED` reports it, and
+`freeze_owned(value)` lets custom elements apply the same policy to data they
+own. This helper is shallow and does not copy its argument. Consumers must
+respect readonly results in both modes because layout caches share those objects.
+
+For browser bundles, define `__GUM_FREEZE__` as a boolean. Studio production and
+MCP viewer builds disable freezing by default; `GUM_FREEZE=1` during the build
+enables it. Browsers without an explicit setting default to enforcement.
+
 ## From JSX to SVG
 
 ```ts
