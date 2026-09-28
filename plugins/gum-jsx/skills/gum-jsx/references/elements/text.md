@@ -721,8 +721,9 @@ For a boxed title centered across the top border, use [TitleFrame](text.md#Title
 
 **TitleFrame** draws a border around its content, with an optional boxed title
 centered across the top border. Half of the title box sits above that border;
-its full height is included in the layout. The border is cut away behind the
-title, so transparent backgrounds work too. The title reserves no room inside
+its full height is included in the layout. The border and body content are cut
+away behind the title box, so transparent backgrounds work too. This cutout
+applies even when `clip` is false. The title reserves no room inside
 the body: content starts at the ordinary `padding`, so a plot can sit flush with
 the border. Even padding keeps content visually aligned within the frame, so when
 content should clear the lower half of the title box, prefer a smaller
@@ -760,7 +761,7 @@ Without a title, this is an ordinary padded frame. Other props follow
 
 ```jsx
 // A boxed title centered across the top border.
-<Box background={white} padding={em(2)}>
+<Box padding={em(1)}>
   <TitleFrame
     title="A titled figure"
     border-color={blue}
