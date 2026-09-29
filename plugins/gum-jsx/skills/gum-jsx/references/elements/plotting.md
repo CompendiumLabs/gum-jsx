@@ -1447,6 +1447,7 @@ Construction stores immutable sampled data; resizing never executes callbacks.
 | `space` | Automatic | Use ambient data coordinates or local geometry |
 | `point-size` | `px(6)` | Marker size, pair, or callback |
 | `shape` | `Circle` | Marker **Element** or callback |
+| `children` | — | Single marker **Element**, as an alternative to `shape` |
 
 Use the sampling options described by [SymLine](plotting.md#SymLine) and draw with [Points](geometry.md#Points).
 Null/nonfinite samples split paths or omit markers.
@@ -1457,6 +1458,18 @@ Graph projects them. Any nonfinite dimension creates a gap. `fx`, `fy`,
 `xvals`, and `yvals` retain their Cartesian meanings.
 
 All **Points** styling options are available. shape and `point-size` functions run once per finite sample.
+Pass one marker element as a child or use `shape`; supplying both or multiple
+marker children is an error. Use a `shape` callback for per-sample markers.
+
+```jsx
+<SymPoints fy={sin} samples={12}>
+  <Rect fill="red" />
+</SymPoints>
+```
+
+The default circle uses the theme foreground fill and no stroke. Custom shapes
+use normal style inheritance and their own styling, including explicit fill and
+stroke passed through **SymPoints**.
 Construction stores immutable sampled data; resizing never executes callbacks.
 
 <a id="SymPoints-example"></a>

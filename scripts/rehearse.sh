@@ -288,7 +288,7 @@ export { mathToSvgAsync } from '@gum-jsx/math'
 export { GeoMap, world_countries, us_states } from '@gum-jsx/maps'
 export { render_pdf } from '@gum-jsx/pdf'
 export { Gum } from '@gum-jsx/react'
-export { render_png } from '@gum-jsx/png/fragment'
+export { render_png } from '@gum-jsx/png'
 TS
 runlog browser.log bun build browser.ts --target browser --outdir browser
 

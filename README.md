@@ -148,7 +148,7 @@ git clone https://github.com/CompendiumLabs/gum-jsx.git
 cd gum-jsx
 git -c url."https://github.com/".insteadOf=git@github.com: submodule update --init --recursive
 bun install
-bun --filter @gum-jsx/png run build
+bun --filter @gum-jsx/png build
 ```
 
 The submodule command uses HTTPS for the repository's SSH remotes, so a public
