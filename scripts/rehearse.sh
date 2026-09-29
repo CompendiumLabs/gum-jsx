@@ -200,7 +200,6 @@ import { Fonts, Text, PngImage, px, render_element } from '@gum-jsx/core'
 import { mathToSvg } from '@gum-jsx/math'
 import { GeoMap, world_countries, us_states } from '@gum-jsx/maps'
 import { render_png, render_pixels } from '@gum-jsx/png'
-import { select_svg } from '@gum-jsx/png/selection'
 import { render_pdf } from '@gum-jsx/pdf'
 import { displayMarkdown } from '@gum-jsx/mark'
 import { getElements, getGuides, buildSkillFiles } from '@gum-jsx/docs'
@@ -242,7 +241,8 @@ for (const file of ['world-countries-110m.json', 'us-states-10m.json', 'world-at
   assert.ok((await Bun.file(`node_modules/@gum-jsx/maps/data/${file}`).text()).length > 0);
 assert.ok(render_png(result.fragment).length > 0);
 assert.ok(render_pixels(result.fragment).data.length > 0);
-assert.ok(select_svg(result.svg, { x: 0, y: 0, width: 5, height: 5 }, result.size).includes('<svg'));
+const cropped = render_pixels(result.fragment, { select: { x: 0, y: 0, width: 5, height: 5 }, ratio: 2 });
+assert.deepEqual([cropped.width, cropped.height], [10, 10]);
 assert.ok(displayMarkdown('# Hello').includes('Hello'));
 assert.ok(getElements().tags.includes('Plot'));
 assert.ok(getGuides().tags.includes('gum'));
@@ -288,7 +288,7 @@ export { mathToSvgAsync } from '@gum-jsx/math'
 export { GeoMap, world_countries, us_states } from '@gum-jsx/maps'
 export { render_pdf } from '@gum-jsx/pdf'
 export { Gum } from '@gum-jsx/react'
-export { select_svg } from '@gum-jsx/png/selection'
+export { render_png } from '@gum-jsx/png/fragment'
 TS
 runlog browser.log bun build browser.ts --target browser --outdir browser
 
@@ -303,7 +303,7 @@ import { resolve } from 'node:path'
 const html = `<!doctype html><html><body><pre id="status">Loading</pre><main></main>
 <script type="module">
 try {
-  const { Fonts, render_element, mathToSvgAsync, GeoMap, world_countries, us_states, render_pdf } = await import('/browser/browser.js');
+  const { Fonts, render_element, mathToSvgAsync, GeoMap, world_countries, us_states, render_pdf, render_png } = await import('/browser/browser.js');
   const fonts = new Fonts();
   await fonts.load();
   const svgs = [await mathToSvgAsync('x^2+1')];
@@ -311,6 +311,11 @@ try {
     const map = render_element(new GeoMap({ source, projection, width: '400px' }));
     if (map.kind !== 'svg' || !map.svg.includes('<path')) throw Error('Map SVG missing');
     if (!new TextDecoder().decode(render_pdf(map.fragment)).startsWith('%PDF-')) throw Error('Map PDF missing');
+    const png = render_png(map.fragment);
+    if (png[0] !== 137 || png[1] !== 80 || png[2] !== 78 || png[3] !== 71) throw Error('Map PNG missing');
+    const header = new DataView(png.buffer, png.byteOffset, png.byteLength);
+    if (header.getUint32(16) !== Math.ceil(map.fragment.size.width)
+      || header.getUint32(20) !== Math.ceil(map.fragment.size.height)) throw Error('Map PNG size mismatch');
     svgs.push(map.svg);
   }
   for (const svg of svgs) {
@@ -320,7 +325,7 @@ try {
     await image.decode();
   }
   document.body.dataset.result = 'passed';
-  document.querySelector('#status').textContent = 'Passed: installed fonts, math, both map atlases, SVG display, and PDF';
+  document.querySelector('#status').textContent = 'Passed: installed fonts, math, both map atlases, SVG display, PNG, and PDF';
 } catch (error) {
   document.body.dataset.result = 'failed';
   document.querySelector('#status').textContent = String(error.stack ?? error);

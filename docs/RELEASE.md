@@ -342,7 +342,7 @@ No umbrella package is published. The CLI provides `gum`, `gum-tex`, and
 
 Artifacts contain TypeScript source and declared entry points, licensed fonts,
 and the documentation assets needed at runtime. Bun 1.4.2 or newer on Linux x64
-is the supported native runtime for this prerelease. Core, math, PDF, React, and `@gum-jsx/png/selection`
+is the supported native runtime for this prerelease. Core, math, PDF, React, and `@gum-jsx/png/fragment`
 are checked with a TypeScript-aware browser bundler. Direct Node execution is
 outside this release contract. The PNG package ships built JavaScript with embedded WebAssembly and needs no native addon.
 
