@@ -12,7 +12,7 @@ await mkdir(consumer)
 console.log(`Package integration artifacts: ${directory}`)
 async function run(args: string[], cwd = root): Promise<string> {
   const child = Bun.spawn(args, {
-    cwd, env: { ...process.env, npm_config_cache: join(directory, 'cache') },
+    cwd, env: { ...process.env, npm_config_cache: process.env.npm_config_cache ?? join(directory, 'cache') },
     stdout: 'pipe', stderr: 'pipe',
   })
   const [code, out, err] = await Promise.all([
