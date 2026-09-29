@@ -53,12 +53,13 @@ skill checks for `gum` on PATH and in the project, and reuses an existing CLI.
 If none is available, it asks you to choose a global or project-local install
 before carrying it out:
 
-- Global: `bun install -g @gum-jsx/cli@2.0.0-beta.2`.
-- Local: `bun add --dev --exact @gum-jsx/cli@2.0.0-beta.2` in the project directory.
+- Global: `bun install -g @gum-jsx/cli@2.0.0-beta.3`.
+- Local: `bun add --dev --exact @gum-jsx/cli@2.0.0-beta.3` in the project directory.
 
 For local installs, invoke `./node_modules/.bin/gum` or an existing project
 script. If Bun is also missing, its setup is a prerequisite for either option.
-Native PNG rendering has been tested on Linux x64, macOS, and Windows. If you
+Beta.3's WASM PNG renderer has been tested on Linux x64; macOS and Windows
+verification is pending. If you
 decline installation or your host cannot run commands, the skill can still
 provide JSX source and references; it will state that rendering was not performed.
 

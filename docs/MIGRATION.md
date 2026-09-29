@@ -16,12 +16,42 @@ cover those slices in detail.
 there is no new `gum-jsx` umbrella install. The CLI package supplies `gum`,
 `gum-tex`, and `gum-mark`; React supplies `gum-react`.
 
-Release candidates use coordinated `2.0.0-beta.2` versions and the `beta` tag.
-Packages ship TypeScript source. Native rendering has been tested with Bun 1.4.2
-or newer on Linux x64, macOS, and Windows. Core, math, maps, PDF, React, and PNG's
-selection subpath also support TypeScript-aware
-browser bundlers. Direct Node execution is not part of this release contract.
+Release candidates use coordinated `2.0.0-beta.3` versions and the `beta` tag.
+Most packages ship TypeScript source for Bun 1.4.2 or newer and supported browser
+bundlers. PNG ships built JavaScript with embedded WebAssembly and also supports
+Node 22+. Direct Node execution of the other packages is outside this contract.
+Earlier releases were tested on Linux x64, macOS, and Windows; beta.3's new WASM
+renderer has been verified on Linux x64. macOS and Windows verification remains
+outstanding for this candidate. Core, math, maps, PDF, React, and PNG's package
+root support browser bundlers.
 See [RELEASE.md](./RELEASE.md) for artifact verification and remaining gates.
+
+## Changes from beta.2 to beta.3
+
+- **Breaking coordinates:** use atomic `pos={[x, y]}` or `pos={{x, y}}` instead
+  of placement `x`/`y`. Projection callbacks take and return numeric records,
+  or return `null` to omit a point. Named dimensions survive sampling and
+  projection. See [coordinate migration](#coordinate-contract-migration) for
+  single-axis placement, custom components, and geographic aliases.
+- **Breaking PNG API:** replace `rasterize_svg` / `rasterize_pixels` and the old
+  PNG subpaths with `render_png(fragment)` / `render_pixels(fragment)` from
+  `@gum-jsx/png`. Crop with the `select` option; import `RasterSelection` from
+  the package root. The synchronous tiny-skia WASM renderer needs no native
+  addon, install script, host fonts, or separately served WASM file.
+- CLI PNG/kitty, Markdown figures, and MCP rendering now use fragments directly.
+  SVG supports `--text-mode live`; CLI raster and PDF exports always use glyph
+  paths. Direct PNG rendering rejects live text and emoji without outlines.
+  Export these as SVG for a browser with suitable fonts. See the
+  [PNG limits](../gum-jsx-png/README.md#fragment-rendering) for supported paints,
+  image sizes, and browser CSP requirements.
+- Added built-in polar, isometric, orthographic, and perspective projections,
+  `SymArrow`, and adaptive axis sizing. See the
+  [projection guide](../gum-jsx-docs/docs/guides/text/projections.md).
+- `Points` and `SymPoints` accept a single marker child as an alternative to
+  `shape`. Explicit point fill/stroke styling is inherited by custom markers
+  unless overridden. A child and `shape` cannot be supplied together.
+- Layout, text, and WASM startup/rasterization performance improved. TitleBox
+  background clipping and live SVG text handling were corrected.
 
 ## Changes from beta.1 to beta.2
 

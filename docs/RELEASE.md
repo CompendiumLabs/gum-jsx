@@ -1,5 +1,84 @@
 # Gum 2.0 release readiness
 
+## beta.3 preparation — 2026-09-29
+
+**The Linux release checks pass for `2.0.0-beta.3`.** All nine public package
+versions and workspace sibling pins are coordinated, including dependencies in
+the private editor and MCP host. Source manifests retain public access and the
+`beta` dist-tag. The lockfile and generated plugin installation guidance are
+updated. [Migration notes](./MIGRATION.md#changes-from-beta2-to-beta3) cover the
+breaking coordinate and PNG APIs, projection helpers, markers, and output limits.
+
+Preparation started from clean workspace `1bee019` and its recorded submodule
+revisions. The checks below include the uncommitted preparation changes. A clean
+copy of tracked source files, with no dependency or build directories and an
+empty Bun cache, passed a frozen install, PNG build, tests, and typechecks. Its
+lockfile remained byte-for-byte identical to the workspace lockfile.
+
+| Check | Result |
+| --- | --- |
+| Clean install, tests, and typechecks | All eleven package suites and typechecks passed with Bun 1.4.2 on Linux x64. |
+| Editor production build and browser regression | Passed: 25 fonts, concurrent rendering, SVG parity, live text, repeat rendering, and error recovery. Browser screenshot inspected. Existing large-chunk warning remains nonblocking. |
+| Visual report | 214 examples rendered with zero failures. |
+| PDF integration | Ten PDFs and a 12-page deck validated; maximum mean channel error against the WASM renderer was 0.765/255. |
+| Nine release tarballs | Checked versions, concrete sibling pins, exports, executable paths, licenses, assets, and absence of local dependency protocols; recorded SHA-256 hashes of rehearsal tarballs. |
+| Full local-registry rehearsal | All nine packages published only to temporary Verdaccio. Fresh Bun/npm consumers, installed maps/fonts/PNG/PDF, browser rendering, strict TypeScript, and isolated global CLI/React commands passed. |
+| PNG package and host integration | Fresh npm installations passed with scripts disabled. PNG ran under Node 26.9.0 and Bun without native addons, including the older-runtime base64 fallback. Installed CLI and MCP raster paths passed. |
+| MCP and plugin | Real HTTP docs/render/viewer/error checks and plugin ZIP generation passed. |
+| Public version availability | All nine `2.0.0-beta.3` versions returned 404 from the public npm registry; no existing versions would be overwritten. |
+
+The first fresh-registry run found a consumer-only TypeScript failure:
+`@types/react-reconciler@0.33.1` requires an eleventh `createContainer` argument,
+while the installed reconciler runtime and workspace declarations use ten.
+React now pins `@types/react-reconciler` to the compatible `0.33.0`; the complete
+rehearsal passed after that correction. The PNG package test now packs the
+matching core candidate too, so prepublication testing does not depend on that
+core version already being available on npm.
+
+Reproduce the primary checks from the workspace root:
+
+```sh
+bun install --frozen-lockfile
+bun --filter @gum-jsx/png build
+bun run test
+bun run typecheck
+bun run build
+bun run --cwd gum-jsx-math test:browser
+bun run visual-report
+bun run --cwd gum-jsx-pdf test:visual
+bun run --cwd gum-jsx-png test:package
+bun run test:png-package
+bun run --cwd gum-jsx-mcp verify
+bun run plugin:pack
+KEEP=1 bun run rehearse
+```
+
+Publish in order: **core → math → maps → png → pdf → mark → react → docs → cli**.
+Build PNG before publication; its `prepack` hook also performs the JS/declaration
+build using the checked-in WASM artifact. No Rust installation is needed.
+
+Remaining release steps:
+
+- Verify the new WASM backend on macOS and Windows before claiming this
+  candidate is tested there. Prior platform checks covered the old renderer;
+  installation guidance now makes this distinction explicit.
+- Commit/push the preparation and matching submodule pointers, then publish
+  the nine packages under `beta`. Verify a fresh public-registry-only install
+  and dist-tags, and create release tags. No public publication, commits,
+  pushes, or tags were performed by this audit.
+- Distribute the rebuilt plugin only after the pinned beta.3 CLI is public.
+  Plugin directory submission and its conversation tests remain the separate
+  workflow in [PUBLISH.md](./PUBLISH.md).
+
+Temporary evidence: `/tmp/gum-beta3-*.log`, `/tmp/gum-beta3-artifacts.json`,
+clean source copy `/tmp/gum-beta3-clean.t2z39tay/`, successful registry rehearsal
+`/tmp/gum-rehearse.OwqWsI/`, PNG consumer `/tmp/gum-png-package-P3ZxoO/`, and
+CLI/MCP consumer `/tmp/gum-png-integration-kh59Y1/`. Rehearsal tarballs override
+publication metadata to target loopback; publish from the source packages.
+
+The sections below are historical checkpoints, including their then-current
+versions, platform claims, and publication status.
+
 ## Breaking coordinate change before 2.0 — 2026-09-27
 
 The accepted [coordinate roadmap](./COORDS.md) replaces element placement `x`/`y`

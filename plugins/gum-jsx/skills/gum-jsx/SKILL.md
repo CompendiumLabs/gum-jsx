@@ -290,8 +290,8 @@ sandbox. Only evaluate trusted source or use a separate isolation boundary.
 ## CLI setup
 
 Rendering requires **Bun and an installed Gum CLI**. Installing
-this skill or plugin does not install either dependency. Native rendering has
-been tested on Linux x64, macOS, and Windows.
+this skill or plugin does not install either dependency. Beta.3's WASM renderer
+has been tested on Linux x64; macOS and Windows verification is pending.
 
 Before rendering:
 
@@ -310,9 +310,9 @@ Before rendering:
 
 Use the tested CLI release for a new installation:
 
-- **Global:** `bun install -g @gum-jsx/cli@2.0.0-beta.2`. Use `gum` afterward;
+- **Global:** `bun install -g @gum-jsx/cli@2.0.0-beta.3`. Use `gum` afterward;
   if its binary directory is not on PATH, use the installed executable's full path.
-- **Local:** run `bun add --dev --exact @gum-jsx/cli@2.0.0-beta.2` in the chosen
+- **Local:** run `bun add --dev --exact @gum-jsx/cli@2.0.0-beta.3` in the chosen
   project directory. Use `./node_modules/.bin/gum` afterward (the corresponding
   local executable on Windows), or the project's existing Gum script.
 

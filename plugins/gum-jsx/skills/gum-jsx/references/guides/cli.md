@@ -9,8 +9,8 @@ Check for an existing `gum` on PATH and in the project's `node_modules/.bin/`
 preferring the project-local copy. If the CLI is missing, ask the user to choose
 a global or local install before proceeding:
 
-- Global: `bun install -g @gum-jsx/cli@2.0.0-beta.2`, then use `gum`.
-- Local: `bun add --dev --exact @gum-jsx/cli@2.0.0-beta.2` in the project
+- Global: `bun install -g @gum-jsx/cli@2.0.0-beta.3`, then use `gum`.
+- Local: `bun add --dev --exact @gum-jsx/cli@2.0.0-beta.3` in the project
   directory, then use `./node_modules/.bin/gum` or an existing project script.
 
 If Bun also needs installation, follow the

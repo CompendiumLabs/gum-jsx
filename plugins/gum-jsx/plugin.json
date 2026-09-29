@@ -16,7 +16,7 @@
       "interface": {
         "displayName": "Gum JSX",
         "shortDescription": "Diagrams, plots, and slides",
-        "longDescription": "Create and revise diagrams, data plots, mathematical figures, geographic maps, and slide decks with Gum JSX. Get editable JSX source and export SVG, PNG, or PDF files.\n\nRendering requires an environment that can run commands, Bun, and a separate Gum CLI installation. Installing this plugin does not install those dependencies. The skill checks for an existing CLI first; if none is available, it asks whether you want a global or project-local install before proceeding.\n\nNative rendering has been tested on Linux x64, macOS, and Windows. If your environment cannot run commands, or you decline a needed installation, you can still get JSX source and instructions for rendering it elsewhere.",
+        "longDescription": "Create and revise diagrams, data plots, mathematical figures, geographic maps, and slide decks with Gum JSX. Get editable JSX source and export SVG, PNG, or PDF files.\n\nRendering requires an environment that can run commands, Bun, and a separate Gum CLI installation. Installing this plugin does not install those dependencies. The skill checks for an existing CLI first; if none is available, it asks whether you want a global or project-local install before proceeding.\n\nBeta.3's WASM renderer has been tested on Linux x64; macOS and Windows verification is pending. If your environment cannot run commands, or you decline a needed installation, you can still get JSX source and instructions for rendering it elsewhere.",
         "developerName": "Compendium Labs",
         "category": "Developer Tools",
         "capabilities": ["Write"],

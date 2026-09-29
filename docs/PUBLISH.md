@@ -66,8 +66,9 @@ files; release ZIP attachments remain useful snapshots for separate distribution
   source, with rendering clearly reported as not performed. Both install commands
   passed clean-directory checks outside this workspace on Linux x64.
 - [x] **Use a reproducible CLI version.** New-install commands use the tested
-  `@gum-jsx/cli@2.0.0-beta.2`; local installs save it as an exact development
-  dependency. Revisit this pin when publishing plugin updates.
+  `@gum-jsx/cli@2.0.0-beta.3`; local installs save it as an exact development
+  dependency. This candidate pin must be published to npm before distributing
+  the updated plugin. Revisit this pin when publishing plugin updates.
 - [x] **Finish the public listing.** The manifest lists **Gum JSX** by
   **Compendium Labs** in **Developer Tools**, with the 512×512 icon and three
   concrete starter prompts for a system diagram, data plot, and mathematical
