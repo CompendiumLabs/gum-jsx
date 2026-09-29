@@ -79,8 +79,8 @@ gum-mark notes.md
 ```
 
 PNG and terminal rendering use tiny-skia WebAssembly without native addons or
-install scripts. Live text, emoji, and external SVG images use optional
-node-canvas with its native dependencies and host fonts. PDF output preserves vector paths and embedded PNG images;
+install scripts. Raster output uses outlined text; emoji without outlines and
+external SVG images are unsupported. PDF output preserves vector paths and embedded PNG images;
 text is outlined and is not searchable or selectable. See the
 [CLI](gum-jsx-cli/README.md) and [PDF](gum-jsx-pdf/README.md) references for details.
 
@@ -130,7 +130,7 @@ Each package is a separate repository, developed together through Git submodules
 | --- | --- |
 | [@gum-jsx/core](gum-jsx-core/README.md) | JSX evaluation, layout, shapes, text, plots, networks, and SVG output. |
 | [@gum-jsx/math](gum-jsx-math/README.md) | TeX parsing, math layout, and standalone formula exports. |
-| [@gum-jsx/png](gum-jsx-png/README.md) | Fragment rasterization to PNG or RGBA through WebAssembly, with optional native SVG rendering. |
+| [@gum-jsx/png](gum-jsx-png/README.md) | Fragment rasterization to PNG or RGBA through WebAssembly. |
 | [@gum-jsx/pdf](gum-jsx-pdf/README.md) | Vector PDF export from laid-out fragments. |
 | [@gum-jsx/react](gum-jsx-react/README.md) | React bindings, headless rendering, and the `gum-react` command. |
 | [@gum-jsx/mark](gum-jsx-mark/README.md) | Markdown terminal rendering with figures and math. |

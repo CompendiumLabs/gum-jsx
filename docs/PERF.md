@@ -102,7 +102,10 @@ Moving inherited text defaults to the SVG root reduces Silk Road further to
 normal style. Browser checks also pass inside a page with inherited bold,
 italic, and end-aligned text settings.
 
-### PNG export: one raster pass and fast lossless encoding
+### Historical PNG export: one raster pass and fast lossless encoding
+
+These measurements describe the former node-canvas backend. This branch now
+uses tiny-skia WebAssembly; see [current PNG notes](../gum-jsx-png/docs/WASM.md).
 
 Both optimizations are implemented. On Silk Road at 1×, SVG-to-PNG conversion
 falls from **270.7 ms to 129.0 ms: 52% less time**, with identical decoded pixels.
@@ -125,7 +128,7 @@ The [PNG results](perf-silk-road-png-results.json) retain the original prototype
 measurements and the implementation results, including all samples and demo checks.
 
 **1. Avoid rasterizing the SVG twice.** The previous
-[rasterizer](../gum-jsx-png/src/render.ts) assigned `Image.src`, then set its
+rasterizer assigned `Image.src`, then set its
 dimensions before drawing. Node-canvas renders an SVG when it loads the source,
 and renders it again on the next surface access if its dimensions changed.
 Silk Road's logical size is 1824×1151.34. Initial loading truncates that to
@@ -146,8 +149,9 @@ previous level 6 and adaptive filters. Both are lossless. The original component
 experiment reduced encoding alone from 61 ms to 20 ms; simply lowering the
 compression level while retaining adaptive filters took about 44 ms.
 
-The presets are available through `rasterize_svg(svg, { encoding: 'standard' })`
-and both `gum` and `gum-tex`:
+That backend exposed the presets through its SVG API and both CLI commands.
+The current `render_png(fragment, { encoding: 'standard' })` API and CLI flags
+use the Rust PNG encoder instead:
 
 ```sh
 GUM_FREEZE=0 gum gum-jsx-docs/demos/silk_road/silk_road.jsx -f png > /dev/null

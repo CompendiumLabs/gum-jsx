@@ -543,7 +543,7 @@ public API. Run `bun run gum` from the workspace root.
 - [x] Render a JSX file or stdin to SVG with explicit or content-sized viewport
   dimensions.
 - [x] Emit a textual layout tree and JSON fragment data.
-- [x] Rasterize CLI output to PNG through `gum-jsx-png` and node-canvas, with
+- [x] Rasterize CLI output to PNG through `gum-jsx-png` and tiny-skia WebAssembly, with
   no external rasterizer command or font registration.
 - [x] Default stdout to kitty graphics, as in the original gum command;
   explicit formats and output file extensions take precedence.

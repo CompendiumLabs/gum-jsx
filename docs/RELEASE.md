@@ -156,7 +156,7 @@ Publish in runtime dependency order:
 
 The root workspace, editor, and MCP application remain private. Packages ship
 TypeScript source for Bun and supported browser bundlers; direct Node execution
-is outside this contract. PNG rasterization uses native node-canvas. Browser
+is outside this contract. The PNG package ships built JavaScript with embedded WebAssembly and needs no native addon. Browser
 hosts must serve core's font assets at the URLs relative to the emitted module
 and emit math's font imports, or explicitly register their own font resources.
 
@@ -344,7 +344,7 @@ Artifacts contain TypeScript source and declared entry points, licensed fonts,
 and the documentation assets needed at runtime. Bun 1.4.2 or newer on Linux x64
 is the supported native runtime for this prerelease. Core, math, PDF, React, and `@gum-jsx/png/selection`
 are checked with a TypeScript-aware browser bundler. Direct Node execution is
-outside this release contract. PNG rasterization uses native node-canvas.
+outside this release contract. The PNG package ships built JavaScript with embedded WebAssembly and needs no native addon.
 
 Scope decision (2026-09-23): limit verified native support for this prerelease to
 Linux x64. macOS and Windows native installation are outside this release's

@@ -44,10 +44,8 @@ assert.deepEqual(size(Buffer.from(await Bun.file('figure.png').arrayBuffer())), 
 assert.ok(success(cli('gum', ['-f', 'svg'], code)).toString().includes('<svg'))
 const markdown = success(cli('gum-mark', [], 'Inline $x^2$\n\n```gum\n' + code + '\n```')).toString()
 assert.equal([...markdown.matchAll(/\x1b_Gf=100/g)].length, 2, 'Markdown must render both math and Gum images')
-const live = cli('gum', ['-f', 'png', '--text-mode', 'live'], '<Text>Live</Text>')
-assert.equal(live.exitCode, 1)
-assert.ok(live.stderr.toString().includes('optional canvas'))
-assert.equal(live.stdout.length, 0)
+const live = success(cli('gum', ['-f', 'png', '--text-mode', 'live'], '<Text>Live</Text>'))
+assert.deepEqual(live, success(cli('gum', ['-f', 'png'], '<Text>Live</Text>')))
 console.log('ok - installed gum, gum-tex, gum-mark, PNG files, and kitty output')
 
 const server = new McpServer({ name: 'gum-package-test', version: '0' })
@@ -64,7 +62,7 @@ try {
   const display = await client.callTool({ name: 'render', arguments: { code } })
   assert.notEqual(display.isError, true)
   for (const [source, message] of [
-    ['<Frame><Text>😀</Text></Frame>', 'optional canvas'],
+    ['<Frame><Text>😀</Text></Frame>', 'cannot draw live text'],
     ['return 42', 'value instead of an element'],
   ]) {
     const result = await client.callTool({ name: 'rasterize', arguments: { code: source } })

@@ -34,8 +34,8 @@ SVG serialization, fragment inspection, and its development probes. Examples liv
 in gum-jsx-docs and render through the CLI or editor's docs view.
 The CLI defaults to kitty graphics on stdout, including pipes. An output
 filename or explicit format selects kitty, SVG, PNG, tree, or JSON instead.
-The [`gum-jsx-png` submodule](../gum-jsx-png/README.md) provides node-canvas
-PNG and raw-pixel rendering for the CLI. It consumes SVG with outlined glyphs,
+The [`gum-jsx-png` submodule](../gum-jsx-png/README.md) provides WebAssembly
+PNG and raw-pixel rendering for the CLI. It consumes fragments with outlined glyphs,
 so no legacy environment or font registry is needed at rasterization time.
 Content-sized SVG dimensions moved forward into stage 4: a Box can hug a Square,
 and Svg can hug the whole result, with one layout query per element. A fixed-width

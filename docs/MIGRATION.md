@@ -196,7 +196,7 @@ pass produces fragments, and the serializer consumes fragments.
 | `gum.use(math)` plugin registration | `evaluate(source, { scope: math })` plus a `createMathFonts()` font resource on the pass |
 | `new Square({ rounded: true })`, children always an array | `new Square({ border_radius: px(10) })`; `children` may be a single element |
 | layoutRows / layoutSvg placement report | `inspect_fragment`, or the CLI's `tree` and `json` formats |
-| rasterizeSvg from gum-jsx/render | `rasterize_svg` / `rasterize_pixels` from @gum-jsx/png |
+| rasterizeSvg from gum-jsx/render | `render_png(fragment)` / `render_pixels(fragment)` from @gum-jsx/png |
 
 See [Rendering](../gum-jsx-docs/docs/guides/text/rendering.md),
 [Math](../gum-jsx-docs/docs/guides/text/math.md), and

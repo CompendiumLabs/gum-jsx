@@ -92,9 +92,12 @@ A bare element is wrapped in **Svg** by the CLI. The core evaluator itself does 
 add this wrapper. Input and output paths are relative to the current directory.
 Errors go to stderr and exit with status 1.
 
-PNG and kitty use gum-jsx-png. **Text** is already encoded as SVG paths, so raster
-output does not need separate font registration. `--stats` writes machine-readable
-layout counters to stderr independently of the rendered output.
+PNG and kitty use gum-jsx-png's WebAssembly renderer directly on fragments.
+Text and math always use glyph outlines for raster output, including when
+`--text-mode live` selects live SVG text. No native addon or host font registration
+is needed. Emoji without outlines cannot be rasterized; export SVG for a browser
+with suitable fonts. `--stats` writes machine-readable layout counters to stderr
+independently of the rendered output.
 
 PDF uses gum-jsx-pdf to write vector pages at 96 pixels per inch, with
 the same viewport, themes, and backgrounds. Text and math are outlines rather

@@ -73,7 +73,7 @@ font resource. Supplied fonts must already have math faces registered through
 Core itself remains independent of math.
 
 ```ts
-import { LayoutPass, render_svg } from '@gum-jsx/core'
+import { LayoutPass } from '@gum-jsx/core'
 import { createMathFonts, mathToElementAsync, mathToSvgAsync } from '@gum-jsx/math'
 
 const fonts = createMathFonts()
@@ -99,18 +99,18 @@ a pass to synchronous helpers; its host is responsible for preloading it.
 
 ## PNG output from the library
 
-PNG conversion stays in `gum-jsx-png`. Pass the completed fragment's size to
-preserve fractional viewport dimensions when selecting raster resolution:
+PNG conversion stays in `gum-jsx-png`. Pass the completed fragment directly;
+its fractional viewport dimensions are preserved when selecting raster resolution:
 
 ```ts
-import { LayoutPass, render_svg } from '@gum-jsx/core'
+import { LayoutPass } from '@gum-jsx/core'
 import { createMathFonts, mathToElement } from '@gum-jsx/math'
-import { rasterize_svg } from '@gum-jsx/png'
+import { render_png } from '@gum-jsx/png'
 
 const fonts = createMathFonts()
 const pass = new LayoutPass({ fonts: { value: fonts, version: fonts.version } })
 const fragment = pass.layout(mathToElement(String.raw`\widehat{ABC}`))
-const png = rasterize_svg(render_svg(fragment), { size: fragment.size, ratio: 2 })
+const png = render_png(fragment, { ratio: 2 })
 await Bun.write('formula.png', png)
 ```
 
