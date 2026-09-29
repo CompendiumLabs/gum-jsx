@@ -52,6 +52,7 @@ export npm_config_registry="$REG"
 touch "$npm_config_userconfig" "$npm_config_globalconfig"
 
 say 'prepare publication workspace'
+(cd "$ROOT/gum-jsx-png" && runlog png-build.log bun run build)
 PUBLISH="$WORK/publish"
 mkdir -p "$PUBLISH"
 cp "$ROOT/package.json" "$PUBLISH/package.json"
@@ -60,9 +61,10 @@ cp "$ROOT/bun.lock" "$PUBLISH/bun.lock"
 for pkg in "${ORDER[@]}"; do
     mkdir -p "$PUBLISH/gum-jsx-$pkg"
     tar -C "$ROOT/gum-jsx-$pkg" --exclude=.git --exclude=node_modules \
-        --exclude=dist --exclude=out --exclude=skills --exclude=.npmrc \
+        --exclude=dist --exclude=out --exclude=target --exclude=skills --exclude=.npmrc \
         --exclude=.env --exclude='.env.*' -cf - . | tar -C "$PUBLISH/gum-jsx-$pkg" -xf -
 done
+cp -R "$ROOT/gum-jsx-png/dist" "$PUBLISH/gum-jsx-png/dist"
 # Publishing from copies lets us force the local registry even when a package
 # gains a publishConfig.registry, without modifying any source manifests.
 VERSION=$(bun -e '
@@ -126,7 +128,8 @@ cp "$WORK/.npmrc" "$PUBLISH/.npmrc"
 
 for pkg in "${ORDER[@]}"; do
     say "publish @gum-jsx/$pkg@$VERSION locally"
-    (cd "$PUBLISH/gum-jsx-$pkg" && runlog "publish-$pkg.log" npm publish --access public --tag rehearsal --registry "$REG")
+    # PNG was built above; the copies need no dev dependencies or lifecycle scripts.
+    (cd "$PUBLISH/gum-jsx-$pkg" && runlog "publish-$pkg.log" npm publish --ignore-scripts --access public --tag rehearsal --registry "$REG")
     runlog "metadata-$pkg.log" npm view "@gum-jsx/$pkg@$VERSION" --json --registry "$REG"
     bun -e '
 const [file, name, version] = process.argv.slice(1);
@@ -146,9 +149,10 @@ say 'install CLI into a fresh Bun project'
 APP="$WORK/app"
 mkdir -p "$APP"
 cd "$APP"
-printf '{"name":"gum-rehearsal","private":true,"type":"module","trustedDependencies":["canvas"]}\n' > package.json
+printf '{"name":"gum-rehearsal","private":true,"type":"module"}\n' > package.json
 cp "$WORK/.npmrc" .npmrc
-runlog bun-install.log bun install "@gum-jsx/cli@$VERSION" --registry "$REG"
+runlog bun-install.log bun install "@gum-jsx/cli@$VERSION" --ignore-scripts --registry "$REG"
+[ ! -d node_modules/canvas ] || fail 'default CLI install brought in canvas'
 for pkg in core math maps png pdf mark cli; do
     [ -f "node_modules/@gum-jsx/$pkg/package.json" ] || fail "CLI did not bring in $pkg"
 done
@@ -195,7 +199,7 @@ import { realpathSync } from 'node:fs'
 import { Fonts, Text, PngImage, px, render_element } from '@gum-jsx/core'
 import { mathToSvg } from '@gum-jsx/math'
 import { GeoMap, world_countries, us_states } from '@gum-jsx/maps'
-import { rasterize_svg, rasterize_pixels } from '@gum-jsx/png'
+import { render_png, render_pixels } from '@gum-jsx/png'
 import { select_svg } from '@gum-jsx/png/selection'
 import { render_pdf } from '@gum-jsx/pdf'
 import { displayMarkdown } from '@gum-jsx/mark'
@@ -231,13 +235,13 @@ for (const [source, projection] of [[world_countries(), 'equalEarth'], [us_state
   assert.equal(map.kind, 'svg');
   if (map.kind !== 'svg') throw Error('Expected map SVG');
   assert.ok(map.svg.includes('<path'));
-  assert.ok(rasterize_svg(map.svg).length > 0);
+  assert.ok(render_png(map.fragment).length > 0);
   assert.ok(new TextDecoder().decode(render_pdf(map.fragment)).startsWith('%PDF-'));
 }
 for (const file of ['world-countries-110m.json', 'us-states-10m.json', 'world-atlas-LICENSE', 'us-atlas-LICENSE'])
   assert.ok((await Bun.file(`node_modules/@gum-jsx/maps/data/${file}`).text()).length > 0);
-assert.ok(rasterize_svg(result.svg).length > 0);
-assert.ok(rasterize_pixels(result.svg).data.length > 0);
+assert.ok(render_png(result.fragment).length > 0);
+assert.ok(render_pixels(result.fragment).data.length > 0);
 assert.ok(select_svg(result.svg, { x: 0, y: 0, width: 5, height: 5 }, result.size).includes('<svg'));
 assert.ok(displayMarkdown('# Hello').includes('Hello'));
 assert.ok(getElements().tags.includes('Plot'));
@@ -258,7 +262,7 @@ for (const image of unsupportedKeyedPngs)
   assert.throws(() => imagePdf(image.encoded), /tRNS chunk contains more alpha values/);
 console.log('Installed APIs, assets, and PDF image checks passed');
 TS
-runlog libraries.log bun use.ts "$VERSION"
+runlog libraries.log bun --no-addons use.ts "$VERSION"
 
 cat > comp.tsx <<'TSX'
 import { GUM } from '@gum-jsx/react'
@@ -380,6 +384,13 @@ for bin in gum gum-tex gum-mark gum-react; do
     [ -x "node_modules/.bin/$bin" ] || fail "npm did not link $bin"
 done
 [ -f node_modules/@gum-jsx/pdf/src/index.ts ] || fail 'npm did not install PDF source'
+[ ! -d node_modules/canvas ] || fail 'npm default CLI install brought in canvas'
+runlog npm-gum-png.log bun --no-addons node_modules/.bin/gum "$APP/figure.jsx" -o figure.png
+runlog npm-tex-png.log bun --no-addons node_modules/.bin/gum-tex 'x^2' -o formula.png
+runlog npm-mark.log bun --no-addons node_modules/.bin/gum-mark "$APP/notes.md"
+[[ $(od -An -tx1 -N8 figure.png | tr -d ' \n') = 89504e470d0a1a0a ]] || fail 'npm gum PNG'
+[[ $(od -An -tx1 -N8 formula.png | tr -d ' \n') = 89504e470d0a1a0a ]] || fail 'npm gum-tex PNG'
+grep -q $'\033_G' "$WORK/npm-mark.log" || fail 'npm gum-mark image'
 
 say 'isolated global Bun installation'
 cd "$WORK"

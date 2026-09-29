@@ -78,8 +78,9 @@ gum-tex 'e^{i\pi}+1=0' -o euler.svg
 gum-mark notes.md
 ```
 
-PNG and terminal rendering use node-canvas, which needs its native dependencies
-and SVG support. PDF output preserves vector paths and embedded PNG images;
+PNG and terminal rendering use tiny-skia WebAssembly without native addons or
+install scripts. Live text, emoji, and external SVG images use optional
+node-canvas with its native dependencies and host fonts. PDF output preserves vector paths and embedded PNG images;
 text is outlined and is not searchable or selectable. See the
 [CLI](gum-jsx-cli/README.md) and [PDF](gum-jsx-pdf/README.md) references for details.
 
@@ -129,7 +130,7 @@ Each package is a separate repository, developed together through Git submodules
 | --- | --- |
 | [@gum-jsx/core](gum-jsx-core/README.md) | JSX evaluation, layout, shapes, text, plots, networks, and SVG output. |
 | [@gum-jsx/math](gum-jsx-math/README.md) | TeX parsing, math layout, and standalone formula exports. |
-| [@gum-jsx/png](gum-jsx-png/README.md) | SVG rasterization to PNG or RGBA through node-canvas. |
+| [@gum-jsx/png](gum-jsx-png/README.md) | Fragment rasterization to PNG or RGBA through WebAssembly, with optional native SVG rendering. |
 | [@gum-jsx/pdf](gum-jsx-pdf/README.md) | Vector PDF export from laid-out fragments. |
 | [@gum-jsx/react](gum-jsx-react/README.md) | React bindings, headless rendering, and the `gum-react` command. |
 | [@gum-jsx/mark](gum-jsx-mark/README.md) | Markdown terminal rendering with figures and math. |
@@ -147,6 +148,7 @@ git clone https://github.com/CompendiumLabs/gum-jsx.git
 cd gum-jsx
 git -c url."https://github.com/".insteadOf=git@github.com: submodule update --init --recursive
 bun install
+bun --filter @gum-jsx/png run build
 ```
 
 The submodule command uses HTTPS for the repository's SSH remotes, so a public
@@ -161,6 +163,7 @@ bun run perf          # Core, math, maps, and demos benchmarks, sequentially
 bun run build         # Production browser editor and docs viewer
 bun run visual-test   # Searchable HTML report of rendered examples
 bun run rehearse      # Publish to a temporary local registry and check fresh installs
+bun run test:png-package # Fresh npm CLI/MCP install; no scripts or native addons
 ```
 
 To work on one package, use its scripts, for example

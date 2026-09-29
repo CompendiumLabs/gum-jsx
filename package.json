@@ -27,6 +27,7 @@
     "visual-report": "bun --filter @gum-jsx/cli visual-report",
     "typecheck": "bun run --workspaces typecheck",
     "test": "bun run --workspaces test",
+    "test:png-package": "bun test/png-package.ts",
     "perf": "bun test/perf.ts",
     "rehearse": "bash scripts/rehearse.sh"
   }
