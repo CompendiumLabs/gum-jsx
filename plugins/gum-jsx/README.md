@@ -58,6 +58,7 @@ Download the matching archive from the
 [Gum CLI release](https://github.com/CompendiumLabs/gum-jsx-cli/releases/tag/v2.0.0-beta.3):
 
 - [macOS ARM64](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-macos-arm64.tar.gz)
+- [macOS x64 (Intel)](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-macos-x64.tar.gz)
 - [Linux x64](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-linux-x64.tar.gz) (glibc)
 - [Windows x64](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-windows-x64.zip)
 
@@ -81,7 +82,7 @@ For local installs, invoke `./node_modules/.bin/gum` or an existing project
 script. This mode needs Bun; standalone does not. The skill's
 [CLI guide](skills/gum-jsx/references/guides/cli.md) covers both setup paths.
 
-Linux x64 standalone rendering has been tested; macOS ARM64 and Windows x64
+Linux x64 standalone rendering has been tested; macOS ARM64/x64 and Windows x64
 runtime verification is pending. If you decline setup or your host cannot run
 commands, the skill can still provide JSX source and references and will state
 that rendering was not performed.

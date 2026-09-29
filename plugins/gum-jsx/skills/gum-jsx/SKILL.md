@@ -308,7 +308,7 @@ Before rendering:
    first setup question.
 3. For standalone, detect the OS and architecture and use the matching
    [v2.0.0-beta.3 release](https://github.com/CompendiumLabs/gum-jsx-cli/releases/tag/v2.0.0-beta.3).
-   Downloads are available for macOS ARM64, Linux x64 (glibc), and Windows x64.
+   Downloads are available for macOS ARM64 and x64, Linux x64 (glibc), and Windows x64.
    Follow the [CLI setup guide](references/guides/cli.md) for exact asset links,
    checksum verification, extraction, and optional package installation.
    Use a writable tools directory and invoke the extracted executable by its
@@ -320,7 +320,7 @@ Before rendering:
    existing project script. Standalone supports math through `Tex`/`Latex`
    and PDF decks.
 
-Linux x64 standalone rendering has been tested. macOS ARM64 and Windows x64
+Linux x64 standalone rendering has been tested. macOS ARM64/x64 and Windows x64
 archives are published, but runtime verification on those platforms is pending.
 If installation is declined or command execution is unavailable, provide JSX
 source and rendering instructions and state that it has not been rendered.

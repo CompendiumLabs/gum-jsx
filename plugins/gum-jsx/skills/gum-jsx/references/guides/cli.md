@@ -19,12 +19,13 @@ Use the matching archive from
 | Platform | Archive |
 |---|---|
 | macOS, Apple Silicon (ARM64) | [macos-arm64.tar.gz](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-macos-arm64.tar.gz) |
+| macOS, Intel (x64 / x86_64) | [macos-x64.tar.gz](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-macos-x64.tar.gz) |
 | Linux, x64 / x86_64 (glibc) | [linux-x64.tar.gz](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-linux-x64.tar.gz) |
 | Windows, x64 / AMD64 | [windows-x64.zip](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-windows-x64.zip) |
 
 1. Detect the OS and CPU architecture. Do not substitute a different architecture
    when a matching release is absent. Offer package installation or a source
-   build for platforms such as Linux ARM64 or Intel macOS.
+   build for platforms such as Linux ARM64.
 2. Download the matching archive and
    [SHA256SUMS](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/SHA256SUMS).
    Compare the archive's SHA-256 hash against its filename's entry using
@@ -43,7 +44,7 @@ Standalone includes JSX, math through `Tex`/`Latex`, maps, and PDF decks. The
 archives provide the executable; install `@gum-jsx/*` packages separately for
 library integration. External `--plugin` modules still need their own
 project dependencies. Linux x64 rendering has been tested; the published macOS
-ARM64 and Windows x64 builds still need runtime verification on those platforms.
+ARM64/x64 and Windows x64 builds still need runtime verification on those platforms.
 
 ## Development and library mode
 
