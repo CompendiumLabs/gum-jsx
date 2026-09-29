@@ -2,8 +2,8 @@
 
 Use `mathToElement` for a naturally sized formula viewport, or `mathToSvg` to
 render directly to an SVG string. Both accept TeX or an existing Gum element.
-The [gum-tex command](cli.md) exposes the same export through SVG, PNG, PDF, kitty
-graphics, a fragment tree, and JSON.
+Return the element from a Gum JSX file to export it with the [gum command](cli.md)
+as SVG, PNG, PDF, kitty graphics, a fragment tree, or JSON.
 
 ```ts
 import { px, em } from '@gum-jsx/core'

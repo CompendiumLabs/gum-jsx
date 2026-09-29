@@ -56,13 +56,13 @@ explicit paint props still apply. `--background` paints behind the rendered
 fragment without changing layout. Omit it for transparent output; any explicit
 backgrounds in the source still apply.
 
-Both `gum` and `gum-tex` accept these options. TeX uses the selected foreground
-unless `--color` is supplied. Library helpers such as `mathToElement` can be
-nested inside a themed element to inherit the same palette.
+Math inherits the selected foreground unless its `color` is supplied. Library
+helpers such as `mathToElement` can be nested inside a themed element to inherit
+the same palette.
 
 ```sh
-gum-tex 'x^2' --theme dark
-gum-tex 'x^2' -t light --background white -o formula.png
+gum figure.jsx --theme dark
+gum figure.jsx -t light --background white -o figure.png
 ```
 
 ## Example

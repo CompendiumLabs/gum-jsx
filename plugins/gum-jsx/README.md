@@ -47,21 +47,44 @@ codex plugin add gum-jsx@gum-jsx-beta
 
 Start a new task after installation to load the skill.
 
-Rendering requires **Bun and a separate Gum CLI installation**.
-Installing the plugin does not install these dependencies. On first use, the
-skill checks for `gum` on PATH and in the project, and reuses an existing CLI.
-If none is available, it asks you to choose a global or project-local install
-before carrying it out:
+Rendering requires an environment that can run commands and a **separate Gum
+executable**. The skill checks for a working installation first and reuses it.
+If setup is needed, it offers **standalone (recommended)** or optional
+**development/library mode**.
 
-- Global: `bun install -g @gum-jsx/cli@2.0.0-beta.3`.
-- Local: `bun add --dev --exact @gum-jsx/cli@2.0.0-beta.3` in the project directory.
+### Standalone (default)
+
+Download the matching archive from the
+[Gum CLI release](https://github.com/CompendiumLabs/gum-jsx-cli/releases/tag/v2.0.0-beta.3):
+
+- [macOS ARM64](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-macos-arm64.tar.gz)
+- [Linux x64](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-linux-x64.tar.gz) (glibc)
+- [Windows x64](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-windows-x64.zip)
+
+Verify the download against the release's
+[SHA256SUMS](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/SHA256SUMS),
+extract it, and run `gum --version` using the executable's path. Putting it on
+PATH is optional. Standalone includes its runtime, fonts, math, maps, and PNG
+renderer; no Bun installation or project dependencies are needed for built-in
+rendering. It provides `gum` only.
+
+### Development/library mode (optional)
+
+Use Bun packages for library integration or source development:
+
+- Project CLI: `bun add --dev --exact @gum-jsx/cli@2.0.0-beta.3`.
+- Global CLI: `bun install -g @gum-jsx/cli@2.0.0-beta.3`.
+- Libraries: `bun add --exact @gum-jsx/core@2.0.0-beta.3 @gum-jsx/math@2.0.0-beta.3`
+  for host code that evaluates and renders Gum with math.
 
 For local installs, invoke `./node_modules/.bin/gum` or an existing project
-script. If Bun is also missing, its setup is a prerequisite for either option.
-Beta.3's WASM PNG renderer has been tested on Linux x64; macOS and Windows
-verification is pending. If you
-decline installation or your host cannot run commands, the skill can still
-provide JSX source and references; it will state that rendering was not performed.
+script. This mode needs Bun; standalone does not. The skill's
+[CLI guide](skills/gum-jsx/references/guides/cli.md) covers both setup paths.
+
+Linux x64 standalone rendering has been tested; macOS ARM64 and Windows x64
+runtime verification is pending. If you decline setup or your host cannot run
+commands, the skill can still provide JSX source and references and will state
+that rendering was not performed.
 
 To test the package in ChatGPT, open Plugins, choose **Add plugin** →
 **Upload plugin**, select `dist/gum-jsx-plugin.zip`, and start a new Work chat.
@@ -70,5 +93,6 @@ To test the package in ChatGPT, open Plugins, choose **Add plugin** →
 
 Report bugs, setup problems, and feature requests in the
 [Gum JSX issue tracker](https://github.com/CompendiumLabs/gum-jsx/issues).
-For rendering problems, include your operating system, Bun and Gum CLI versions,
+For rendering problems, include your operating system, CPU architecture, Gum
+version, installation method (and Bun version for package installs),
 the command and error output, and a small JSX example that reproduces the issue.

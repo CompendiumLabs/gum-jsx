@@ -1,23 +1,75 @@
 # CLI
 
 The `gum` command evaluates JSX, lays out the result, and writes SVG, PNG, PDF,
-kitty graphics, a fragment tree, or JSON. Rendering requires Bun
-and the Gum CLI; installing the authoring plugin does not install them.
+kitty graphics, a fragment tree, or JSON. **Standalone is the recommended setup**
+for making figures and decks. It includes the runtime and rendering assets, so
+Bun and `node_modules` are unnecessary. The authoring plugin does not install
+an executable automatically.
 
-Check for an existing `gum` on PATH and in the project's `node_modules/.bin/`
-(or workspace root). Confirm it is the JSX renderer with `--help` and reuse it,
-preferring the project-local copy. If the CLI is missing, ask the user to choose
-a global or local install before proceeding:
+Check `gum --version` and the project's existing CLI or scripts first; reuse a
+working installation. If setup is needed, offer standalone by default, with
+optional development/library mode. Reuse any installation choice already made
+in the conversation.
 
-- Global: `bun install -g @gum-jsx/cli@2.0.0-beta.3`, then use `gum`.
-- Local: `bun add --dev --exact @gum-jsx/cli@2.0.0-beta.3` in the project
-  directory, then use `./node_modules/.bin/gum` or an existing project script.
+## Standalone downloads
 
-If Bun also needs installation, follow the
-[Bun setup instructions](https://bun.sh/docs/installation). After installation,
-verify the selected CLI with `--help`. If installation is declined or command
-execution is unavailable, provide source and instructions without claiming to
-have rendered it.
+Use the matching archive from
+[Gum v2.0.0-beta.3](https://github.com/CompendiumLabs/gum-jsx-cli/releases/tag/v2.0.0-beta.3):
+
+| Platform | Archive |
+|---|---|
+| macOS, Apple Silicon (ARM64) | [macos-arm64.tar.gz](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-macos-arm64.tar.gz) |
+| Linux, x64 / x86_64 (glibc) | [linux-x64.tar.gz](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-linux-x64.tar.gz) |
+| Windows, x64 / AMD64 | [windows-x64.zip](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-windows-x64.zip) |
+
+1. Detect the OS and CPU architecture. Do not substitute a different architecture
+   when a matching release is absent. Offer package installation or a source
+   build for platforms such as Linux ARM64 or Intel macOS.
+2. Download the matching archive and
+   [SHA256SUMS](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/SHA256SUMS).
+   Compare the archive's SHA-256 hash against its filename's entry using
+   `sha256sum`, `shasum -a 256`, or PowerShell `Get-FileHash -Algorithm SHA256`.
+   Verify the selected file; the checksum list also contains other platforms.
+3. Extract the `.tar.gz` with `tar -xzf <archive>` or the Windows `.zip` with
+   PowerShell `Expand-Archive`. Each archive contains a versioned directory with
+   `gum` or `gum.exe`, installation notes, and license notices. Keep it in a
+   writable tools directory. Adding the executable to PATH is optional; invoke
+   its full path when needed. Do not change shell profiles for a one-off render.
+4. Run the extracted executable with `--version` (expected `2.0.0-beta.3`), then
+   render the figure. For example, `./gum figure.jsx -o figure.svg`, or
+   `.\gum.exe figure.jsx -o figure.svg` in PowerShell.
+
+Standalone includes JSX, math through `Tex`/`Latex`, maps, and PDF decks. The
+archives provide the executable; install `@gum-jsx/*` packages separately for
+library integration. External `--plugin` modules still need their own
+project dependencies. Linux x64 rendering has been tested; the published macOS
+ARM64 and Windows x64 builds still need runtime verification on those platforms.
+
+## Development and library mode
+
+Choose this route for integration into a code project or source development.
+It requires Bun; follow the
+[Bun setup instructions](https://bun.sh/docs/installation) if it is missing.
+
+- **Project CLI:** `bun add --dev --exact @gum-jsx/cli@2.0.0-beta.3`, then use
+  `./node_modules/.bin/gum` (or the corresponding Windows executable).
+- **Global CLI:** `bun install -g @gum-jsx/cli@2.0.0-beta.3`, then use `gum`.
+- **Library integration:** add the libraries the host code needs, for example
+  `bun add --exact @gum-jsx/core@2.0.0-beta.3 @gum-jsx/math@2.0.0-beta.3`.
+  See [Rendering](rendering.md) for evaluation, layout, and export APIs, and
+  [Math export](math_export.md) for fonts and standalone formulas.
+- **Source development:** use the existing Gum checkout and its `bun run gum`
+  script. For a new checkout, follow the repository's
+  [development instructions](https://github.com/CompendiumLabs/gum-jsx#development).
+
+Choose project-local CLI installation when the user wants dependencies managed
+with the project; use global installation when they ask for commands across
+projects. Preserve any scope already chosen. Verify the selected CLI with
+`--version`.
+If installation is declined or commands cannot run, provide source and rendering
+instructions without claiming to have rendered it.
+
+## Render a figure
 
 The examples below assume `gum` is on PATH; substitute the local executable when
 needed. In a Gum workspace checkout, use `bun run gum` instead of `gum`.
@@ -113,34 +165,6 @@ neighboring manifests. Pass a deck directory to evaluate slides with its prelude
 
 Watch mode is not implemented.
 Only run trusted JSX; the evaluator executes JavaScript.
-
-## TeX input
-
-`gum-tex` uses the same output formats and viewport options as `gum`. Pass a
-literal formula, `-i formula.tex` for a file, or omit input to read stdin:
-
-```sh
-gum-tex 'e^{i\pi}+1=0' -o euler.svg
-gum-tex 'e^{i\pi}+1=0' -o euler.pdf
-gum-tex '\frac{a+b}{c+d}' -s 48 -p 0.25 -o fraction.png --ratio 2
-gum-tex -i formula.tex --inline -f tree --stats
-printf '%s\n' 'x^2+y^2=1' | gum-tex -f svg
-gum-tex 'x^2+y^2=1' --fit -W 400
-gum-tex 'x^2+y^2=1' --theme dark
-```
-
-Quote literal TeX with single quotes and omit surrounding `$` delimiters.
-Use `--` before a formula starting with a dash. `-s` sets font size in pixels
-(default 64); `-p` adds padding in em (default 0). `--inline` selects text style,
-`--no-strut` removes the minimum line box, `--color` overrides the theme foreground, and repeatable
-`--macro` definitions use command=expansion, such as `'\RR=\mathbb{R}'`.
-
-The natural viewport includes the logical formula box and visible overhang.
-An empty axis has a one-pixel floor. `-W` and `-H` shrink the formula when needed;
-`--fit` also permits enlargement, and `--no-fit` clips at the original font size.
-`--ratio` changes
-only raster sampling. See [standalone exports](math_export.md) for the matching
-library API and [math authoring](math.md) for supported formulas.
 
 ## Example
 

@@ -289,40 +289,41 @@ sandbox. Only evaluate trusted source or use a separate isolation boundary.
 
 ## CLI setup
 
-Rendering requires **Bun and an installed Gum CLI**. Installing
-this skill or plugin does not install either dependency. Beta.3's WASM renderer
-has been tested on Linux x64; macOS and Windows verification is pending.
+Use **standalone `gum` by default** for authoring and rendering figures. It
+includes the runtime, fonts, math, maps, and PNG renderer; no Bun installation or
+project dependencies are needed. Installing this skill/plugin supplies the
+instructions and references, not the executable.
 
 Before rendering:
 
-1. Check for `gum` on PATH (`command -v gum`, or `Get-Command gum` in
-   PowerShell) and a project-local executable in `node_modules/.bin/`, including
-   the workspace root when applicable. Inspect the project's `package.json`
-   for `@gum-jsx/cli` and existing Gum scripts. Run the selected executable with
-   `--help` to confirm it is the JSX renderer with SVG, PNG, and PDF output.
-   Reuse a working installation; prefer the project-local one when both exist.
-   Do not use `bunx` or `npx` to check availability, since they can install packages.
-2. If neither installation is available, ask whether the user wants a **global
-   install** (available across projects) or a **local install** (adds the CLI to
-   the current project's development dependencies). Wait for their choice, then
-   carry out that installation. If they have already chosen a scope in this
-   conversation, use it without asking again.
+1. Check `gum --version` and any existing project-local CLI or Gum script.
+   Inspect `package.json` when present; reuse the project's selected installation.
+   In a Gum source checkout, use `bun run gum --version`. Run `--help` to confirm
+   available options. Do not use `bunx` or `npx` as availability checks.
+2. If no working renderer is available, offer **standalone (recommended)** for
+   figures and decks, or **development/library mode** for package integration
+   or source development. Carry out
+   an already-authorized setup without asking again; otherwise get the user's
+   choice before installing. Avoid making global-versus-local package scope the
+   first setup question.
+3. For standalone, detect the OS and architecture and use the matching
+   [v2.0.0-beta.3 release](https://github.com/CompendiumLabs/gum-jsx-cli/releases/tag/v2.0.0-beta.3).
+   Downloads are available for macOS ARM64, Linux x64 (glibc), and Windows x64.
+   Follow the [CLI setup guide](references/guides/cli.md) for exact asset links,
+   checksum verification, extraction, and optional package installation.
+   Use a writable tools directory and invoke the extracted executable by its
+   full path when it is not on PATH. Reuse that path for subsequent renders.
+   For other platforms, offer the Bun package route or a source build instead
+   of downloading an incompatible binary.
+4. Verify the selected executable with `--version`, then render the requested
+   figure. The examples below use `gum`; substitute its selected path or the
+   existing project script. Standalone supports math through `Tex`/`Latex`
+   and PDF decks.
 
-Use the tested CLI release for a new installation:
-
-- **Global:** `bun install -g @gum-jsx/cli@2.0.0-beta.3`. Use `gum` afterward;
-  if its binary directory is not on PATH, use the installed executable's full path.
-- **Local:** run `bun add --dev --exact @gum-jsx/cli@2.0.0-beta.3` in the chosen
-  project directory. Use `./node_modules/.bin/gum` afterward (the corresponding
-  local executable on Windows), or the project's existing Gum script.
-
-Verify the installed command with `--help`, then render the requested figure.
-The examples below use `gum`; substitute the selected local executable or
-project script as needed. The installation also provides `gum-tex` and `gum-mark`.
-In a Gum source workspace, use the existing `bun run gum` script.
-
-If the user declines installation or the host cannot run commands, provide the
-JSX source and rendering instructions, and state that it has not been rendered.
+Linux x64 standalone rendering has been tested. macOS ARM64 and Windows x64
+archives are published, but runtime verification on those platforms is pending.
+If installation is declined or command execution is unavailable, provide JSX
+source and rendering instructions and state that it has not been rendered.
 
 ## Render with the CLI
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "gum-jsx",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Create diagrams, plots, mathematical figures, maps, and slides with Gum JSX.",
   "author": {
     "name": "Compendium Labs",
@@ -10,16 +10,26 @@
   "homepage": "https://github.com/CompendiumLabs/gum-jsx",
   "repository": "https://github.com/CompendiumLabs/gum-jsx",
   "license": "MIT",
-  "keywords": ["gum-jsx", "diagrams", "plots", "math", "maps", "svg", "slides"],
+  "keywords": [
+    "gum-jsx",
+    "diagrams",
+    "plots",
+    "math",
+    "maps",
+    "svg",
+    "slides"
+  ],
   "extensions": {
     "com.openai": {
       "interface": {
         "displayName": "Gum JSX",
         "shortDescription": "Diagrams, plots, and slides",
-        "longDescription": "Create and revise diagrams, data plots, mathematical figures, geographic maps, and slide decks with Gum JSX. Get editable JSX source and export SVG, PNG, or PDF files.\n\nRendering requires an environment that can run commands, Bun, and a separate Gum CLI installation. Installing this plugin does not install those dependencies. The skill checks for an existing CLI first; if none is available, it asks whether you want a global or project-local install before proceeding.\n\nBeta.3's WASM renderer has been tested on Linux x64; macOS and Windows verification is pending. If your environment cannot run commands, or you decline a needed installation, you can still get JSX source and instructions for rendering it elsewhere.",
+        "longDescription": "Create and revise diagrams, data plots, mathematical figures, geographic maps, and slide decks with Gum JSX. Get editable JSX source and export SVG, PNG, or PDF files.\n\nRendering requires an environment that can run commands and a separate Gum executable. The skill reuses an existing installation, or offers a standalone download by default for macOS ARM64, Linux x64, or Windows x64. Standalone gum includes its runtime and rendering assets; no Bun installation is needed. Optional development/library mode uses Bun packages for project integration and source development. Installing this plugin does not install the renderer.\n\nLinux x64 standalone rendering has been tested; macOS ARM64 and Windows x64 runtime verification is pending. If your environment cannot run commands, or you decline setup, you can still get JSX source and rendering instructions.",
         "developerName": "Compendium Labs",
         "category": "Developer Tools",
-        "capabilities": ["Write"],
+        "capabilities": [
+          "Write"
+        ],
         "websiteURL": "https://github.com/CompendiumLabs/gum-jsx",
         "supportURL": "https://github.com/CompendiumLabs/gum-jsx/issues",
         "defaultPrompt": [
