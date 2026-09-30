@@ -238,56 +238,6 @@ Useful starting points:
 For features without a dedicated component, compose supported primitives or
 explain the limitation.
 
-## Render and refine
-
-Start from a relevant example and render a draft using the host's available
-rendering workflow. Check text legibility, alignment, clipping, and overlap of
-labels and connectors. Temporary `debug` props show container allocations and
-content bounds. Fix the allocation or content causing the issue, then render
-again; remove diagnostic overlays from the finished figure.
-
-For a sine plot, use explicit layout units and `samples`:
-
-```jsx
-<Plot
-  width={px(640)}
-  aspect={2}
-  font-size={px(18)}
-  title="Sine wave"
-  xlim={[0, 2 * pi]}
-  ylim={[-1.5, 1.5]}
-  grid
-  grid-stroke-dasharray={em(0.2)}
->
-  <SymLine
-    fy={sin}
-    xlim={[0, 2 * pi]}
-    samples={161}
-    stroke={blue}
-    stroke-width={em(0.12)}
-  />
-</Plot>
-```
-
-`stroke-dasharray` accepts one length for equal dashes and gaps, or an array for
-a custom pattern. Use `px(...)` or `em(...)` for explicit units; bare numbers are fractions.
-
-## Host code
-
-In host TypeScript, use `evaluate(source)` then `render_element(result)` from
-`@gum-jsx/core`. The latter wraps bare elements in `Svg` and returns a tagged
-`svg` or plain `value` result. For layout inspection or another output backend,
-use `layout_element`; the lower-level stages are `make_viewport(element)` →
-`LayoutPass.layout(viewport)` → `render_svg(fragment)`.
-
-Provide `@gum-jsx/math` bindings through `evaluate`'s `scope` and
-`math.createMathFonts()` through the rendering helper's `fonts` option when needed.
-Use a distinct `id_prefix` for each SVG embedded in the same HTML document.
-Read the rendering and math guides for font loading and viewport options.
-
-Evaluation executes JavaScript in the host environment; it is not a security
-sandbox. Only evaluate trusted source or use a separate isolation boundary.
-
 ## CLI setup
 
 The `gum` command evaluates JSX, lays out the result, and writes SVG, PNG, PDF,
@@ -389,13 +339,13 @@ gum --help
 | Option | Meaning |
 |---|---|
 | `[files...]` | JSX files or one deck directory; omit or use `-` for stdin |
-| `-f, --format <format>` | `kitty`, `svg`, `png`, `pdf`, `tree`, or `json` |
+| `-f, --format <format>` | Image output: `kitty`, `svg`, `png`, `pdf`; layout inspection: `tree` or `json` |
 | `-o, --output <file>` | Write to a file instead of stdout |
 | `-W, --width <pixels>` | Exact viewport width in pixels |
 | `-H, --height <pixels>` | Exact viewport height in pixels |
 | `-r, --ratio <number>` | Positive PNG/kitty sampling ratio; default `1` |
 | `--png-encoding <preset>` | Lossless PNG/kitty encoding: `fast` (default) or `standard` |
-| `--select <x,y,width,height>` | PNG/kitty crop in source-image pixels |
+| `--select <x,y,width,height>` | Inspect a PNG/kitty region in source pixels; combine with `--ratio` to magnify |
 | `-b, --background <color>` | Paint the viewport background |
 | `-t, --theme <theme>` | `light` or `dark`; override the source root theme |
 | `--title <text>` | SVG or PDF document title |
@@ -406,6 +356,51 @@ gum --help
 | `--stats` | Machine-readable layout counters on stderr |
 | `-V, --version` | Print the CLI version |
 | `-h, --help` | Show help |
+
+#### Inspect a region with `--select`
+
+Use `--select` to examine fine details and alignment without shrinking the whole
+figure to fit the viewer. Supply `x,y,width,height` in source pixels, with the
+origin at the viewport's top-left. The CLI lays out the full figure, then crops
+before rasterization; selecting a region does not reflow its contents.
+
+```sh
+gum figure.jsx --select 100,50,200,100 --ratio 3 -o detail.png
+```
+
+This produces a 600 × 300 PNG of the 200 × 100 region starting at `(100, 50)`.
+`--ratio` increases sampling resolution, preserving sharp vector edges rather
+than enlarging an existing bitmap. Use `-f kitty` instead of `-o detail.png` to
+view the crop in a compatible terminal.
+
+Selection works only with PNG and kitty. Width and height must be positive;
+fractional coordinates and regions extending outside the viewport are allowed.
+Outside areas are transparent unless `--background` supplies a paint. Compare
+magnified crops with the full image to check both detail and composition.
+
+#### Inspect layout with `-f tree` and `-f json`
+
+These formats expose the fragments produced by layout:
+
+- **`tree`** gives an indented view of fragment names, measured sizes, child
+  offsets and transforms, ink and content bounds, overflow, guides, and clipping.
+  Use it to trace unexpected spacing, alignment, or content extending beyond a box.
+  `--precision full` preserves full numeric precision in this report.
+- **`json`** serializes the fragment data, including drawing commands and nested
+  child placements, for structured inspection or further processing. JSON retains
+  full numeric precision regardless of `--precision`.
+
+```sh
+gum figure.jsx -f tree --precision full
+gum figure.jsx -f json -o fragments.json
+```
+
+Both formats describe the result after layout. To inspect the source element
+tree before layout, use the host APIs in the
+[rendering guide](references/guides/rendering.md). Combine fragment inspection
+with temporary `debug` props and a rendered image to connect numeric bounds to
+visible geometry. `--stats` adds layout counters on stderr without mixing them
+into the tree or JSON output.
 
 ### Output, sizing, and backgrounds
 
@@ -422,12 +417,7 @@ document without fixing its height; it does not uniformly scale fonts or strokes
 Use `fit` on the composition for uniform scaling. SVG/tree/JSON allow zero-sized
 axes; PNG/PDF/kitty require positive dimensions.
 
-`--ratio` changes raster resolution without changing layout. For example,
-`--select 100,50,200,100 --ratio 3` renders a 200 × 100 region starting at
-`(100, 50)` as a 600 × 300 PNG. Coordinates start at the source viewport's
-top-left; selection width and height must be positive. Cropping happens before
-rasterization, preserving sharp vector edges when magnified. Selection applies
-only to PNG and kitty.
+`--ratio` changes raster resolution without changing layout.
 
 `--precision` controls SVG, PDF, and tree numbers without changing layout.
 PNG and kitty use full geometry precision. Both PNG encoding presets preserve
@@ -539,3 +529,43 @@ deck directory to use its prelude.
 
 The `gum-jsx-docs/decks/gum` sample deck demonstrates a shared page layout,
 reusable panels, and a five-page manifest.
+
+## Generation Workflow
+
+Work in a short loop: write a draft, render it with the CLI, and revise the
+source. Start with the main structure and content, then refine spacing,
+typography, colors, and fine details once the composition works.
+
+1. **Draft.** Save an editable `.jsx` file. Use a relevant example as a starting
+   point and choose dimensions suited to the intended output.
+2. **Render.** Run `gum figure.jsx -o figure.png` using the established CLI
+   invocation. Open the rendered image and assess the whole composition:
+   hierarchy, legibility, spacing, alignment, clipping, and overlapping labels
+   or connectors. A successful command alone does not establish visual quality.
+3. **Revise.** Fix the layout or content causing the problem, render again, and
+   inspect the new result. Check the full composition after local adjustments.
+   Repeat until both the overall figure and its details work.
+
+### Inspection tools
+
+Sometimes looking at the rendered PNG is not enough. You can use the following
+tools to inspect the layout and content.
+
+- **Debug overlays:** add temporary `debug` props to the relevant layout
+  elements to reveal allocated rectangles and content bounds. These help locate
+  unexpected spacing, overflow, and alignment problems.
+- **Magnified regions:** use `--select x,y,width,height` with `--ratio` to render
+  a specific region at higher resolution. Selection coordinates are in source
+  pixels, measured from the top-left. This is especially useful for fine details,
+  small text, line joins, and precise alignment; inspect the crop alongside the
+  full figure.
+- **Raw SVG:** render with `-f svg` or save a `.svg` file to inspect paths,
+  transforms, clipping, and paints when the image alone does not explain a
+  problem.
+- **Layout fragments:** use `-f tree` for a readable fragment tree or `-f json`
+  for raw fragment data, including measured sizes and child placements. Add
+  `--stats` when layout counters would help diagnose the behavior.
+- **Source elements:** when necessary, inspect the evaluated element tree before
+  layout and compare it with the resulting fragments. The
+  [rendering guide](references/guides/rendering.md) describes the host APIs for
+  accessing elements and fragments directly.
