@@ -20,8 +20,8 @@ npm install -g @gum-jsx/cli@beta
 ```
 
 The CLI includes the core renderer, math, maps, and PNG/PDF exporters. It
-provides the `gum` command. Plugins require Bun 1.4.2 or newer; built-in rendering
-runs under Node without Bun.
+provides the `gum` command. Bun 1.4.2 or newer works equally well as an alternative
+runtime and is required for CLI plugins.
 
 Save this as `figure.jsx`:
 

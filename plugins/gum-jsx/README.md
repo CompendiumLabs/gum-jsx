@@ -1,6 +1,6 @@
-# Gum JSX plugin
+# Gum plugin
 
-This plugin packages the Gum JSX authoring skill generated from the maintained
+This plugin packages the Gum authoring skill generated from the maintained
 prompts and documentation in `gum-jsx-docs`. The root `plugin.json` uses the portable
 Agent Plugins layout, with OpenAI presentation settings under
 `extensions["com.openai"].interface`. Skills are discovered from `skills/`.
@@ -23,7 +23,7 @@ complete plugin. The build scripts remain in `gum-jsx-docs/scripts/`.
 `plugin:pack` rebuilds the skill before packaging it; a separate build is optional.
 The ZIP is written to `dist/gum-jsx-plugin.zip` with the plugin manifest at
 the archive root. The ZIP is ignored by Git and can be attached to a release.
-The plugin icon lives in `assets/logo_icon_dark.svg`. Its editable Gum JSX source
+The plugin icon lives in `assets/logo_icon_dark.svg`. Its editable Gum source
 is `assets/logo_icon_dark.jsx`, reconstructed from the original logo. It renders
 at 512×512 while retaining the original proportions and transparent margin.
 Change the source's `size` constant to adjust the output dimensions, then
@@ -48,47 +48,40 @@ codex plugin add gum-jsx@gum-jsx-beta
 Start a new task after installation to load the skill.
 
 Rendering requires an environment that can run commands and a **separate Gum
-executable**. The skill checks PATH and the current project/workspace's local
-CLI or Gum script. If neither works, it installs a fresh standalone copy in a
-writable task directory and continues rendering. It does not search Codex
-directories or caches for old executables. Explicit setup preferences and
-installation restrictions still apply. **Development/library mode** is available
-when requested for package integration or source development.
+executable**. The skill checks an established renderer path, the current project's
+local CLI, and PATH. If none works, it installs the CLI with npm in a writable
+task directory. Explicit setup preferences and installation restrictions still apply.
 
-### Standalone (default)
+### CLI installation
 
-Download the matching archive from the
-[Gum CLI release](https://github.com/CompendiumLabs/gum-jsx-cli/releases/tag/v2.0.0-beta.3):
+Use Node.js 24 or newer. In a dedicated writable tools directory with a minimal
+`package.json` containing `{"private":true}`, run:
 
-- [macOS ARM64](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-macos-arm64.tar.gz)
-- [macOS x64 (Intel)](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-macos-x64.tar.gz)
-- [Linux x64](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-linux-x64.tar.gz) (glibc)
-- [Windows x64](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-windows-x64.zip)
+```sh
+npm install --save-exact @gum-jsx/cli@beta
+node node_modules/@gum-jsx/cli/dist/npm/cli.js --version
+```
 
-Verify the download against the release's
-[SHA256SUMS](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/SHA256SUMS),
-extract it, and run `gum --version` using the executable's path. Putting it on
-PATH is optional. Standalone includes its runtime, fonts, math, maps, and PNG
-renderer; no Bun installation or project dependencies are needed for built-in
-rendering. It provides `gum` only.
+Retain the absolute path to `cli.js` for rendering from the task's working
+directory. If npm's default cache is not writable, set `npm_config_cache` to a
+writable temporary directory and retry.
 
-### Development/library mode (optional)
+Bun 1.4.2 or newer works equally well: use `bun add --exact @gum-jsx/cli@beta`
+and invoke the CLI with `bun` in place of `node`.
 
-Use Bun packages for library integration or source development:
+If neither Node nor Bun is available, download the standalone archive for your
+OS and CPU architecture from [GitHub releases](https://github.com/CompendiumLabs/gum-jsx-cli/releases),
+extract it into a writable directory, and run the included `gum` executable
+(`gum.exe` on Windows). It includes its runtime; verify it with `--version`.
 
-- Project CLI: `bun add --dev --exact @gum-jsx/cli@2.0.0-beta.3`.
-- Global CLI: `bun install -g @gum-jsx/cli@2.0.0-beta.3`.
-- Libraries: `bun add --exact @gum-jsx/core@2.0.0-beta.3 @gum-jsx/math@2.0.0-beta.3`
-  for host code that evaluates and renders Gum with math.
+For project integration, use `npm install --save-dev @gum-jsx/cli@beta` and the
+local `node_modules/.bin/gum` executable. For a global command, use
+`npm install -g @gum-jsx/cli@beta`. Source library integration requires Bun or a
+browser bundler; see the skill's [rendering guide](skills/gum-jsx/references/guides/rendering.md).
 
-For local installs, invoke `./node_modules/.bin/gum` or an existing project
-script. This mode needs Bun; standalone does not. The skill's
-[CLI guide](skills/gum-jsx/references/guides/cli.md) covers both setup paths.
-
-Linux x64 standalone rendering has been tested; macOS ARM64/x64 and Windows x64
-runtime verification is pending. If you decline setup or your host cannot run
-commands, the skill can still provide JSX source and references and will state
-that rendering was not performed.
+If you decline setup or your host cannot run commands, the skill can still
+provide JSX source and rendering instructions and will state that rendering
+was not performed.
 
 To test the package in ChatGPT, open Plugins, choose **Add plugin** →
 **Upload plugin**, select `dist/gum-jsx-plugin.zip`, and start a new Work chat.
@@ -96,7 +89,7 @@ To test the package in ChatGPT, open Plugins, choose **Add plugin** →
 ## Support
 
 Report bugs, setup problems, and feature requests in the
-[Gum JSX issue tracker](https://github.com/CompendiumLabs/gum-jsx/issues).
+[Gum issue tracker](https://github.com/CompendiumLabs/gum-jsx/issues).
 For rendering problems, include your operating system, CPU architecture, Gum
-version, installation method (and Bun version for package installs),
+version, installation method and Node or Bun version,
 the command and error output, and a small JSX example that reproduces the issue.

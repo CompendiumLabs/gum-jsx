@@ -1,8 +1,8 @@
-# Gum JSX plugin publication
+# Gum plugin publication
 
 Publication plan, checked against OpenAI documentation on 2026-09-26.
 
-Submit Gum JSX as a **skills-only plugin** to the public Plugins Directory
+Submit Gum as a **skills-only plugin** to the public Plugins Directory
 shared by ChatGPT and Codex. This route supports our existing package of authoring
 instructions and references without an MCP server. Public publication goes through
 OpenAI review and a separate publisher-controlled release step.
@@ -56,7 +56,7 @@ files; release ZIP attachments remain useful snapshots for separate distribution
   `Diagrams, plots, and slides`, within the 30-character submission limit.
 - [x] **Increase the branding image dimensions.** The SVG now declares
   512×512 dimensions and a matching viewBox, preserving the original appearance.
-  Its editable [Gum JSX source](../plugins/gum-jsx/assets/logo_icon_dark.jsx)
+  Its editable [Gum source](../plugins/gum-jsx/assets/logo_icon_dark.jsx)
   is retained beside the SVG. Both `logo` and `composerIcon` reference this asset.
 - [x] **Make first-use requirements clear.** The listing, README, and skill
   explain that rendering requires Bun and a separate Gum CLI installation.
@@ -69,13 +69,13 @@ files; release ZIP attachments remain useful snapshots for separate distribution
   `@gum-jsx/cli@2.0.0-beta.3`; local installs save it as an exact development
   dependency. This candidate pin must be published to npm before distributing
   the updated plugin. Revisit this pin when publishing plugin updates.
-- [x] **Finish the public listing.** The manifest lists **Gum JSX** by
+- [x] **Finish the public listing.** The manifest lists **Gum** by
   **Compendium Labs** in **Developer Tools**, with the 512×512 icon and three
   concrete starter prompts for a system diagram, data plot, and mathematical
   slide deck. The descriptions cover editable JSX, export formats, CLI setup,
   tested native platforms, and the source-only workflow when rendering is
   unavailable. Support points to the public
-  [Gum JSX issue tracker](https://github.com/CompendiumLabs/gum-jsx/issues).
+  [Gum issue tracker](https://github.com/CompendiumLabs/gum-jsx/issues).
   Listing text lengths, prompt uniqueness, brand-color contrast, and icon
   dimensions have been checked against the final submission limits.
 

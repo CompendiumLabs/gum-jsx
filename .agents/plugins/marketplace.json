@@ -1,7 +1,7 @@
 {
   "name": "gum-jsx-beta",
   "interface": {
-    "displayName": "Gum JSX Beta"
+    "displayName": "Gum Beta"
   },
   "plugins": [
     {

@@ -3,7 +3,7 @@ name: gum-jsx
 description: Create and revise SVG diagrams, plots, mathematical figures, and slides using Gum's JSX language. Use for authoring or debugging Gum figures, not general React or HTML development.
 ---
 
-# Gum JSX
+# Gum
 
 Gum describes figures with JavaScript and JSX, then measures and renders them as
 SVG. It is not React, HTML, or a browser DOM. For environment setup, follow
@@ -292,19 +292,17 @@ sandbox. Only evaluate trusted source or use a separate isolation boundary.
 
 The `gum` command evaluates JSX, lays out the result, and writes SVG, PNG, PDF,
 kitty graphics, a fragment tree, or JSON. **Prefer a local package installation
-with Bun, then npm**, reusing the available runtime. Standalone includes its own
-runtime and is the fallback when neither compatible runtime is available. The
-authoring plugin does not install an executable automatically.
+with npm and Node.js 24+**. The authoring plugin does not install an executable
+automatically.
 
 Use this discovery order:
 
 1. Reuse an exact renderer path already established in this task and verify it
    with `--version`.
-2. Ask the available package manager for the current project's local location,
-   preferring Bun. `bun pm bin` returns the executable directory. For npm,
-   `npm prefix` returns the project root; append `node_modules/.bin`.
+2. Run `npm prefix` to find the current project's root; append
+   `node_modules/.bin`.
    Check for `gum` there (`gum.cmd` on Windows), then run that exact path with
-   `--version`. These lookup commands return a directory, not confirmation that
+   `--version`. This lookup returns a directory, not confirmation that
    Gum is installed or working.
 3. If no working local renderer is found, try `gum --version` on PATH.
 
@@ -312,9 +310,8 @@ Stop discovery after these checks: do not search Codex directories, plugin
 caches, old tasks, user profiles, package-manager caches, or the filesystem for
 a hidden installation. Do not use `bunx` or `npx` to probe.
 
-If no working renderer is found, check `bun --version` first, then
-`npm --version` and `node --version`. Install locally with Bun 1.4.2+ when
-available, or npm with Node 24+. Otherwise use standalone. Continue the requested
+If no working renderer is found, check `npm --version` and `node --version`,
+then install locally with npm and Node.js 24+. Continue the requested
 render without a separate installation-mode question. Honor explicit
 installation restrictions and setup choices already made.
 
@@ -322,72 +319,44 @@ installation restrictions and setup choices already made.
 
 Create a dedicated directory under the task's writable tools or temporary
 directory and put a minimal `package.json` containing `{"private":true}` there.
-Run one of these commands **from that directory**, preferring Bun:
+Run this command **from that directory**:
 
-- Bun: `bun add --exact @gum-jsx/cli@beta`
-- npm with Node 24+: `npm install --save-exact @gum-jsx/cli@beta`
+```sh
+npm install --save-exact @gum-jsx/cli@beta
+```
 
 If npm's default cache is not writable in a sandbox, set `npm_config_cache` to
 a writable directory (such as a cache directory under the task's temporary
 directory) and retry the installation.
 
 The bundled package has no runtime package dependencies. Invoke
-`bun /absolute/tools-dir/node_modules/@gum-jsx/cli/dist/npm/cli.js` or
 `node /absolute/tools-dir/node_modules/@gum-jsx/cli/dist/npm/cli.js`.
 Verify with `--version` and retain the exact invocation for later
 renders. Run rendering commands from the caller's working directory so input
 files resolve there.
 
+Bun 1.4.2+ works equally well: install with `bun add --exact @gum-jsx/cli@beta`
+and use `bun` in place of `node` in the invocation above.
+
 This installation needs no global install, PATH or shell-profile changes, or
 changes to the user's project dependencies. Only install into the project when
 the user requests integration.
 
-## Standalone downloads
-
-Use the matching archive from
-[Gum v2.0.0-beta.4](https://github.com/CompendiumLabs/gum-jsx-cli/releases/tag/v2.0.0-beta.4):
-
-| Platform | Archive |
-|---|---|
-| macOS, Apple Silicon (ARM64) | [macos-arm64.tar.gz](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.4/gum-v2.0.0-beta.4-macos-arm64.tar.gz) |
-| macOS, Intel (x64 / x86_64) | [macos-x64.tar.gz](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.4/gum-v2.0.0-beta.4-macos-x64.tar.gz) |
-| Linux, x64 / x86_64 (glibc) | [linux-x64.tar.gz](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.4/gum-v2.0.0-beta.4-linux-x64.tar.gz) |
-| Windows, x64 / AMD64 | [windows-x64.zip](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.4/gum-v2.0.0-beta.4-windows-x64.zip) |
-
-1. Detect the OS and CPU architecture. Do not substitute a different architecture
-   when a matching release is absent. Offer package installation or a source
-   build for platforms such as Linux ARM64.
-2. Download the matching archive and
-   [SHA256SUMS](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.4/SHA256SUMS).
-   Compare the archive's SHA-256 hash against its filename's entry using
-   `sha256sum`, `shasum -a 256`, or PowerShell `Get-FileHash -Algorithm SHA256`.
-   Verify the selected file; the checksum list also contains other platforms.
-3. Extract the `.tar.gz` with `tar -xzf <archive>` or the Windows `.zip` with
-   PowerShell `Expand-Archive`. Each archive contains a versioned directory with
-   `gum` or `gum.exe`, installation notes, and license notices. Extract into a
-   new directory under the task's writable tools or temporary directory. Invoke
-   its full path and retain that exact path for later renders in the task.
-   No PATH or shell-profile change is needed.
-4. Run the extracted executable with `--version` (expected `2.0.0-beta.4`), then
-   render the figure. For example, `./gum figure.jsx -o figure.svg`, or
-   `.\gum.exe figure.jsx -o figure.svg` in PowerShell.
-
-Standalone includes JSX, math through `Tex`/`Latex`, maps, and PDF decks. The
-archives provide the executable; install `@gum-jsx/*` packages separately for
-library integration. Linux x64 rendering has been tested; the published macOS
-ARM64/x64 and Windows x64 builds still need runtime verification on those platforms.
+If neither Node nor Bun is available, download the standalone archive for your
+OS and CPU architecture from [GitHub releases](https://github.com/CompendiumLabs/gum-jsx-cli/releases),
+extract it into a writable directory, and run the included `gum` executable
+(`gum.exe` on Windows). It includes its runtime; verify it with `--version`.
 
 ## Project and library integration
 
-The bundled npm CLI runs under Node.js 24+ or Bun 1.4.2+ with no runtime
-package dependencies.
+The bundled npm CLI runs under Node.js 24+ with no runtime package dependencies.
 
 - **Project CLI:** install with `npm install --save-dev @gum-jsx/cli@beta`,
   then use `./node_modules/.bin/gum` (or its Windows wrapper).
 - **Global CLI:** install with `npm install -g @gum-jsx/cli@beta`, then use `gum`.
 - **Library integration:** source packages require Bun or a browser bundler.
   Add the libraries the host code needs, for example
-  `bun add --exact @gum-jsx/core@2.0.0-beta.4 @gum-jsx/math@2.0.0-beta.4`.
+  `npm install --save-exact @gum-jsx/core@2.0.0-beta.4 @gum-jsx/math@2.0.0-beta.4`.
   See [Rendering](references/guides/rendering.md) for evaluation, layout, and export APIs, and
   [Math export](references/guides/math_export.md) for fonts and standalone formulas.
 
