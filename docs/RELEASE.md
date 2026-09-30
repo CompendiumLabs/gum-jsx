@@ -1,5 +1,26 @@
 # Gum 2.0 release readiness
 
+Standalone Github release commands:
+
+```sh
+gh release create v2.0.0 \
+  dist/releases/v2.0.0/* \
+  --repo CompendiumLabs/gum-jsx-cli \
+  --target "$(git rev-parse HEAD)" \
+  --title "Gum v2.0.0" \
+  --latest \
+  --notes "Standalone gum executables for macOS ARM64, macOS x64, Linux x64, and Windows x64."
+```
+
+Plugin Github release commands:
+
+```sh
+gh release create v2.0.0 \
+  dist/gum-jsx-plugin.zip \
+  --title "Gum Plugin v2.0.0" \
+  --notes "Gum plugin for v2.0.0"
+```
+
 ## beta.3 preparation — 2026-09-29
 
 **The Linux release checks pass for `2.0.0-beta.3`.** All nine public package

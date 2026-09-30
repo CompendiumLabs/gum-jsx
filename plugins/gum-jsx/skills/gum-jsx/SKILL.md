@@ -327,6 +327,10 @@ Run one of these commands **from that directory**, preferring Bun:
 - Bun: `bun add --exact @gum-jsx/cli@beta`
 - npm with Node 24+: `npm install --save-exact @gum-jsx/cli@beta`
 
+If npm's default cache is not writable in a sandbox, set `npm_config_cache` to
+a writable directory (such as a cache directory under the task's temporary
+directory) and retry the installation.
+
 The bundled package has no runtime package dependencies. Invoke
 `bun /absolute/tools-dir/node_modules/@gum-jsx/cli/dist/npm/cli.js` or
 `node /absolute/tools-dir/node_modules/@gum-jsx/cli/dist/npm/cli.js`.
@@ -420,6 +424,9 @@ crop, `--select x,y,width,height` uses source-image pixels.
 
 Kitty defaults to a dark theme; file exports default to light. Use `--theme` to
 override the root theme and `--background` when the export needs a backdrop.
+For a fully opaque white PNG, use `--background '#FFFFFF'`: a white root Box
+can leave transparency along the last pixel row or column when fractional
+dimensions round up to whole pixels.
 
 Inspect a rendered PNG when image viewing is available. Use `-f tree` or `-f json`
 to inspect allocations and overflow alongside temporary `debug` overlays. If
