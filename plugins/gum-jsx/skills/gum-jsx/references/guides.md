@@ -4,7 +4,6 @@ Each page includes its runnable JSX example.
 
 ## Guides
 
-- [CLI](guides/cli.md) — The gum command evaluates JSX, lays out the result, and writes SVG, PNG, PDF, kitty graphics, a fragment tree, or JSON.
 - [Gum](guides/gum.md) — Gum describes diagrams with JSX and renders them as SVG.
 - [JSX](guides/jsx.md) — A Gum source file is JavaScript with JSX expressions.
 - [Sizing](guides/sizing.md) — Gum separates a parent's request, an element's preferred dimensions, and the size of the rendered content.

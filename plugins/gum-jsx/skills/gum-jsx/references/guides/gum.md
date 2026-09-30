@@ -48,7 +48,7 @@ gum hello.jsx
 gum hello.jsx -o hello.svg
 ```
 
-The first command uses kitty graphics. See [CLI](cli.md) for PNG, tree, JSON,
+The first command uses kitty graphics. See [CLI](https://github.com/CompendiumLabs/gum-jsx-docs/blob/master/prompt/cli.md#render-with-the-cli) for PNG, tree, JSON,
 viewport overrides, and other terminal options.
 
 ## Example

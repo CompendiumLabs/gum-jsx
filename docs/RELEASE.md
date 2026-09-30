@@ -21,6 +21,28 @@ gh release create v2.0.0 \
   --notes "Gum plugin for v2.0.0"
 ```
 
+## 2.0.0 preparation — 2026-09-30
+
+All nine public packages and their workspace dependency pins use `2.0.0` with
+public access and the `latest` npm tag. The plugin version is `2.0.0`, and its
+marketplace is named `gum-jsx`. Installation instructions use `@gum-jsx/cli`
+without a version or tag.
+
+Publish the public packages in dependency order: core, math, maps, png, pdf,
+mark, react, docs, then cli. From each package directory, run
+`npm publish --access public --tag latest` after its dependencies are available.
+Verify a fresh `npm install @gum-jsx/cli`, then publish the standalone archives
+and plugin ZIP using the commands above.
+
+Validation: all package test suites passed (the docs suite passed after fixing
+its rendering-command test to exclude installation examples), workspace
+typechecks passed, and `bun install --frozen-lockfile` passed with a writable
+`BUN_TMPDIR`. The PNG/CLI build and plugin ZIP packaging passed; the bundled
+Node CLI reports `2.0.0`. Public registry publication has not been performed.
+
+The records below describe earlier prerelease checks and publication steps;
+their version numbers and results are historical.
+
 ## beta.3 preparation — 2026-09-29
 
 **The Linux release checks pass for `2.0.0-beta.3`.** All nine public package
@@ -216,7 +238,7 @@ pushed as `22d1e9d`; public publication and release tags remain separate steps.
 
 - [x] **Remove obsolete `--natural` guidance.**
   Removed the option and its instructions from the [CLI README](../gum-jsx-cli/README.md),
-  [CLI guide](../gum-jsx-docs/docs/guides/text/cli.md), and
+  [CLI guide](../gum-jsx-docs/prompt/cli.md#render-with-the-cli), and
   [authoring prompt](../gum-jsx-docs/prompt/cli.md). The guide also describes the
   current multiple-file input contract. [Migration notes](./MIGRATION.md#changes-from-beta1-to-beta2)
   record the removed option and the current 640 × 480 offer/explicit-axis behavior.

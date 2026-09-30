@@ -16,19 +16,22 @@ cover those slices in detail.
 there is no new `gum-jsx` umbrella install. The CLI package supplies `gum`; `@gum-jsx/mark` supplies `gum-mark`, and React
 supplies `gum-react`. The standalone `gum-tex` command has been retired.
 
-The current release uses coordinated `2.0.0-beta.4` versions and the `beta` tag.
+The stable release uses coordinated `2.0.0` versions and the `latest` tag.
 Most packages ship TypeScript source for Bun 1.4.2 or newer and supported browser
 bundlers. PNG ships built JavaScript with embedded WebAssembly and also supports
-Node 22+. The beta.4 bundled npm CLI supports Node 24+ for built-in
+Node 22+. The bundled npm CLI supports Node 24+ for built-in
 rendering. Direct Node execution of the source-published
 libraries is outside this contract.
-Earlier releases were tested on Linux x64, macOS, and Windows; beta.3's new WASM
-renderer has been verified on Linux x64. macOS and Windows verification remains
-outstanding for this candidate. Core, math, maps, PDF, React, and PNG's package
+The WASM renderer has been verified on Linux x64. macOS and Windows standalone
+runtime verification remains outstanding. Core, math, maps, PDF, React, and PNG's package
 root support browser bundlers.
 See [RELEASE.md](./RELEASE.md) for artifact verification and remaining gates.
 
-## Changes from beta.3 to beta.4
+## Changes in 2.0.0
+
+The following sections record the changes introduced during prerelease development.
+
+### Changes from beta.3 to beta.4
 
 - The npm CLI ships bundled JavaScript, fonts, and notices with no runtime
   package dependencies. Run built-in rendering under Node 24+ or Bun.
@@ -39,7 +42,7 @@ See [RELEASE.md](./RELEASE.md) for artifact verification and remaining gates.
   `bun --filter @gum-jsx/edit dev` / `build` for the editor. Root shortcut
   scripts for these commands have been removed.
 
-## Changes from beta.2 to beta.3
+### Changes from beta.2 to beta.3
 
 - **Breaking coordinates:** use atomic `pos={[x, y]}` or `pos={{x, y}}` instead
   of placement `x`/`y`. Projection callbacks take and return numeric records,
@@ -66,7 +69,7 @@ See [RELEASE.md](./RELEASE.md) for artifact verification and remaining gates.
 - Layout, text, and WASM startup/rasterization performance improved. TitleBox
   background clipping and live SVG text handling were corrected.
 
-## Changes from beta.1 to beta.2
+### Changes from beta.1 to beta.2
 
 - The CLI, editor, and MCP host now include `@gum-jsx/maps`: `GeoMap`, GeoJSON
   and TopoJSON sources, and bundled country/state atlases. Maps support filtering,
@@ -275,7 +278,7 @@ replace the original element registration with `Element` subclasses and
 | — | `-f pdf` or a `.pdf` output filename |
 
 Stdout still defaults to kitty graphics, and the output extension still selects
-the format. See the [CLI guide](../gum-jsx-docs/docs/guides/text/cli.md).
+the format. See the [CLI guide](../gum-jsx-docs/prompt/cli.md#render-with-the-cli).
 
 ## Numeric helpers
 

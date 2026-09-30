@@ -81,7 +81,7 @@ const element = new Svg({
 
 ## Viewports and plain values
 
-Hosts such as the [CLI](cli.md), the editor, and the MCP viewer share one
+Hosts such as the [CLI](https://github.com/CompendiumLabs/gum-jsx-docs/blob/master/prompt/cli.md#render-with-the-cli), the editor, and the MCP viewer share one
 entry point that takes an evaluated result, wraps a bare element in **Svg**,
 applies host viewport props, lays it out under a request, and serializes it:
 
@@ -216,7 +216,7 @@ not collide. Prefixes start with a letter or underscore and then contain
 letters, digits, underscores, dots, or hyphens. **Text** is emitted as paths.
 
 For PNG and terminal graphics, use gum-jsx-png and gum-jsx-cli through the
-[CLI](cli.md). Those host concerns are separate from core layout. The runnable
+[CLI](https://github.com/CompendiumLabs/gum-jsx-docs/blob/master/prompt/cli.md#render-with-the-cli). Those host concerns are separate from core layout. The runnable
 source below is a small diagram to feed through this pipeline, not a host script.
 
 ## Example

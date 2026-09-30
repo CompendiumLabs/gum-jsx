@@ -37,12 +37,12 @@ Repack after regenerating the icon to include the new SVG in the release ZIP.
 
 ## Install for testing
 
-The top-level repository includes the `gum-jsx-beta` marketplace catalog and
+The top-level repository includes the `gum-jsx` marketplace catalog and
 the complete generated plugin. Testers can install it directly from GitHub:
 
 ```sh
 codex plugin marketplace add CompendiumLabs/gum-jsx
-codex plugin add gum-jsx@gum-jsx-beta
+codex plugin add gum-jsx@gum-jsx
 ```
 
 Start a new task after installation to load the skill.
@@ -58,7 +58,7 @@ Use Node.js 24 or newer. In a dedicated writable tools directory with a minimal
 `package.json` containing `{"private":true}`, run:
 
 ```sh
-npm install --save-exact @gum-jsx/cli@beta
+npm install --save-exact @gum-jsx/cli
 node node_modules/@gum-jsx/cli/dist/npm/cli.js --version
 ```
 
@@ -66,7 +66,7 @@ Retain the absolute path to `cli.js` for rendering from the task's working
 directory. If npm's default cache is not writable, set `npm_config_cache` to a
 writable temporary directory and retry.
 
-Bun 1.4.2 or newer works equally well: use `bun add --exact @gum-jsx/cli@beta`
+Bun 1.4.2 or newer works equally well: use `bun add --exact @gum-jsx/cli`
 and invoke the CLI with `bun` in place of `node`.
 
 If neither Node nor Bun is available, download the standalone archive for your
@@ -74,9 +74,9 @@ OS and CPU architecture from [GitHub releases](https://github.com/CompendiumLabs
 extract it into a writable directory, and run the included `gum` executable
 (`gum.exe` on Windows). It includes its runtime; verify it with `--version`.
 
-For project integration, use `npm install --save-dev @gum-jsx/cli@beta` and the
+For project integration, use `npm install --save-dev @gum-jsx/cli` and the
 local `node_modules/.bin/gum` executable. For a global command, use
-`npm install -g @gum-jsx/cli@beta`. Source library integration requires Bun or a
+`npm install -g @gum-jsx/cli`. Source library integration requires Bun or a
 browser bundler; see the skill's [rendering guide](skills/gum-jsx/references/guides/rendering.md).
 
 If you decline setup or your host cannot run commands, the skill can still

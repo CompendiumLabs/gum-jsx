@@ -13,10 +13,10 @@ they do not require React.
 
 ## Get started
 
-For the 2.0 prerelease, use Node.js 24 or newer and install the bundled CLI:
+Use Node.js 24 or newer and install the bundled CLI:
 
 ```sh
-npm install -g @gum-jsx/cli@beta
+npm install -g @gum-jsx/cli
 ```
 
 The CLI includes the core renderer, math, maps, and PNG/PDF exporters. It
@@ -111,11 +111,11 @@ documentation. `bun run plugin:pack` rebuilds it and packages the plugin ZIP. Th
 [MCP server](gum-jsx-mcp/README.md) provides documentation tools, PNG inspection,
 and an embedded figure viewer.
 
-To install the beta plugin from GitHub:
+To install the plugin from GitHub:
 
 ```sh
 codex plugin marketplace add CompendiumLabs/gum-jsx
-codex plugin add gum-jsx@gum-jsx-beta
+codex plugin add gum-jsx@gum-jsx
 ```
 
 Start a new task after installation. Rendering uses the Gum CLI described above.

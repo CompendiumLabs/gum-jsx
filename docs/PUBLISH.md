@@ -38,12 +38,12 @@ Use that final ZIP for submission after completing the work below.
 ## Distribute builds to testers
 
 The top-level [.agents/plugins/marketplace.json](../.agents/plugins/marketplace.json)
-catalog is named `gum-jsx-beta` and points at the committed `plugins/gum-jsx`
+catalog is named `gum-jsx` and points at the committed `plugins/gum-jsx`
 directory. After pushing the plugin and catalog, testers can run:
 
 ```sh
 codex plugin marketplace add CompendiumLabs/gum-jsx
-codex plugin add gum-jsx@gum-jsx-beta
+codex plugin add gum-jsx@gum-jsx
 ```
 
 They should start a new task after installation. Rendering also requires Bun and
@@ -59,16 +59,14 @@ files; release ZIP attachments remain useful snapshots for separate distribution
   Its editable [Gum source](../plugins/gum-jsx/assets/logo_icon_dark.jsx)
   is retained beside the SVG. Both `logo` and `composerIcon` reference this asset.
 - [x] **Make first-use requirements clear.** The listing, README, and skill
-  explain that rendering requires Bun and a separate Gum CLI installation.
-  The skill checks PATH and the project for an existing CLI; if neither is
-  available, it asks for a global or local install choice before proceeding.
-  Users who decline installation or cannot run commands can still receive JSX
-  source, with rendering clearly reported as not performed. Both install commands
-  passed clean-directory checks outside this workspace on Linux x64.
-- [x] **Use a reproducible CLI version.** New-install commands use the tested
-  `@gum-jsx/cli@2.0.0-beta.3`; local installs save it as an exact development
-  dependency. This candidate pin must be published to npm before distributing
-  the updated plugin. Revisit this pin when publishing plugin updates.
+  explain the npm/Node.js 24+ installation path, with Bun 1.4.2+ as an alternative.
+  The skill checks a known renderer, the project, and PATH before installing
+  locally in a writable tools directory. If neither runtime is available, it
+  uses a matching standalone release. Users who decline installation or cannot
+  run commands can still receive JSX source and rendering instructions.
+- [x] **Use the stable CLI install path.** Install `@gum-jsx/cli` without a
+  version or dist-tag to follow npm's `latest` release. Local installs save the
+  resolved version exactly. Publish the stable CLI before distributing the plugin.
 - [x] **Finish the public listing.** The manifest lists **Gum** by
   **Compendium Labs** in **Developer Tools**, with the 512×512 icon and three
   concrete starter prompts for a system diagram, data plot, and mathematical
