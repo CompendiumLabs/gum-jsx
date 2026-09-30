@@ -7,16 +7,16 @@
     },
     "gum-jsx-cli": {
       "name": "@gum-jsx/cli",
-      "version": "2.0.0-beta.3",
+      "version": "2.0.0-beta.4",
       "bin": {
         "gum": "dist/npm/cli.js",
       },
       "devDependencies": {
-        "@gum-jsx/core": "2.0.0-beta.3",
-        "@gum-jsx/maps": "2.0.0-beta.3",
-        "@gum-jsx/math": "2.0.0-beta.3",
-        "@gum-jsx/pdf": "2.0.0-beta.3",
-        "@gum-jsx/png": "2.0.0-beta.3",
+        "@gum-jsx/core": "2.0.0-beta.4",
+        "@gum-jsx/maps": "2.0.0-beta.4",
+        "@gum-jsx/math": "2.0.0-beta.4",
+        "@gum-jsx/pdf": "2.0.0-beta.4",
+        "@gum-jsx/png": "2.0.0-beta.4",
         "@types/bun": "latest",
         "commander": "^14.0.3",
         "fast-png": "^8.0.0",
@@ -25,7 +25,7 @@
     },
     "gum-jsx-core": {
       "name": "@gum-jsx/core",
-      "version": "2.0.0-beta.3",
+      "version": "2.0.0-beta.4",
       "dependencies": {
         "@types/fontkit": "^2.0.9",
         "acorn": "^8.15.0",
@@ -44,11 +44,11 @@
     },
     "gum-jsx-docs": {
       "name": "@gum-jsx/docs",
-      "version": "2.0.0-beta.3",
+      "version": "2.0.0-beta.4",
       "devDependencies": {
-        "@gum-jsx/core": "2.0.0-beta.3",
-        "@gum-jsx/maps": "2.0.0-beta.3",
-        "@gum-jsx/math": "2.0.0-beta.3",
+        "@gum-jsx/core": "2.0.0-beta.4",
+        "@gum-jsx/maps": "2.0.0-beta.4",
+        "@gum-jsx/math": "2.0.0-beta.4",
         "@types/bun": "latest",
         "mitata": "1.0.34",
         "typescript": "^7",
@@ -59,9 +59,9 @@
       "dependencies": {
         "@codemirror/lang-javascript": "^6.2.5",
         "@codemirror/view": "^6.43.11",
-        "@gum-jsx/core": "2.0.0-beta.3",
-        "@gum-jsx/maps": "2.0.0-beta.3",
-        "@gum-jsx/math": "2.0.0-beta.3",
+        "@gum-jsx/core": "2.0.0-beta.4",
+        "@gum-jsx/maps": "2.0.0-beta.4",
+        "@gum-jsx/math": "2.0.0-beta.4",
         "@uiw/react-codemirror": "^4.25.11",
         "react": "^19.3.0",
         "react-dom": "^19.3.0",
@@ -78,9 +78,9 @@
     },
     "gum-jsx-maps": {
       "name": "@gum-jsx/maps",
-      "version": "2.0.0-beta.3",
+      "version": "2.0.0-beta.4",
       "dependencies": {
-        "@gum-jsx/core": "2.0.0-beta.3",
+        "@gum-jsx/core": "2.0.0-beta.4",
         "@types/d3-geo": "^3.1.1",
         "@types/geojson": "^7946.0.16",
         "@types/topojson-client": "^3.1.5",
@@ -90,7 +90,7 @@
         "topojson-client": "^3.1.0",
       },
       "devDependencies": {
-        "@gum-jsx/png": "2.0.0-beta.3",
+        "@gum-jsx/png": "2.0.0-beta.4",
         "@types/bun": "latest",
         "mitata": "1.0.34",
         "typescript": "^7",
@@ -98,14 +98,14 @@
     },
     "gum-jsx-mark": {
       "name": "@gum-jsx/mark",
-      "version": "2.0.0-beta.3",
+      "version": "2.0.0-beta.4",
       "bin": {
         "gum-mark": "src/cli.ts",
       },
       "dependencies": {
-        "@gum-jsx/core": "2.0.0-beta.3",
-        "@gum-jsx/math": "2.0.0-beta.3",
-        "@gum-jsx/png": "2.0.0-beta.3",
+        "@gum-jsx/core": "2.0.0-beta.4",
+        "@gum-jsx/math": "2.0.0-beta.4",
+        "@gum-jsx/png": "2.0.0-beta.4",
         "commander": "^14.0.3",
         "marked": "^18.0.11",
       },
@@ -116,13 +116,13 @@
     },
     "gum-jsx-math": {
       "name": "@gum-jsx/math",
-      "version": "2.0.0-beta.3",
+      "version": "2.0.0-beta.4",
       "dependencies": {
-        "@gum-jsx/core": "2.0.0-beta.3",
+        "@gum-jsx/core": "2.0.0-beta.4",
         "katex": "0.16.47",
       },
       "devDependencies": {
-        "@gum-jsx/png": "2.0.0-beta.3",
+        "@gum-jsx/png": "2.0.0-beta.4",
         "@types/bun": "latest",
         "commander": "^14.0.3",
         "fast-png": "^8.0.0",
@@ -134,11 +134,11 @@
       "name": "@gum-jsx/mcp",
       "version": "0.1.0",
       "dependencies": {
-        "@gum-jsx/core": "2.0.0-beta.3",
-        "@gum-jsx/docs": "2.0.0-beta.3",
-        "@gum-jsx/maps": "2.0.0-beta.3",
-        "@gum-jsx/math": "2.0.0-beta.3",
-        "@gum-jsx/png": "2.0.0-beta.3",
+        "@gum-jsx/core": "2.0.0-beta.4",
+        "@gum-jsx/docs": "2.0.0-beta.4",
+        "@gum-jsx/maps": "2.0.0-beta.4",
+        "@gum-jsx/math": "2.0.0-beta.4",
+        "@gum-jsx/png": "2.0.0-beta.4",
         "@modelcontextprotocol/ext-apps": "^1.7.5",
         "@modelcontextprotocol/sdk": "^1.30.0",
         "zod": "^4.5.4",
@@ -151,27 +151,27 @@
     },
     "gum-jsx-pdf": {
       "name": "@gum-jsx/pdf",
-      "version": "2.0.0-beta.3",
+      "version": "2.0.0-beta.4",
       "dependencies": {
-        "@gum-jsx/core": "2.0.0-beta.3",
+        "@gum-jsx/core": "2.0.0-beta.4",
         "fast-png": "^8.0.0",
         "fflate": "^0.8.3",
       },
       "devDependencies": {
-        "@gum-jsx/math": "2.0.0-beta.3",
-        "@gum-jsx/png": "2.0.0-beta.3",
+        "@gum-jsx/math": "2.0.0-beta.4",
+        "@gum-jsx/png": "2.0.0-beta.4",
         "@types/bun": "latest",
         "typescript": "^7",
       },
     },
     "gum-jsx-png": {
       "name": "@gum-jsx/png",
-      "version": "2.0.0-beta.3",
+      "version": "2.0.0-beta.4",
       "dependencies": {
-        "@gum-jsx/core": "2.0.0-beta.3",
+        "@gum-jsx/core": "2.0.0-beta.4",
       },
       "devDependencies": {
-        "@gum-jsx/math": "2.0.0-beta.3",
+        "@gum-jsx/math": "2.0.0-beta.4",
         "@types/bun": "latest",
         "fast-png": "^8.0.0",
         "typescript": "^7",
@@ -179,14 +179,14 @@
     },
     "gum-jsx-react": {
       "name": "@gum-jsx/react",
-      "version": "2.0.0-beta.3",
+      "version": "2.0.0-beta.4",
       "bin": {
         "gum-react": "scripts/gum-react.tsx",
       },
       "dependencies": {
-        "@gum-jsx/core": "2.0.0-beta.3",
-        "@gum-jsx/maps": "2.0.0-beta.3",
-        "@gum-jsx/math": "2.0.0-beta.3",
+        "@gum-jsx/core": "2.0.0-beta.4",
+        "@gum-jsx/maps": "2.0.0-beta.4",
+        "@gum-jsx/math": "2.0.0-beta.4",
         "@types/react-reconciler": "0.33.0",
         "commander": "^14.0.3",
         "react-reconciler": "^0.34.0",

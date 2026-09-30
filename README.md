@@ -157,6 +157,7 @@ Run shared commands from the workspace root:
 ```sh
 bun run test          # Every package's suite, sequentially
 bun run typecheck     # TypeScript checks across all packages
+bun run build        # Build PNG assets, then the bundled CLI
 bun run perf          # Core, math, maps, and demos benchmarks, sequentially
 bun --filter @gum-jsx/edit build # Production browser editor and docs viewer
 bun run visual-test   # Searchable HTML report of rendered examples
