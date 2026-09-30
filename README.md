@@ -13,15 +13,15 @@ they do not require React.
 
 ## Get started
 
-For the 2.0 prerelease, use Bun 1.4.2 or newer on Linux x64, macOS, or Windows
-and install the CLI:
+For the 2.0 prerelease, use Node.js 24 or newer and install the bundled CLI:
 
 ```sh
-bun install -g @gum-jsx/cli@beta
+npm install -g @gum-jsx/cli@beta
 ```
 
-The CLI includes the core renderer, TeX, Markdown, and PNG/PDF exporters. It
-provides the `gum`, `gum-tex`, and `gum-mark` commands, ready to run with Bun.
+The CLI includes the core renderer, math, maps, and PNG/PDF exporters. It
+provides the `gum` command. Plugins require Bun 1.4.2 or newer; built-in rendering
+runs under Node without Bun.
 
 Save this as `figure.jsx`:
 
@@ -68,14 +68,12 @@ boxes, stacks, and positioned canvases. Start with the
 
 **Command line.** Omit `-o` to display a figure in a terminal supporting the kitty
 graphics protocol. Use `-f svg` for SVG on stdout, or `-f tree --stats` to inspect
-layout. The CLI includes math and Markdown commands:
+layout. The CLI includes math bindings:
 
 ```sh
 gum figure.jsx
 gum figure.jsx -f tree --stats
 gum slides/ -o talk.pdf
-gum-tex 'e^{i\pi}+1=0' -o euler.svg
-gum-mark notes.md
 ```
 
 PNG and terminal rendering use tiny-skia WebAssembly without native addons or
@@ -134,7 +132,7 @@ Each package is a separate repository, developed together through Git submodules
 | [@gum-jsx/pdf](gum-jsx-pdf/README.md) | Vector PDF export from laid-out fragments. |
 | [@gum-jsx/react](gum-jsx-react/README.md) | React bindings, headless rendering, and the `gum-react` command. |
 | [@gum-jsx/mark](gum-jsx-mark/README.md) | Markdown terminal rendering with figures and math. |
-| [@gum-jsx/cli](gum-jsx-cli/README.md) | The `gum`, `gum-tex`, and `gum-mark` commands. |
+| [@gum-jsx/cli](gum-jsx-cli/README.md) | The `gum` command. |
 | [@gum-jsx/edit](gum-jsx-edit/README.md) | Browser editor and interactive documentation viewer. |
 | [@gum-jsx/docs](gum-jsx-docs/README.md) | Guides, element references, gallery sources, and skill generation. |
 | [@gum-jsx/mcp](gum-jsx-mcp/README.md) | MCP tools and an MCP Apps figure viewer. |

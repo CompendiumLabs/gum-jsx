@@ -53,6 +53,7 @@ touch "$npm_config_userconfig" "$npm_config_globalconfig"
 
 say 'prepare publication workspace'
 (cd "$ROOT/gum-jsx-png" && runlog png-build.log bun run build)
+(cd "$ROOT/gum-jsx-cli" && runlog cli-build.log bun run build)
 PUBLISH="$WORK/publish"
 mkdir -p "$PUBLISH"
 cp "$ROOT/package.json" "$PUBLISH/package.json"
@@ -65,6 +66,8 @@ for pkg in "${ORDER[@]}"; do
         --exclude=.env --exclude='.env.*' -cf - . | tar -C "$PUBLISH/gum-jsx-$pkg" -xf -
 done
 cp -R "$ROOT/gum-jsx-png/dist" "$PUBLISH/gum-jsx-png/dist"
+mkdir -p "$PUBLISH/gum-jsx-cli/dist"
+cp -R "$ROOT/gum-jsx-cli/dist/npm" "$PUBLISH/gum-jsx-cli/dist/npm"
 # Publishing from copies lets us force the local registry even when a package
 # gains a publishConfig.registry, without modifying any source manifests.
 VERSION=$(bun -e '
@@ -128,7 +131,7 @@ cp "$WORK/.npmrc" "$PUBLISH/.npmrc"
 
 for pkg in "${ORDER[@]}"; do
     say "publish @gum-jsx/$pkg@$VERSION locally"
-    # PNG was built above; the copies need no dev dependencies or lifecycle scripts.
+    # PNG and CLI were built above; the copies need no dev dependencies or lifecycle scripts.
     (cd "$PUBLISH/gum-jsx-$pkg" && runlog "publish-$pkg.log" npm publish --ignore-scripts --access public --tag rehearsal --registry "$REG")
     runlog "metadata-$pkg.log" npm view "@gum-jsx/$pkg@$VERSION" --json --registry "$REG"
     bun -e '
@@ -153,10 +156,9 @@ printf '{"name":"gum-rehearsal","private":true,"type":"module"}\n' > package.jso
 cp "$WORK/.npmrc" .npmrc
 runlog bun-install.log bun install "@gum-jsx/cli@$VERSION" --ignore-scripts --registry "$REG"
 [ ! -d node_modules/canvas ] || fail 'default CLI install brought in canvas'
-for pkg in core math maps png pdf mark cli; do
-    [ -f "node_modules/@gum-jsx/$pkg/package.json" ] || fail "CLI did not bring in $pkg"
-done
-for bin in gum gum-tex gum-mark; do
+[ -f node_modules/@gum-jsx/cli/dist/npm/cli.js ] || fail 'missing CLI bundle'
+[ ! -d node_modules/@gum-jsx/core ] || fail 'CLI installed separate library dependencies'
+for bin in gum; do
     [ -x "node_modules/.bin/$bin" ] || fail "missing executable $bin"
 done
 
@@ -182,16 +184,15 @@ JSX
 for format in svg png pdf; do
     runlog "maps-$format.log" bun run --silent gum maps.jsx -o "maps.$format"
 done
-runlog gum-tex.log bun run --silent gum-tex '\sqrt{2}' -o formula.svg
-printf 'Hello $x^2$\n' > notes.md
-runlog gum-mark.log bun run --silent gum-mark notes.md
 
-say 'install React and docs separately'
+say 'install Markdown, React, and docs separately'
 # Read the supported peer ranges instead of pulling an unrelated latest React.
 REACT=$(bun -e 'console.log((await Bun.file(process.argv[1]).json()).peerDependencies.react)' "$PUBLISH/gum-jsx-react/package.json")
 REACT_DOM=$(bun -e 'console.log((await Bun.file(process.argv[1]).json()).peerDependencies["react-dom"])' "$PUBLISH/gum-jsx-react/package.json")
-EXTRA=("@gum-jsx/react@$VERSION" "@gum-jsx/docs@$VERSION" "react@$REACT" "react-dom@$REACT_DOM")
+EXTRA=("@gum-jsx/core@$VERSION" "@gum-jsx/math@$VERSION" "@gum-jsx/maps@$VERSION" "@gum-jsx/png@$VERSION" "@gum-jsx/pdf@$VERSION" "@gum-jsx/mark@$VERSION" "@gum-jsx/react@$VERSION" "@gum-jsx/docs@$VERSION" "react@$REACT" "react-dom@$REACT_DOM")
 runlog bun-extra.log bun add "${EXTRA[@]}" --registry "$REG"
+printf 'Hello $x^2$\n' > notes.md
+runlog gum-mark.log bun run --silent gum-mark notes.md
 cp "$ROOT/gum-jsx-pdf/test/png-fixtures.ts" png-fixtures.ts
 cat > use.ts <<'TS'
 import assert from 'node:assert/strict'
@@ -220,7 +221,6 @@ for (const pkg of ['core', 'math', 'maps', 'png', 'pdf', 'mark', 'react', 'docs'
 assert.ok((await Bun.file('figure.svg').text()).includes('<svg'));
 assert.equal(Buffer.from(await Bun.file('figure.png').arrayBuffer()).toString('hex', 0, 8), '89504e470d0a1a0a');
 assert.ok((await Bun.file('figure.pdf').text()).startsWith('%PDF-'));
-assert.ok((await Bun.file('formula.svg').text()).includes('<path'));
 assert.ok((await Bun.file('../gum-mark.log').text()).includes('\x1b_G'));
 const fonts = new Fonts();
 await fonts.load();
@@ -304,7 +304,8 @@ const html = `<!doctype html><html><body><pre id="status">Loading</pre><main></m
 <script type="module">
 try {
   const { Fonts, render_element, mathToSvgAsync, GeoMap, world_countries, us_states, render_pdf, render_png } = await import('/browser/browser.js');
-  const fonts = new Fonts();
+  assert.ok((await Bun.file('../gum-mark.log').text()).includes('\x1b_G'));
+const fonts = new Fonts();
   await fonts.load();
   const svgs = [await mathToSvgAsync('x^2+1')];
   for (const [source, projection] of [[world_countries(), 'equalEarth'], [us_states(), 'albersUsa']]) {
@@ -385,16 +386,15 @@ cd "$WORK/app-npm"
 printf '{"name":"gum-rehearsal-npm","private":true}\n' > package.json
 cp "$WORK/.npmrc" .npmrc
 runlog npm-install.log npm install "@gum-jsx/cli@$VERSION" "${EXTRA[@]}" --ignore-scripts --registry "$REG" --no-audit --no-fund
-for bin in gum gum-tex gum-mark gum-react; do
+for bin in gum gum-mark gum-react; do
     [ -x "node_modules/.bin/$bin" ] || fail "npm did not link $bin"
 done
 [ -f node_modules/@gum-jsx/pdf/src/index.ts ] || fail 'npm did not install PDF source'
 [ ! -d node_modules/canvas ] || fail 'npm default CLI install brought in canvas'
-runlog npm-gum-png.log bun --no-addons node_modules/.bin/gum "$APP/figure.jsx" -o figure.png
-runlog npm-tex-png.log bun --no-addons node_modules/.bin/gum-tex 'x^2' -o formula.png
-runlog npm-mark.log bun --no-addons node_modules/.bin/gum-mark "$APP/notes.md"
+runlog npm-gum-png.log node --no-addons node_modules/.bin/gum "$APP/figure.jsx" -o figure.png
 [[ $(od -An -tx1 -N8 figure.png | tr -d ' \n') = 89504e470d0a1a0a ]] || fail 'npm gum PNG'
-[[ $(od -An -tx1 -N8 formula.png | tr -d ' \n') = 89504e470d0a1a0a ]] || fail 'npm gum-tex PNG'
+
+runlog npm-mark.log bun --no-addons node_modules/.bin/gum-mark "$APP/notes.md"
 grep -q $'\033_G' "$WORK/npm-mark.log" || fail 'npm gum-mark image'
 
 say 'isolated global Bun installation'

@@ -9,21 +9,16 @@
       "name": "@gum-jsx/cli",
       "version": "2.0.0-beta.3",
       "bin": {
-        "gum": "src/cli.ts",
-        "gum-tex": "src/tex.ts",
-        "gum-mark": "src/mark.ts",
+        "gum": "dist/npm/cli.js",
       },
-      "dependencies": {
+      "devDependencies": {
         "@gum-jsx/core": "2.0.0-beta.3",
         "@gum-jsx/maps": "2.0.0-beta.3",
-        "@gum-jsx/mark": "2.0.0-beta.3",
         "@gum-jsx/math": "2.0.0-beta.3",
         "@gum-jsx/pdf": "2.0.0-beta.3",
         "@gum-jsx/png": "2.0.0-beta.3",
-        "commander": "^14.0.3",
-      },
-      "devDependencies": {
         "@types/bun": "latest",
+        "commander": "^14.0.3",
         "fast-png": "^8.0.0",
         "typescript": "^7",
       },
@@ -104,10 +99,14 @@
     "gum-jsx-mark": {
       "name": "@gum-jsx/mark",
       "version": "2.0.0-beta.3",
+      "bin": {
+        "gum-mark": "src/cli.ts",
+      },
       "dependencies": {
         "@gum-jsx/core": "2.0.0-beta.3",
         "@gum-jsx/math": "2.0.0-beta.3",
         "@gum-jsx/png": "2.0.0-beta.3",
+        "commander": "^14.0.3",
         "marked": "^18.0.11",
       },
       "devDependencies": {
