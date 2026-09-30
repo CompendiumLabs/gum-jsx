@@ -48,9 +48,12 @@ codex plugin add gum-jsx@gum-jsx-beta
 Start a new task after installation to load the skill.
 
 Rendering requires an environment that can run commands and a **separate Gum
-executable**. The skill checks for a working installation first and reuses it.
-If setup is needed, it offers **standalone (recommended)** or optional
-**development/library mode**.
+executable**. The skill checks PATH and the current project/workspace's local
+CLI or Gum script. If neither works, it installs a fresh standalone copy in a
+writable task directory and continues rendering. It does not search Codex
+directories or caches for old executables. Explicit setup preferences and
+installation restrictions still apply. **Development/library mode** is available
+when requested for package integration or source development.
 
 ### Standalone (default)
 

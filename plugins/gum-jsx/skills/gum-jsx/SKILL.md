@@ -6,7 +6,8 @@ description: Create and revise SVG diagrams, plots, mathematical figures, and sl
 # Gum JSX
 
 Gum describes figures with JavaScript and JSX, then measures and renders them as
-SVG. It is not React, HTML, or a browser DOM.
+SVG. It is not React, HTML, or a browser DOM. For environment setup, follow
+the instructions on CLI setup below before searching for or installing Gum.
 
 Use the references for supported components and properties. Preserve the
 user's chosen data, visual intent, and output format. Ordinary functions returning
@@ -296,23 +297,28 @@ instructions and references, not the executable.
 
 Before rendering:
 
-1. Check `gum --version` and any existing project-local CLI or Gum script.
-   Inspect `package.json` when present; reuse the project's selected installation.
-   In a Gum source checkout, use `bun run gum --version`. Run `--help` to confirm
-   available options. Do not use `bunx` or `npx` as availability checks.
-2. If no working renderer is available, offer **standalone (recommended)** for
-   figures and decks, or **development/library mode** for package integration
-   or source development. Carry out
-   an already-authorized setup without asking again; otherwise get the user's
-   choice before installing. Avoid making global-versus-local package scope the
-   first setup question.
+1. Keep discovery bounded: check `gum --version` on PATH, then the current
+   project's or known workspace root's `node_modules/.bin/gum` (the `gum.cmd`
+   wrapper on Windows) or an existing Gum script in its `package.json`.
+   In a Gum source checkout, use `bun run gum --version`. Reuse a working
+   executable, including an exact path already established in this task.
+   Do not search Codex directories, plugin caches, past tasks, user profiles,
+   package-manager caches, or the filesystem for another copy. Do not use
+   `bunx` or `npx` as availability checks.
+2. If those checks do not find a working renderer, install a fresh standalone
+   copy and continue the requested render. Do not spend time locating an old
+   installation or ask the user to choose an installation mode for an ordinary
+   figure. Honor explicit installation restrictions and any setup choice already
+   made. Use **development/library mode** when the user requests package
+   integration or source development.
 3. For standalone, detect the OS and architecture and use the matching
    [v2.0.0-beta.3 release](https://github.com/CompendiumLabs/gum-jsx-cli/releases/tag/v2.0.0-beta.3).
    Downloads are available for macOS ARM64 and x64, Linux x64 (glibc), and Windows x64.
    Follow the [CLI setup guide](references/guides/cli.md) for exact asset links,
    checksum verification, extraction, and optional package installation.
-   Use a writable tools directory and invoke the extracted executable by its
-   full path when it is not on PATH. Reuse that path for subsequent renders.
+   Extract into a new directory under the task's writable tools or temporary
+   directory. Invoke the executable by its full path and reuse that exact path
+   for subsequent renders; there is no need to add it to PATH.
    For other platforms, offer the Bun package route or a source build instead
    of downloading an incompatible binary.
 4. Verify the selected executable with `--version`, then render the requested

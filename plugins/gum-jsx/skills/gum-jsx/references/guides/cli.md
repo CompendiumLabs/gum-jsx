@@ -6,10 +6,18 @@ for making figures and decks. It includes the runtime and rendering assets, so
 Bun and `node_modules` are unnecessary. The authoring plugin does not install
 an executable automatically.
 
-Check `gum --version` and the project's existing CLI or scripts first; reuse a
-working installation. If setup is needed, offer standalone by default, with
-optional development/library mode. Reuse any installation choice already made
-in the conversation.
+Check `gum --version` on PATH, then the current project or known workspace
+root's `node_modules/.bin/gum` (`gum.cmd` on Windows) or existing Gum script in
+`package.json`. Reuse a working installation or an exact executable path already
+established in this task. Stop discovery after these checks: do not search Codex
+directories, plugin caches, old tasks, user profiles, package-manager caches, or
+the filesystem for a hidden installation. Do not use `bunx` or `npx` to probe.
+
+If no working renderer is found, install a fresh standalone copy and proceed
+with the requested render, without a separate installation-mode question.
+Honor explicit installation restrictions and setup choices already made.
+Development/library mode is available for requested package integration or
+source development.
 
 ## Standalone downloads
 
@@ -33,9 +41,10 @@ Use the matching archive from
    Verify the selected file; the checksum list also contains other platforms.
 3. Extract the `.tar.gz` with `tar -xzf <archive>` or the Windows `.zip` with
    PowerShell `Expand-Archive`. Each archive contains a versioned directory with
-   `gum` or `gum.exe`, installation notes, and license notices. Keep it in a
-   writable tools directory. Adding the executable to PATH is optional; invoke
-   its full path when needed. Do not change shell profiles for a one-off render.
+   `gum` or `gum.exe`, installation notes, and license notices. Extract into a
+   new directory under the task's writable tools or temporary directory. Invoke
+   its full path and retain that exact path for later renders in the task.
+   No PATH or shell-profile change is needed.
 4. Run the extracted executable with `--version` (expected `2.0.0-beta.3`), then
    render the figure. For example, `./gum figure.jsx -o figure.svg`, or
    `.\gum.exe figure.jsx -o figure.svg` in PowerShell.
