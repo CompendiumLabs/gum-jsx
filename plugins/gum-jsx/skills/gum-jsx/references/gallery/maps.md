@@ -665,7 +665,7 @@ copy with the atlas version and URL recorded in `provenance`.
 
 The `equalEarth` projection fits the whole sphere. Shared TopoJSON borders are
 drawn once, after the country fills. The CLI includes the map elements and data
-accessors by default, so this example runs without imports or plugin flags.
+accessors by default, so this example runs without imports.
 
 **TextFigure** places the heading, aspect-sized map, and measured caption in a
 column. Only the outer design width and base typography are specified; text and

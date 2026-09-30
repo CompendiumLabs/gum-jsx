@@ -1,89 +1,8 @@
 # CLI
 
 The `gum` command evaluates JSX, lays out the result, and writes SVG, PNG, PDF,
-kitty graphics, a fragment tree, or JSON. **Standalone is the recommended setup**
-for making figures and decks. It includes the runtime and rendering assets, so
-Bun and `node_modules` are unnecessary. The authoring plugin does not install
-an executable automatically.
-
-Check `gum --version` on PATH, then the current project or known workspace
-root's `node_modules/.bin/gum` (`gum.cmd` on Windows) or existing Gum script in
-`package.json`. Reuse a working installation or an exact executable path already
-established in this task. Stop discovery after these checks: do not search Codex
-directories, plugin caches, old tasks, user profiles, package-manager caches, or
-the filesystem for a hidden installation. Do not use `bunx` or `npx` to probe.
-
-If no working renderer is found, install a fresh standalone copy and proceed
-with the requested render, without a separate installation-mode question.
-Honor explicit installation restrictions and setup choices already made.
-Development/library mode is available for requested package integration or
-source development.
-
-## Standalone downloads
-
-Use the matching archive from
-[Gum v2.0.0-beta.3](https://github.com/CompendiumLabs/gum-jsx-cli/releases/tag/v2.0.0-beta.3):
-
-| Platform | Archive |
-|---|---|
-| macOS, Apple Silicon (ARM64) | [macos-arm64.tar.gz](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-macos-arm64.tar.gz) |
-| macOS, Intel (x64 / x86_64) | [macos-x64.tar.gz](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-macos-x64.tar.gz) |
-| Linux, x64 / x86_64 (glibc) | [linux-x64.tar.gz](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-linux-x64.tar.gz) |
-| Windows, x64 / AMD64 | [windows-x64.zip](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/gum-v2.0.0-beta.3-windows-x64.zip) |
-
-1. Detect the OS and CPU architecture. Do not substitute a different architecture
-   when a matching release is absent. Offer package installation or a source
-   build for platforms such as Linux ARM64.
-2. Download the matching archive and
-   [SHA256SUMS](https://github.com/CompendiumLabs/gum-jsx-cli/releases/download/v2.0.0-beta.3/SHA256SUMS).
-   Compare the archive's SHA-256 hash against its filename's entry using
-   `sha256sum`, `shasum -a 256`, or PowerShell `Get-FileHash -Algorithm SHA256`.
-   Verify the selected file; the checksum list also contains other platforms.
-3. Extract the `.tar.gz` with `tar -xzf <archive>` or the Windows `.zip` with
-   PowerShell `Expand-Archive`. Each archive contains a versioned directory with
-   `gum` or `gum.exe`, installation notes, and license notices. Extract into a
-   new directory under the task's writable tools or temporary directory. Invoke
-   its full path and retain that exact path for later renders in the task.
-   No PATH or shell-profile change is needed.
-4. Run the extracted executable with `--version` (expected `2.0.0-beta.3`), then
-   render the figure. For example, `./gum figure.jsx -o figure.svg`, or
-   `.\gum.exe figure.jsx -o figure.svg` in PowerShell.
-
-Standalone includes JSX, math through `Tex`/`Latex`, maps, and PDF decks. The
-archives provide the executable; install `@gum-jsx/*` packages separately for
-library integration. External `--plugin` modules still need their own
-project dependencies. Linux x64 rendering has been tested; the published macOS
-ARM64/x64 and Windows x64 builds still need runtime verification on those platforms.
-
-## Development and library mode
-
-Choose this route for integration into a code project or source development.
-It requires Bun; follow the
-[Bun setup instructions](https://bun.sh/docs/installation) if it is missing.
-
-- **Project CLI:** `bun add --dev --exact @gum-jsx/cli@2.0.0-beta.3`, then use
-  `./node_modules/.bin/gum` (or the corresponding Windows executable).
-- **Global CLI:** `bun install -g @gum-jsx/cli@2.0.0-beta.3`, then use `gum`.
-- **Library integration:** add the libraries the host code needs, for example
-  `bun add --exact @gum-jsx/core@2.0.0-beta.3 @gum-jsx/math@2.0.0-beta.3`.
-  See [Rendering](rendering.md) for evaluation, layout, and export APIs, and
-  [Math export](math_export.md) for fonts and standalone formulas.
-- **Source development:** use the existing Gum checkout and its `bun run gum`
-  script. For a new checkout, follow the repository's
-  [development instructions](https://github.com/CompendiumLabs/gum-jsx#development).
-
-Choose project-local CLI installation when the user wants dependencies managed
-with the project; use global installation when they ask for commands across
-projects. Preserve any scope already chosen. Verify the selected CLI with
-`--version`.
-If installation is declined or commands cannot run, provide source and rendering
-instructions without claiming to have rendered it.
-
-## Render a figure
-
-The examples below assume `gum` is on PATH; substitute the local executable when
-needed. In a Gum workspace checkout, use `bun run gum` instead of `gum`.
-Save the example below as `figure.jsx`:
+kitty graphics, a fragment tree, or JSON. The examples below assume `gum` is on
+PATH; substitute the local executable when needed.
 
 ```sh
 gum figure.jsx
@@ -97,7 +16,6 @@ gum --help
 | Option | Meaning |
 |---|---|
 | [files...] | JSX files or one deck directory; omit or use - for stdin |
-| --plugin | Load extra bindings from a package or local module; repeat for more |
 | -f, --format | kitty, svg, png, pdf, tree, or json |
 | -o, --output | Output filename instead of stdout |
 | -W, --width | Exact viewport width in pixels |
@@ -143,12 +61,6 @@ PNG and kitty. It does not change the laid-out geometry.
 
 Core bindings are mandatory, and math and maps are included by default.
 `GeoMap`, `world_countries()`, and `us_states()` are available without extra flags.
-Add `--plugin <package>` or `--plugin ./elements.ts` to load another module's named
-exports into the evaluator. Extra packages must be installed in the current project;
-package names and relative paths resolve from the current working directory.
-Repeat the option to load more modules. Later plugins override earlier bindings,
-and default exports are ignored. Plugin bindings are available in ordinary
-files, stdin, deck preludes, and slides.
 
 A bare element is wrapped in **Svg** by the CLI. The core evaluator itself does not
 add this wrapper. Input and output paths are relative to the current directory.
@@ -164,8 +76,7 @@ independently of the rendered output.
 PDF uses gum-jsx-pdf to write vector pages at 96 pixels per inch, with
 the same viewport, themes, and backgrounds. Text and math are outlines rather
 than selectable text; debug overlays are omitted. `--ratio` and `--id-prefix`
-do not affect PDF output. See the [PDF API](https://github.com/CompendiumLabs/gum-jsx-pdf/blob/master/README.md)
-for supported colors and page-size limits.
+do not affect PDF output.
 
 The command accepts one input: a single JSX file or stdin for ordinary rendering,
 or a directory for a multipage PDF. Directory input loads its optional

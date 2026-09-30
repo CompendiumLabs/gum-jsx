@@ -82,7 +82,7 @@ external SVG images are unsupported. PDF output preserves vector paths and embed
 text is outlined and is not searchable or selectable. See the
 [CLI](gum-jsx-cli/README.md) and [PDF](gum-jsx-pdf/README.md) references for details.
 
-**Browser editor.** From a [development checkout](#development), run `bun run dev`
+**Browser editor.** From a [development checkout](#development), run `bun --filter @gum-jsx/edit dev`
 and open the printed URL to edit JSX with a live SVG preview. The `/docs` page
 provides searchable, editable examples.
 
@@ -158,10 +158,10 @@ Run shared commands from the workspace root:
 bun run test          # Every package's suite, sequentially
 bun run typecheck     # TypeScript checks across all packages
 bun run perf          # Core, math, maps, and demos benchmarks, sequentially
-bun run build         # Production browser editor and docs viewer
+bun --filter @gum-jsx/edit build # Production browser editor and docs viewer
 bun run visual-test   # Searchable HTML report of rendered examples
 bun run rehearse      # Publish to a temporary local registry and check fresh installs
-bun run test:png-package # Fresh npm CLI/MCP install; no scripts or native addons
+bun run --cwd gum-jsx-cli test # Includes isolated npm CLI installation checks
 ```
 
 To work on one package, use its scripts, for example

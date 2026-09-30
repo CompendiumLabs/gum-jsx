@@ -58,7 +58,7 @@ group automatically.
 See [matrices and arrays](math.md#math_arrays) for rules, cases, and small tables.
 `\substack` and `subarray` make script-style multiline content for limits and
 scripts. Phase 5 comparison galleries are available through
-`bun run compare --suite 5`; `--inline` covers the embeddable environments and
+`bun gum-jsx-math/scripts/compare.ts --suite 5`; `--inline` covers the embeddable environments and
 omits display-only cases.
 
 <a id="aligned_math-example"></a>
@@ -607,7 +607,7 @@ All generated paths inherit color and opacity, including on dark backgrounds.
 These are Gum's own shapes, so their curves can differ from KaTeX and LaTeX.
 No font glyph is stretched horizontally to simulate a wide hat or tilde.
 
-Run `bun run compare --suite 6 -S 48 -o /tmp/typography.png` for the common
+Run `bun gum-jsx-math/scripts/compare.ts --suite 6 -S 48 -o /tmp/typography.png` for the common
 Gum/KaTeX/LaTeX gallery; add `--inline` for text style. The extended gallery is
 `--suite 6-extra --no-latex`, covering the additional KaTeX command names.
 

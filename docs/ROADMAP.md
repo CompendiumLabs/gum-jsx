@@ -323,8 +323,8 @@ See if they produce reasonable output (tree, SVG, and PNG). Also consider if a
 reasonable task is concisely expressible. If it's not, that may be a sign that
 changes are needed.
 
-Use the workspace rendering CLI, `bun run gum`, from the workspace root to rapidly
-try example code, for example `bun run gum gum-jsx-docs/docs/elements/code/Group.jsx -f tree`.
+Use the workspace rendering CLI, `bun gum-jsx-cli/src/cli.ts`, from the workspace root to rapidly
+try example code, for example `bun gum-jsx-cli/src/cli.ts gum-jsx-docs/docs/elements/code/Group.jsx -f tree`.
 The editor and MCP viewer provide browser previews. Build up the example gallery as you go so we can
 both keep track of coverage.
 

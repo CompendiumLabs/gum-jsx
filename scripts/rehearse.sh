@@ -304,8 +304,7 @@ const html = `<!doctype html><html><body><pre id="status">Loading</pre><main></m
 <script type="module">
 try {
   const { Fonts, render_element, mathToSvgAsync, GeoMap, world_countries, us_states, render_pdf, render_png } = await import('/browser/browser.js');
-  assert.ok((await Bun.file('../gum-mark.log').text()).includes('\x1b_G'));
-const fonts = new Fonts();
+  const fonts = new Fonts();
   await fonts.load();
   const svgs = [await mathToSvgAsync('x^2+1')];
   for (const [source, projection] of [[world_countries(), 'equalEarth'], [us_states(), 'albersUsa']]) {

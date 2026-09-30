@@ -13,18 +13,31 @@ cover those slices in detail.
 ## Release packages and runtimes
 
 2.0 publishes only `@gum-jsx/*` packages. The workspace root remains private;
-there is no new `gum-jsx` umbrella install. The CLI package supplies `gum`,
-`gum-tex`, and `gum-mark`; React supplies `gum-react`.
+there is no new `gum-jsx` umbrella install. The CLI package supplies `gum`; `@gum-jsx/mark` supplies `gum-mark`, and React
+supplies `gum-react`. The standalone `gum-tex` command has been retired.
 
-Release candidates use coordinated `2.0.0-beta.3` versions and the `beta` tag.
+The current release uses coordinated `2.0.0-beta.4` versions and the `beta` tag.
 Most packages ship TypeScript source for Bun 1.4.2 or newer and supported browser
 bundlers. PNG ships built JavaScript with embedded WebAssembly and also supports
-Node 22+. Direct Node execution of the other packages is outside this contract.
+Node 22+. The beta.4 bundled npm CLI supports Node 24+ for built-in
+rendering. Direct Node execution of the source-published
+libraries is outside this contract.
 Earlier releases were tested on Linux x64, macOS, and Windows; beta.3's new WASM
 renderer has been verified on Linux x64. macOS and Windows verification remains
 outstanding for this candidate. Core, math, maps, PDF, React, and PNG's package
 root support browser bundlers.
 See [RELEASE.md](./RELEASE.md) for artifact verification and remaining gates.
+
+## Changes from beta.3 to beta.4
+
+- The npm CLI ships bundled JavaScript, fonts, and notices with no runtime
+  package dependencies. Run built-in rendering under Node 24+ or Bun.
+- Install `@gum-jsx/mark` separately for `gum-mark`.
+- Replace `gum-tex` with `gum` rendering a JSX file containing `Tex` or `Latex`,
+  or use `@gum-jsx/math` export helpers.
+- From the workspace root, use `bun gum-jsx-cli/src/cli.ts` for the CLI and
+  `bun --filter @gum-jsx/edit dev` / `build` for the editor. Root shortcut
+  scripts for these commands have been removed.
 
 ## Changes from beta.2 to beta.3
 
@@ -63,9 +76,6 @@ See [RELEASE.md](./RELEASE.md) for artifact verification and remaining gates.
   returns the source's value; use `render_element` or `layout_element` separately
   for layout and rendering. A fresh local scope and random stream are created
   for each call; `evaluate_prelude` explicitly shares declarations.
-- `gum --plugin <module>` loads named exports from a package or local module,
-  resolved from the caller's project. Math and maps are already in scope.
-  This does not restore the old `{ elems, bindings, fonts }`/Env plugin protocol.
 - `Graph` supports record-to-record projections with explicit output-space limits;
   `GeoMap` supplies a fitted geographic projection to its children. See
   [projections](../gum-jsx-docs/docs/guides/text/projections.md).
@@ -238,7 +248,7 @@ replace the original element registration with `Element` subclasses and
 
 | Original package | Current package |
 |---|---|
-| gum-jsx, the batteries-included package and commands | No umbrella re-export; import the scoped packages. [@gum-jsx/cli](../gum-jsx-cli/README.md) ships the `gum`, `gum-tex`, and `gum-mark` commands |
+| gum-jsx, the batteries-included package and commands | No umbrella re-export; import the scoped packages. [@gum-jsx/cli](../gum-jsx-cli/README.md) ships `gum`; install `@gum-jsx/mark` separately for `gum-mark` |
 | @gum-jsx/core | [@gum-jsx/core](../gum-jsx-core/README.md) |
 | @gum-jsx/math | [@gum-jsx/math](../gum-jsx-math/README.md), supplied as evaluation scope rather than a plugin |
 | Geographic data and maps | [@gum-jsx/maps](../gum-jsx-maps/README.md), included by the CLI and available to library consumers |
@@ -316,7 +326,7 @@ Most of the original surface now has a counterpart, often with a different API:
   an `id`, using [Edge](../gum-jsx-docs/docs/elements/text/Edge.md).
 - Math: [Latex](../gum-jsx-docs/docs/elements/text/Latex.md),
   [Tex](../gum-jsx-docs/docs/elements/text/Tex.md), the full math element tree, and
-  the `gum-tex` command. See [Math](../gum-jsx-docs/docs/guides/text/math.md).
+  standalone math export helpers. See [Math](../gum-jsx-docs/docs/guides/text/math.md).
 - Images and themes: [PngImage](../gum-jsx-docs/docs/elements/text/PngImage.md) and
   the light and dark palettes in [Themes](../gum-jsx-docs/docs/guides/text/themes.md).
 - Hosts: the CLI with SVG, PNG, PDF, kitty, tree, and JSON output; React
@@ -339,8 +349,7 @@ Most of the original surface now has a counterpart, often with a different API:
 - Language: the legacy `{ elems, bindings, fonts }` plugin protocol and isolated
   Env, strict rendering mode, boolean shorthands for length props, and automatic
   wrapping of a top-level fragment or array. Hosts do wrap a single bare element
-  in **Svg**. Use `gum --plugin` for named module bindings or `Evaluator` scope
-  for host-provided bindings.
+  in **Svg**. Use `Evaluator` scope for host-provided bindings.
 - Plotting: axes use linear scales. Log and date scales, minor ticks, label
   collision avoidance, adaptive sampling, and discontinuity detection are not
   implemented.

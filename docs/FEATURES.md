@@ -44,8 +44,7 @@ lengths, and explicit `fit` remain the foundation.
   bindings across figures or slides.
 - [x] Allow hosts to inject extra bindings into evaluated code. The fresh
   `scope` option covers the original evaluation `bindings` capability.
-- [x] Reuse scope, seed, and name defaults through `Evaluator`; load named
-  package/local-module bindings with the CLI's repeatable `--plugin` option.
+- [x] Reuse scope, seed, and name defaults through `Evaluator`.
 - [ ] Restore an isolated `Env` abstraction containing element registrations,
   bindings, fonts, theme, strictness, text scale, and random streams.
 - [ ] Restore plugins of the form `{ elems, bindings, fonts }`, including
@@ -536,7 +535,7 @@ for the precise differences in range, singleton linspace, and integer endpoints.
 
 The basic rendering command lives in the separate
 [`gum-jsx-cli` workspace package](../gum-jsx-cli/README.md), backed by the core's
-public API. Run `bun run gum` from the workspace root.
+public API. Run `bun gum-jsx-cli/src/cli.ts` from the workspace root.
 
 - [x] Separate CLI package with a `gum` executable and workspace
   scripts; command-line I/O and rasterization are outside `gum-jsx-core` runtime.
@@ -547,14 +546,14 @@ public API. Run `bun run gum` from the workspace root.
   no external rasterizer command or font registration.
 - [x] Default stdout to kitty graphics, as in the original gum command;
   explicit formats and output file extensions take precedence.
-- [x] Single-page vector PDF output from `gum` and `gum-tex`, selected with
+- [x] Single-page vector PDF output from `gum`, selected with
   `-f pdf` or a `.pdf` filename, with document title and background options.
 - [x] `@gum-jsx/cli` includes the output backends, math, themes, backgrounds,
   raster ratios, and pixel selection. Original unit-size is retired; CLI seed,
   filtered/depth-limited inspection, and a legacy strict/fallback mode remain absent.
 - [ ] Live `gum --dev` terminal refresh while a source file changes.
-- [x] `gum-tex` command for standalone TeX to SVG, PNG, PDF, kitty, tree, or JSON;
-  literal/file/stdin input, font size, padding, macros, and explicit fitting.
+- [x] TeX rendering through `Tex`/`Latex` in `gum` JSX and the math export helpers.
+  The separate `gum-tex` executable is retired.
 - [x] Multi-file and directory deck loading for PDF output with natural filename ordering.
 - [x] Deck `index.json` for explicit slide order, shared prelude, and document
   title; automatically apply a neighboring deck prelude when rendering one
@@ -564,8 +563,9 @@ public API. Run `bun run gum` from the workspace root.
 
 ## Markdown and documentation workflows
 
-- [x] `gum-mark` / **`displayMarkdown`** terminal renderer for Markdown with ANSI
-  text, fenced gum blocks, linked PNG/SVG/JSX images, inline and display TeX,
+- [x] Standalone `@gum-jsx/mark` package with the `gum-mark` / **`displayMarkdown`**
+  terminal renderer for Markdown with ANSI text, fenced gum blocks, linked
+  PNG/JSX images, inline and display TeX,
   image sizing options, and kitty placeholders under a pager.
 - [x] Documentation package containing an API page and runnable example per
   element, gallery examples, generated model skill, and metadata usable by a

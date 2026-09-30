@@ -17,8 +17,8 @@ reference while keeping the fresh immutable source/layout/fragment model.
 Run examples from the workspace root:
 
 ```sh
-bun run gum gum-jsx-docs/docs/gallery/code/plot_wave.jsx -o /tmp/plot.png
-bun run gum gum-jsx-docs/docs/gallery/code/plot_bars.jsx -f tree
+bun gum-jsx-cli/src/cli.ts gum-jsx-docs/docs/gallery/code/plot_wave.jsx -o /tmp/plot.png
+bun gum-jsx-cli/src/cli.ts gum-jsx-docs/docs/gallery/code/plot_bars.jsx -f tree
 ```
 
 ## Implemented slices
@@ -108,7 +108,7 @@ From the workspace root:
 bun run test
 bun run typecheck
 bun --cwd gum-jsx-docs run test
-bun run build
+bun --filter @gum-jsx/edit build
 ```
 
 From gum-jsx-core, also check public declaration emission:

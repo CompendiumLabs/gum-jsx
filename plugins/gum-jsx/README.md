@@ -30,7 +30,7 @@ Change the source's `size` constant to adjust the output dimensions, then
 regenerate the SVG from the top-level repository:
 
 ```sh
-bun run gum plugins/gum-jsx/assets/logo_icon_dark.jsx -o plugins/gum-jsx/assets/logo_icon_dark.svg
+bun gum-jsx-cli/src/cli.ts plugins/gum-jsx/assets/logo_icon_dark.jsx -o plugins/gum-jsx/assets/logo_icon_dark.svg
 ```
 
 Repack after regenerating the icon to include the new SVG in the release ZIP.

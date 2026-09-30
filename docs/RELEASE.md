@@ -215,7 +215,7 @@ pushed as `22d1e9d`; public publication and release tags remain separate steps.
   tested native support on Linux x64, macOS, and Windows with Bun 1.4.2 or newer.
   This preparation run revalidated Linux x64; it did not repeat the previously
   reported macOS/Windows checks. Migration and [FEATURES.md](./FEATURES.md) now
-  distinguish named-module CLI plugins and fragment `clip_path` support from the
+  distinguish fragment `clip_path` support from the
   deferred legacy Env protocol, general masks, and arbitrary element clip props.
 
 ### Current package contract and verification

@@ -114,15 +114,15 @@ Contributors with a repository checkout can compare renderers from the workspace
 
 ```sh
 gum gum-jsx-docs/docs/guides/code/math.jsx -o /tmp/math.png --ratio 2
-bun run compare 'a+b=c' -S 48 -o /tmp/math-compare.png
-bun run compare --suite -S 48 -o /tmp/math-gallery.png
-bun run compare --suite 3 --inline -S 48 -o /tmp/math-inline.png
-bun run compare --suite 4 -S 48 -o /tmp/math-text.png
-bun run compare --suite 5 -S 48 -o /tmp/math-arrays.png
-bun run compare --suite 5 --inline -S 48 -o /tmp/math-arrays-inline.png
-bun run compare --suite 6 -S 48 -o /tmp/math-typography.png
-bun run compare --suite 6 --inline -S 48 -o /tmp/math-typography-inline.png
-bun run compare --suite 7 -S 48 -o /tmp/math-exports.png
+bun gum-jsx-math/scripts/compare.ts 'a+b=c' -S 48 -o /tmp/math-compare.png
+bun gum-jsx-math/scripts/compare.ts --suite -S 48 -o /tmp/math-gallery.png
+bun gum-jsx-math/scripts/compare.ts --suite 3 --inline -S 48 -o /tmp/math-inline.png
+bun gum-jsx-math/scripts/compare.ts --suite 4 -S 48 -o /tmp/math-text.png
+bun gum-jsx-math/scripts/compare.ts --suite 5 -S 48 -o /tmp/math-arrays.png
+bun gum-jsx-math/scripts/compare.ts --suite 5 --inline -S 48 -o /tmp/math-arrays-inline.png
+bun gum-jsx-math/scripts/compare.ts --suite 6 -S 48 -o /tmp/math-typography.png
+bun gum-jsx-math/scripts/compare.ts --suite 6 --inline -S 48 -o /tmp/math-typography-inline.png
+bun gum-jsx-math/scripts/compare.ts --suite 7 -S 48 -o /tmp/math-exports.png
 ```
 
 The comparison script requires Chromium, `pdflatex`, and `pdftoppm`. It places
