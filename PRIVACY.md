@@ -22,11 +22,9 @@ environment. You can delete them using that environment's file controls.
 
 ## Software downloads and other providers
 
-Initial setup may download the Gum renderer from npm. If Node.js and Bun are
-unavailable, the skill also supports downloading a standalone renderer from
-GitHub Releases. These downloads connect to the relevant provider, which handles
-the network request under its own privacy policy. Rendering itself runs locally
-and requires no communication with Compendium Labs.
+Initial setup may download the Gum renderer from the npm registry. The registry
+provider handles these network requests under its own privacy policy. Rendering
+itself runs locally and requires no communication with Compendium Labs.
 
 Your AI host processes conversations and may store files or run commands in its
 own cloud environment. Its privacy policy and retention controls apply to that

@@ -253,16 +253,17 @@ Use this discovery order:
 3. Otherwise, run `npm prefix` to find the current project's root and check
    `node_modules/.bin` for `gum` (`gum.cmd` on Windows). If found, use that path.
 
-Stop at the first available command and proceed to rendering; no version check
-is needed.
+Use the first available renderer invocation.
 
 Stop discovery after these checks: do not search Codex directories, plugin
 caches, old tasks, user profiles, package-manager caches, or the filesystem for
 a hidden installation. Do not use `bunx` or `npx` to probe.
 
-If no renderer is found, install locally with npm and Node.js 24+. Continue the requested
-render without a separate installation-mode question. Honor explicit
-installation restrictions and setup choices already made.
+If no renderer is found, explain that rendering requires downloading and running
+Gum 2.0.0. Follow the host's approval flow before installing or running downloaded
+software. Ask the user for setup approval when it is not already authorized.
+Honor installation restrictions and the user's chosen scope. If setup is denied
+or blocked, provide JSX source and rendering instructions.
 
 ## Local package installation
 
@@ -271,40 +272,42 @@ directory and put a minimal `package.json` containing `{"private":true}` there.
 Run this command **from that directory**:
 
 ```sh
-npm install --save-exact @gum-jsx/cli
+npm install --save-exact --ignore-scripts @gum-jsx/cli@2.0.0
 ```
 
 If npm's default cache is not writable in a sandbox, set `npm_config_cache` to
 a writable directory (such as a cache directory under the task's temporary
 directory) and retry the installation.
 
-The bundled package has no runtime package dependencies. Invoke
+The bundled package has no runtime package dependencies and needs no install
+scripts. Keep the generated lockfile, including the registry integrity metadata.
+Use the pinned version; if it is unavailable or integrity verification fails,
+stop and report the error. Invoke
 `node /absolute/tools-dir/node_modules/@gum-jsx/cli/dist/npm/cli.js`.
 Retain the exact invocation for later renders. Run rendering commands from the caller's working directory so input
 files resolve there.
 
-Bun 1.4.2+ works equally well: install with `bun add --exact @gum-jsx/cli`
+Bun 1.4.2+ works equally well: install with `bun add --exact --ignore-scripts @gum-jsx/cli@2.0.0`
 and use `bun` in place of `node` in the invocation above.
 
 This installation needs no global install, PATH or shell-profile changes, or
 changes to the user's project dependencies. Only install into the project when
 the user requests integration.
 
-If neither Node nor Bun is available, download the standalone archive for your
-OS and CPU architecture from [GitHub releases](https://github.com/CompendiumLabs/gum-jsx-cli/releases),
-extract it into a writable directory, and run the included `gum` executable
-(`gum.exe` on Windows). It includes its runtime.
+If neither Node.js 24+ nor Bun 1.4.2+ is available and no existing Gum renderer
+was found, provide JSX source and the npm installation and rendering instructions
+for an environment with a supported runtime.
 
 ## Project and library integration
 
 The bundled npm CLI runs under Node.js 24+ with no runtime package dependencies.
 
-- **Project CLI:** install with `npm install --save-dev @gum-jsx/cli`,
+- **Project CLI:** install with `npm install --save-dev --save-exact --ignore-scripts @gum-jsx/cli@2.0.0`,
   then use `./node_modules/.bin/gum` (or its Windows wrapper).
-- **Global CLI:** install with `npm install -g @gum-jsx/cli`, then use `gum`.
+- **Global CLI:** install with `npm install -g --ignore-scripts @gum-jsx/cli@2.0.0`, then use `gum`.
 - **Library integration:** source packages require Bun or a browser bundler.
   Add the libraries the host code needs, for example
-  `npm install --save-exact @gum-jsx/core @gum-jsx/math`.
+  `npm install --save-exact --ignore-scripts @gum-jsx/core@2.0.0 @gum-jsx/math@2.0.0`.
   See [Rendering](references/guides/rendering.md) for evaluation, layout, and export APIs, and
   [Math export](references/guides/math_export.md) for fonts and standalone formulas.
 
