@@ -1,12 +1,12 @@
 # Gum 2.0 release readiness
 
-Standalone Github release commands:
+Standalone GitHub release commands (run from the workspace root):
 
 ```sh
 gh release create v2.0.0 \
-  dist/releases/v2.0.0/* \
+  gum-jsx-cli/dist/releases/v2.0.0/* \
   --repo CompendiumLabs/gum-jsx-cli \
-  --target "$(git rev-parse HEAD)" \
+  --target "$(git -C gum-jsx-cli rev-parse HEAD)" \
   --title "Gum v2.0.0" \
   --latest \
   --notes "Standalone gum executables for macOS ARM64, macOS x64, Linux x64, and Windows x64."
@@ -39,6 +39,49 @@ its rendering-command test to exclude installation examples), workspace
 typechecks passed, and `bun install --frozen-lockfile` passed with a writable
 `BUN_TMPDIR`. The PNG/CLI build and plugin ZIP packaging passed; the bundled
 Node CLI reports `2.0.0`. Public registry publication has not been performed.
+
+### Final rehearsal — 2026-09-30
+
+Checked workspace `31f4cda` on Linux x64 with Bun 1.4.2. The final check found
+that the MCP test still required the example removed from `prompt/gen.md`, and
+that MCP inherited the newly CLI-specific refinement instructions. MCP now
+excludes that prompt and retains its own rasterize/inspect/render workflow.
+Its 22 tests, typecheck, and real HTTP verification passed after the fix; all
+other package suites passed in the workspace run.
+
+- Frozen install, workspace typechecks, PNG/CLI build, editor production build,
+  and plugin ZIP packaging passed. The existing editor chunk-size warning remains.
+- The visual report rendered 214 examples with zero failures. Browser regression
+  checks passed; the generated screenshot was visually inspected.
+- PDF checks validated ten PDFs and a 12-page deck; the largest mean channel
+  difference from the raster reference was 0.765/255. Isolated PNG package
+  installation and execution passed.
+- Full rehearsal passed using only a temporary loopback Verdaccio registry:
+  nine package publications, fresh Bun/npm installations, browser rendering,
+  strict consumer typechecking, and isolated global commands.
+- All nine rehearsal tarballs contain version `2.0.0`, concrete sibling pins,
+  and licenses. The plugin ZIP uses `2.0.0` and contains the consolidated CLI
+  instructions without the removed CLI guide.
+- All four standalone archives were built and passed `SHA256SUMS` verification.
+  The Linux x64 binary reports `2.0.0`; macOS and Windows binaries were built
+  but have not been runtime-tested on those operating systems.
+
+Rehearsal logs and packages: `/tmp/gum-rehearse.1P3c6O/`. Other logs:
+`/tmp/gum-final-*.log`. Release artifacts: `gum-jsx-cli/dist/releases/v2.0.0/`
+and `dist/gum-jsx-plugin.zip`. No public npm publication, GitHub release,
+release tag, commit, or push was performed during this rehearsal.
+
+### Markdown build follow-up — 2026-09-30
+
+`@gum-jsx/mark` now ships a bundled Node.js 24+/Bun executable in `dist/npm`,
+while retaining its source library exports and runtime dependencies. It uses
+build/prepack commands for npm distribution. Workspace builds and the rehearsal
+prepare the Markdown bundle before packaging; standalone distribution is limited
+to the Gum CLI.
+
+The local-registry rehearsal passed with npm-installed `gum-mark` rendering
+under Node. Evidence: `/tmp/gum-rehearse.gLeF9l/` and `/tmp/gum-mark-*.log`.
+No public publication was performed.
 
 The records below describe earlier prerelease checks and publication steps;
 their version numbers and results are historical.

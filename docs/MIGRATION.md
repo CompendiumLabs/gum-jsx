@@ -35,7 +35,8 @@ The following sections record the changes introduced during prerelease developme
 
 - The npm CLI ships bundled JavaScript, fonts, and notices with no runtime
   package dependencies. Run built-in rendering under Node 24+ or Bun.
-- Install `@gum-jsx/mark` separately for `gum-mark`.
+- Install `@gum-jsx/mark` separately for `gum-mark`. Its bundled command runs
+  under Node.js 24+ or Bun 1.4.2+; the library exports retain their source API.
 - Replace `gum-tex` with `gum` rendering a JSX file containing `Tex` or `Latex`,
   or use `@gum-jsx/math` export helpers.
 - From the workspace root, use `bun gum-jsx-cli/src/cli.ts` for the CLI and

@@ -54,6 +54,7 @@ touch "$npm_config_userconfig" "$npm_config_globalconfig"
 say 'prepare publication workspace'
 (cd "$ROOT/gum-jsx-png" && runlog png-build.log bun run build)
 (cd "$ROOT/gum-jsx-cli" && runlog cli-build.log bun run build)
+(cd "$ROOT/gum-jsx-mark" && runlog mark-build.log bun run build)
 PUBLISH="$WORK/publish"
 mkdir -p "$PUBLISH"
 cp "$ROOT/package.json" "$PUBLISH/package.json"
@@ -68,6 +69,8 @@ done
 cp -R "$ROOT/gum-jsx-png/dist" "$PUBLISH/gum-jsx-png/dist"
 mkdir -p "$PUBLISH/gum-jsx-cli/dist"
 cp -R "$ROOT/gum-jsx-cli/dist/npm" "$PUBLISH/gum-jsx-cli/dist/npm"
+mkdir -p "$PUBLISH/gum-jsx-mark/dist"
+cp -R "$ROOT/gum-jsx-mark/dist/npm" "$PUBLISH/gum-jsx-mark/dist/npm"
 # Publishing from copies lets us force the local registry even when a package
 # gains a publishConfig.registry, without modifying any source manifests.
 VERSION=$(bun -e '
@@ -131,7 +134,7 @@ cp "$WORK/.npmrc" "$PUBLISH/.npmrc"
 
 for pkg in "${ORDER[@]}"; do
     say "publish @gum-jsx/$pkg@$VERSION locally"
-    # PNG and CLI were built above; the copies need no dev dependencies or lifecycle scripts.
+    # PNG, CLI, and Markdown were built above; the copies need no dev dependencies or lifecycle scripts.
     (cd "$PUBLISH/gum-jsx-$pkg" && runlog "publish-$pkg.log" npm publish --ignore-scripts --access public --tag rehearsal --registry "$REG")
     runlog "metadata-$pkg.log" npm view "@gum-jsx/$pkg@$VERSION" --json --registry "$REG"
     bun -e '
@@ -393,7 +396,7 @@ done
 runlog npm-gum-png.log node --no-addons node_modules/.bin/gum "$APP/figure.jsx" -o figure.png
 [[ $(od -An -tx1 -N8 figure.png | tr -d ' \n') = 89504e470d0a1a0a ]] || fail 'npm gum PNG'
 
-runlog npm-mark.log bun --no-addons node_modules/.bin/gum-mark "$APP/notes.md"
+runlog npm-mark.log node --no-addons node_modules/.bin/gum-mark "$APP/notes.md"
 grep -q $'\033_G' "$WORK/npm-mark.log" || fail 'npm gum-mark image'
 
 say 'isolated global Bun installation'

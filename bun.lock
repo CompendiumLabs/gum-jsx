@@ -100,7 +100,7 @@
       "name": "@gum-jsx/mark",
       "version": "2.0.0",
       "bin": {
-        "gum-mark": "src/cli.ts",
+        "gumd": "dist/npm/cli.js"
       },
       "dependencies": {
         "@gum-jsx/core": "2.0.0",
