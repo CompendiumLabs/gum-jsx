@@ -219,7 +219,7 @@ and Google Chrome 151.0.7922.173.
 | MCP build and real HTTP workflow | Build passed. Full HTTP verification passed after the test-only correction described below. |
 
 The extra MCP real-client check uncovered one stale fixture:
-[test/verify-tools.ts](../gum-jsx-mcp/test/verify-tools.ts) requested the old
+[test/verify-tools.ts](https://github.com/CompendiumLabs/gum-jsx-mcp/blob/7761413/test/verify-tools.ts) requested the old
 documentation name `Style`; the current tool contract and unit tests use
 `guides/style`. Corrected that one string and reran the real HTTP workflow,
 including docs, PNG rasterization, viewer handoff/resources, and invalid-input

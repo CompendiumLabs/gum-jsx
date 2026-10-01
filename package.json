@@ -11,7 +11,6 @@
     "gum-jsx-cli",
     "gum-jsx-edit",
     "gum-jsx-docs",
-    "gum-jsx-mcp",
     "gum-jsx-maps"
   ],
   "scripts": {

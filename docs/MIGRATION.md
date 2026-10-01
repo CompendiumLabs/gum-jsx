@@ -261,7 +261,7 @@ replace the original element registration with `Element` subclasses and
 | @gum-jsx/pdf, asynchronous `renderPdf` over one or more pages | [@gum-jsx/pdf](../gum-jsx-pdf/README.md): synchronous `render_pdf(fragmentOrPages)` for one or more pages in Bun or a browser bundle |
 | @gum-jsx/mark | [@gum-jsx/mark](../gum-jsx-mark/README.md): `displayMarkdown` and the `gum-mark` command |
 | @gum-jsx/docs | [@gum-jsx/docs](../gum-jsx-docs/README.md): element pages, guides, gallery, and the generated skill |
-| gum-mcp | [@gum-jsx/mcp](../gum-jsx-mcp/README.md) |
+| gum-mcp | Retired; use the [Gum authoring plugin](../plugins/gum-jsx/README.md). |
 | @gum-jsx/web | Not ported. The [editor](../gum-jsx-edit/README.md) loads its own fonts; outlined SVG needs none |
 | gum-jsx-viewer, the VS Code extension | Not ported |
 
