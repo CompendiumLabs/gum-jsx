@@ -32,6 +32,7 @@
         ],
         "websiteURL": "https://github.com/CompendiumLabs/gum-jsx",
         "supportURL": "https://github.com/CompendiumLabs/gum-jsx/issues",
+        "privacyPolicyURL": "https://github.com/CompendiumLabs/gum-jsx/blob/master/PRIVACY.md",
         "defaultPrompt": [
           "Use Gum to plot the US unemployment rate over time.",
           "Use Gum to create a map of the historic route of the Silk Road.",
