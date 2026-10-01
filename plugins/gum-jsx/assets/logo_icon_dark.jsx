@@ -20,8 +20,8 @@ return <Svg width={px(size)} height={px(size)}>
   <Box padding={0.03} stroke={none}>
     <Box background={background} border-radius={0.2} clip>
       <Group>
-        <Circle x={0.5} y={0.5} anchor="center" width={0.45375} fill={foreground} />
-        <Circle x={0.62} y={0.3078125} anchor="center" width={0.07} fill={background} />
+        <Circle pos={[0.5, 0.5]} anchor="center" width={0.45375} fill={foreground} />
+        <Circle pos={[0.62, 0.3078125]} anchor="center" width={0.07} fill={background} />
         <Polygon points={gap} fill={background} />
         {bands.map(vertices => (
           <Polygon points={vertices} fill={foreground} />

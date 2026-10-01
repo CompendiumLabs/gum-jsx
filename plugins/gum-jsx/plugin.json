@@ -16,7 +16,7 @@
     "plots",
     "math",
     "maps",
-    "svg",
+    "design",
     "slides"
   ],
   "extensions": {
@@ -24,7 +24,7 @@
       "interface": {
         "displayName": "Gum",
         "shortDescription": "Diagrams, plots, and slides",
-        "longDescription": "Create and revise diagrams, data plots, mathematical figures, geographic maps, and slide decks with Gum. Get editable JSX source and export SVG, PNG, or PDF files.\n\nRendering requires an environment that can run commands and a separate Gum executable. The skill reuses a known renderer, checks PATH, then checks the local installation through npm. It uses the first command found without a version check. If needed, it installs the CLI with npm and Node.js 24+ in a dedicated tools or temporary directory. Bun 1.4.2+ works equally well. It invokes the local renderer by its exact path without global installation or PATH changes. Setup honors explicit preferences and installation restrictions. Installing this plugin does not install the renderer.\n\nIf your environment cannot run commands, or you decline setup, you can still get JSX source and rendering instructions.",
+        "longDescription": "Create and revise diagrams, data plots, mathematical figures, geographic maps, and slide decks with Gum. Get editable JSX source and export SVG, PNG, or PDF files.\n\nThis plugin does not include the Gum renderer but will help you get it installed and working.",
         "developerName": "Compendium Labs",
         "category": "Developer Tools",
         "capabilities": [
@@ -33,13 +33,13 @@
         "websiteURL": "https://github.com/CompendiumLabs/gum-jsx",
         "supportURL": "https://github.com/CompendiumLabs/gum-jsx/issues",
         "defaultPrompt": [
-          "Use Gum to diagram a browser sending requests to an API server backed by a database. Export an SVG.",
-          "Use Gum to plot points (1, 3), (2, 5), (3, 4), and (4, 8) as a labeled line chart. Export a PNG.",
-          "Create a three-slide Gum deck explaining the Pythagorean theorem with a labeled diagram, and export it as PDF."
+          "Use Gum to plot the US unemployment rate over time.",
+          "Use Gum to create a map of the historic route of the Silk Road.",
+          "Create a three-slide Gum deck explaining the Pythagorean theorem."
         ],
         "brandColor": "#2858A5",
-        "composerIcon": "./assets/logo_icon_dark.svg",
-        "logo": "./assets/logo_icon_dark.svg"
+        "composerIcon": "./assets/logo_icon_dark.png",
+        "logo": "./assets/logo_icon_dark.png"
       }
     }
   }
