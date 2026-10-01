@@ -48,8 +48,9 @@ codex plugin add gum-jsx@gum-jsx
 Start a new task after installation to load the skill.
 
 Rendering requires an environment that can run commands and a **separate Gum
-executable**. The skill checks an established renderer path, the current project's
-local CLI, and PATH. If none works, it installs the CLI with npm in a writable
+executable**. The skill reuses an established renderer invocation, then checks PATH before
+the current project's local CLI. It uses the first command found without a
+version check. If none is found, it installs the CLI with npm in a writable
 task directory. Explicit setup preferences and installation restrictions still apply.
 
 ### CLI installation
@@ -59,11 +60,10 @@ Use Node.js 24 or newer. In a dedicated writable tools directory with a minimal
 
 ```sh
 npm install --save-exact @gum-jsx/cli
-node node_modules/@gum-jsx/cli/dist/npm/cli.js --version
 ```
 
-Retain the absolute path to `cli.js` for rendering from the task's working
-directory. If npm's default cache is not writable, set `npm_config_cache` to a
+Invoke `node /absolute/tools-dir/node_modules/@gum-jsx/cli/dist/npm/cli.js`
+and retain that invocation for rendering from the task's working directory. If npm's default cache is not writable, set `npm_config_cache` to a
 writable temporary directory and retry.
 
 Bun 1.4.2 or newer works equally well: use `bun add --exact @gum-jsx/cli`
@@ -72,7 +72,7 @@ and invoke the CLI with `bun` in place of `node`.
 If neither Node nor Bun is available, download the standalone archive for your
 OS and CPU architecture from [GitHub releases](https://github.com/CompendiumLabs/gum-jsx-cli/releases),
 extract it into a writable directory, and run the included `gum` executable
-(`gum.exe` on Windows). It includes its runtime; verify it with `--version`.
+(`gum.exe` on Windows). It includes its runtime.
 
 For project integration, use `npm install --save-dev @gum-jsx/cli` and the
 local `node_modules/.bin/gum` executable. For a global command, use

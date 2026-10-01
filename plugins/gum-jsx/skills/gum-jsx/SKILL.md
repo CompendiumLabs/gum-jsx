@@ -247,21 +247,20 @@ automatically.
 
 Use this discovery order:
 
-1. Reuse an exact renderer path already established in this task and verify it
-   with `--version`.
-2. Run `npm prefix` to find the current project's root; append
-   `node_modules/.bin`.
-   Check for `gum` there (`gum.cmd` on Windows), then run that exact path with
-   `--version`. This lookup returns a directory, not confirmation that
-   Gum is installed or working.
-3. If no working local renderer is found, try `gum --version` on PATH.
+1. Reuse an exact renderer invocation already established in this task.
+2. Look for `gum` on PATH (`command -v gum` in a POSIX shell or
+   `Get-Command gum` in PowerShell). If found, use it.
+3. Otherwise, run `npm prefix` to find the current project's root and check
+   `node_modules/.bin` for `gum` (`gum.cmd` on Windows). If found, use that path.
+
+Stop at the first available command and proceed to rendering; no version check
+is needed.
 
 Stop discovery after these checks: do not search Codex directories, plugin
 caches, old tasks, user profiles, package-manager caches, or the filesystem for
 a hidden installation. Do not use `bunx` or `npx` to probe.
 
-If no working renderer is found, check `npm --version` and `node --version`,
-then install locally with npm and Node.js 24+. Continue the requested
+If no renderer is found, install locally with npm and Node.js 24+. Continue the requested
 render without a separate installation-mode question. Honor explicit
 installation restrictions and setup choices already made.
 
@@ -281,8 +280,7 @@ directory) and retry the installation.
 
 The bundled package has no runtime package dependencies. Invoke
 `node /absolute/tools-dir/node_modules/@gum-jsx/cli/dist/npm/cli.js`.
-Verify with `--version` and retain the exact invocation for later
-renders. Run rendering commands from the caller's working directory so input
+Retain the exact invocation for later renders. Run rendering commands from the caller's working directory so input
 files resolve there.
 
 Bun 1.4.2+ works equally well: install with `bun add --exact @gum-jsx/cli`
@@ -295,7 +293,7 @@ the user requests integration.
 If neither Node nor Bun is available, download the standalone archive for your
 OS and CPU architecture from [GitHub releases](https://github.com/CompendiumLabs/gum-jsx-cli/releases),
 extract it into a writable directory, and run the included `gum` executable
-(`gum.exe` on Windows). It includes its runtime; verify it with `--version`.
+(`gum.exe` on Windows). It includes its runtime.
 
 ## Project and library integration
 
@@ -312,8 +310,7 @@ The bundled npm CLI runs under Node.js 24+ with no runtime package dependencies.
 
 Choose project-local CLI installation when the user wants dependencies managed
 with the project; use global installation when they ask for commands across
-projects. Preserve any scope already chosen. Verify the selected CLI with
-`--version`.
+projects. Preserve any scope already chosen.
 If installation is declined or commands cannot run, provide source and rendering
 instructions without claiming to have rendered it.
 

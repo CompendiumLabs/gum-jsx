@@ -60,7 +60,7 @@ files; release ZIP attachments remain useful snapshots for separate distribution
   is retained beside the SVG. Both `logo` and `composerIcon` reference this asset.
 - [x] **Make first-use requirements clear.** The listing, README, and skill
   explain the npm/Node.js 24+ installation path, with Bun 1.4.2+ as an alternative.
-  The skill checks a known renderer, the project, and PATH before installing
+  The skill checks a known renderer, PATH, and then the project before installing
   locally in a writable tools directory. If neither runtime is available, it
   uses a matching standalone release. Users who decline installation or cannot
   run commands can still receive JSX source and rendering instructions.
