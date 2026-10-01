@@ -45,6 +45,7 @@ Each entry includes its runnable JSX example.
 - [A slide with a plot](gallery/plotting.md#plot_slide) — A slide composes a measured title, figure, and caption at a stable type scale.
 - [Three-dimensional projection](gallery/plotting.md#projection_3d) — Project a three-dimensional helix, markers, axes, and labels into one graph.
 - [Slick Bars](gallery/plotting.md#slick_bars) — Rounded bars, angled category labels, and percentage annotations form a styled bar chart.
+- [Terrain in tiles](gallery/plotting.md#terrain_map) — Build a terraced terrain model from a 24-by-24 height field with shaded faces and an elevation legend.
 - [The Nexus](gallery/plotting.md#the_nexus) — Ten phase-shifted cosine wave packets share a Gaussian envelope and form a colored interference pattern over a fine grid.
 
 ## Maps
@@ -61,6 +62,7 @@ Each entry includes its runnable JSX example.
 
 ## Networks
 
+- [Gum Rendering Core](gallery/networks.md#gum_core) — Gum JSX and TeX flow through a compact rendering core into SVG, PNG, and PDF.
 - [Macroeconomic Flows](gallery/networks.md#macro_economy) — Producers, consumers, government, and foreign trade form a four-sector flow schematic.
 - [Connections through layout](gallery/networks.md#network_connections) — Show how network edges meet the completed frames of varied nodes.
 - [Any element as a node](gallery/networks.md#network_shapes) — Connect shapes, stacks, and nested elements as network nodes.

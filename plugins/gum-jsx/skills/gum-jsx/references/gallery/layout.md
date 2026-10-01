@@ -530,8 +530,9 @@ const envelope = (t) => exp(-0.3 * t)
 return (
   <Slide fit font-size={px(14)} aspect={1.65} padding={em(1.6)} title="Damped Oscillation">
     <HStack gap={em(1.6)} align="center">
-      <VStack grow={1.15} gap={em(0.6)} align="fill">
-        <Plot aspect={1.5} xlim={[0, 8]} ylim={[-1.2, 1.2]} font-size={em(0.8)}>
+      <VStack grow={1.2} gap={em(0.6)} align="center">
+        <Plot aspect={1.5} xlim={[0, 8]} ylim={[-1, 1]} font-size={em(0.8)} plot-background={lightgray} border-width={px(0.5)} border-color={gray}>
+          <HLine y={0} lim={[0, 8]} space="data" stroke-width={px(0.5)} opacity={0.3} />
           <SymLine
             fy={envelope}
             xlim={[0, 8]}
@@ -555,9 +556,6 @@ return (
         <Text font-size={em(0.8)}>A damped oscillation and its envelope</Text>
       </VStack>
       <TextCol grow={1} gap={em(1)}>
-        <Text font-size={em(1.25)} font-weight={bold}>
-          What the plot shows
-        </Text>
         <Text>
           The oscillation loses energy to friction, so each swing is smaller than the last while
           the period stays the same.
