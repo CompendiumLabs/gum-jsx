@@ -195,7 +195,7 @@ REACT_DOM=$(bun -e 'console.log((await Bun.file(process.argv[1]).json()).peerDep
 EXTRA=("@gum-jsx/core@$VERSION" "@gum-jsx/math@$VERSION" "@gum-jsx/maps@$VERSION" "@gum-jsx/png@$VERSION" "@gum-jsx/pdf@$VERSION" "@gum-jsx/mark@$VERSION" "@gum-jsx/react@$VERSION" "@gum-jsx/docs@$VERSION" "react@$REACT" "react-dom@$REACT_DOM")
 runlog bun-extra.log bun add "${EXTRA[@]}" --registry "$REG"
 printf 'Hello $x^2$\n' > notes.md
-runlog gum-mark.log bun run --silent gum-mark notes.md
+runlog gumd.log bun run --silent gumd notes.md
 cp "$ROOT/gum-jsx-pdf/test/png-fixtures.ts" png-fixtures.ts
 cat > use.ts <<'TS'
 import assert from 'node:assert/strict'
@@ -224,7 +224,7 @@ for (const pkg of ['core', 'math', 'maps', 'png', 'pdf', 'mark', 'react', 'docs'
 assert.ok((await Bun.file('figure.svg').text()).includes('<svg'));
 assert.equal(Buffer.from(await Bun.file('figure.png').arrayBuffer()).toString('hex', 0, 8), '89504e470d0a1a0a');
 assert.ok((await Bun.file('figure.pdf').text()).startsWith('%PDF-'));
-assert.ok((await Bun.file('../gum-mark.log').text()).includes('\x1b_G'));
+assert.ok((await Bun.file('../gumd.log').text()).includes('\x1b_G'));
 const fonts = new Fonts();
 await fonts.load();
 const result = render_element(new Text({ children: 'Packaged fonts' }), { fonts });
@@ -388,7 +388,7 @@ cd "$WORK/app-npm"
 printf '{"name":"gum-rehearsal-npm","private":true}\n' > package.json
 cp "$WORK/.npmrc" .npmrc
 runlog npm-install.log npm install "@gum-jsx/cli@$VERSION" "${EXTRA[@]}" --ignore-scripts --registry "$REG" --no-audit --no-fund
-for bin in gum gum-mark gum-react; do
+for bin in gum gumd gum-react; do
     [ -x "node_modules/.bin/$bin" ] || fail "npm did not link $bin"
 done
 [ -f node_modules/@gum-jsx/pdf/src/index.ts ] || fail 'npm did not install PDF source'
@@ -396,8 +396,8 @@ done
 runlog npm-gum-png.log node --no-addons node_modules/.bin/gum "$APP/figure.jsx" -o figure.png
 [[ $(od -An -tx1 -N8 figure.png | tr -d ' \n') = 89504e470d0a1a0a ]] || fail 'npm gum PNG'
 
-runlog npm-mark.log node --no-addons node_modules/.bin/gum-mark "$APP/notes.md"
-grep -q $'\033_G' "$WORK/npm-mark.log" || fail 'npm gum-mark image'
+runlog npm-mark.log node --no-addons node_modules/.bin/gumd "$APP/notes.md"
+grep -q $'\033_G' "$WORK/npm-mark.log" || fail 'npm gumd image'
 
 say 'isolated global Bun installation'
 cd "$WORK"
