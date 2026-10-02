@@ -10,7 +10,7 @@ ROOT=$(cd "$(dirname "$0")/.." && pwd)
 PORT=${PORT:-4873}
 [[ "$PORT" =~ ^[0-9]+$ ]] && (( PORT > 0 && PORT < 65536 )) || { echo 'Invalid PORT' >&2; exit 1; }
 REG="http://127.0.0.1:$PORT/"
-ORDER=(core math maps png pdf mark react docs cli)
+ORDER=(core math maps png pdf pptx mark react docs cli)
 for tool in bun node npm curl tar setsid; do
     command -v "$tool" >/dev/null || { echo "Required command: $tool" >&2; exit 1; }
 done

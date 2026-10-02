@@ -28,3 +28,9 @@
 [submodule "gum-jsx-maps"]
 	path = gum-jsx-maps
 	url = git@github.com:CompendiumLabs/gum-jsx-maps
+[submodule "gum-jsx-mp4"]
+	path = gum-jsx-mp4
+	url = git@github.com:CompendiumLabs/gum-jsx-mp4
+[submodule "gum-jsx-pptx"]
+	path = gum-jsx-pptx
+	url = git@github.com:CompendiumLabs/gum-jsx-pptx

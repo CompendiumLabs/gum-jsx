@@ -2,7 +2,7 @@
 
 Gum is a JSX language for vector graphics: plots, diagrams, mathematical figures,
 and slides. Compose shapes, text, and TeX with measured layouts, then export SVG,
-PNG, or PDF, or display the result directly in an image-capable terminal.
+PNG, PDF, or PPTX, or display the result directly in an image-capable terminal.
 
 Use Gum as a command-line tool, a TypeScript library, or through its browser
 editor and React bindings. JSX figures use ordinary JavaScript functions and data;
@@ -19,7 +19,7 @@ Use Node.js 24 or newer and install the bundled CLI:
 npm install -g @gum-jsx/cli
 ```
 
-The CLI includes the core renderer, math, maps, and PNG/PDF exporters. It
+The CLI includes the core renderer, math, maps, and PNG/PDF/PPTX exporters. It
 provides the `gum` command. Bun 1.4.2 or newer works equally well as an alternative
 runtime and is required for CLI plugins.
 
@@ -80,7 +80,8 @@ PNG and terminal rendering use tiny-skia WebAssembly without native addons or
 install scripts. Raster output uses outlined text; emoji without outlines and
 external SVG images are unsupported. PDF output preserves vector paths and embedded PNG images;
 text is outlined and is not searchable or selectable. See the
-[CLI](gum-jsx-cli/README.md) and [PDF](gum-jsx-pdf/README.md) references for details.
+[CLI](gum-jsx-cli/README.md), [PDF](gum-jsx-pdf/README.md), and
+[PPTX](gum-jsx-pptx/README.md) references for format support and limits.
 
 **Browser editor.** From a [development checkout](#development), run `bun --filter @gum-jsx/edit dev`
 and open the printed URL to edit JSX with a live SVG preview. The `/docs` page
@@ -128,6 +129,7 @@ Each package is a separate repository, developed together through Git submodules
 | [@gum-jsx/math](gum-jsx-math/README.md) | TeX parsing, math layout, and standalone formula exports. |
 | [@gum-jsx/png](gum-jsx-png/README.md) | Fragment rasterization to PNG or RGBA through WebAssembly. |
 | [@gum-jsx/pdf](gum-jsx-pdf/README.md) | Vector PDF export from laid-out fragments. |
+| [@gum-jsx/pptx](gum-jsx-pptx/README.md) | Native PowerPoint shapes and images from laid-out fragments. |
 | [@gum-jsx/react](gum-jsx-react/README.md) | React bindings, headless rendering, and the `gum-react` command. |
 | [@gum-jsx/mark](gum-jsx-mark/README.md) | Markdown terminal rendering with figures and math. |
 | [@gum-jsx/cli](gum-jsx-cli/README.md) | The `gum` command. |

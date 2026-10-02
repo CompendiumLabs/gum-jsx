@@ -15,8 +15,10 @@
         "@gum-jsx/core": "2.0.0",
         "@gum-jsx/maps": "2.0.0",
         "@gum-jsx/math": "2.0.0",
+        "@gum-jsx/mp4": "0.1.0",
         "@gum-jsx/pdf": "2.0.0",
         "@gum-jsx/png": "2.0.0",
+        "@gum-jsx/pptx": "2.0.0",
         "@types/bun": "latest",
         "commander": "^14.0.3",
         "fast-png": "^8.0.0",
@@ -130,6 +132,19 @@
         "typescript": "^7",
       },
     },
+    "gum-jsx-mp4": {
+      "name": "@gum-jsx/mp4",
+      "version": "0.1.0",
+      "dependencies": {
+        "@gum-jsx/core": "2.0.0",
+        "@gum-jsx/math": "2.0.0",
+        "@gum-jsx/png": "2.0.0",
+      },
+      "devDependencies": {
+        "@types/bun": "latest",
+        "typescript": "^7",
+      },
+    },
     "gum-jsx-pdf": {
       "name": "@gum-jsx/pdf",
       "version": "2.0.0",
@@ -153,6 +168,21 @@
       },
       "devDependencies": {
         "@gum-jsx/math": "2.0.0",
+        "@types/bun": "latest",
+        "fast-png": "^8.0.0",
+        "typescript": "^7",
+      },
+    },
+    "gum-jsx-pptx": {
+      "name": "@gum-jsx/pptx",
+      "version": "2.0.0",
+      "dependencies": {
+        "@gum-jsx/core": "2.0.0",
+        "fflate": "^0.8.3",
+      },
+      "devDependencies": {
+        "@gum-jsx/math": "2.0.0",
+        "@gum-jsx/png": "2.0.0",
         "@types/bun": "latest",
         "fast-png": "^8.0.0",
         "typescript": "^7",
@@ -223,9 +253,13 @@
 
     "@gum-jsx/math": ["@gum-jsx/math@workspace:gum-jsx-math"],
 
+    "@gum-jsx/mp4": ["@gum-jsx/mp4@workspace:gum-jsx-mp4"],
+
     "@gum-jsx/pdf": ["@gum-jsx/pdf@workspace:gum-jsx-pdf"],
 
     "@gum-jsx/png": ["@gum-jsx/png@workspace:gum-jsx-png"],
+
+    "@gum-jsx/pptx": ["@gum-jsx/pptx@workspace:gum-jsx-pptx"],
 
     "@gum-jsx/react": ["@gum-jsx/react@workspace:gum-jsx-react"],
 
