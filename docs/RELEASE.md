@@ -2,6 +2,24 @@
 
 Standalone GitHub release commands (run from the workspace root):
 
+Plugin release commands (top-level):
+
+```sh
+gh release create v2.0.0 dist/gum-jsx-plugin.zip \
+  --title "Gum Plugin v2.0.0" \
+  --notes "Gum plugin for v2.0.0"
+```
+
+Skill release commands (gum-jsx-docs):
+
+```sh
+gh release create v2.0.0 dist/gum-jsx-skill.zip \
+  --title "Gum Skill v2.0.0" \
+  --notes "Gum skill for v2.0.0"
+```
+
+Gum standalone release commands (gum-jsx-cli):
+
 ```sh
 gh release create v2.0.0 dist/releases/v2.0.0/* \
   --repo CompendiumLabs/gum-jsx-cli \
@@ -9,14 +27,6 @@ gh release create v2.0.0 dist/releases/v2.0.0/* \
   --title "Gum v2.0.0" \
   --latest \
   --notes "Standalone gum executables for macOS ARM64, macOS x64, Linux x64, and Windows x64."
-```
-
-Plugin Github release commands:
-
-```sh
-gh release create v2.0.0 dist/gum-jsx-plugin.zip \
-  --title "Gum Plugin v2.0.0" \
-  --notes "Gum plugin for v2.0.0"
 ```
 
 ## 2.0.0 preparation — 2026-09-30
