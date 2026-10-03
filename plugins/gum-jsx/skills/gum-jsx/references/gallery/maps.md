@@ -54,7 +54,7 @@ return (
               background={interp(white, blue, 0.12)} fill={interp(white, green, 0.3)}
               border-color={white} border-width={px(0.8)}
             >
-              <Polyline space="data" points={route} fill={none} stroke={red} stroke-width={px(2.5)} />
+              <Polyline points={route} fill={none} stroke={red} stroke-width={px(2.5)} />
               <Points points={route} point-size={px(7)} fill={red} stroke={white} stroke-width={px(1)} />
             </GeoMap>
           </TextCol>

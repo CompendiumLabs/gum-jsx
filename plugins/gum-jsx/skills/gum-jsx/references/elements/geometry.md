@@ -16,7 +16,7 @@ An ellipse segment with center, scalar or paired radius, and start/end angles in
 
 Center and paired radii accept `{x,y}` or `[x,y]`.
 Under projection, the center also accepts arbitrary numeric records. Projected
-radii must be local lengths, such as `px(20)`; use sampled CoordLine points for
+radii must be local lengths, such as `px(20)`; use sampled Polyline points for
 a curve defined in the source coordinate space.
 
 Inside [Graph](plotting.md#Graph), numeric geometry uses data coordinates; outside it,
@@ -285,45 +285,6 @@ in a **Group**; do not nest **Text** inside the shape.
       />
     </Frame>
   </HStack>
-</Box>
-```
-
----
-
-<a id="CoordLine"></a>
-
-## CoordLine
-
-| Property | Default | Meaning |
-|---|---|---|
-| `points` | `[]` | Ordered points; null and nonfinite values split the path |
-| `closed` | `false` | Close each finite run |
-| `space` | Automatic | Use ambient data coordinates or local geometry |
-
-A piecewise linear path through `{x,y}` or `[x,y]` points. Null/nonfinite samples break the path. closed closes each finite run. Paint uses ordinary fill/stroke styles.
-
-Inside [Graph](plotting.md#Graph), numeric geometry uses data coordinates; outside it,
-geometry uses local fractions/px/em. `space="local"` opts out of an ambient graph,
-and `space="data"` requires one. Pixel strokes keep their size.
-
-Projected point inputs also accept named numeric records such as `{theta, r}`
-or `{x, y, z}`; GeoMap uses `{lon, lat}`. Every dimension reaches the projection.
-See [Projections](../guides/projections.md) for units and visibility rules.
-
-<a id="CoordLine-example"></a>
-
-### Example
-
-```jsx
-// CoordLine in data coordinates.
-<Box padding={em(2)}>
-  <Graph xlim={[-0.5, 3.5]} ylim={[-0.5, 3.5]}>
-    <CoordLine
-      points={[[0, 0], [1, 2], [2, 1], [3, 3]]}
-      stroke={blue}
-      stroke-width={px(3)}
-    />
-  </Graph>
 </Box>
 ```
 
@@ -841,11 +802,14 @@ return (
 | Property | Default | Meaning |
 |---|---|---|
 | `points` | `[]` | Ordered points in the selected coordinate space |
-| `space` | `"local"` | `"data"` uses the enclosing Graph, Plot, or GeoMap coordinate context |
+| `closed` | `false` | Close each finite run back to its first point |
+| `space` | Automatic | Use ambient data coordinates when available; otherwise local geometry |
 
 **Polyline** connects `points` in order with straight segments. Each point is an
-object `{ x, y }` or tuple `[x, y]`; both forms can be mixed. An empty list draws nothing. The path remains
-open; use [Polygon](geometry.md#Polygon) to close the final edge.
+object `{ x, y }` or tuple `[x, y]`; both forms can be mixed. An empty list draws
+nothing. The path remains open unless `closed` is set. With gaps, each finite
+run is closed independently. [Polygon](geometry.md#Polygon) provides a closed shape
+that always uses local coordinates.
 
 ```jsx
 <Polyline width={px(240)} height={px(100)}
@@ -853,13 +817,15 @@ open; use [Polygon](geometry.md#Polygon) to close the final edge.
   fill={none} stroke={green} stroke-width={px(3)} />
 ```
 
-By default, fractions map to the polyline's own allocated axes, with y increasing
-downward. Pixels and em are also accepted. Point bounds do not set its layout
-size or aspect. This local behavior remains the default inside Graph or GeoMap.
+Outside a coordinate context, fractions map to the polyline's own allocated
+axes, with y increasing downward. Pixels and em are also accepted. Point bounds
+do not set its layout size or aspect.
 
-Set `space="data"` to project each supplied vertex through the enclosing
-[Graph](plotting.md#Graph), Plot, or [GeoMap](maps.md#GeoMap). A coordinate context is
-required. Numeric vertices contribute to ordinary Graph/Plot limit inference;
+Inside [Graph](plotting.md#Graph), [Plot](plotting.md#Plot), or [GeoMap](maps.md#GeoMap), each
+numeric vertex uses the ambient coordinate context automatically, just like
+[Points](geometry.md#Points). Set `space="local"` to opt out, or `space="data"` to
+require a coordinate context (and throw when none is available).
+Numeric vertices contribute to ordinary Graph/Plot limit inference;
 custom projections still require explicit output limits. Tagged px/em/% pairs
 bypass data mapping, while a custom projection rejects mixed data/length pairs.
 Data inputs also accept named numeric records such as `{theta, r}` or `{x, y, z}`.
@@ -870,8 +836,8 @@ Data inputs also accept named numeric records such as `{theta, r}` or `{x, y, z}
   projection={({theta, r}) => ({x: r * cos(theta), y: r * sin(theta)})}
 >
   <Polyline
-    space="data"
-    points={linspace(0, tau, 121).map(theta => ({theta, r: 0.8}))}
+    points={linspace(0, tau, 120, false).map(theta => ({theta, r: 0.8}))}
+    closed
     fill={none} stroke={blue} stroke-width={px(2)}
   />
 </Graph>
@@ -882,7 +848,6 @@ A null sample, any nonfinite dimension, or a projection returning `null` breaks
 the path, so visible vertices on opposite
 sides of a hidden point are not joined. Stroke widths remain ordinary layout
 lengths. See [Projections](../guides/projections.md).
-[CoordLine](geometry.md#CoordLine) uses ambient data coordinates by default;
 [SymLine](plotting.md#SymLine) supplies function sampling.
 
 Paint is inherited. Set `fill={none}` for a line chart: if you supply a fill,
@@ -896,17 +861,12 @@ though the stroked path stays open. `stroke-linejoin` controls the joins, and
 ### Example
 
 ```jsx
-// Map a sequence of values into a polyline's own rectangle, with y increasing down.
+// Polyline and Points share the plot's ambient data coordinates.
 const values = [0.25, 0.4, 0.3, 0.7, 0.55, 0.9, 0.8]
-const points = values.map((value, index) => [
-  0.05 + (0.9 * index) / (values.length - 1),
-  0.95 - 0.9 * value,
-])
+const points = values.map((value, index) => [index, value])
 return (
-  <Frame padding={em(1.25)} border-color={gray} background={lightgray}>
+  <Plot width="fill" aspect={16 / 7} grid>
     <Polyline
-      width="fill"
-      aspect={16 / 7}
       points={points}
       fill={none}
       stroke={blue}
@@ -914,7 +874,8 @@ return (
       stroke-linejoin="round"
       stroke-linecap="round"
     />
-  </Frame>
+    <Points points={points} point-size={px(8)} fill={blue} stroke={none} />
+  </Plot>
 )
 ```
 

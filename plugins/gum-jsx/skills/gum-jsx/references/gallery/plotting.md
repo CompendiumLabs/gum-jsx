@@ -191,14 +191,14 @@ return <Plot
   xticks={range(-4, 5)}
   yticks={linspace(-2, 2, 9)}
 >
-  <CoordLine
+  <Polyline
     points={[
       [-4, 0],
       [4, 0],
     ]}
     stroke={darkgray}
   />
-  <CoordLine
+  <Polyline
     points={[
       [0, -2],
       [0, 2],
@@ -655,7 +655,7 @@ and energy labels. The vertical offsets are for comparison, not an energy scale.
 `baseline(index)` supplies the same offset to the curve, guide, and labels.
 [SymLine](../elements/plotting.md#SymLine) samples each sine curve over the well;
 241 samples provide smooth traces without interpolating a separate spline.
-[CoordLine](../elements/geometry.md#CoordLine) draws the diagonal hatching in data
+[Polyline](../elements/geometry.md#Polyline) draws the diagonal hatching in data
 coordinates, as well as the well walls and baselines. Ordinary **Line**, **HLine**,
 and **VLine** geometry is local to its allocation rather than mapped through
 the graph's data coordinates.
@@ -698,22 +698,22 @@ return (
         xaxis-tick-side="outer" xaxis-label-color={black}
       >
         {linspace(ymin, ymax - 0.5, 24).map(y => (
-          <CoordLine
+          <Polyline
             points={[[-0.065, y], [0, y + 0.5]]}
             stroke={black} stroke-width={px(0.7)}
           />
         ))}
         {linspace(ymin, ymax - 0.5, 24).map(y => (
-          <CoordLine
+          <Polyline
             points={[[1, y], [1.065, y + 0.5]]}
             stroke={black} stroke-width={px(0.7)}
           />
         ))}
-        <CoordLine points={[[0, ymin], [0, ymax]]} stroke={black} stroke-width={px(2.5)} />
-        <CoordLine points={[[1, ymin], [1, ymax]]} stroke={black} stroke-width={px(2.5)} />
+        <Polyline points={[[0, ymin], [0, ymax]]} stroke={black} stroke-width={px(2.5)} />
+        <Polyline points={[[1, ymin], [1, ymax]]} stroke={black} stroke-width={px(2.5)} />
         {levels.map((n, index) => (
           <>
-            <CoordLine
+            <Polyline
               points={[[0, baseline(index)], [1, baseline(index)]]}
               stroke={black} opacity={0.25} stroke-width={px(1)}
             />
@@ -771,7 +771,7 @@ See [BarPlot](../elements/plotting.md#BarPlot) for options.
     border_radius: value < 0 ? {'b': em(0.25)} : {'t': em(0.25)},
   })}
 >
-  <CoordLine points={[[-0.5, 0], [4.5, 0]]} stroke={darkgray} />
+  <Polyline points={[[-0.5, 0], [4.5, 0]]} stroke={darkgray} />
 </BarPlot>
 ```
 
@@ -1000,7 +1000,7 @@ A 24-by-24 field of square tiles forms a terraced landscape, with teal lowlands,
 green slopes, and pale summits. Gaussian hills and a small sinusoidal ripple
 define the elevation, rounded to steps of `0.3` to create the terraces.
 
-Each tile uses closed [CoordLine](../elements/geometry.md#CoordLine) paths for its
+Each tile uses closed [Polyline](../elements/geometry.md#Polyline) paths for its
 top and exposed sides. Their corners carry `{x, y, z}` coordinates; a custom
 `projection` on [Graph](../elements/plotting.md#Graph) maps them into an isometric
 view. The example sorts tiles by `i + j` to draw distant cells first and adds
@@ -1055,8 +1055,8 @@ const levels = Array.from({ length: N }, (_, i) =>
 const at = (i, j) => levels[i][j]
 
 // Facets now carry world-space corners; their Graph parent projects them together.
-const Facet = ({ points, fill, stroke = 'none', line = 0, ...props }) => (
-  <CoordLine
+const Facet = ({ points, fill, stroke = none, line = 0, ...props }) => (
+  <Polyline
     points={points} closed
     fill={fill} stroke={stroke} stroke-width={px(line)}
     stroke-linejoin="round" {...props}

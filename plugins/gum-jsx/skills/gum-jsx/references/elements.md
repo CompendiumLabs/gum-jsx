@@ -23,7 +23,6 @@ Each entry includes its runnable JSX example.
 - [Arrow](elements/geometry.md#Arrow) — Draw a straight, curved, or rounded shaft with optional arrowheads between points.
 - [ArrowHead](elements/geometry.md#ArrowHead) — Draw a standalone open or closed arrowhead at a chosen tip and angle.
 - [Circle](elements/geometry.md#Circle) — Circle has an intrinsic 1:1 aspect.
-- [CoordLine](elements/geometry.md#CoordLine) — A piecewise linear path through {x,y} or [x,y] points.
 - [Dot](elements/geometry.md#Dot) — A filled Circle with a preferred 6px diameter and no stroke.
 - [Ellipse](elements/geometry.md#Ellipse) — Ellipse draws an axis-aligned ellipse in its allocated rectangle.
 - [Fill](elements/geometry.md#Fill) — Fill the region between a series of points and a boundary.
@@ -73,7 +72,7 @@ Each entry includes its runnable JSX example.
 - [SymArrow](elements/plotting.md#SymArrow) — Sample a function and draw its path with optional arrowheads.
 - [SymField](elements/plotting.md#SymField) — Sample f(x,y) on a rectangular grid and draw it with Field.
 - [SymFill](elements/plotting.md#SymFill) — Sample a band between upper and lower functions or numbers (defaults 1 and 0).
-- [SymLine](elements/plotting.md#SymLine) — Sample a function at the specified values and draw with CoordLine.
+- [SymLine](elements/plotting.md#SymLine) — Sample a function at the specified values and draw with Polyline.
 - [SymPoints](elements/plotting.md#SymPoints) — Use the sampling options described by SymLine and draw with Points.
 - [SymPoly](elements/plotting.md#SymPoly) — Sample a function or parametric curve and close each finite run into a polygon.
 - [SymSpline](elements/plotting.md#SymSpline) — Use the sampling options described by SymLine and draw with Spline.

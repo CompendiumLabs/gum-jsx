@@ -13,7 +13,7 @@ both forms in one list. Each tuple must contain exactly two coordinates.
 | --- | --- |
 | `pos` | Placement by **Group**, **Overlay**, **Graph**, **Network**, and **GeoMap** |
 | `from`, `to`, `center`, `origin`, `tip` | **Line**, **Circle**/**Ellipse**, **Arc**, **Arrow**, **Ray**, **ArrowHead**, and their conveniences |
-| `points` and `fill` boundary lists | **Polyline**/**Polygon**, **CoordLine**, **Spline**, **RoundedLine**, **Points**, **Arrow**, **Fill**/**HFill**/**VFill** |
+| `points` and `fill` boundary lists | **Polyline**/**Polygon**, **Spline**, **RoundedLine**, **Points**, **Arrow**, **Fill**/**HFill**/**VFill** |
 | Segment endpoints | `segments={[[[0, 0], [1, 1]], [[0, 1], [1, 0]]]}` |
 | Paired `border-radius`, `radius`, or `point-size` | **Rect**/**Box** corners, **Ellipse**/**Arc** radii, and **Points** marker dimensions |
 | **Field** samples | `vectors={[{point: [0, 0], vector: [1, 2]}]}` |
@@ -35,14 +35,15 @@ for the distinction between placing an element and arranging its contents.
 Local Cartesian positions require both components, and an omitted `pos` uses
 the parent's unpositioned behavior. Projected marks accept the same records,
 including `{x, y, z}` for a projection that reduces three dimensions to two.
-Line and Polyline opt in with `space="data"`; local shapes and sizes stay Cartesian.
+Polyline uses ambient coordinates automatically; Line opts in with `space="data"`.
+Local shapes and sizes stay Cartesian.
 
 [Array helpers](arrays.md) can feed point lists directly:
 
 ```jsx
 const xs = linspace(0, tau, 33)
 return <Plot>
-  <CoordLine points={zip(xs, xs.map(sin))} />
+  <Polyline points={zip(xs, xs.map(sin))} />
   <Points points={xs.map(x => [x, cos(x)])} />
 </Plot>
 ```
@@ -94,7 +95,7 @@ return <TextBox width="fill" font-size={px(20)} padding={em(1.5)} background={li
   <TextCol gap={em(0.75)}>
     <Text font-size={em(1.625)} font-weight={bold}>Points as coordinate pairs</Text>
     <Plot font-size={em(0.75)} aspect={2} xlabel="x" ylabel="sin(x)">
-      <CoordLine points={points} stroke={blue} stroke-width={px(2)} />
+      <Polyline points={points} stroke={blue} stroke-width={px(2)} />
       <Points points={markers} point-size={px(10)} shape={shape} />
     </Plot>
     <Text font-size={em(0.75)}>

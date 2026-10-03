@@ -228,7 +228,7 @@ widths. Grouping and automatic stacking are deferred.
       border_radius: value < 0 ? {b: em(0.3)} : {t: em(0.3)},
     })}
   >
-    <CoordLine points={[[-1, 0], [5, 0]]} stroke={darkgray} />
+    <Polyline points={[[-1, 0], [5, 0]]} stroke={darkgray} />
   </BarPlot>
 </Svg>
 ```
@@ -405,9 +405,9 @@ These forms also work in **Plot**, **BarPlot**, and `infer_coordinates`.
 derive a missing axis. An explicit aspect applies the ordinary shape sizing policy.
 Nested **Graph**/**Plot** limits are independent and do not affect outer inference.
 
-[CoordLine](geometry.md#CoordLine), [Points](geometry.md#Points), new geometry marks, bars, and
-symbolic marks use data coordinates. **Line** and **Polyline** default to local
-fractional geometry; set `space="data"` to use the graph's coordinate mapping.
+[Polyline](geometry.md#Polyline), [Points](geometry.md#Points), new geometry marks, bars, and
+symbolic marks use data coordinates. **Line** defaults to local fractional
+geometry; set `space="data"` to use the graph's coordinate mapping.
 **Path** retains local geometry. For marks that use data coordinates by default,
 `space="local"` opts out; `space="data"` requires a coordinate context.
 px/em geometry stays local.
@@ -455,7 +455,7 @@ arithmetic stay Cartesian.
 
 Callbacks must be pure and stable for the lifetime of the element. They run
 during layout, unlike construction-time style callbacks. Elements project only
-the points they already have: supply a sampled route to **Arrow** or **CoordLine**
+the points they already have: supply a sampled route to **Arrow** or **Polyline**
 when a nonlinear projection should bend it. Text and marker shapes stay upright;
 paths are not automatically resampled. See [Projections](../guides/projections.md)
 for a polar plot, the core API, and geometry limitations.
@@ -1402,7 +1402,7 @@ boundaries contribute to limits. Callbacks execute once at construction.
 | `space` | Automatic | Use ambient data coordinates or local geometry |
 | `closed` | `false` | Close each finite run |
 
-Sample a function at the specified values and draw with [CoordLine](geometry.md#CoordLine).
+Sample a function at the specified values and draw with [Polyline](geometry.md#Polyline).
 Null/nonfinite samples split paths or omit markers.
 Use fy for y=`f(x)`, fx for x=`f(y)`, or `f(t)` for parametric points. Limits here
 control sampling; enclosing **Graph**/**Plot** limits control the view.
@@ -1410,7 +1410,7 @@ Named records such as `{theta, r}` retain every dimension until the enclosing
 Graph projects them. Any nonfinite dimension creates a gap. `fx`, `fy`,
 `xvals`, and `yvals` retain their Cartesian meanings.
 
-All **CoordLine** styling options are available.
+All **Polyline** styling options are available.
 Use [SymArrow](plotting.md#SymArrow) for the same sampling options with optional arrowheads.
 Construction stores immutable sampled data; resizing never executes callbacks.
 
@@ -1506,7 +1506,7 @@ Construction stores immutable sampled data; resizing never executes callbacks.
 | `samples` | `101` | Number of generated samples |
 | `space` | Automatic | Use ambient data coordinates or local geometry |
 
-Use the sampling options described by [SymLine](plotting.md#SymLine) and draw with [CoordLine](geometry.md#CoordLine).
+Use the sampling options described by [SymLine](plotting.md#SymLine) and draw with [Polyline](geometry.md#Polyline).
 Each finite run closes into a polygon.
 Use fy for y=`f(x)`, fx for x=`f(y)`, or `f(t)` for parametric points. Limits here
 control sampling; enclosing **Graph**/**Plot** limits control the view.
@@ -1514,7 +1514,7 @@ Named records such as `{theta, r}` retain every dimension until the enclosing
 Graph projects them. Any nonfinite dimension creates a gap. `fx`, `fy`,
 `xvals`, and `yvals` retain their Cartesian meanings.
 
-All **CoordLine** styling options are available.
+All **Polyline** styling options are available.
 Construction stores immutable sampled data; resizing never executes callbacks.
 
 <a id="SymPoly-example"></a>

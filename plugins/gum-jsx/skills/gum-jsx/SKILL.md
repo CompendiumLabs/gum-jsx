@@ -351,7 +351,7 @@ gum --help
 | `--title <text>` | SVG or PDF document title |
 | `--id-prefix <name>` | SVG definition prefix; default `gum` |
 | `--precision <digits\|full>` | Output decimal places, 0–100 or `full`; default `10` |
-| `--text-mode <mode>` | SVG text and math as `path` (default) or `live` text |
+| `--text-mode <mode>` | SVG/PDF/PPTX text and math as `path`, `live`, or `mixed` (live prose, outlined math); defaults to `path` for SVG, `live` for PDF, and `mixed` for PPTX |
 | `--plugin <module>` | Load element/helper exports from a package or file; repeatable, requires Bun |
 | `--stats` | Machine-readable layout counters on stderr |
 | `-V, --version` | Print the CLI version |
@@ -447,9 +447,16 @@ registration is needed. Emoji without outlines cannot be rasterized; export
 SVG for a browser with suitable fonts.
 
 PDF uses `@gum-jsx/pdf` to write vector pages at 96 pixels per inch with the
-same viewport, themes, and backgrounds. Text and math are outlines rather than
-selectable text; debug overlays are omitted. `--ratio` and `--id-prefix` do not
-affect PDF output.
+same viewport, themes, and backgrounds. Text and math glyphs default to selectable
+native text with embedded font subsets shared across pages. Use `--text-mode path`
+for outlines. Math decorations remain vector geometry; debug overlays are omitted.
+`--ratio` and `--id-prefix` do not affect PDF output.
+
+PPTX defaults to `mixed`: editable prose with fixed line breaks and styled runs,
+plus outlined math. It references installed prose fonts without embedding them.
+Use `--text-mode live` to make math glyphs editable too; this requires matching math fonts.
+Use `--text-mode path` for outlines or for reflected/skewed/nonuniformly scaled text.
+PPTX ignores fragment clips and exports their content in full.
 
 Watch mode is not implemented. Only run trusted JSX; evaluation executes JavaScript.
 

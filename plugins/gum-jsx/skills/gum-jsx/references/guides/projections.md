@@ -2,7 +2,7 @@
 
 Layout gives an element a rectangular drawing area. A projection maps its data
 points into that area. The same [Arrow](../elements/geometry.md#Arrow),
-[CoordLine](../elements/geometry.md#CoordLine), and [Points](../elements/geometry.md#Points)
+[Polyline](../elements/geometry.md#Polyline), and [Points](../elements/geometry.md#Points)
 can use Cartesian, polar, or geographic coordinates.
 
 ## Polar coordinates in Graph
@@ -191,7 +191,7 @@ source scale.
     near: 0.01,
   })}
 >
-  <CoordLine
+  <Polyline
     points={[
       {x: 1, y: 0, z: 0},
       {x: 0, y: 1, z: 0},
@@ -261,12 +261,12 @@ its own spherical path renderer.
 
 `space="local"` opts marks out of data mapping. A pair of tagged lengths such as
 `[px(20), px(30)]` also stays local. A projected pair cannot mix one bare data
-number with one tagged length. Line and Polyline default to local geometry;
-set `space="data"` to project their endpoints or vertices. A Line is omitted if
+number with one tagged length. Polyline uses ambient coordinates by default.
+Line defaults to local geometry; set `space="data"` to project its endpoints. A Line is omitted if
 either endpoint is hidden; Polyline breaks into visible runs. Path retains its
 local geometry. Bars retain their rectangle
 construction from projected opposite corners. Arc can project its center with
-local px/em radii; use sampled CoordLine points for a data-space arc.
+local px/em radii; use sampled Polyline points for a data-space arc.
 Fill accepts named records on both explicit boundary arrays, splitting the
 whole region when either side is missing or hidden. A scalar boundary requires
 exactly `{x, y}` because it replaces one axis. Field and SymField also keep

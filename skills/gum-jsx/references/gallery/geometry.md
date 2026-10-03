@@ -85,7 +85,7 @@ return <Box fit padding={em(1.5)} color={slate}>
 
 A labeled animal-cell schematic combines a lumpy membrane, nucleus, mitochondria, endoplasmic reticulum, and other organelles.
 
-Reusable organelles draw in local coordinates inside explicitly sized regions; the outer Graph places them in the shared diagram coordinate system. Rotate positions mitochondria, while CoordLine draws data-space leader lines. Labels are manually placed, and colors are blended from the shared palette. This is a schematic, not a scale model.
+Reusable organelles draw in local coordinates inside explicitly sized regions; the outer Graph places them in the shared diagram coordinate system. Rotate positions mitochondria, while Polyline draws data-space leader lines. Labels are manually placed, and colors are blended from the shared palette. This is a schematic, not a scale model.
 
 See [Graph](../elements/plotting.md#Graph).
 
@@ -425,7 +425,7 @@ return (
         />
         <Points points={ribosomes} point-size={px(3.5)} fill={col.ribosomes.fill} />
         {labels.map(([label, side, y, target]) => (
-          <CoordLine
+          <Polyline
             points={[[side === "l" ? xL + 0.01 : xR - 0.01, y], target]}
             stroke={col.label.line}
             stroke-width={px(1)}
@@ -706,7 +706,7 @@ equilibrium line, bob, force arrows, and equation of motion. Change `angle` or
 
 The drawing uses a downward-facing [Graph](../elements/plotting.md#Graph) so its
 data coordinates match the diagram's pixel proportions. `alongRod` derives
-positions from the pivot and angle. [CoordLine](../elements/geometry.md#CoordLine)
+positions from the pivot and angle. [Polyline](../elements/geometry.md#Polyline)
 draws the rod and equilibrium line in that coordinate system; [Arc](../elements/geometry.md#Arc)
 uses the same center and screen-space angles.
 
@@ -782,7 +782,7 @@ return (
           <Label pos={[pivot[0] + 23, pivot[1] + 118]} color={gravity}>
             {String.raw`\theta`}
           </Label>
-          <CoordLine
+          <Polyline
             points={[pivot, [pivot[0], pivot[1] + length]]}
             stroke={darkgray} stroke-width={px(2)} stroke-dasharray={[px(5), px(5)]}
           />
@@ -790,7 +790,7 @@ return (
             pos={[pivot[0], pivot[1] + length]} anchor="center"
             width={0.016} fill={darkgray} stroke={none}
           />
-          <CoordLine points={[pivot, bob]} stroke={ink} stroke-width={px(3)} />
+          <Polyline points={[pivot, bob]} stroke={ink} stroke-width={px(3)} />
           <Label pos={[mid[0] - 22, mid[1] + 12]}>
             {String.raw`\ell`}
           </Label>
