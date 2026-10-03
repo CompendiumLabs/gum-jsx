@@ -298,7 +298,7 @@ radii at half its own dimensions. px/em radii keep the same size across bars.
         border_radius: v < 0 ? {b: em(0.25)} : {t: em(0.25)}
       })}
     />
-    <HLine space="data" y={0} lim={[-0.75, 3.75]} />
+    <HLine y={0} lim={[-0.75, 3.75]} />
   </Plot>
 </Box>
 ```
@@ -406,9 +406,9 @@ derive a missing axis. An explicit aspect applies the ordinary shape sizing poli
 Nested **Graph**/**Plot** limits are independent and do not affect outer inference.
 
 [Polyline](geometry.md#Polyline), [Points](geometry.md#Points), new geometry marks, bars, and
-symbolic marks use data coordinates. **Line** defaults to local fractional
-geometry; set `space="data"` to use the graph's coordinate mapping.
-**Path** retains local geometry. For marks that use data coordinates by default,
+symbolic marks use data coordinates. **Line**, **HLine**, **VLine**, and
+**Polygon** also use the graph's coordinate mapping automatically.
+**Path** retains local geometry; **UnitLine** and **Triangle** default to local. For marks that use data coordinates by default,
 `space="local"` opts out; `space="data"` requires a coordinate context.
 px/em geometry stays local.
 

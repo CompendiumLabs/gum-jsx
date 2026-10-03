@@ -532,7 +532,7 @@ return (
     <HStack gap={em(1.6)} align="center">
       <VStack grow={1.2} gap={em(0.6)} align="center">
         <Plot aspect={1.5} xlim={[0, 8]} ylim={[-1, 1]} font-size={em(0.8)} plot-background={lightgray} border-width={px(0.5)} border-color={gray}>
-          <HLine y={0} lim={[0, 8]} space="data" stroke-width={px(0.5)} opacity={0.3} />
+          <HLine y={0} lim={[0, 8]} stroke-width={px(0.5)} opacity={0.3} />
           <SymLine
             fy={envelope}
             xlim={[0, 8]}

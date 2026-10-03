@@ -88,11 +88,11 @@ const Cell = ({ profile }) => (
         xlim={[-0.8, 0.8]} ylim={[-0.8, 0.8]}
         projection={projection}
       >
-        <HLine
+        <HLine space="local"
           stroke={darkgray}
           stroke-dasharray={[px(4), px(4)]}
         />
-        <VLine
+        <VLine space="local"
           stroke={darkgray}
           stroke-dasharray={[px(4), px(4)]}
         />
@@ -656,9 +656,8 @@ and energy labels. The vertical offsets are for comparison, not an energy scale.
 [SymLine](../elements/plotting.md#SymLine) samples each sine curve over the well;
 241 samples provide smooth traces without interpolating a separate spline.
 [Polyline](../elements/geometry.md#Polyline) draws the diagonal hatching in data
-coordinates, as well as the well walls and baselines. Ordinary **Line**, **HLine**,
-and **VLine** geometry is local to its allocation rather than mapped through
-the graph's data coordinates.
+coordinates, as well as the well walls and baselines. **Line**, **HLine**, and
+**VLine** also use ambient data coordinates; `space="local"` opts out.
 
 [Plot](../elements/plotting.md#Plot) measures the math tick labels and reserves
 their space. Explicit x limits include room for the side annotations, while the

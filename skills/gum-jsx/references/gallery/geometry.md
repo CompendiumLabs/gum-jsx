@@ -610,10 +610,10 @@ const petals = [
 // little four-point sparkles
 const Sparkle = ({ color, ...attr }) => (
   <Group aspect={1} {...attr}>
-    <VLine stroke={color} stroke-width={px(6)} opacity={0.2} stroke-linecap="round" />
-    <HLine stroke={color} stroke-width={px(6)} opacity={0.2} stroke-linecap="round" />
-    <VLine stroke={color} stroke-width={px(1.5)} stroke-linecap="round" />
-    <HLine stroke={color} stroke-width={px(1.5)} stroke-linecap="round" />
+    <VLine space="local" stroke={color} stroke-width={px(6)} opacity={0.2} stroke-linecap="round" />
+    <HLine space="local" stroke={color} stroke-width={px(6)} opacity={0.2} stroke-linecap="round" />
+    <VLine space="local" stroke={color} stroke-width={px(1.5)} stroke-linecap="round" />
+    <HLine space="local" stroke={color} stroke-width={px(1.5)} stroke-linecap="round" />
   </Group>
 )
 const sparkles = [

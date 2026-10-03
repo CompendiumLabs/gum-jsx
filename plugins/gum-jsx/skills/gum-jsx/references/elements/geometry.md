@@ -463,9 +463,10 @@ the baseline. [SymFill](plotting.md#SymFill) samples function boundaries.
 |---|---|---|
 | `y` | `0.5` | Fixed y coordinate |
 | `lim` | `[0, 1]` | Start and end x coordinates |
-| `space` | `"local"` | `"data"` maps the endpoints through the enclosing coordinate context |
+| `space` | Automatic | Use ambient data coordinates when available; otherwise local geometry |
 
-**HLine** draws from `[lim[0], y]` to `[lim[1], y]`. By default it spans the width
+**HLine** draws from `[lim[0], y]` to `[lim[1], y]`. Outside a coordinate
+context, the defaults span the width
 of its own allocated rectangle at half its height. Position and span accept
 lengths: fractions, px, em, and unit strings such as `"25%"` or `"12px"`.
 Reversed and equal span endpoints are allowed. Geometry does not change the
@@ -475,9 +476,11 @@ element's layout size.
 <HLine y={0.3} lim={[0.1, 0.9]} stroke={blue} stroke-width={px(3)} />
 ```
 
-Geometry stays local inside a Graph or Plot unless `space="data"` is set. Data
-numbers use the enclosing coordinate context and contribute to limit inference;
-tagged lengths retain [Line](geometry.md#Line)'s local-length behavior. Custom projections
+Inside Graph, Plot, or GeoMap, numeric endpoints use ambient coordinates
+automatically and contribute to ordinary Graph/Plot limit inference.
+Set `space="local"` for a local rule, or `space="data"` to require a coordinate
+context. Defaults remain `[0, 1]` for `lim` and `0.5` for the fixed position;
+they do not expand to the graph limits. Tagged lengths retain [Line](geometry.md#Line)'s local-length behavior. Custom projections
 map the two endpoints, so the resulting segment need not be horizontal on screen.
 
 `from` and `to` are not supported; use **Line** for arbitrary endpoints.
@@ -488,9 +491,12 @@ Use [VLine](geometry.md#VLine) for a fixed x coordinate and a span along y.
 ### Example
 
 ```jsx
-// A horizontal line with a fixed y position and an x span.
+// A horizontal line uses the enclosing graph's data coordinates automatically.
 <Box width="fill" aspect={1.6} padding={em(2)}>
-  <HLine y={0.3} lim={[0.1, 0.9]} stroke={blue} stroke-width={px(3)} />
+  <Graph xlim={[-2, 6]} ylim={[-1, 7]}>
+    <HLine y={3} lim={[-1, 5]} stroke={blue} stroke-width={px(3)} />
+    <Points points={[[-1, 3], [5, 3]]} point-size={px(8)} fill={blue} />
+  </Graph>
 </Box>
 ```
 
@@ -504,15 +510,15 @@ Use [VLine](geometry.md#VLine) for a fixed x coordinate and a span along y.
 |---|---|---|
 | `from` | `[0, 0]` | Segment start in the selected coordinate space |
 | `to` | `[1, 1]` | Segment end in the selected coordinate space |
-| `space` | `"local"` | `"data"` uses the enclosing Graph, Plot, or GeoMap coordinate context |
+| `space` | Automatic | Use ambient data coordinates when available; otherwise local geometry |
 
 **Line** draws one segment from `from` to `to`, each an `{ x, y }` or `[x, y]` pair of lengths.
-The defaults are `[0, 0]` and `[1, 1]`: the diagonal of its own
-allocated rectangle. Fractions use that rectangle's width and height, not the
-parent's size. This local behavior remains the default inside a Graph or GeoMap.
+The defaults are `[0, 0]` and `[1, 1]` in the selected coordinate space.
+Outside a coordinate context, these describe the diagonal of its own allocated
+rectangle. Local fractions use that rectangle's width and height.
 
 ```jsx
-<Line width={px(200)} height={px(40)}
+<Line space="local" width={px(200)} height={px(40)}
   from={[0, 0.5]} to={[1, 0.5]}
   stroke={green} stroke-width={px(4)} stroke-linecap="round" />
 ```
@@ -528,13 +534,14 @@ outside it. Set dimensions explicitly for a predictable rule or connector.
 Use [Arrow](geometry.md#Arrow) for arrowheads or [Network](networks.md#Network) and
 [Edge](networks.md#Edge) for connections between named elements.
 
-Set `space="data"` to project both endpoints through the enclosing
-[Graph](plotting.md#Graph), Plot, or [GeoMap](maps.md#GeoMap):
+Inside [Graph](plotting.md#Graph), [Plot](plotting.md#Plot), or [GeoMap](maps.md#GeoMap), both
+numeric endpoints use the ambient coordinates automatically. Set `space="local"`
+for a local decoration, or `space="data"` to require a coordinate context.
+Existing graph drawings that relied on the old local default need `space="local"`.
 
 ```jsx
 <GeoMap source={world_countries()}>
   <Line
-    space="data"
     from={{lon: -9.14, lat: 38.72}} to={{lon: 23.73, lat: 37.98}}
     stroke={blue} stroke-width={px(2)}
   />
@@ -563,6 +570,7 @@ const Rule = ({ cap, color }) => (
   <HStack gap={em(1)} align="center">
     <Text width={px(64)}>{cap}</Text>
     <Line
+      space="local"
       grow={1}
       height={px(24)}
       from={[0.05, 0.5]}
@@ -732,14 +740,25 @@ Return styled shapes for individual colors. Marker sizes do not contribute to da
 
 | Property | Default | Meaning |
 |---|---|---|
-| `points` | `[]` | Ordered local vertices joined and closed into a polygon |
+| `points` | `[]` | Ordered vertices; null and nonfinite samples split the path |
+| `space` | Automatic | Use ambient data coordinates when available; otherwise local geometry |
 
-**Polygon** connects `points` in order and closes the path back to the first point.
-Points are `{ x, y }` objects or `[x, y]` tuples containing fractions, px, or em. Fractions use the
-polygon's own rectangle; the point list does not establish its layout size.
+**Polygon** is a [Polyline](geometry.md#Polyline) with `closed` enabled. It connects
+points in order and closes each finite run back to its first point. Null,
+nonfinite, and hidden projected samples split the path.
+
+Inside [Graph](plotting.md#Graph), [Plot](plotting.md#Plot), or [GeoMap](maps.md#GeoMap), numeric
+vertices use ambient coordinates and contribute to ordinary Graph/Plot limit
+inference. Custom projections need explicit output limits and can accept named
+records such as `{theta, r}`, `{x, y, z}`, or geographic `{lon, lat}`.
+
+Outside a coordinate context, `{ x, y }` objects and `[x, y]` tuples use local
+fractions, px, or em. Set `space="local"` to retain that behavior inside a graph;
+explicit `space="data"` requires a coordinate context. Tagged px/em/% pairs stay
+local. The point list does not establish the polygon's layout size.
 
 ```jsx
-<Polygon width={px(120)} height={px(100)}
+<Polygon space="local" width={px(120)} height={px(100)}
   points={[[0.5, 0], [1, 1], [0, 1]]}
   fill={green} stroke={none} />
 ```
@@ -750,8 +769,8 @@ fill; set one explicitly for a solid silhouette. `stroke-linejoin` and
 Vertices outside the allocated rectangle remain outside; clipping belongs to a
 container or the root viewport.
 
-The example uses `linspace(-90,270,count,false)` and `polard` to generate a regular
-polygon without duplicating its closing vertex. See [Arrays](../guides/arrays.md) and
+The example uses `linspace(90,450,count,false)` and `polard` to generate regular
+polygons in graph coordinates without duplicating their closing vertices. See [Arrays](../guides/arrays.md) and
 [Vectors](../guides/vectors.md) for these helpers. There is no point-list
 bounding-box fit. Use [Polyline](geometry.md#Polyline) for an open outline or [Path](geometry.md#Path)
 for curved edges.
@@ -761,33 +780,17 @@ for curved edges.
 ### Example
 
 ```jsx
-// Evenly spaced angles and polar coordinates generate regular polygons.
+// Regular polygons use ambient graph coordinates and close their paths.
 const regular = (count) =>
-  linspace(-90, 270, count, false).map((angle) => polard(angle, 0.45, [0.5, 0.5]))
+  linspace(90, 450, count, false).map((angle) => polard(angle, 2))
 return (
   <Box padding={em(1.25)} background={lightgray}>
     <HStack gap={em(1.25)}>
-      <Polygon
-        grow={1}
-        aspect={1}
-        points={regular(3)}
-        fill={blue}
-        stroke={none}
-      />
-      <Polygon
-        grow={1}
-        aspect={1}
-        points={regular(5)}
-        fill={red}
-        stroke={none}
-      />
-      <Polygon
-        grow={1}
-        aspect={1}
-        points={regular(6)}
-        fill={green}
-        stroke={none}
-      />
+      {[[3, blue], [5, red], [6, green]].map(([count, color]) => (
+        <Graph grow={1} aspect={1} xlim={[-2.25, 2.25]} ylim={[-2.25, 2.25]}>
+          <Polygon points={regular(count)} fill={color} stroke={none} />
+        </Graph>
+      ))}
     </HStack>
   </Box>
 )
@@ -808,8 +811,8 @@ return (
 **Polyline** connects `points` in order with straight segments. Each point is an
 object `{ x, y }` or tuple `[x, y]`; both forms can be mixed. An empty list draws
 nothing. The path remains open unless `closed` is set. With gaps, each finite
-run is closed independently. [Polygon](geometry.md#Polygon) provides a closed shape
-that always uses local coordinates.
+run is closed independently. [Polygon](geometry.md#Polygon) is the convenience form
+with closing always enabled and the same coordinate behavior.
 
 ```jsx
 <Polyline width={px(240)} height={px(100)}
@@ -1249,8 +1252,12 @@ square; **Rect** paints the full allocation. The enclosing **Frame**s reveal the
 | Property | Default | Meaning |
 |---|---|---|
 | `points` | `[{x:0.5,y:0}, {x:1,y:1}, {x:0,y:1}]` | Ordered local vertices joined and closed |
+| `space` | `"local"` | Use local geometry; `"data"` requires an enclosing coordinate context |
 
-A **Polygon** with vertices at top center and both bottom corners. Uses local fractional geometry and accepts **Polygon** props, including a points override.
+A [Polygon](geometry.md#Polygon) with vertices at top center and both bottom corners.
+Unlike **Polygon**, it keeps local fractional geometry by default, including
+inside a graph. It accepts **Polygon** props, including a points override and
+explicit `space="data"`.
 
 <a id="Triangle-example"></a>
 
@@ -1273,11 +1280,12 @@ A **Polygon** with vertices at top center and both bottom corners. Uses local fr
 |---|---|---|
 | `from` | `[0, 0.5]` | Segment start in the local rectangle |
 | `to` | `[1, 0.5]` | Segment end in the local rectangle |
+| `space` | `"local"` | Use local geometry; `"data"` requires an enclosing coordinate context |
 
 **UnitLine** is a [Line](geometry.md#Line) convenience that defaults to a horizontal
 segment from `x=0` to `x=1` at `y=0.5` in its local rectangle. `from` and `to`
 can override these defaults, and `space="data"` opts into the enclosing coordinate
-context, as on **Line**.
+context. Unlike **Line**, **UnitLine** keeps its local default inside a graph.
 
 Use [HLine](geometry.md#HLine) or [VLine](geometry.md#VLine) to specify a fixed position and
 `lim` span instead of arbitrary endpoints.
@@ -1344,9 +1352,10 @@ the baseline. [SymFill](plotting.md#SymFill) samples function boundaries.
 |---|---|---|
 | `x` | `0.5` | Fixed x coordinate |
 | `lim` | `[0, 1]` | Start and end y coordinates |
-| `space` | `"local"` | `"data"` maps the endpoints through the enclosing coordinate context |
+| `space` | Automatic | Use ambient data coordinates when available; otherwise local geometry |
 
-**VLine** draws from `[x, lim[0]]` to `[x, lim[1]]`. By default it spans the height
+**VLine** draws from `[x, lim[0]]` to `[x, lim[1]]`. Outside a coordinate
+context, the defaults span the height
 of its own allocated rectangle at half its width. Position and span accept
 lengths: fractions, px, em, and unit strings such as `"25%"` or `"12px"`.
 Reversed and equal span endpoints are allowed. Geometry does not change the
@@ -1356,9 +1365,11 @@ element's layout size.
 <VLine x={0.7} lim={[0.2, 0.8]} stroke={blue} stroke-width={px(3)} />
 ```
 
-Geometry stays local inside a Graph or Plot unless `space="data"` is set. Data
-numbers use the enclosing coordinate context and contribute to limit inference;
-tagged lengths retain [Line](geometry.md#Line)'s local-length behavior. Custom projections
+Inside Graph, Plot, or GeoMap, numeric endpoints use ambient coordinates
+automatically and contribute to ordinary Graph/Plot limit inference.
+Set `space="local"` for a local rule, or `space="data"` to require a coordinate
+context. Defaults remain `[0, 1]` for `lim` and `0.5` for the fixed position;
+they do not expand to the graph limits. Tagged lengths retain [Line](geometry.md#Line)'s local-length behavior. Custom projections
 map the two endpoints, so the resulting segment need not be vertical on screen.
 
 `from` and `to` are not supported; use **Line** for arbitrary endpoints.
@@ -1369,8 +1380,11 @@ Use [HLine](geometry.md#HLine) for a fixed y coordinate and a span along x.
 ### Example
 
 ```jsx
-// A vertical line with a fixed x position and a y span.
+// A vertical line uses the enclosing graph's data coordinates automatically.
 <Box width="fill" aspect={1.6} padding={em(2)}>
-  <VLine x={0.7} lim={[0.2, 0.8]} stroke={blue} stroke-width={px(3)} />
+  <Graph xlim={[-2, 6]} ylim={[-1, 7]}>
+    <VLine x={2} lim={[0, 6]} stroke={blue} stroke-width={px(3)} />
+    <Points points={[[2, 0], [2, 6]]} point-size={px(8)} fill={blue} />
+  </Graph>
 </Box>
 ```

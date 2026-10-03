@@ -261,9 +261,9 @@ its own spherical path renderer.
 
 `space="local"` opts marks out of data mapping. A pair of tagged lengths such as
 `[px(20), px(30)]` also stays local. A projected pair cannot mix one bare data
-number with one tagged length. Polyline uses ambient coordinates by default.
-Line defaults to local geometry; set `space="data"` to project its endpoints. A Line is omitted if
-either endpoint is hidden; Polyline breaks into visible runs. Path retains its
+number with one tagged length. Line, HLine, VLine, Polyline, and Polygon use
+ambient coordinates by default. A Line is omitted if either endpoint is hidden;
+Polyline and Polygon break into visible runs, with Polygon closing each run. Path retains its
 local geometry. Bars retain their rectangle
 construction from projected opposite corners. Arc can project its center with
 local px/em radii; use sampled Polyline points for a data-space arc.
@@ -335,7 +335,7 @@ return (
             stroke={gray} />
         ))}
         {linspace(0, tau, 9).slice(0, -1).map(theta => (
-          <Line space="data" from={{ theta, r: 0 }} to={{ theta, r: 1 }}
+          <Line from={{ theta, r: 0 }} to={{ theta, r: 1 }}
             stroke={gray} />
         ))}
         <SymArrow f={spiral} tlim={[0, 1]} stroke={blue}

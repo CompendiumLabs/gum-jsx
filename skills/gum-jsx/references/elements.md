@@ -27,7 +27,7 @@ Each entry includes its runnable JSX example.
 - [Ellipse](elements/geometry.md#Ellipse) — Ellipse draws an axis-aligned ellipse in its allocated rectangle.
 - [Fill](elements/geometry.md#Fill) — Fill the region between a series of points and a boundary.
 - [HFill](elements/geometry.md#HFill) — Fill horizontally between a series of points and a vertical boundary.
-- [HLine](elements/geometry.md#HLine) — Draw a horizontal line across a local drawing frame.
+- [HLine](elements/geometry.md#HLine) — Draw a horizontal line in ambient data coordinates or local geometry.
 - [Line](elements/geometry.md#Line) — Draw a line segment in local coordinates or an enclosing data projection.
 - [Path](elements/geometry.md#Path) — Path draws a sequence of explicit path commands.
 - [Points](elements/geometry.md#Points) — Repeat a marker at each {x,y} or [x,y] in points.
@@ -43,7 +43,7 @@ Each entry includes its runnable JSX example.
 - [Triangle](elements/geometry.md#Triangle) — A Polygon with vertices at top center and both bottom corners.
 - [UnitLine](elements/geometry.md#UnitLine) — Draw a unit-length horizontal line in a local frame.
 - [VFill](elements/geometry.md#VFill) — Fill vertically between a series of points and a horizontal boundary.
-- [VLine](elements/geometry.md#VLine) — Draw a vertical line across a local drawing frame.
+- [VLine](elements/geometry.md#VLine) — Draw a vertical line in ambient data coordinates or local geometry.
 
 ## Plotting
 

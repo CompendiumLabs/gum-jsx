@@ -35,8 +35,9 @@ for the distinction between placing an element and arranging its contents.
 Local Cartesian positions require both components, and an omitted `pos` uses
 the parent's unpositioned behavior. Projected marks accept the same records,
 including `{x, y, z}` for a projection that reduces three dimensions to two.
-Polyline uses ambient coordinates automatically; Line opts in with `space="data"`.
-Local shapes and sizes stay Cartesian.
+Line, HLine, VLine, Polyline, and Polygon use ambient coordinates automatically.
+Set `space="local"` for local geometry or `space="data"` to require a coordinate
+context. UnitLine and Triangle retain local defaults. Sizes stay Cartesian.
 
 [Array helpers](arrays.md) can feed point lists directly:
 
