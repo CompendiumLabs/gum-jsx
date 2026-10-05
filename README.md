@@ -28,10 +28,11 @@ project. Output formats include SVG, PNG, PDF, PPTX, MP4, and kitty graphics. El
 functions, colors, and layout helpers are already in scope. The figures above are
 Gum output; their sources are [logo.jsx](images/logo.jsx) and [nexus.jsx](images/nexus.jsx).
 
-The bundled npm CLI requires Node.js 24 or newer. Install the `gum-jsx` package globally with:
+The bundled npm CLI requires Node.js 24 or newer. This checkout prepares
+`2.1.0-beta.0`. After publication, install the beta globally with:
 
 ```sh
-npm install -g gum-jsx
+npm install -g gum-jsx@beta
 gum --version
 ```
 
