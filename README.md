@@ -193,7 +193,7 @@ Run `bun run typecheck` here to check the CLI, or from the workspace root to
 check all packages. Run `bun run test` here for command integration tests, also included in the
 workspace test command.
 
-## MP4 animations
+### MP4 animations
 
 Return a top-level `Video` component from a JSX source. Supply `size`, `fps`,
 `duration` in seconds, and a synchronous `frame` generator:
@@ -253,7 +253,7 @@ destination on failure; stdout may contain a partial stream if rendering fails.
 See the [MP4 package](https://github.com/CompendiumLabs/gum-jsx-mp4) for the source
 format, encoder API, and limitations.
 
-## PDF and PowerPoint decks
+### PDF and PowerPoint decks
 
 Pass JSX files in slide order or one directory containing slides to render a PDF or PPTX:
 
