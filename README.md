@@ -22,130 +22,23 @@
 
 ## Install
 
-Install **`gum-jsx`** to get the **`gum`** command. The scoped
-[`@gum-jsx/cli`](../gum-jsx-cli/README.md) package is its implementation library.
-
 Gum is a JSX language for vector graphics. The CLI is the fastest way in: write a
 figure in a `.jsx` file, render it with `gum`, and keep the source alongside your
 project. Output formats include SVG, PNG, PDF, PPTX, MP4, and kitty graphics. Elements, math
 functions, colors, and layout helpers are already in scope. The figures above are
 Gum output; their sources are [logo.jsx](images/logo.jsx) and [nexus.jsx](images/nexus.jsx).
 
-The bundled npm CLI requires Node.js 24 or newer. Install it with:
+The bundled npm CLI requires Node.js 24 or newer. Install the `gum-jsx` package globally with:
 
 ```sh
 npm install -g gum-jsx
 gum --version
 ```
 
-The npm package contains a prebuilt JavaScript bundle, fonts, map data, and the
-PNG and MP4 renderers. It has no runtime package dependencies. Bun 1.4.2 or newer works
-equally well as an alternative runtime.
+This installs the `gum` command for JSX rendering. The npm package contains a prebuilt
+JavaScript bundle, fonts, map data, and the PNG and MP4 renderers. It has no runtime package dependencies. Bun 1.4.2 or newer works equally well as an alternative runtime.
 
-This installs `gum` for JSX figures. To work from a
-[source checkout](https://github.com/CompendiumLabs/gum-jsx#development), run
-`bun install` and `bun --filter @gum-jsx/png build` at the workspace root,
-then use `bun gum-jsx/src/cli.ts`.
-Rebuild `@gum-jsx/png` after changing its source; this uses the checked-in WASM
-artifact and requires no Rust toolchain.
-
-### Build the npm package
-
-From this package's directory, run `bun run build` to generate `dist/npm/`.
-`npm pack` and `npm publish` run this build automatically through `prepack`.
-The package ships this bundle and its assets/notices, plus the README,
-license, and README artwork. Builds preserve class names used in layout diagnostics and share the
-Acorn deduplication used by standalone executables.
-
-Run `bun test test/package.test.ts` to pack the CLI, install it offline in a
-fresh project with lifecycle scripts disabled, and run command tests under Node
-and Bun. Node rendering is tested with an empty `PATH`. Set `GUM_NODE_RUNTIME`
-to test a specific Node executable.
-
-### Standalone executable
-
-From this package's directory, build `gum` with Bun 1.4.2 or newer. With no
-options, the script builds macOS ARM64 and x64, Windows x64, and Linux x64:
-
-```sh
-bun run standalone:build
-```
-
-The outputs are `dist/gum-macos-arm64`, `dist/gum-macos-x64`, `dist/gum-windows-x64.exe`, and
-`dist/gum-linux-x64`. Select one target with `--target`; optionally override its
-output path with `--outfile`:
-
-```sh
-bun run standalone:build --target bun-linux-x64
-bun run standalone:build --target=bun-darwin-arm64 --outfile dist/gum-macos
-```
-
-The executable includes the Bun runtime, core and math fonts, map data, and the
-PNG and MP4 WebAssembly renderers. Users need no Bun installation or `node_modules` for
-rendering. This build produces only `gum`.
-
-For a local build using the installed Bun runtime, or to test a release executable:
-
-```sh
-bun run standalone:build --target native
-./dist/gum figure.jsx -o figure.png
-GUM_STANDALONE_BINARY="$PWD/dist/gum-linux-x64" bun test ./test/standalone.test.ts
-```
-
-Bun downloads the requested runtime when needed. Build a separate executable for
-each OS/architecture using [Bun's supported targets](https://bun.sh/docs/bundler/executables).
-The `native` target uses the installed Bun runtime, so distro builds can introduce
-extra shared-library dependencies; check release artifacts with `ldd` on Linux.
-The script uses Bun's `baseline` alias for `bun-linux-x64` to select the official
-download instead of reusing an identically targeted distro runtime in Bun 1.4.2.
-The official Linux x64 baseline build tested here needs glibc and standard system
-libraries, but no ICU installation. It is approximately 83 MiB (37 MiB gzipped)
-with Bun 1.4.2. Other platforms still need native testing before release.
-
-The build minifies whitespace and syntax while preserving identifier names used
-in inspection output and diagnostics. Standalone tests copy the executable to a
-temporary directory, clear `PATH`, and compare all output formats with the source
-CLI, including fonts, maps, and decks. They build only the native target
-and run as part of `bun run test`;
-`GUM_STANDALONE_BINARY` can select an already-built executable instead.
-
-### Release archives
-
-Build and package the four default targets for manual upload to GitHub Releases:
-
-```sh
-bun run standalone:pack
-```
-
-This writes these files to `dist/releases/v<package-version>/`:
-
-```text
-gum-v<version>-macos-arm64.tar.gz
-gum-v<version>-macos-x64.tar.gz
-gum-v<version>-linux-x64.tar.gz
-gum-v<version>-windows-x64.zip
-SHA256SUMS
-```
-
-Each archive extracts into its own named directory containing `gum` (or
-`gum.exe`), installation notes, the project license, and dependency/font/data
-notices. Unix archives preserve the executable permission. Packaging requires
-`tar` and `zip` on the build machine; the executables do not require these tools.
-
-The same target and output options apply. For example:
-
-```sh
-bun run standalone:pack --target bun-linux-x64
-```
-
-This rebuilds and packages just that target, retaining the other archives in the
-version directory and refreshing `SHA256SUMS` for all of them. Only include
-archives you intend to release in that directory. Upload its archives and
-`SHA256SUMS` manually; the command does not publish anything or sign binaries.
-Checksums can be verified with `sha256sum -c SHA256SUMS` on Linux, or
-`shasum -a 256 -c SHA256SUMS` on macOS.
-
-## Make your first figure
+## Quickstart
 
 Save this as `plot.jsx`:
 
@@ -185,77 +78,16 @@ gum plot.jsx                 # Display inline in a kitty-compatible terminal
 The [source for this plot](images/plot.jsx) is also in this repository. Change
 the function, limits, or colors and render it again. Use `px(24)` for pixels,
 `em(1.5)` for font-relative lengths, and fractions such as `0.5` for relative
-sizes. Start with the [Gum guide](https://github.com/CompendiumLabs/gum-jsx-docs/blob/master/docs/guides/text/gum.md)
-and the [element examples](https://github.com/CompendiumLabs/gum-jsx-docs/tree/master/docs/elements/code)
-to build beyond this plot.
+sizes. Head to [gum studio](https://compendiumlabs.ai/gum/studio) for a live
+browser-based editor.
 
-## Load data and images
-
-CLI scripts can read local files synchronously with `loadJSON`, `loadCSV`, and
-`loadPNG`. Relative paths resolve from the JSX file's directory, or from the
-working directory when reading stdin. Absolute paths work too. Each deck slide
-and prelude uses its own directory; functions defined in a prelude retain that
-directory when a slide calls them.
-
-| Function | Result |
-|---|---|
-| `loadJSON(path)` | Any parsed JSON value: an object, array, or primitive. |
-| `loadCSV(path, options?)` | An array of row objects, with column names from the first row. |
-| `loadPNG(path)` | A base64 PNG data URL for `PngImage`, after checking the PNG header. |
-
-```jsx
-const config = loadJSON('./config.json')
-const rows = loadCSV('./measurements.csv')
-const photo = loadPNG('./photo.png')
-
-return (
-  <VStack>
-    <Text>{config.title}: {rows.length} observations</Text>
-    <PngImage data={photo} height={px(200)} />
-  </VStack>
-)
-```
-
-`loadCSV` uses [Papa Parse](https://www.papaparse.com/docs), skips empty lines,
-and defaults to `delimiter: ','` and `dynamicTyping: true`. Set
-`dynamicTyping: false` to keep every value as text, or select columns with an
-object or function. For example, this keeps leading zeros in an ID column while
-converting numeric measurements:
-
-```jsx
-const rows = loadCSV('./measurements.csv', {
-  delimiter: ';',
-  dynamicTyping: column => column !== 'id',
-})
-```
-
-Read and parsing failures throw an error containing the resolved filename.
-These helpers read filesystem paths, not remote URLs. They are included in both
-the npm CLI and standalone executable; CSV parsing needs no separate install.
-
-## Take it further
-
-PNG and kitty output use fast lossless encoding by default. Set
-`--png-encoding standard` to use the previous compression policy. Both presets
-preserve the same decoded pixels; encoded file sizes vary by image.
-
-```sh
-gum diagram.jsx -f tree --stats            # Inspect measured layout
-gum slides/ -o talk.pdf                    # Turn a slide directory into a PDF
-printf '%s\n' '<Square width={px(40)} fill="tomato" />' | gum -f svg
-```
+## Usage
 
 `gum` reads from stdin if you omit the input or pass `-`. Input and output paths
 are relative to the directory where you run the command. An output extension
-selects SVG, PNG, PDF, or PPTX. For a file or stdin, `gum` defaults to kitty graphics
+selects SVG, PNG, MP4, PDF, or PPTX. For a file or stdin, `gum` defaults to kitty graphics
 on stdout; directories and multiple files default to PDF. Use `-f svg` to send SVG text to
 stdout. The full options are below.
-
-The [Gum workspace](https://github.com/CompendiumLabs/gum-jsx#readme) also has a
-browser editor, TypeScript and React APIs, and separate packages for embedding
-the renderer. The CLI bundles the renderers you need for this command.
-
-## Usage
 
 Run `gum [options] [files...]`:
 
@@ -477,35 +309,49 @@ uses ordinary core and math bindings without loading neighboring `index.json`
 files. A slide rendered as an individual file must be self-contained. Pass the
 deck directory to use its prelude.
 
-## Development and visual reports
+## Development
 
-The artwork at the top of this page is generated from the JSX in `images/`.
-From this package's directory, regenerate it with:
+For development work, see the [meta repo](https://github.com/CompendiumLabs/gum-jsx-meta) for instructions. That repository contains this one as a submodule.
+
+### Build the npm package
+
+From this package's directory, run `bun run build` to generate `dist/npm/`.
+`npm pack` and `npm publish` run this build automatically through `prepack`.
+The package ships this bundle and its assets/notices, plus the README,
+license, and README artwork. Builds preserve class names used in layout diagnostics and share the
+Acorn deduplication used by standalone executables.
+
+Run `bun test test/package.test.ts` to pack the CLI, install it offline in a
+fresh project with lifecycle scripts disabled, and run command tests under Node
+and Bun. Node rendering is tested with an empty `PATH`. Set `GUM_NODE_RUNTIME`
+to test a specific Node executable.
+
+### Standalone executable
+
+From this package's directory, build `gum` with Bun 1.4.2 or newer. With no
+options, the script builds macOS ARM64 and x64, Windows x64, and Linux x64:
 
 ```sh
-bun run gum images/logo.jsx -o images/logo.svg
-bun run gum images/logo.jsx --theme dark -o images/logo-dark.svg
-bun run gum images/nexus.jsx -o images/nexus.svg
-bun run gum images/plot.jsx -o images/plot.svg
-bun run gum images/plot.jsx --theme dark -o images/plot-dark.svg
+bun run standalone:build
 ```
 
-From the workspace root, `bun run visual-test` evaluates every element and topic
-example in `gum-jsx-docs` plus its focused visual regression cases. It checks for
-evaluation/layout failures, empty viewports, non-finite SVG geometry, and empty
-drawings, then writes a searchable, self-contained report to
-`gum-jsx-cli/visual-report/dist/index.html`. The report includes each SVG, its
-source, dimensions, timing, status filters, deep links, and light/dark page chrome.
+The outputs are `dist/gum-macos-arm64`, `dist/gum-macos-x64`, `dist/gum-windows-x64.exe`, and
+`dist/gum-linux-x64`. Select one target with `--target`; optionally override its
+output path with `--outfile`:
 
-`bun run visual-report` is an alias. The HTML opens directly from disk; for an HTTP
-preview, run `bun --filter @gum-jsx/cli visual-report:serve`. Pass
-`--output /some/directory` after the package script to change the generated output
-directory. The checked-in report notes are in
-[visual-report/README.md](../gum-jsx-cli/visual-report/README.md).
+```sh
+bun run standalone:build --target bun-linux-x64
+bun run standalone:build --target=bun-darwin-arm64 --outfile dist/gum-macos
+```
 
-The protocol encoders in [@gum-jsx/cli/kitty](../gum-jsx-cli/src/kitty.ts) accept PNG or raw RGBA
-data, with image/placement IDs, terminal columns/rows, cursor movement, and
-virtual-placement controls.
+The executable includes the Bun runtime, core and math fonts, map data, and the
+PNG and MP4 WebAssembly renderers. Users need no Bun installation or `node_modules` for
+rendering. This build produces only `gum`.
 
-Watch mode remains
-tracked in [FEATURES.md](https://github.com/CompendiumLabs/gum-jsx/blob/master/docs/FEATURES.md#command-line-and-authoring-workflows).
+For a local build using the installed Bun runtime, or to test a release executable:
+
+```sh
+bun run standalone:build --target native
+./dist/gum figure.jsx -o figure.png
+GUM_STANDALONE_BINARY="$PWD/dist/gum-linux-x64" bun test ./test/standalone.test.ts
+```
