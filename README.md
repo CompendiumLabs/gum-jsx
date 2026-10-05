@@ -179,7 +179,7 @@ ignored, so content outside them is exported in full. Skewed images,
 reflected/skewed/nonuniformly scaled live text,
 nonuniformly transformed strokes, and combined
 fill/stroke opacity are deferred and produce clear errors. `--ratio`, `--precision`,
-and `--id-prefix` do not affect PPTX. See the [PPTX API](../gum-jsx-pptx/README.md).
+and `--id-prefix` do not affect PPTX. See the [PPTX API](https://github.com/CompendiumLabs/gum-jsx-pptx#readme).
 
 `--precision` sets the decimal places used in SVG, PDF, and tree numeric output;
 PNG and kitty rendering use the full layout geometry. Choose an integer from
@@ -188,10 +188,6 @@ layout geometry.
 
 Errors go to stderr and exit with status 1. `--stats` writes layout counters as
 JSON to stderr, one line per rendered page.
-
-Run `bun run typecheck` here to check the CLI, or from the workspace root to
-check all packages. Run `bun run test` here for command integration tests, also included in the
-workspace test command.
 
 ### MP4 animations
 
@@ -309,9 +305,33 @@ uses ordinary core and math bindings without loading neighboring `index.json`
 files. A slide rendered as an individual file must be self-contained. Pass the
 deck directory to use its prelude.
 
+## Libraries and integrations
+
+Use Gum from your own code with the [core renderer](https://github.com/CompendiumLabs/gum-jsx-core),
+[math](https://github.com/CompendiumLabs/gum-jsx-math), and
+[maps](https://github.com/CompendiumLabs/gum-jsx-maps) libraries. Export packages
+provide [PNG](https://github.com/CompendiumLabs/gum-jsx-png),
+[PDF](https://github.com/CompendiumLabs/gum-jsx-pdf),
+[PowerPoint](https://github.com/CompendiumLabs/gum-jsx-pptx), and
+[MP4](https://github.com/CompendiumLabs/gum-jsx-mp4) output.
+
+[React bindings](https://github.com/CompendiumLabs/gum-jsx-react) embed Gum in
+React applications. [Markdown rendering](https://github.com/CompendiumLabs/gum-jsx-mark)
+adds figures and math to terminal documents. Each package README documents its
+APIs and development workflow.
+
+For coding agents, the [Gum authoring plugin](https://github.com/CompendiumLabs/gum-jsx-meta/tree/master/plugins/gum-jsx)
+provides language guidance and references. It uses the same `gum` command installed
+above. The [documentation repository](https://github.com/CompendiumLabs/gum-jsx-docs)
+maintains the guides, examples, and agent instructions.
+
 ## Development
 
 For development work, see the [meta repo](https://github.com/CompendiumLabs/gum-jsx-meta) for instructions. That repository contains this one as a submodule.
+
+Run `bun run typecheck` and `bun run test` from this package directory for
+TypeScript and command integration checks. The workspace commands run checks
+across all packages.
 
 ### Build the npm package
 
