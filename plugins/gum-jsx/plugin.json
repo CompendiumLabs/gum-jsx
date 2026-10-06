@@ -1,0 +1,47 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "gum-jsx",
+  "version": "2.0.0",
+  "description": "Create diagrams, plots, mathematical figures, maps, and slides with Gum.",
+  "author": {
+    "name": "Compendium Labs",
+    "url": "https://github.com/CompendiumLabs"
+  },
+  "homepage": "https://github.com/CompendiumLabs/gum-jsx",
+  "repository": "https://github.com/CompendiumLabs/gum-jsx",
+  "license": "MIT",
+  "keywords": [
+    "gum-jsx",
+    "diagrams",
+    "plots",
+    "math",
+    "maps",
+    "design",
+    "slides"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Gum",
+        "shortDescription": "Diagrams, plots, and slides",
+        "longDescription": "Create and revise diagrams, data plots, mathematical figures, geographic maps, and slide decks with Gum. Get editable JSX source and export SVG, PNG, or PDF files.\n\nThis plugin does not include the Gum renderer but will help you get it installed and working.",
+        "developerName": "Compendium Labs",
+        "category": "Developer Tools",
+        "capabilities": [
+          "Write"
+        ],
+        "websiteURL": "https://github.com/CompendiumLabs/gum-jsx",
+        "supportURL": "https://github.com/CompendiumLabs/gum-jsx/issues",
+        "privacyPolicyURL": "https://github.com/CompendiumLabs/gum-jsx/blob/master/PRIVACY.md",
+        "defaultPrompt": [
+          "Use Gum to plot the US unemployment rate over time.",
+          "Use Gum to create a map of the historic route of the Silk Road.",
+          "Create a three-slide Gum deck explaining the Pythagorean theorem."
+        ],
+        "brandColor": "#2858A5",
+        "composerIcon": "./assets/logo_icon_dark.png",
+        "logo": "./assets/logo_icon_dark.png"
+      }
+    }
+  }
+}

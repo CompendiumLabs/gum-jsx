@@ -1,0 +1,15 @@
+{
+  "name": "gum-jsx",
+  "owner": {
+    "name": "Compendium Labs",
+    "url": "https://github.com/CompendiumLabs"
+  },
+  "description": "Plugins for creating diagrams, plots, mathematical figures, maps, and slides with Gum.",
+  "plugins": [
+    {
+      "name": "gum-jsx",
+      "source": "./plugins/gum-jsx",
+      "description": "Create diagrams, plots, mathematical figures, maps, and slides with Gum."
+    }
+  ]
+}
