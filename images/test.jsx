@@ -4,9 +4,9 @@
     <Text font-size={em(1.6)} font-weight={bold}>Welcome to Gum!</Text>
     <Text line-height={em(1.45)}>This is a basic example demonstrating a horizontal stack.</Text>
     <HStack height={em(8)} gap={em(1)}>
-      <RoundedRect grow={1} border-radius={em(1)} fill={blue} stroke={none} />
+      <RoundedRect aspect={1} border-radius={em(1)} fill={blue} stroke={none} />
       <Circle fill={red} stroke={none} />
-      <RoundedRect grow={1} border-radius={em(1)} fill={green} stroke={none} />
+      <RoundedRect aspect={1} border-radius={em(1)} fill={green} stroke={none} />
     </HStack>
   </VStack>
 </Box>
