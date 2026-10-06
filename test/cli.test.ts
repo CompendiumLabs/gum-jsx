@@ -129,8 +129,8 @@ test('direct PNG output preserves crop pixels, backgrounds, and full geometry wi
   expect(png_size(rounded.bytes)).toEqual({ width: 3, height: 5 })
 })
 
-test('PNG and kitty outline text regardless of SVG text mode; emoji report an error', async () => {
-  const source = '<Text>Text <Latex>x^2</Latex></Text>'
+test('PNG and kitty outline text regardless of SVG text mode and skip live emoji', async () => {
+  const source = '<Text>Text 😀 <Latex>x^2</Latex></Text>'
   const args: string[] = []
   for (const format of ['png', 'kitty']) {
     const path = await cli([...args, '-f', format, '--text-mode', 'path'], source, 'cli')
@@ -139,12 +139,14 @@ test('PNG and kitty outline text regardless of SVG text mode; emoji report an er
     expect(live.bytes).toEqual(path.bytes)
   }
   const output = join(scratch, 'emoji.png')
-  await Bun.write(output, 'keep me')
-  const result = await cli(['-o', output], '<Frame padding="4px"><Text>Hello 😀</Text></Frame>', 'cli')
-  expect(result.code).toBe(1)
+  const result = await cli(['-o', output], source, 'cli')
+  expect(result.code, result.error).toBe(0)
   expect(result.text).toBe('')
-  expect(result.error).toContain('cannot draw live text')
-  expect(await Bun.file(output).text()).toBe('keep me')
+  expect(result.error).toBe('')
+  const png = await cli(['-f', 'png'], source, 'cli')
+  expect(png.code, png.error).toBe(0)
+  expect(new Uint8Array(await Bun.file(output).arrayBuffer())).toEqual(png.bytes)
+  expect(png_size(png.bytes).width).toBeGreaterThan(0)
 })
 
 test('text mode supports live SVG and PDF prose and math, with optional outlines', async () => {

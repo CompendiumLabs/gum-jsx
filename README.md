@@ -24,12 +24,11 @@
 
 Gum is a JSX language for vector graphics. The CLI is the fastest way in: write a
 figure in a `.jsx` file, render it with `gum`, and keep the source alongside your
-project. Output formats include SVG, PNG, PDF, PPTX, MP4, and kitty graphics. Elements, math
-functions, colors, and layout helpers are already in scope. The figures above are
-Gum output; their sources are [logo.jsx](images/logo.jsx) and [nexus.jsx](images/nexus.jsx).
+project. Output formats include SVG, PNG, PDF, PPTX, MP4, and kitty graphics. Elements,
+math functions, colors, and layout helpers are already in scope.
 
-The bundled npm CLI requires Node.js 24 or newer. This checkout prepares
-`2.1.0-beta.0`. After publication, install the beta globally with:
+The bundled npm CLI in the `gum-jsx` package requires Node.js 24+. One can either
+run it with `npx gum-jsx` or install it globally with:
 
 ```sh
 npm install -g gum-jsx@beta
@@ -37,7 +36,8 @@ gum --version
 ```
 
 This installs the `gum` command for JSX rendering. The npm package contains a prebuilt
-JavaScript bundle, fonts, map data, and the PNG and MP4 renderers. It has no runtime package dependencies. Bun 1.4.2 or newer works equally well as an alternative runtime.
+JavaScript bundle, fonts, map data, and the PNG and MP4 renderers. It has no runtime
+package dependencies. Bun 1.4 or newer works equally well as an alternative runtime.
 
 ## Quickstart
 

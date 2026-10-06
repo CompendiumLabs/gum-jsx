@@ -31,6 +31,23 @@
     "typescript": "^7"
   },
   "homepage": "https://compendiumlabs.ai/gum",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CompendiumLabs/gum-jsx.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CompendiumLabs/gum-jsx/issues"
+  },
+  "keywords": [
+    "graphics",
+    "diagrams",
+    "math",
+    "maps",
+    "plotting",
+    "networks",
+    "slides",
+    "animations"
+  ],
   "publishConfig": {
     "access": "public",
     "tag": "beta"
