@@ -41,7 +41,7 @@ package dependencies. Bun 1.4 or newer works equally well as an alternative runt
 
 ## Quickstart
 
-Save this as `plot.jsx`:
+Save this as `test.jsx`:
 
 ```jsx
 <Box font-size={px(18)} padding={em(1.5)} border-width={px(1)} border-color={gray}>
@@ -60,15 +60,15 @@ Save this as `plot.jsx`:
 Then run some of the following commands to render it:
 
 ```sh
-gum plot.jsx -o plot.svg
-gum plot.jsx -o plot.png
-gum plot.jsx -o plot.pdf
-gum plot.jsx # Display inline in a kitty-compatible terminal
+gum test.jsx -o test.svg
+gum test.jsx -o test.png
+gum test.jsx -o test.pdf
+gum test.jsx # Display inline in a kitty-compatible terminal
 ```
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="images/plot-dark.svg" />
-  <img src="images/plot.svg" alt="Sine wave plot rendered from plot.jsx" width="750" />
+  <source media="(prefers-color-scheme: dark)" srcset="images/test-dark.svg" />
+  <img src="images/test.svg" alt="Test rendered from test.jsx" width="750" />
 </picture>
 
 Change the function, limits, or colors and render it again. Use `px(24)` for pixels,
