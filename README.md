@@ -44,12 +44,17 @@ package dependencies. Bun 1.4 or newer works equally well as an alternative runt
 Save this as `plot.jsx`:
 
 ```jsx
-<Plot
-  aspect={2} padding={0} margin={em(1.5)} grid
-  xticks={[[0, '0'], [pi/2, 'π/2'], [pi, 'π'], [3*pi/2, '3π/2'], [2*pi, '2π']]}
->
-  <SymLine fy={sin} xlim={[0, tau]} stroke={blue} stroke-width={px(2)} />
-</Plot>
+<Box font-size={px(18)} padding={em(1.5)}>
+  <VStack gap={em(1)}>
+    <Text font-size={em(1.6)} font-weight={bold}>Welcome to Gum</Text>
+    <Text line-height={em(1.45)}>This is a basic example demonstrating a horizontal stack.</Text>
+    <HStack height={em(8)} gap={em(1)}>
+      <RoundedRect grow={1} border-radius={em(1)} fill={blue} stroke={none} />
+      <Circle fill={red} stroke={none} />
+      <RoundedRect grow={1} border-radius={em(1)} fill={green} stroke={none} />
+    </HStack>
+  </VStack>
+</Box>
 ```
 
 Then run some of the following commands to render it:
@@ -66,8 +71,7 @@ gum plot.jsx # Display inline in a kitty-compatible terminal
   <img src="images/plot.svg" alt="Sine wave plot rendered from plot.jsx" width="750" />
 </picture>
 
-The [source for this plot](images/plot.jsx) is also in this repository. Change
-the function, limits, or colors and render it again. Use `px(24)` for pixels,
+Change the function, limits, or colors and render it again. Use `px(24)` for pixels,
 `em(1.5)` for font-relative lengths, and fractions such as `0.5` for relative
 sizes. Head to [gum studio](https://compendiumlabs.ai/gum/studio) for a live
 browser-based editor.
