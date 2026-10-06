@@ -308,13 +308,7 @@ provide [PNG](https://github.com/CompendiumLabs/gum-jsx-png),
 [MP4](https://github.com/CompendiumLabs/gum-jsx-mp4) output.
 
 [React bindings](https://github.com/CompendiumLabs/gum-jsx-react) embed Gum in
-React applications. [Markdown rendering](https://github.com/CompendiumLabs/gum-jsx-mark)
-adds figures and math to terminal documents. Each package README documents its
-APIs and development workflow.
-
-For coding agents, the [Gum authoring plugin](https://github.com/CompendiumLabs/gum-jsx-meta/tree/master/plugins/gum-jsx)
-provides language guidance and references. It uses the same `gum` command installed
-above. The [documentation repository](https://github.com/CompendiumLabs/gum-jsx-docs)
+React applications. The [documentation repository](https://github.com/CompendiumLabs/gum-jsx-docs)
 maintains the guides, examples, and agent instructions.
 
 ## Development
