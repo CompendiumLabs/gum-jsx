@@ -44,7 +44,7 @@ package dependencies. Bun 1.4 or newer works equally well as an alternative runt
 Save this as `plot.jsx`:
 
 ```jsx
-<Box font-size={px(18)} padding={em(1.5)}>
+<Box font-size={px(18)} padding={em(1.5)} border-width={px(1)} border-color={gray}>
   <VStack gap={em(1)}>
     <Text font-size={em(1.6)} font-weight={bold}>Welcome to Gum</Text>
     <Text line-height={em(1.45)}>This is a basic example demonstrating a horizontal stack.</Text>
