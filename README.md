@@ -3,7 +3,7 @@
     <source media="(prefers-color-scheme: dark)" srcset="images/logo-dark.svg" />
     <img src="images/logo.svg" alt="Gum" width="300" />
   </picture>
-  <br />
+  <br /><br />
   <img src="images/nexus.svg" alt="Layered red-to-blue wave packets" width="250" />
   <br /><br />
 </div>
