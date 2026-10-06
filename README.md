@@ -1,8 +1,7 @@
 <div align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="images/logo-dark.svg" />
-    <img src="images/logo.svg" alt="Gum" width="300" />
-  </picture>
+  <div style="font-size: 5em; font-weight: bold;">
+    gum<span style="color: #1e88e5;">.</span>jsx
+  </div>
   <br />
   <img src="images/nexus.svg" alt="Layered red-to-blue wave packets" width="250" />
   <br /><br />
