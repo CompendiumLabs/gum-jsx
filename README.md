@@ -39,6 +39,34 @@ This installs the `gum` command for JSX rendering. The npm package contains a pr
 JavaScript bundle, fonts, map data, and the PNG and MP4 renderers. It has no runtime
 package dependencies. Bun 1.4 or newer works equally well as an alternative runtime.
 
+**For agents: start with `gum docs`, then search for the components and examples
+you need.** The installed command includes its own version-matched documentation;
+no separate skill or network connection is required.
+
+## Built-in documentation
+
+```sh
+gum docs                              # Orientation, workflow, and starting points
+gum docs search "axis labels"          # Ranked page IDs and descriptions
+gum docs get elements/Plot             # One reference with its JSX example
+gum docs get guides/units
+gum docs list guides                   # Browse guides, elements, or gallery
+gum docs example gallery/pendulum_physics > pendulum.jsx
+gum render pendulum.jsx -o pendulum.png
+```
+
+`gum docs example` writes only JSX to stdout. For an example with data files,
+export the source and fixtures together:
+
+```sh
+gum docs example guides/load_csv --output example
+gum render example/load_csv.jsx -o example.svg
+```
+
+The output directory is created if needed; existing example files are replaced.
+Internal reference links use page IDs that can be passed to `gum docs get`.
+Use `gum docs --help` for commands and `gum render --help` for rendering options.
+
 ## Quickstart
 
 Save this as `test.jsx`:
@@ -84,7 +112,9 @@ selects SVG, PNG, MP4, PDF, or PPTX. For a file or stdin, `gum` defaults to kitt
 on stdout; directories and multiple files default to PDF. Use `-f svg` to send SVG text to
 stdout. The full options are below.
 
-Run `gum [options] [files...]`:
+Run `gum render [options] [files...]`, or use the shorthand `gum [options] [files...]`.
+Only a first argument of `render` or `docs` selects a command; otherwise Gum uses
+the existing rendering syntax. Both rendering forms accept stdin when no file is supplied.
 
 | Option | Meaning |
 |---|---|

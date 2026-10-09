@@ -46,7 +46,7 @@ test('npm package installs offline and runs under Node and Bun, with Bun-only pl
     expect(await Bun.file(entry).text()).toStartWith('#!/usr/bin/env node')
     const node = process.env.GUM_NODE_RUNTIME ?? Bun.which('node')
     expect(node).not.toBeNull()
-    await command([process.execPath, 'test', 'test/cli.test.ts', 'test/loaders.test.ts'], root, {
+    await command([process.execPath, 'test', 'test/cli.test.ts', 'test/loaders.test.ts', 'test/docs.test.ts'], root, {
       ...process.env, GUM_CLI_ENTRY: entry, GUM_CLI_RUNTIME: node!,
     })
     const output = join(consumer, 'keep.svg')
@@ -68,7 +68,7 @@ test('npm package installs offline and runs under Node and Bun, with Bun-only pl
     expect(await Bun.file(output).text()).toBe('keep me')
 
     await command([process.execPath, 'test', 'test/cli.test.ts', 'test/plugins.test.ts',
-      'test/loaders.test.ts'], root, {
+      'test/loaders.test.ts', 'test/docs.test.ts'], root, {
       ...process.env, GUM_CLI_ENTRY: entry,
     })
   } finally {

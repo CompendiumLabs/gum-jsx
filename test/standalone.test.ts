@@ -75,6 +75,22 @@ test('standalone reads files, writes output, and renders decks outside the works
     .toEqual(await render(false, ['slides/one.jsx', '-f', 'svg']))
 })
 
+test('standalone embeds documentation and example fixtures', async () => {
+  for (const args of [[], ['search', 'axis labels'], ['get', 'elements/Plot']]) {
+    expect(await render(true, ['docs', ...args])).toEqual(await render(false, ['docs', ...args]))
+  }
+  const source = new TextDecoder().decode(await render(true, ['docs', 'example', 'elements/Plot']))
+  expect(await render(true, ['render', '-f', 'svg'], source)).toEqual(await render(false, ['-f', 'svg'], source))
+  // Export reports its destination on stderr, so capture this command separately.
+  const child = Bun.spawn([binary, 'docs', 'example', 'guides/load_png', '--output', 'example'], {
+    cwd: scratch, env: { ...process.env, PATH: '' }, stdout: 'pipe', stderr: 'pipe',
+  })
+  const [code, error] = await Promise.all([child.exited, new Response(child.stderr).text()])
+  expect(code, error).toBe(0)
+  expect(new TextDecoder().decode(await render(true, ['render', 'example/load_png.jsx', '-f', 'svg'])))
+    .toStartWith('<svg ')
+})
+
 test('standalone loads custom font faces from local files', async () => {
   for (const face of ['Regular', 'Bold']) {
     copyFileSync(join(import.meta.dir, `fixtures/fonts/${face}.otf`), join(scratch, `${face}.otf`))

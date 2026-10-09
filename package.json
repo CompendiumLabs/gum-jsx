@@ -19,6 +19,7 @@
   "devDependencies": {
     "@gum-jsx/cli": "2.1.0-beta.0",
     "@gum-jsx/core": "2.1.0-beta.0",
+    "@gum-jsx/docs": "2.1.0-beta.0",
     "@gum-jsx/math": "2.1.0-beta.0",
     "@gum-jsx/mp4": "2.1.0-beta.0",
     "@gum-jsx/maps": "2.1.0-beta.0",
