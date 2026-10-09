@@ -25,7 +25,7 @@ enables it. Browsers without an explicit setting default to enforcement.
 ```ts
 import { evaluate, LayoutPass, render_svg, inspect_fragment, white } from '@gum-jsx/core'
 
-const source = '<Svg><Square width={px(80)} fill={green} stroke={none} /></Svg>'
+const source = '<Page><Square width={px(80)} fill={green} stroke={none} /></Page>'
 const element = evaluate(source, { name: 'example.jsx' })
 const pass = new LayoutPass()
 const fragment = pass.layout(element)
@@ -43,7 +43,7 @@ evaluate executes JavaScript. Use it only for trusted source, or provide a
 separate isolation boundary in your application. Its optional scope adds or
 overrides evaluator bindings. It returns an **Element**, not an SVG string, and
 sources ending in a return statement may hand back a plain value instead.
-render_element below wraps bare elements in **Svg**; the core evaluator does not.
+render_element below wraps bare elements in **Page**; the core evaluator does not.
 
 To reuse package exports and shared bindings across figures, configure an
 **Evaluator** once:
@@ -72,9 +72,9 @@ JSX is optional. **Element** exports are constructors, so ordinary TypeScript ca
 build the same source graph directly:
 
 ```ts
-import { Svg, Square, px, green, none } from '@gum-jsx/core'
+import { Page, Square, px, green, none } from '@gum-jsx/core'
 
-const element = new Svg({
+const element = new Page({
   children: new Square({ width: px(80), fill: green, stroke: none }),
 })
 ```
@@ -82,7 +82,7 @@ const element = new Svg({
 ## Viewports and plain values
 
 Hosts such as the [CLI](https://github.com/CompendiumLabs/gum-jsx-docs/blob/master/prompt/cli.md#render-with-the-cli), the editor, and the MCP viewer share one
-entry point that takes an evaluated result, wraps a bare element in **Svg**,
+entry point that takes an evaluated result, wraps a bare element in **Page**,
 applies host viewport props, lays it out under a request, and serializes it:
 
 ```ts
@@ -95,24 +95,27 @@ const result = render_element(evaluate(source), {
   id_prefix: 'example',
 })
 if (result.kind === 'svg') console.log(result.svg, result.size)
+else if (result.kind === 'document') console.log(result.pages.map(page => page.svg))
 else console.log('plain value:', result.value)
 ```
 
 The result is tagged. An element yields `svg` markup, the realized `size`, the
-`fragment`, and the `pass` that produced it; anything else comes back as a
+`fragment`, and the `pass` that produced it. A Document yields `kind: 'document'`
+with a `pages` array of those SVG results, its `title`, and the shared `pass`.
+Other evaluated values come back as a
 `value` for the host to print. Without options a fresh LayoutPass with the core
 fonts is created. Pass `fonts` to seed it with another provider, such as the
 math fonts, or `pass` to reuse one across renders and keep its cache; fonts
 given alongside a pass are installed on it.
-`defaults` sit beneath the source's own **Svg** props, so a source theme beats a
+`defaults` sit beneath the source's own **Page** props, so a source theme beats a
 host default, while `overrides` sit above them for hosts whose theme must win.
 `wrap` props apply only to the viewport generated around a bare element, for
 example `max_width` and `max_height` bounds for a preview canvas that an
-explicit **Svg** should not inherit. Undefined entries in any of the three are
-ignored, so optional settings can be forwarded directly. An existing **Svg**
+explicit **Page** should not inherit. Undefined entries in any of the three are
+ignored, so optional settings can be forwarded directly. An existing **Page**
 keeps its layout descriptor and extra props, so custom viewport subclasses
 survive. `request` is an ordinary LayoutRequest; the
-[Svg](../elements/layout.md#Svg) `aspect` and size props resolve against it as
+[Page](../elements/layout.md#Page) `aspect` and size props resolve against it as
 in any layout. Use layout_element for the same wrapping and layout without
 serialization, for example to inspect or rasterize the fragment, and
 make_viewport for the wrapping step alone.
@@ -147,6 +150,50 @@ fit; it does not simply crop the bottom. This includes fonts and strokes. With
 only a width and no height maximum, text can still grow naturally in height.
 Use an exact request for a fixed allocation, or advisory requests without maxima
 when overflow beyond the offered size is acceptable.
+
+## Documents and multiple pages
+
+[Document](../elements/layout.md#Document) collects explicit
+[Page](../elements/layout.md#Page) children in output order. It supplies page
+defaults and metadata, while every page lays out independently. It does not
+participate in spatial layout or automatically paginate overflowing content.
+
+```ts
+import { Document, Page, Text, layout_document, px } from '@gum-jsx/core'
+import { createMathFonts } from '@gum-jsx/math'
+import { render_pdf } from '@gum-jsx/pdf'
+import { render_pptx } from '@gum-jsx/pptx'
+
+const document = new Document({
+  title: 'My presentation',
+  width: px(960), height: px(540), font_size: px(28),
+  children: [
+    new Page({ children: new Text({ children: 'First page' }) }),
+    new Page({ children: new Text({ children: 'Second page' }) }),
+  ],
+})
+const fonts = createMathFonts()
+const { pages, title } = layout_document(document, { fonts, text_mode: 'mixed' })
+const pdf = render_pdf(pages, { fonts, title })
+const pptx = render_pptx(pages, { fonts, title })
+```
+
+`layout_element` also recognizes Document and returns
+`{ kind: 'document', pages, title, pass }`, where `pages` is an array of fragments.
+All pages share the pass and its font resources. Page props override document
+defaults; host `defaults` sit beneath both, and host `overrides` sit above both.
+Host layout requests apply independently to every page. PDF allows different
+page sizes; PPTX requires matching sizes.
+
+`render_element(document, options)` serializes each page as a separate SVG.
+Its `pages` entries each contain `{ kind: 'svg', svg, size, fragment, pass }`.
+The renderer adds `-page-1`, `-page-2`, and so on to `id_prefix` so the SVGs can
+share one HTML view without colliding definition IDs. An explicit render `title`
+overrides the document title.
+
+The CLI exports a complete single-file Document with `gum talk.jsx -o talk.pdf`
+or `gum talk.jsx -o talk.pptx`. Use `--page 2` to select a single page for an image,
+PDF, or PPTX. SVG, PNG, and kitty require a selection for multi-page documents.
 
 ## Requests and results
 
@@ -193,9 +240,16 @@ option works in TypeScript, for example `new Box({ debug: true, padding: em(1) }
 The allocated rectangle is the element's final layout size. Containers such as
 **Box** expose a separate content rectangle inside their insets; elements without
 one show only the allocated rectangle. The overlays follow rotations and fitting,
-appear above the artwork, and bypass content clipping within the SVG viewport.
-They leave layout, ink bounds, and overflow unchanged. SVG includes the overlays;
-the PNG, terminal, and PDF renderers omit them.
+appear above the artwork, and bypass content clipping within the viewport.
+They leave layout, ink bounds, and overflow unchanged. SVG, PNG, terminal, PDF,
+PPTX, and MP4 output all include the overlays.
+
+Before rendering, the shared `prepare_render(fragment)` step converts debug flags
+into ordinary path drawings in a final overlay fragment. It resolves placements
+into viewport coordinates so fitting does not scale the outline strokes. The
+exporters call this step automatically; a custom renderer can call it too.
+The original layout fragment retains its metadata, and preparing an already
+prepared fragment does not add another overlay.
 
 Inline **Span** styling is folded into its owning **Text**; mark the **Text** to
 inspect its allocation.

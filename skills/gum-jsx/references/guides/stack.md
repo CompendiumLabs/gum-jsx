@@ -104,7 +104,8 @@ growth, its width hugs the widest row instead of retaining the entire offer.
 
 Put flex on a wrapping **Box**, **Frame**, or nested stack when that wrapper is the
 direct child. Flex props do not inherit or pass through wrappers.
-[Spacer](../elements/layout.md#Spacer) has explicit zero-basis/grow-one defaults.
+[Spacer](../elements/layout.md#Spacer) absorbs spare space by default. Set its
+`width` or `height` for fixed spacing; explicit flex props can override that sizing.
 
 ## Measurement and placement
 

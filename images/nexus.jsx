@@ -1,5 +1,5 @@
 // The phase-shifted wave packet from the original Gum CLI landing page.
-<Svg width={px(500)} height={px(100)}>
+<Page width={px(500)} height={px(100)}>
   <Graph width="fill" height="fill" xlim={[-4 * pi, 4 * pi]} ylim={[-1, 1]}>
     {linspace(0, pi, 10).map((phase) => (
       <SymSpline
@@ -11,4 +11,4 @@
       />
     ))}
   </Graph>
-</Svg>
+</Page>

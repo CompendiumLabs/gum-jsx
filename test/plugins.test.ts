@@ -31,12 +31,12 @@ test('local TypeScript plugins expose named exports while retaining core and mat
     export default { ignored: true }
   `)
   const source = `
-    <Svg width={px(twice(24))} height={px(20)}>
+    <Page width={px(twice(24))} height={px(20)}>
       <HStack>
         <PluginRect fill={accent} stroke={none} />
         <Latex>x^2</Latex>
       </HStack>
-    </Svg>
+    </Page>
   `
   await Bun.write(join(scratch, 'figures', 'figure.jsx'), source)
   // The plugin path is relative to cwd, even when the input lives in a subdirectory.
@@ -69,7 +69,7 @@ test('packages resolve from the caller project and later plugin bindings win', a
   `)
   const result = await cli([
     '--plugin', 'gum-test-plugin', '--plugin', 'gum-test-plugin/extra', '--plugin', './override.ts',
-  ], 'return [shared, package_value, extra_value, pi, typeof Svg, typeof Latex, mathToElement()]')
+  ], 'return [shared, package_value, extra_value, pi, typeof Page, typeof Latex, mathToElement()]')
   expect(result.code, result.error).toBe(0)
   expect(JSON.parse(result.text)).toEqual(['local', 12, 24, 3, 'function', 'function', 'override'])
   const reversed = await cli(['--plugin', './override.ts', '--plugin', 'gum-test-plugin'], 'return shared')
@@ -89,16 +89,16 @@ test('deck preludes and slides share the loaded plugin instance', async () => {
   }))
   await Bun.write(join(scratch, 'deck', 'prelude.jsx'), `
     const height = 39 + next()
-    function Page({ width }) {
+    function DeckPage({ width }) {
       return (
-        <Svg width={px(width)} height={px(height)}>
+        <Page width={px(width)} height={px(height)}>
           <PluginRect fill={blue} stroke={none} />
-        </Svg>
+        </Page>
       )
     }
   `)
   for (const file of ['first.jsx', 'second.jsx']) {
-    await Bun.write(join(scratch, 'deck', file), '<Page width={page_width + next()} />')
+    await Bun.write(join(scratch, 'deck', file), '<DeckPage width={page_width + next()} />')
   }
   const result = await cli(['deck', '--plugin', './deck-elements.ts'])
   expect(result.code, result.error).toBe(0)

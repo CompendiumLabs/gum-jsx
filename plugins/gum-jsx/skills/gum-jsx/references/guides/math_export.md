@@ -16,7 +16,7 @@ const svg = mathToSvg(tex, { font_size: px(36), title: 'Gaussian integral' })
 const browserSvg = await mathToSvgAsync(tex, { font_size: px(36) })
 ```
 
-`mathToElement` returns an immutable **Svg**, with no parsing, measurement, or
+`mathToElement` returns an immutable **Page**, with no parsing, measurement, or
 font I/O during construction. Its viewport is determined during ordinary layout.
 It can be returned from a JSX program or placed inside another layout.
 
@@ -29,7 +29,7 @@ It can be returned from a JSX program or placed inside another layout.
 | `style`, `size_index` | inherited math policy | Explicit TeX style and size declaration |
 | `color`, `opacity`, `font_family` | inherited style | Formula paint and an optional math face |
 | `macros`, `warnings`, `on_error` | same as **Latex** | Parsing and error policy |
-| `width`, `height` | natural | Explicit **Svg** dimensions, using `px()`; the formula shrinks to fit |
+| `width`, `height` | natural | Explicit **Page** dimensions, using `px()`; the formula shrinks to fit |
 | `fit`, `fit_align` | Automatic shrink-only, `"center"` | `false` disables fitting; `"contain"` also enlarges; `"cover"` fills and crops |
 
 The viewport includes the union of logical dimensions and visible ink, then

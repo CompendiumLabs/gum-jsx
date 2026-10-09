@@ -17,11 +17,17 @@ elements are the simplest way to make reusable components.
 
 A single bare JSX element is returned automatically. With declarations or other
 statements, finish with an explicit `return`. Return one element for a figure;
-rendering hosts wrap a bare root in `Svg`. Put design dimensions and base
-font props on that root. Use an explicit `Svg` when you need viewport control;
+rendering hosts wrap a bare root in `Page`. Put design dimensions and base
+font props on that root. Use an explicit `Page` when you need viewport control;
 its width and height accept pixels only (`px(640)` or `"640px"`), or can be omitted
 to hug content. The evaluator supplies elements, `px`, `em`, palette constants,
 and numeric helpers. Math bindings are supplied by the rendering host as well.
+
+For multiple pages, return a [Document](references/elements/layout.md#Document) containing
+explicit [Page](references/elements/layout.md#Page) children. Document props supply shared
+page defaults; individual pages can override them. Put Slide inside Page for a
+title/body composition. Export the complete document to PDF or PPTX, or select
+a page for an image with `--page 2`. Page replaces the former Svg element.
 
 Gum source runs as a function body, not an imported module. Do not put static
 imports in an evaluated `.jsx` file. JSX attribute dashes become underscores:
@@ -344,6 +350,7 @@ gum --help
 | `[files...]` | JSX files or one deck directory; omit or use `-` for stdin |
 | `-f, --format <format>` | Image output: `kitty`, `svg`, `png`, `pdf`; layout inspection: `tree` or `json` |
 | `-o, --output <file>` | Write to a file instead of stdout |
+| `--page <number>` | Select one document page, starting at `1`; required for multi-page SVG, PNG, or kitty output |
 | `-W, --width <pixels>` | Exact viewport width in pixels |
 | `-H, --height <pixels>` | Exact viewport height in pixels |
 | `-r, --ratio <number>` | Positive PNG/kitty sampling ratio; default `1` |
@@ -351,6 +358,7 @@ gum --help
 | `--select <x,y,width,height>` | Inspect a PNG/kitty region in source pixels; combine with `--ratio` to magnify |
 | `-b, --background <color>` | Paint the viewport background |
 | `-t, --theme <theme>` | `light` or `dark`; override the source root theme |
+| `--font <file>` | Load a font face using its family, weight, and style metadata; repeatable, paths relative to the invoking directory |
 | `--title <text>` | SVG or PDF document title |
 | `--id-prefix <name>` | SVG definition prefix; default `gum` |
 | `--precision <digits\|full>` | Output decimal places, 0–100 or `full`; default `10` |
@@ -359,6 +367,9 @@ gum --help
 | `--stats` | Machine-readable layout counters on stderr |
 | `-V, --version` | Print the CLI version |
 | `-h, --help` | Show help |
+
+Select loaded families in JSX with `<Page font-family="My Text" math-font="My Math">`.
+Both props inherit through descendants and allow nested overrides.
 
 #### Inspect a region with `--select`
 
@@ -411,7 +422,14 @@ An explicit format wins; otherwise the output extension selects SVG, PNG, or
 PDF. For a file or stdin, stdout defaults to kitty graphics even when piped or
 redirected. Choose `-f svg` for SVG text on stdout or `-f pdf` for binary PDF.
 Kitty display requires a compatible terminal. Directories and multiple files
-require PDF output.
+require PDF or PPTX output.
+
+A single JSX file can return [Document](references/elements/layout.md#Document) with
+explicit Page children. Its dimensions and style props provide defaults for
+every page, and its title supplies export metadata. PDF and PPTX include all
+pages; use `--page` to select one page. Tree output inspects every page, and JSON
+contains `{ title, pages }`. Pages lay out independently; Document does not
+automatically paginate overflowing content. PPTX pages must have matching sizes.
 
 With neither `-W` nor `-H`, JSX gets a 640 × 480 offer; content can hug or exceed
 it, and authored dimensions still win. Viewport overrides are independent: an
@@ -427,7 +445,7 @@ PNG and kitty use full geometry precision. Both PNG encoding presets preserve
 the same decoded pixels; they differ in compression policy.
 
 Kitty defaults to a dark theme; other formats default to light. A source root
-`<Svg theme="light">` or `<Svg theme="dark">` overrides that default, and
+`<Page theme="light">` or `<Page theme="dark">` overrides that default, and
 `--theme` overrides the root selection. Explicit paints and nested themes still
 apply. Themes leave backgrounds transparent; `--background` paints behind
 explicit source backgrounds. See [Themes](references/guides/themes.md).
@@ -439,7 +457,7 @@ dimensions round up to whole pixels.
 
 Core, math, and map bindings are included by default; `GeoMap`,
 `world_countries()`, and `us_states()` need no extra flags. The CLI wraps a bare
-element in `Svg`; the core evaluator itself does not add this wrapper.
+element in `Page`; the core evaluator itself does not add this wrapper.
 Errors go to stderr and exit with status 1. `--stats` writes layout counters
 independently of the rendered output.
 
@@ -452,7 +470,7 @@ SVG for a browser with suitable fonts.
 PDF uses `@gum-jsx/pdf` to write vector pages at 96 pixels per inch with the
 same viewport, themes, and backgrounds. Text and math glyphs default to selectable
 native text with embedded font subsets shared across pages. Use `--text-mode path`
-for outlines. Math decorations remain vector geometry; debug overlays are omitted.
+for outlines. Math decorations and debug overlays remain vector geometry.
 `--ratio` and `--id-prefix` do not affect PDF output.
 
 PPTX defaults to `mixed`: editable prose with fixed line breaks and styled runs,

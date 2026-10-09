@@ -138,7 +138,7 @@ their own local references.
 Positions may lie outside the canvas, and centered objects can extend beyond an
 edge. Children paint in source order, so put backgrounds and connectors before
 labels. Use the parent's `clip` option when outside paint should be hidden.
-The outer **Svg** also clips at its viewport.
+The outer **Page** also clips at its viewport.
 
 ## Example
 

@@ -48,6 +48,64 @@ pass can simply receive the latest value/version. A custom FontProvider may be
 injected through the same resource slot if the host supplies its own shaping
 and outline implementation.
 
+Omit the family argument to infer the family, weight, and style from the font's
+metadata. This form returns the registered family name; optional settings can
+override the metadata or provide an alias:
+
+```ts
+const family = fonts.register(bytes)
+fonts.register(bytes, { family: 'My Alias', weight: 400 })
+const result = render_element(figure, {
+  fonts,
+  defaults: { font_family: family },
+})
+```
+
+The preferred typographic family groups extended weights with their regular and
+bold faces. The explicit `register('My Font', bytes, options)` form retains its
+400/normal defaults. Defaults in `render_element` or `layout_element` are
+inherited; explicit font choices in the source take precedence.
+
+The CLI loads extra faces; select the inherited family in JSX:
+
+```sh
+gum figure.jsx --font ./Inter-Regular.ttf --font ./Inter-Bold.ttf -o figure.svg
+```
+
+```jsx
+<Page font-family="Inter">
+  <Text>Text inherits the document's font.</Text>
+</Page>
+```
+
+Repeat `--font` for individual faces; paths resolve from the invoking directory.
+The family comes from the file metadata, not its filename. Font collections are
+not supported, and variable fonts use their default instance. Loading fonts
+alone leaves Plex Sans as the default. `font-family` also accepts bundled
+families such as `"IBM Plex Mono"`. These props work in figures, decks, and video.
+
+Math font selection is separate from prose. Load a font with `--font` and select
+its family with the inherited `math-font` prop:
+
+```jsx
+<Page font-family="IBM Plex Sans" math-font="My Math">
+  <Text>
+    A formula: <Tex>x^2 + y^2</Tex>
+  </Text>
+</Page>
+```
+
+Nested elements and spans can override `math-font`.
+In library calls the prop is `math_font`, including
+`mathToSvg(tex, { fonts, math_font: 'My Math' })`.
+
+The KaTeX provider uses the selected font's ordinary
+glyphs and Unicode italic/double-struck alphabets where covered, with bundled
+fallbacks for missing glyphs, other styles, and large size-font symbols. It
+retains KaTeX layout parameters and stretchy constructions; OpenType MATH tables
+are not read. Library hosts pass `new KatexMathFontProvider('My Math')` as the
+layout pass's `math_fonts` resource, alongside the ordinary font registry.
+
 ## Fallback faces and emoji
 
 Emoji work in ordinary text with no setup. Color fonts are not outlined, because

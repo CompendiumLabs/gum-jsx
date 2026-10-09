@@ -3,10 +3,15 @@
 Gum describes diagrams with JSX and renders them as SVG. The reference pages
 describe the elements, layout rules, and rendering APIs.
 
+With the CLI installed, start with `gum docs` for an authoring walkthrough.
+The command includes this reference corpus offline: search with
+`gum docs search "axis labels"`, retrieve a page with `gum docs get elements/Plot`,
+or print runnable source with `gum docs example elements/Plot`.
+
 ## Start here
 
 1. Use [TextBox](../elements/text.md#TextBox) or [TextFrame](../elements/text.md#TextFrame) for padded document content.
-2. Set its `width`, `height`, and `font-size` directly; hosts add the [Svg](../elements/layout.md#Svg) viewport around a bare root.
+2. Set its `width`, `height`, and `font-size` directly; hosts add the [Page](../elements/layout.md#Page) viewport around a bare root.
 3. Arrange content with [TextCol](../elements/text.md#TextCol), [HStack](../elements/layout.md#HStack), or [Group](../elements/layout.md#Group).
 4. Add [shapes](../elements/geometry.md#Rect) and [Text](../elements/text.md#Text).
 

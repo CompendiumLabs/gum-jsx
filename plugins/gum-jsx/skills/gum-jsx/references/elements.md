@@ -6,14 +6,15 @@ Each entry includes its runnable JSX example.
 
 - [Attach](elements/layout.md#Attach) — Attach an Element outside one content child.
 - [Box](elements/layout.md#Box) — Add padding, a background, an inside border, optional rounded clipping, and alignment around one content element.
+- [Document](elements/layout.md#Document) — Collect independently laid-out pages with shared defaults and document metadata.
 - [Frame](elements/layout.md#Frame) — Surround one element with padding, background, and a default border.
 - [Grid](elements/layout.md#Grid) — Arrange children row by row with column widths shared across every row.
 - [Group](elements/layout.md#Group) — A finite canvas for independently positioned children.
 - [HStack](elements/layout.md#HStack) — Arrange child elements left to right with flex sizing and alignment.
 - [Overlay](elements/layout.md#Overlay) — Place positioned decorations over a measured base child.
+- [Page](elements/layout.md#Page) — Define one output page with explicit or content-based dimensions, independent of format.
 - [Rotate](elements/layout.md#Rotate) — Rotate a measured child around a chosen alignment point.
-- [Spacer](elements/layout.md#Spacer) — An empty stack child with explicit defaults basis={0} grow={1}.
-- [Svg](elements/layout.md#Svg) — Set the document viewport and contain its root element.
+- [Spacer](elements/layout.md#Spacer) — Empty space with fixed dimensions or flexible growth.
 - [TransformBox](elements/layout.md#TransformBox) — Transform a naturally measured child using an affine matrix [a,b,c,d,e,f]: x′=ax+cy+e, y′=bx+dy+f.
 - [VStack](elements/layout.md#VStack) — Arrange child elements top to bottom with flex sizing and alignment.
 

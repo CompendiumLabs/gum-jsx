@@ -3,7 +3,7 @@
 A Gum source file is JavaScript with JSX expressions. A single bare element is
 returned automatically. If you add declarations or other statements, finish with
 an explicit `return`. For rendering, return one element. Hosts wrap a bare root in a
-hugging [Svg](../elements/layout.md#Svg), so put size and base font props on the root element itself.
+hugging [Page](../elements/layout.md#Page), so put size and base font props on the root element itself.
 `evaluate` returns any result unchanged, including non-element values such as
 numbers, strings, arrays, and objects. Code without a return produces `undefined`.
 

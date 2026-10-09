@@ -16,7 +16,7 @@ const bands = [
   [[0.19875, 0.481875], [0.96875, 0.6621875], [0.99125, 0.686875], [0.22125, 0.506875]],
 ]
 
-return <Svg width={px(size)} height={px(size)}>
+return <Page width={px(size)} height={px(size)}>
   <Box padding={0.03} stroke={none}>
     <Box background={background} border-radius={0.2} clip>
       <Group>
@@ -29,4 +29,4 @@ return <Svg width={px(size)} height={px(size)}>
       </Group>
     </Box>
   </Box>
-</Svg>
+</Page>

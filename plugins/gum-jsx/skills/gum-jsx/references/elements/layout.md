@@ -171,6 +171,83 @@ props on the **Box** itself when it is the item being allocated.
 
 ---
 
+<a id="Document"></a>
+
+## Document
+
+An ordered collection of [Page](layout.md#Page) elements. Each page has its own
+dimensions and layout; the document supplies shared page defaults and a title.
+A standalone Page remains sufficient for a single figure.
+
+| Property | Default | Meaning |
+|---|---|---|
+| `children` | Required | One or more Page elements, in output order; arrays, fragments, and conditional children are supported |
+| `title` | — | Document title used by SVG, PDF, and PPTX exports unless the host overrides it |
+| Page sizing and style props | — | Defaults for each page, including `width`, `height`, `aspect`, `background`, typography, and theme |
+
+A page's explicit props override document defaults. Host `defaults` sit below
+both, while host `overrides` win over both. Undefined props do not replace a
+default. Page content inherits the resulting page style normally.
+
+Put a [Slide](text.md#Slide) inside each Page for presentation layouts. Set
+`width="fill" height="fill"` on Slide to fill its page. Document does not arrange
+its pages in a stack or flow overflowing content onto another page. It is a
+top-level collection, like [Video](video.md#Video), rather than a layout element;
+its direct children must be Pages, and it cannot be nested inside one.
+
+Save the example as `talk.jsx` to export the entire document or one page:
+
+```sh
+gum talk.jsx -o talk.pdf
+gum talk.jsx -o talk.pptx
+gum talk.jsx --page 2 -o second-page.png
+```
+
+PDF preserves each page's dimensions. PPTX requires all pages to have the same
+dimensions. SVG, PNG, and kitty output require `--page` when a document has
+multiple pages; a one-page document needs no selection. `--page` starts at `1`
+and can also export a single PDF or PPTX page. `-W` and `-H` apply to every page.
+`--title` overrides document metadata.
+
+`gum talk.jsx -f tree` inspects every page. JSON output contains `{ title, pages }`;
+selecting a page returns that page's fragment instead.
+
+In library code, `layout_document(document, options)` or
+`layout_element(document, options)` returns `{ kind: 'document', pages, title, pass }`.
+Pass the fragment array to `render_pdf` or `render_pptx`, with the font provider
+used during layout. `render_element(document, options)` returns the same outer
+shape with an SVG result for each page; its page-specific definition IDs allow
+all pages to be embedded together. See [Rendering](../guides/rendering.md).
+
+<a id="Document-example"></a>
+
+### Example
+
+```jsx
+// A complete two-slide document with shared page dimensions and typography.
+<Document title="A small presentation" width={px(960)} height={px(540)}
+  font-size={px(28)} background={white}>
+  <Page>
+    <Slide width="fill" height="fill" title="One source, many pages">
+      <TextCol gap={em(1)}>
+        <Text>Each page gets its own layout.</Text>
+        <Text>Document supplies shared dimensions, styling, and metadata.</Text>
+      </TextCol>
+    </Slide>
+  </Page>
+  <Page background={slate} color={white}>
+    <Slide width="fill" height="fill" title="Choose an output">
+      <Bullets>
+        <Text>Export every page to PDF or PowerPoint.</Text>
+        <Text>Select a page for an SVG or PNG image.</Text>
+      </Bullets>
+    </Slide>
+  </Page>
+</Document>
+```
+
+---
+
 <a id="Frame"></a>
 
 ## Frame
@@ -417,7 +494,7 @@ A `pos` override replaces the entire value, including when it comes from a prop
 spread.
 
 Set `clip` on **Group** to hide content outside its rectangle. Clipping defaults to
-false and does not erase reported overflow. **Svg** still clips at the outer viewport.
+false and does not erase reported overflow. **Page** still clips at the outer viewport.
 
 **Group** uses local fractional `pos` values and `anchor`; **Graph** uses data positions and
 **Overlay** places decorations relative to a measured base. **Box** and stacks use their
@@ -593,6 +670,88 @@ the distinction between placement and content alignment.
 
 ---
 
+<a id="Page"></a>
+
+## Page
+
+One output page, for an image, PDF page, or presentation slide. **Page** accepts
+zero or one content element, along with the
+common [sizing](../guides/sizing.md) and inherited [style](../guides/style.md) props. Put multiple
+elements inside a stack or **Group**.
+
+Use Page on its own, or put several Pages inside a [Document](layout.md#Document).
+Its layout is independent of the output format. Page replaces the former Svg element.
+
+| Property | Default | Meaning |
+|---|---|---|
+| `children` | — | One content element, optionally absent |
+| `theme` | Inherited, initially `"light"` | Palette inherited by all content |
+| `background` | `none` | Explicit viewport paint; independent of the theme |
+| `width` / `height` | Natural | Preferred viewport dimensions in pixels: `px(800)` or `"800px"` |
+| `aspect` | — | Preferred viewport width/height ratio |
+| `min-width` / `min-height` | — | Minimum viewport dimensions |
+| `max-width` / `max-height` | — | Maximum viewport dimensions; uniformly shrink overflowing content on hugging axes |
+| Typography and paint | Inherited | Style inherited by content |
+
+An explicit width or height establishes that viewport axis. Unspecified axes
+hug the child's measured size. There is no implicit 500px or 1000px canvas:
+a completely natural **Square** produces a small natural viewport.
+
+Some elements reserve an outset outside their own box, such as a
+[Plot](plotting.md#Plot) with `bounds="frame"`. A hugging axis grows to include it; an
+established axis keeps its size and clips it like any other overflow.
+
+**Page** gives its content advisory offers on its established axes, rather than
+forcing every child to occupy the whole viewport. Consequently, a tall **Page**
+does not make a **VStack**'s children grow. Use explicit [stack sizing](../guides/stack.md).
+
+The viewport establishes percentage references for its direct content. Its
+fragment has a rectangular clip, and serialized SVG hides viewport overflow.
+Overflow is still retained in the fragment for inspection.
+
+On an unspecified axis, a maximum first provides a layout offer. Text reflows at
+the offered width; if the resulting figure exceeds either maximum, **Page** scales
+the complete figure down uniformly. Width and height shrink together, including
+fonts, strokes, and reserved outsets. Smaller figures keep their natural sizes.
+Max props on ordinary elements retain their allocation-only meaning.
+
+An explicit width or height, including an exact parent request, keeps that axis's
+allocation and clipping behavior. Advisory `available(...)` requests without max
+props do not scale anything. A width-only page therefore reflows and grows
+naturally in height.
+
+An explicit `aspect` uses the common sizing rules. `width={px(320)} aspect={2}`
+creates a 320×160 viewport before laying out its content. With neither dimension
+established, the viewport grows its measured size to the ratio without scaling
+the drawing. Two fixed dimensions and min/max limits take precedence.
+
+Set `theme="dark"` for foregrounds suited to a dark surface. Descendants use the
+palette for text, strokes, grids, plot borders, and legend badges and borders.
+Explicit paint props override the defaults. See [Themes](../guides/themes.md).
+
+Title remains a [render_svg option](../guides/rendering.md). Its background
+option paints behind the entire fragment. Themes do not paint backgrounds;
+**Page**'s `background` prop can supply an explicit viewport background in source.
+The CLI wraps a bare layout element in Page automatically; `evaluate` does not.
+Document already contains its own explicit Pages.
+
+<a id="Page-example"></a>
+
+### Example
+
+```jsx
+// A definite viewport contains a centered, naturally sized frame.
+<Page width={px(320)} height={px(180)} font-size={px(16)}>
+  <Box width={1} height={1} background={lightgray} align="center">
+    <Frame padding={em(1)} border-color={blue}>
+      <Text font-size={em(1.25)}>320 by 180</Text>
+    </Frame>
+  </Box>
+</Page>
+```
+
+---
+
 <a id="Rotate"></a>
 
 ## Rotate
@@ -634,17 +793,25 @@ coordinate; the wrapper omits it while the original child's guides remain intact
 
 ## Spacer
 
-An empty stack child with explicit defaults `basis={0} grow={1}`. It has no
-drawing and no content children. Naturally it is zero-sized.
+An empty stack child with no drawing and no content children. Set `width` or
+`height` for fixed spacing:
 
-Inside an **HStack** it absorbs spare width; inside a **VStack** it absorbs spare height.
-Multiple spacers divide surplus according to their grow weights, alongside other
-flexible children.
+```jsx
+<Spacer width={px(20)} />
+<Spacer height={em(1)} />
+```
 
-For a fixed spacer use `<Spacer basis={px(20)} grow={0} />`. A width or height
-alone does not replace its default basis: basis takes precedence in stack
-allocation. Use gap on the stack when you want the same space between every pair.
-Set `basis="auto"` to use an explicit width or height as the spacer's starting size.
+Both dimensions can be set together. Setting either dimension defaults to
+`basis="auto" grow={0}`, so the spacer keeps its requested size. Explicit flex
+props still take precedence: add `grow={1}` to let it grow from that size, or set
+`basis` to override its starting size along the stack's main axis.
+
+Without dimensions, **Spacer** defaults to `basis={0} grow={1}` and is naturally
+zero-sized. Inside an **HStack** it absorbs spare width; inside a **VStack** it
+absorbs spare height. Multiple spacers divide surplus according to their grow
+weights, alongside other flexible children. For axis-independent fixed spacing,
+`<Spacer basis={px(20)} grow={0} />` also works. Use `gap` on the stack when you
+want the same space between every pair.
 
 **Spacer** does not make a naturally sized parent acquire extra space. Supply a
 finite budget or frame size when there should be space to absorb.
@@ -665,83 +832,6 @@ It is an ordinary element with ordinary flex props, not a special allocator case
     <Text color={blue}>Right</Text>
   </HStack>
 </TextFrame>
-```
-
----
-
-<a id="Svg"></a>
-
-## Svg
-
-The document viewport. **Svg** accepts zero or one content element, along with the
-common [sizing](../guides/sizing.md) and inherited [style](../guides/style.md) props. Put multiple
-elements inside a stack or **Group**.
-
-An explicit width or height establishes that viewport axis. Unspecified axes
-hug the child's measured size. There is no implicit 500px or 1000px canvas:
-a completely natural **Square** produces a small natural viewport.
-
-Some elements reserve an outset outside their own box, such as a
-[Plot](plotting.md#Plot) with `bounds="frame"`. A hugging axis grows to include it; an
-established axis keeps its size and clips it like any other overflow.
-
-**Svg** gives its content advisory offers on its established axes, rather than
-forcing every child to occupy the whole viewport. Consequently, a tall **Svg**
-does not make a **VStack**'s children grow. Use explicit [stack sizing](../guides/stack.md).
-
-The viewport establishes percentage references for its direct content. Its
-fragment has a rectangular clip, and serialized SVG hides viewport overflow.
-Overflow is still retained in the fragment for inspection.
-
-| Property | Default | Meaning |
-|---|---|---|
-| `children` | — | One content element, optionally absent |
-| `theme` | Inherited, initially `"light"` | Palette inherited by all content |
-| `background` | `none` | Explicit viewport paint; independent of the theme |
-| `width` / `height` | Natural | Preferred viewport dimensions in pixels: `px(800)` or `"800px"` |
-| `aspect` | — | Preferred viewport width/height ratio |
-| `min-width` / `min-height` | — | Minimum viewport dimensions |
-| `max-width` / `max-height` | — | Maximum viewport dimensions; uniformly shrink overflowing content on hugging axes |
-| Typography and paint | Inherited | Style inherited by content |
-
-On an unspecified axis, a maximum first provides a layout offer. Text reflows at
-the offered width; if the resulting figure exceeds either maximum, **Svg** scales
-the complete figure down uniformly. Width and height shrink together, including
-fonts, strokes, and reserved outsets. Smaller figures keep their natural sizes.
-Max props on ordinary elements retain their allocation-only meaning.
-
-An explicit width or height, including an exact parent request, keeps that axis's
-allocation and clipping behavior. Advisory `available(...)` requests without max
-props do not scale anything. A width-only document therefore reflows and grows
-naturally in height.
-
-An explicit `aspect` uses the common sizing rules. `width={px(320)} aspect={2}`
-creates a 320×160 viewport before laying out its content. With neither dimension
-established, the viewport grows its measured size to the ratio without scaling
-the drawing. Two fixed dimensions and min/max limits take precedence.
-
-Set `theme="dark"` for foregrounds suited to a dark surface. Descendants use the
-palette for text, strokes, grids, plot borders, and legend badges and borders.
-Explicit paint props override the defaults. See [Themes](../guides/themes.md).
-
-Title remains a [render_svg option](../guides/rendering.md). Its background
-option paints behind the entire fragment. Themes do not paint backgrounds;
-**Svg**'s `background` prop can supply an explicit viewport background in source.
-The CLI wraps a bare non-**Svg** root automatically; `evaluate` does not.
-
-<a id="Svg-example"></a>
-
-### Example
-
-```jsx
-// A definite viewport contains a centered, naturally sized frame.
-<Svg width={px(320)} height={px(180)} font-size={px(16)}>
-  <Box width={1} height={1} background={lightgray} align="center">
-    <Frame padding={em(1)} border-color={blue}>
-      <Text font-size={em(1.25)}>320 by 180</Text>
-    </Frame>
-  </Box>
-</Svg>
 ```
 
 ---

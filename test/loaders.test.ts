@@ -136,14 +136,14 @@ test('deck preludes and slides retain their own loader directories', async () =>
   await Bun.write(join(dir, 'shared', 'height.json'), '40')
   await Bun.write(join(dir, 'shared', 'prelude.jsx'), `
     const height = loadJSON('./height.json')
-    function Page({ width }) {
+    function DeckPage({ width }) {
       const extra = loadJSON('./height.json')
-      return <Svg width={px(width)} height={px(height + extra)} />
+      return <Page width={px(width)} height={px(height + extra)} />
     }
   `)
   for (const [folder, width] of [['one', 80], ['two', 120]] as const) {
     await Bun.write(join(dir, folder, 'width.csv'), `value\n${width}\n`)
-    await Bun.write(join(dir, folder, 'slide.jsx'), '<Page width={loadCSV("./width.csv")[0].value} />')
+    await Bun.write(join(dir, folder, 'slide.jsx'), '<DeckPage width={loadCSV("./width.csv")[0].value} />')
   }
   const result = await cli(['deck'])
   expect(result.code, result.error).toBe(0)
@@ -156,7 +156,7 @@ test('video frame functions retain source-relative loaders after evaluation', as
   await Bun.write(join(scratch, 'video', 'color.json'), '"red"')
   await Bun.write(join(scratch, 'video', 'source.jsx'), `<Video
     size={[2, 1]} fps={1} duration={1}
-    frame={() => <Svg background={loadJSON('./color.json')} />}
+    frame={() => <Page background={loadJSON('./color.json')} />}
   />`)
   const result = await cli(['video/source.jsx', '--time', '0', '-f', 'svg'])
   expect(result.code, result.error).toBe(0)

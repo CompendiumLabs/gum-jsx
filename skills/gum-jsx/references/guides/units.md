@@ -48,7 +48,7 @@ font size. Thus `font-size={px(20)} padding={em(1)}` gives 20px padding.
 A hugging container can receive a width offer without committing to that width.
 Its descendants cannot use that offer as a percentage reference. Set the
 container's width explicitly when you need fractional descendants:
-`HStack width={1}` under a fixed-width **Svg** establishes a full-width row.
+`HStack width={1}` under a fixed-width **Page** establishes a full-width row.
 `width="fill"` instead establishes the actual offered width, without requiring
 a fraction reference. Width and height are content-sized when omitted; see
 [Sizing](sizing.md). `"fill"` is not a length unit, so it cannot be used for

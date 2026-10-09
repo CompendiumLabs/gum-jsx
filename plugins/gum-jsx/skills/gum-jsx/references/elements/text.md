@@ -38,6 +38,9 @@ a hanging indent. A nested **Bullets** **Element** can be an item.
 
 ## Slide
 
+Use Slide inside a [Page](layout.md#Page) to provide a title and body layout. Several
+such pages can form a single-file [Document](layout.md#Document).
+
 | Property | Default | Meaning |
 |---|---|---|
 | `title` | — | String or **Element** placed above the body |
@@ -50,7 +53,7 @@ a hanging indent. A nested **Bullets** **Element** can be an item.
 
 A 16:9 canvas with a measured title and flexible content area. `title` is a string
 or **Element**; `title-style` overrides default 1.6em bold text. The base font
-inherits from **Svg** or another parent (16px without a parent override). Set
+inherits from **Page** or another parent (16px without a parent override). Set
 `font-size` on **Slide** only when it should differ from its parent. Defaults:
 1.5em padding, 0.8em gap, transparent background. `clip` optionally hides paint outside
 the slide (false by default).

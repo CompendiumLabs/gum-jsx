@@ -83,13 +83,13 @@ test('installed npm package passes command tests and matches Bun rendering', asy
         '--target', 'native', '--outfile', binary], root)
     }
     const source = `
-      <Svg width={px(240)} height={px(160)}>
+      <Page width={px(240)} height={px(160)}>
         <VStack>
           <Text>Hello Gum</Text>
           <Latex>x^2</Latex>
           <GeoMap source={world_countries()} width={px(120)} height={px(60)} />
         </VStack>
-      </Svg>
+      </Page>
     `
     async function render(args: string[]) {
       // Use files for stdout so both runtimes flush the complete image.

@@ -248,7 +248,7 @@ cell an explicit width to wrap it. Small shape and plot cells can use em widths
 and aspect ratios, so their dimensions follow the surrounding base font.
 See [fitting](../guides/sizing.md#fitting) for the distinction between inline and standalone math.
 Formula ink may extend beyond the logical advance at outer rules and italic
-glyphs, so retain padding inside an explicit SVG viewport.
+glyphs, so retain padding inside an explicit Page viewport.
 Very tall braces and matrix bars retain the current glyph-scaling fallback;
 their shapes can differ from the assembled delimiters in KaTeX and LaTeX.
 
@@ -998,7 +998,7 @@ A subdivided square is the value of a series, a colored circle appears under a r
 Math operands are ordinary Gum elements. Each geometric operand has explicit em dimensions, while MathArray measures the cells and Bracket sizes the fences. Compound operands remain separate JSX children.
 
 The TitleFrame uses `frame-aspect={1}` to make a content-sized square border.
-Svg hugs the frame and its raised title without an outer Box or fixed dimensions.
+Page hugs the frame and its raised title without an outer Box or fixed dimensions.
 The frame's `fit` keeps the complete composition inside smaller previews.
 Spacing, borders, corner radii, and the title font use ems, so changing the single
 base font size on TitleFrame scales the whole figure.

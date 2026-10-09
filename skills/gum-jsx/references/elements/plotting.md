@@ -213,7 +213,7 @@ widths. Grouping and automatic stacking are deferred.
 
 ```jsx
 // Categorical ticks, positive and negative bars, and functional bar colors.
-<Svg width={px(640)} height={px(380)} font-size={px(16)}>
+<Page width={px(640)} height={px(380)} font-size={px(16)}>
   <BarPlot ygrid
     values={[28, 43, -17, 56, 34]}
     title="Change by region"
@@ -230,7 +230,7 @@ widths. Grouping and automatic stacking are deferred.
   >
     <Polyline points={[[-1, 0], [5, 0]]} stroke={darkgray} />
   </BarPlot>
-</Svg>
+</Page>
 ```
 
 ---
@@ -1124,7 +1124,7 @@ Stacked plots then align their data areas whatever their tick labels measure, an
 an identified plot connects at its frame. Containers do not make room for those
 decorations, so leave a large enough `gap` or `padding` around the plot. The space
 they need, including `margin`, is reported as the fragment's outset, and a hugging
-[Svg](layout.md#Svg) viewport grows to include it.
+[Page](layout.md#Page) viewport grows to include it.
 
 This first version has linear scales. Log/date scales, minor ticks, label
 collision avoidance, automatic legend extraction, and legend placement

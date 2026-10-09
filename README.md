@@ -137,7 +137,7 @@ the existing rendering syntax. Both rendering forms accept stdin when no file is
 | `--stats` | Print layout counters to stderr. |
 | `-h, --help` | Show command help. |
 
-Omit the input file or use `-` to read stdin. A bare element is wrapped in `Svg`.
+Omit the input file or use `-` to read stdin. A bare element is wrapped in `Page`.
 `-W` / `--width` and `-H` / `--height` are independent pixel overrides; `-h`
 remains the help shortcut. With neither override, `gum` offers 640 × 480 pixels
 so unsized canvases can render. This is an advisory budget: explicit source sizes
@@ -167,7 +167,7 @@ protocol and ends with a newline. An explicit `-f kitty` or an output filename
 ending in `.kitty` writes the same graphics sequence.
 
 Rendering defaults to dark for kitty and light for SVG, PNG, PDF, PPTX, tree, and JSON.
-An explicit root `<Svg theme="light|dark">` overrides that default, and
+An explicit root `<Page theme="light|dark">` overrides that default, and
 `--theme light|dark` overrides the source root theme. Nested themes and explicit
 colors in JSX still apply. Themes do not specify backgrounds. `--background`
 paints a backdrop at render time; omit it for transparency. Explicit backgrounds
@@ -192,9 +192,9 @@ gum figure.jsx --font ./Inter-Regular.ttf --font ./Inter-Bold.ttf -o figure.svg
 Select the inherited family in the source:
 
 ```jsx
-<Svg font-family="Inter">
+<Page font-family="Inter">
   <Text>Text inherits the document's font.</Text>
-</Svg>
+</Page>
 ```
 
 Font paths resolve from the directory where you run the command. Supply an
@@ -218,9 +218,9 @@ gum figure.jsx --font ./MyMath-Regular.otf -o figure.png
 ```
 
 ```jsx
-<Svg math-font="My Math">
+<Page math-font="My Math">
   <Latex>x^2 + y^2</Latex>
-</Svg>
+</Page>
 ```
 
 The math provider uses the selected font for ordinary glyphs, including Unicode
@@ -284,8 +284,8 @@ Alternatively, pass frames as children:
 ```jsx
 return (
   <Video size={[640, 360]} fps={2}>
-    <Svg background="red" />
-    <Svg background="blue" />
+    <Page background="red" />
+    <Page background="blue" />
   </Video>
 )
 ```
@@ -323,6 +323,40 @@ format, encoder API, and limitations.
 
 ### PDF and PowerPoint decks
 
+Write a complete presentation in one JSX file with `Document` and `Page`:
+
+```jsx
+<Document title="My talk" width={px(960)} height={px(540)} font-size={px(28)}>
+  <Page>
+    <Slide width="fill" height="fill" title="Introduction">
+      <Text>One source file can contain the whole presentation.</Text>
+    </Slide>
+  </Page>
+  <Page background={slate} color={white}>
+    <Slide width="fill" height="fill" title="Next steps">
+      <Text>Each page can override the document's shared defaults.</Text>
+    </Slide>
+  </Page>
+</Document>
+```
+
+```sh
+gum talk.jsx -o talk.pdf
+gum talk.jsx -o talk.pptx
+gum talk.jsx --page 2 -o second-page.png
+```
+
+`Page` replaces the former `Svg` element and retains its sizing and clipping
+behavior. A standalone Page is sufficient for a single output surface; Document
+collects Pages with shared dimensions, styles, and a title. Pages lay out
+independently, and a page's props override document defaults. Slide supplies the
+title/body composition inside a page.
+
+PDF and PPTX export all pages. SVG, PNG, and kitty require `--page` for a
+multi-page document; page numbers start at 1. Tree output inspects every page,
+and JSON output contains `{ title, pages }`. `--page` can select a single page
+for any of these outputs. `--title` overrides the document title.
+
 Pass JSX files in slide order or one directory containing slides to render a PDF or PPTX:
 
 ```sh
@@ -335,6 +369,7 @@ gum slides/ > talk.pdf
 Directories and multiple files default to PDF and also accept PPTX. PDF pages
 retain their own viewport sizes; PPTX slides must all have the same size.
 `-W` and `-H` apply to every slide.
+Files returning Documents contribute all their pages in order.
 Long content is not automatically split across pages. Directories and stdin
 cannot be combined with other inputs.
 
@@ -358,13 +393,13 @@ The prelude contains shared declarations, such as colors, data, and JSX helpers:
 
 ```jsx
 const accent = '#369'
-function Page({ children }) {
+function DeckPage({ children }) {
   return (
-    <Svg width={px(960)} height={px(540)}>
+    <Page width={px(960)} height={px(540)}>
       <Frame padding={px(32)}>
         {children}
       </Frame>
-    </Svg>
+    </Page>
   )
 }
 ```

@@ -93,7 +93,7 @@ tree, and JSON.
 
 `-W` and `-H` override the frame dimensions, while `--theme` and `--background`
 override its appearance. The video size overrides dimensions declared by a
-frame's **Svg**. MP4 requires even integer dimensions from `2` to `4096` and
+frame's **Page**. MP4 requires even integer dimensions from `2` to `4096` and
 an `fps` in `[0.001, 1000]`. `--qp` sets an integer quantizer from `10` to `51`;
 lower values increase quality and file size, with a default of `18`.
 

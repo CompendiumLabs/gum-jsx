@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { px, THEMES, render_element, Text, Span, Svg } from '@gum-jsx/core'
+import { px, THEMES, render_element, Text, Span, Page } from '@gum-jsx/core'
 import type { Fragment } from '@gum-jsx/core'
 import { createMathFonts, mathToSvg } from '@gum-jsx/math'
 import { render_pdf } from '@gum-jsx/pdf'
@@ -57,13 +57,13 @@ test('font files infer family, weight, and style and leave explicit source choic
   const args = faces.flatMap(face => ['--font', font_file(face)])
   const fonts = createMathFonts()
   for (const face of faces) fonts.register(await Bun.file(font_file(face)).arrayBuffer())
-  const source = `<Svg font-family="Gum Test">
+  const source = `<Page font-family="Gum Test">
     <Text>
       A <Span font-weight="light">A</Span>
       <Span font-weight="bold">A</Span>
       <Span font-style="italic">A</Span>
     </Text>
-  </Svg>`
+  </Page>`
   const custom = await cli([...args, '-f', 'svg'], source)
   expect(custom.code, custom.error).toBe(0)
   const expected = render_element(new Text({ children: [
@@ -87,13 +87,13 @@ test('font files infer family, weight, and style and leave explicit source choic
     expect(loaded.text).toBe(bundled.text)
   }
   for (const input of ['<Text font-family="IBM Plex Mono">A</Text>',
-    '<Svg font-family="IBM Plex Mono"><Text>A</Text></Svg>']) {
+    '<Page font-family="IBM Plex Mono"><Text>A</Text></Page>']) {
     const explicit = await cli(['-f', 'svg'], input)
     const inherited = await cli([...args, '-f', 'svg'], input)
     expect(inherited.code, inherited.error).toBe(0)
     expect(inherited.text).toBe(explicit.text)
   }
-  const builtin = await cli(['-f', 'svg'], '<Svg font-family="IBM Plex Mono"><Text>A</Text></Svg>')
+  const builtin = await cli(['-f', 'svg'], '<Page font-family="IBM Plex Mono"><Text>A</Text></Page>')
   const explicit = await cli(['-f', 'svg'], '<Text font-family="IBM Plex Mono">A</Text>')
   expect(builtin.code, builtin.error).toBe(0)
   expect(builtin.text).toBe(explicit.text)
@@ -105,19 +105,19 @@ test('custom fonts reach raster output, decks, and video frames', async () => {
   const args = ['--font', './custom face.otf']
   const fonts = createMathFonts()
   fonts.register(await Bun.file(font_file('Regular')).arrayBuffer())
-  const fragment = render_element(new Svg({ width: px(64), height: px(48),
+  const fragment = render_element(new Page({ width: px(64), height: px(48),
     children: new Text({ children: 'A' }) }), { fonts, defaults: { font_family: 'Gum Test' } }).fragment
-  const frame = '<Svg font-family="Gum Test"><Text>A</Text></Svg>'
+  const frame = '<Page font-family="Gum Test"><Text>A</Text></Page>'
   const png = await cli([...args, '-f', 'png', '-W', '64', '-H', '48'], frame)
   expect(png.code, png.error).toBe(0)
   expect(png.bytes).toEqual(new Uint8Array(render_png(fragment)))
 
   // Decks use the same registry on every page, including embedded PDF text.
   const dir = join(scratch, 'font-deck')
-  const slide = render_element(new Svg({ width: px(128), height: px(96),
+  const slide = render_element(new Page({ width: px(128), height: px(96),
     children: new Text({ children: 'A' }) }), { fonts, defaults: { font_family: 'Gum Test' } }).fragment
-  await Bun.write(join(dir, 'one.jsx'), '<Svg width="128px" height="96px" font-family="Gum Test"><Text>A</Text></Svg>')
-  await Bun.write(join(dir, 'two.jsx'), '<Svg width="128px" height="96px"><Text font-family="Gum Test">A</Text></Svg>')
+  await Bun.write(join(dir, 'one.jsx'), '<Page width="128px" height="96px" font-family="Gum Test"><Text>A</Text></Page>')
+  await Bun.write(join(dir, 'two.jsx'), '<Page width="128px" height="96px"><Text font-family="Gum Test">A</Text></Page>')
   for (const format of ['pdf', 'pptx']) {
     const deck = await cli([...args, dir, '-f', format, '--text-mode', 'path'])
     expect(deck.code, deck.error).toBe(0)
@@ -145,9 +145,9 @@ test('custom fonts reach raster output, decks, and video frames', async () => {
 
 test('math font selection reaches outlines, live font identities, and PDF subsets', async () => {
   const args = ['--font', font_file('Regular')]
-  const source = String.raw`<Svg math-font="Gum Test">
+  const source = String.raw`<Page math-font="Gum Test">
     <Latex>{"\\mathrm{A}+x+\\text{AB}"}</Latex>
-  </Svg>`
+  </Page>`
   const live = await cli([...args, '--text-mode', 'live', '-f', 'json'], source)
   expect(live.code, live.error).toBe(0)
   const runs = drawings(JSON.parse(live.text)).filter(draw => draw.kind === 'text')
@@ -169,18 +169,18 @@ test('math font selection reaches outlines, live font identities, and PDF subset
 test('math-font props inherit from SVG and allow nested overrides', async () => {
   const args = ['--font', font_file('Regular')]
   const formula = String.raw`<Latex>{"\\mathrm{A}"}</Latex>`
-  const source = `<Svg math-font="Gum Test">${formula}</Svg>`
+  const source = `<Page math-font="Gum Test">${formula}</Page>`
   const fallback = await cli([...args, '-f', 'png'], formula.replace('<Latex>', '<Latex math-font="Gum Test">'))
   const explicit = await cli([...args, '-f', 'png'], source)
   expect(fallback.code, fallback.error).toBe(0)
   expect(explicit.code, explicit.error).toBe(0)
   expect(explicit.bytes).toEqual(fallback.bytes)
-  const scoped = `<Svg math-font="KaTeX_Main" font-family="IBM Plex Mono">
+  const scoped = `<Page math-font="KaTeX_Main" font-family="IBM Plex Mono">
     <Text>A ${formula}
       <Span math-font="Gum Test">${formula}</Span>
       ${formula}
     </Text>
-  </Svg>`
+  </Page>`
   const live = await cli([...args, '--text-mode', 'live', '-f', 'json'], scoped)
   expect(live.code, live.error).toBe(0)
   const runs = drawings(JSON.parse(live.text)).filter(draw => draw.kind === 'text').filter(draw => draw.text.trim())
@@ -191,9 +191,9 @@ test('math-font props inherit from SVG and allow nested overrides', async () => 
 
 test('math font selection is shared by decks and video exports', async () => {
   const args = ['--font', font_file('Regular')]
-  const custom = String.raw`<Svg math-font="Gum Test">
+  const custom = String.raw`<Page math-font="Gum Test">
     <Latex>{"\\mathrm{A}"}</Latex>
-  </Svg>`
+  </Page>`
   const explicit = '<Latex><MathSpan font-family="Gum Test">A</MathSpan></Latex>'
   const dir = join(scratch, 'math-font-deck')
   await Bun.write(join(dir, 'one.jsx'), custom)
@@ -227,8 +227,8 @@ test('font errors report the file or unknown family before writing output', asyn
     expect(result.error).toContain(file)
     expect(result.text).toBe('')
   }
-  for (const source of ['<Svg font-family="Unknown Font"><Text>A</Text></Svg>',
-    '<Svg math-font="Unknown Font"><Latex>A</Latex></Svg>']) {
+  for (const source of ['<Page font-family="Unknown Font"><Text>A</Text></Page>',
+    '<Page math-font="Unknown Font"><Latex>A</Latex></Page>']) {
     const unknown = await cli(['-o', output], source)
     expect(unknown.code).toBe(1)
     expect(unknown.error).toContain('Unknown font family: Unknown Font')
@@ -237,9 +237,9 @@ test('font errors report the file or unknown family before writing output', asyn
 })
 
 test('debug overlays reach every graphical CLI output', async () => {
-  const source = `<Svg width={px(128)} height={px(96)} background={white}>
+  const source = `<Page width={px(128)} height={px(96)} background={white}>
     <Box debug width={px(80)} height={px(60)} padding={px(8)} />
-  </Svg>`
+  </Page>`
   for (const format of ['svg', 'png', 'kitty', 'pdf', 'pptx', 'mp4']) {
     const input = format === 'mp4'
       ? `<Video size={[128, 96]} fps={1}>${source}</Video>` : source
@@ -348,12 +348,12 @@ test('text mode supports live SVG and PDF prose and math, with optional outlines
 })
 
 const pdfInputs = [
-  { entry: 'cli', args: [], input: `<Svg width={px(160)} height={px(100)}>
+  { entry: 'cli', args: [], input: `<Page width={px(160)} height={px(100)}>
     <VStack>
       <Text>Vector PDF</Text>
       <Latex>x^2</Latex>
     </VStack>
-  </Svg>` },
+  </Page>` },
 ]
 
 test('gum emits binary PDF from the laid-out fragment with shared render options', async () => {
@@ -376,7 +376,7 @@ test('gum emits binary PDF from the laid-out fragment with shared render options
 })
 
 test('precision flag controls SVG, PDF, and tree numbers and accepts full precision', async () => {
-  const source = '<Svg width={px(1 / 3)} height={px(2)}><Rect width={px(0.1 + 0.2)} height={px(1)} /></Svg>'
+  const source = '<Page width={px(1 / 3)} height={px(2)}><Rect width={px(0.1 + 0.2)} height={px(1)} /></Page>'
   const rounded = await cli(['-f', 'svg', '--precision', '3'], source, 'cli')
   expect(rounded.code).toBe(0)
   expect(rounded.text).toContain('width="0.333"')
@@ -395,7 +395,7 @@ test('precision flag controls SVG, PDF, and tree numbers and accepts full precis
   expect(defaultTree.text).toContain('0.3333333333×2')
   const fullTree = await cli(['-f', 'tree', '--precision', 'full'], source, 'cli')
   expect(fullTree.text).toContain('0.3333333333333333×2')
-  const decimalSource = '<Svg width={px(123.45678)} height={px(2)} />'
+  const decimalSource = '<Page width={px(123.45678)} height={px(2)} />'
   const decimalSvg = await cli(['-f', 'svg', '--precision', '3'], decimalSource, 'cli')
   expect(decimalSvg.code).toBe(0)
   expect(decimalSvg.text).toContain('width="123.457"')
@@ -466,7 +466,7 @@ test('the JSX gum command retains SVG, raster, inspection, and math bindings', a
   expect(raster.code).toBe(0)
   expect(png_size(raster.bytes)).toEqual({ width: 160, height: 80 })
   expect((await cli(['-f', 'tree'], square, 'cli')).text).toContain('Square')
-  expect(JSON.parse((await cli(['-f', 'json'], square, 'cli')).text).name).toBe('Svg')
+  expect(JSON.parse((await cli(['-f', 'json'], square, 'cli')).text).name).toBe('Page')
 })
 
 test('JSX fallback offers size unsized canvases and preserve explicit and intrinsic sizing', async () => {
@@ -492,12 +492,12 @@ test('JSX fallback offers size unsized canvases and preserve explicit and intrin
 })
 
 test('themes honor source selection, CLI overrides, and explicit JSX paints', async () => {
-  const source = `<Svg theme="dark" width={px(90)} height={px(40)}>
+  const source = `<Page theme="dark" width={px(90)} height={px(40)}>
     <HStack>
       <Text>Inherited</Text>
       <Text color="tomato">Explicit</Text>
     </HStack>
-  </Svg>`
+  </Page>`
   await Bun.write(join(scratch, 'theme-deck', 'first.jsx'), source)
   await Bun.write(join(scratch, 'theme-deck', 'second.jsx'), source)
   for (const [args, theme] of [[[], 'dark'], [['--theme', 'light'], 'light']] as const) {
@@ -556,9 +556,68 @@ function pdf_sizes(pdf: string) {
     .map(match => [Number(match[1]), Number(match[2])])
 }
 
-const slide = (width: number, height = 40) => `<Svg width={px(${width})} height={px(${height})}>
+const slide = (width: number, height = 40) => `<Page width={px(${width})} height={px(${height})}>
   <Rect fill="red" />
-</Svg>`
+</Page>`
+
+test('a single Document exports ordered pages, shared defaults, and metadata', async () => {
+  const source = `<Document title="Single-file deck" width="320px" height="180px">
+    <Page><Text>First</Text></Page>
+    <Page background={blue}><Text>Second</Text></Page>
+  </Document>`
+  const json = await cli(['-f', 'json', '--text-mode', 'mixed'], source)
+  expect(json.code, json.error).toBe(0)
+  const { title, pages } = JSON.parse(json.text)
+  expect(title).toBe('Single-file deck')
+  expect(pages.map((page: Fragment) => page.size)).toEqual([
+    { width: 320, height: 180 }, { width: 320, height: 180 },
+  ])
+  const pptx = await cli(['-f', 'pptx'], source)
+  expect(pptx.code, pptx.error).toBe(0)
+  expect<Uint8Array>(pptx.bytes).toEqual(render_pptx(pages, { title, fonts: createMathFonts() }))
+  const pdf = await cli(['-f', 'pdf', '-W', '400', '--title', 'Override'], source)
+  expect(pdf.code, pdf.error).toBe(0)
+  expect(pdf_sizes(pdf.text)).toEqual([[300, 135], [300, 135]])
+  expect(pdf_title(pdf.text)).toBe('Override')
+  const tree = await cli(['-f', 'tree'], source)
+  expect(tree.code, tree.error).toBe(0)
+  expect(tree.text).toContain('Page 1\n')
+  expect(tree.text).toContain('Page 2\n')
+  for (const format of ['svg', 'png', 'pdf', 'pptx', 'json']) {
+    const selected = await cli(['-f', format, '--page', '2'], source)
+    expect(selected.code, selected.error).toBe(0)
+    if (format === 'svg') expect(selected.text).toContain(`fill="${pages[1].draw[0].fill}"`)
+    if (format === 'pdf') expect(pdf_sizes(selected.text)).toEqual([[240, 135]])
+    if (format === 'json') expect(JSON.parse(selected.text).name).toBe('Page')
+  }
+  const one = await cli(['-f', 'svg'], '<Document><Page width="40px" height="20px" /></Document>')
+  expect(one.code, one.error).toBe(0)
+  expect(one.text).toContain('width="40" height="20"')
+  await Bun.write(join(scratch, 'document.jsx'), source)
+  const combined = await cli(['document.jsx', 'document.jsx', '-f', 'pdf'])
+  expect(combined.code, combined.error).toBe(0)
+  expect(pdf_sizes(combined.text)).toHaveLength(4)
+})
+
+test('document page selection fails clearly and preserves existing output', async () => {
+  const source = '<Document><Page width="100px" height="100px" /><Page width="200px" height="100px" /></Document>'
+  const output = join(scratch, 'protected-document.out')
+  await Bun.write(output, 'keep me')
+  for (const [args, message] of [
+    [['-f', 'svg'], 'requires one page'],
+    [['-f', 'png'], 'requires one page'],
+    [['-f', 'svg', '--page', '3'], 'from 1 to 2'],
+    [['-f', 'svg', '--page', '0'], 'positive integer'],
+    [['-f', 'svg', '--page', '1.5'], 'positive integer'],
+    [['-f', 'pptx'], 'all slides must match'],
+  ] as const) {
+    const result = await cli([...args, '-o', output], source)
+    expect(result.code).toBe(1)
+    expect(result.error).toContain(message)
+    expect(result.text).toBe('')
+    expect(await Bun.file(output).text()).toBe('keep me')
+  }
+})
 
 test('multiple JSX files render PDF pages in argument order', async () => {
   await Bun.write(join(scratch, 'multi-first.jsx'), slide(80))
@@ -605,16 +664,16 @@ test('deck manifests order slides, set titles, and share a JSX prelude evaluated
   }))
   await Bun.write(join(dir, 'prelude.jsx'), `
     let count = 0
-    function Page({ width }) {
+    function DeckPage({ width }) {
       return (
-        <Svg width={px(width)} height={px(40 + ++count)}>
+        <Page width={px(width)} height={px(40 + ++count)}>
           <Latex>x^2</Latex>
-        </Svg>
+        </Page>
       )
     }
   `)
-  await Bun.write(join(dir, 'first.jsx'), '<Page width={80} />')
-  await Bun.write(join(dir, 'second.jsx'), 'const width = 120; return <Page width={width} />')
+  await Bun.write(join(dir, 'first.jsx'), '<DeckPage width={80} />')
+  await Bun.write(join(dir, 'second.jsx'), 'const width = 120; return <DeckPage width={width} />')
   const result = await cli(['manifest-deck', '-f', 'pdf', '--stats'], '', 'cli')
   expect(result.code).toBe(0)
   const stats = result.error.trim().split('\n').map(line => JSON.parse(line))
@@ -636,7 +695,7 @@ test('deck manifests order slides, set titles, and share a JSX prelude evaluated
   expect(pdf_sizes(output)).toEqual([[150, 75], [150, 75]])
   const single = await cli(['manifest-deck/first.jsx', '-f', 'svg'], '', 'cli')
   expect(single.code).toBe(1)
-  expect(single.error).toContain('Page is not defined')
+  expect(single.error).toContain('DeckPage is not defined')
 })
 
 test('single files ignore neighboring manifests for SVG and PDF output', async () => {
@@ -712,12 +771,12 @@ test('invalid decks and unsupported deck output fail without overwriting output'
 })
 
 test('PPTX renders mixed text and vectors to stdout or inferred files with shared options', async () => {
-  const source = `<Svg width={px(320)} height={px(180)}>
+  const source = `<Page width={px(320)} height={px(180)}>
     <VStack>
       <Text>PowerPoint</Text>
       <Latex>x^2</Latex>
     </VStack>
-  </Svg>`
+  </Page>`
   const json = await cli(['-f', 'json', '--text-mode', 'mixed'], source)
   expect(json.code, json.error).toBe(0)
   const options = { title: 'Gum & PowerPoint', background: '#eee', fonts: createMathFonts() }
@@ -739,12 +798,12 @@ test('PPTX decks use argument order or the existing manifest, prelude, and title
   const dir = join(scratch, 'pptx-deck')
   await Bun.write(join(dir, 'prelude.jsx'), 'const ink = "red"')
   const sources = [
-    `<Svg width={px(320)} height={px(180)}>
+    `<Page width={px(320)} height={px(180)}>
       <Rect fill={ink} stroke="none" />
-    </Svg>`,
-    `<Svg width={px(320)} height={px(180)}>
+    </Page>`,
+    `<Page width={px(320)} height={px(180)}>
       <Text>Second</Text>
-    </Svg>`,
+    </Page>`,
   ]
   await Bun.write(join(dir, 'first.jsx'), sources[0])
   await Bun.write(join(dir, 'second.jsx'), sources[1])
@@ -770,7 +829,7 @@ test('PPTX rejects unsupported output without emitting bytes or replacing files'
   const output = join(scratch, 'protected.pptx')
   await Bun.write(output, 'keep me')
   for (const [source, message] of [
-    ['<Svg width={px(20)} height={px(20)} />', '1–56 inches'],
+    ['<Page width={px(20)} height={px(20)} />', '1–56 inches'],
   ]) {
     const result = await cli(['-o', output], source)
     expect(result.code).toBe(1)
@@ -778,8 +837,8 @@ test('PPTX rejects unsupported output without emitting bytes or replacing files'
     expect(result.error).toContain(message)
     expect(await Bun.file(output).text()).toBe('keep me')
   }
-  await Bun.write(join(scratch, 'small-slide.jsx'), '<Svg width={px(320)} height={px(180)} />')
-  await Bun.write(join(scratch, 'large-slide.jsx'), '<Svg width={px(640)} height={px(360)} />')
+  await Bun.write(join(scratch, 'small-slide.jsx'), '<Page width={px(320)} height={px(180)} />')
+  await Bun.write(join(scratch, 'large-slide.jsx'), '<Page width={px(640)} height={px(360)} />')
   const mixed = await cli(['small-slide.jsx', 'large-slide.jsx', '-o', output])
   expect(mixed.code).toBe(1)
   expect(mixed.error).toContain('all slides must match')
@@ -789,7 +848,7 @@ test('PPTX rejects unsupported output without emitting bytes or replacing files'
 const video_source = `<Video
   size={[64, 48]} fps={2} duration={1}
   frame={({time}) => (
-    <Svg background={lerp(0, 1, ease_in_out(progress(time, 0, 1))) > 0 ? 'blue' : 'red'} />
+    <Page background={lerp(0, 1, ease_in_out(progress(time, 0, 1))) > 0 ? 'blue' : 'red'} />
   )}
 />`
 
@@ -828,8 +887,8 @@ test('gum previews video frames as Kitty and PNG with declared dimensions', asyn
 
 test('Video frame children match generators in MP4 exports and frame previews', async () => {
   const source = `<Video size={[64, 48]} fps={2}>
-    <Svg background="red" />
-    <Svg background="blue" />
+    <Page background="red" />
+    <Page background="blue" />
   </Video>`
   for (const args of [
     ['-f', 'mp4'],
@@ -854,7 +913,7 @@ test('video export honors viewport, theme, and background overrides', async () =
   const { render_mp4, evaluate_mp4 } = await import('@gum-jsx/mp4')
   const expected: Uint8Array[] = []
   const video = evaluate_mp4(`return { size:[80,60], fps:2, duration:1, background:'#123456',
-    frame:() => <Svg theme="dark"><Rect width={px(20)} height={px(20)} fill="theme:foreground" /></Svg> }`)
+    frame:() => <Page theme="dark"><Rect width={px(20)} height={px(20)} fill="theme:foreground" /></Page> }`)
   await render_mp4(video, bytes => { expected.push(bytes) })
   expect(result.bytes).toEqual(new Uint8Array(Buffer.concat(expected)))
 })

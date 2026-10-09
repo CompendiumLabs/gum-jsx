@@ -82,7 +82,7 @@ so a tall document can grow beyond it. `gum example.jsx -W 320` gives an exact
 width with natural height. Supplying both `-W` and `-H` establishes a fixed
 viewport; content needs flex allocation or explicit fitting to stay within it.
 
-Hosts can also set `max_width` and `max_height` on the generated **Svg** to bound
+Hosts can also set `max_width` and `max_height` on the generated **Page** to bound
 the SVG output. The figure reflows within the offers, then scales down
 uniformly if it is still too wide or too tall. A height limit can therefore reduce
 the rendered width, and a width limit can reduce the height. No height maximum
@@ -150,7 +150,7 @@ These old APIs have been removed, without compatibility aliases.
 ## Aspect ratio
 
 Every **Element** accepts a positive, finite `aspect`: the preferred width divided
-by height of its complete allocated box. This includes **Text**, **Svg**, stacks,
+by height of its complete allocated box. This includes **Text**, **Page**, stacks,
 frames, math elements, and custom elements—not just shapes.
 
 With one established dimension, aspect derives the other before content layout.
@@ -185,7 +185,7 @@ Use a child's `align-self="start"` for a compact panel or label within a fill-al
 container. Heights remain content-sized.
 
 ```jsx
-<Svg width={px(400)}>
+<Page width={px(400)}>
   <TextBox width="fill" padding={em(1)}>
     <TextCol gap={0}>
       <HStack>
@@ -194,7 +194,7 @@ container. Heights remain content-sized.
       <Frame><Text>Content</Text></Frame>
     </TextCol>
   </TextBox>
-</Svg>
+</Page>
 ```
 
 **Box**, **Frame**, **VStack**, and **HStack** retain their content-sized defaults.
@@ -231,7 +231,7 @@ when a basis requires content measurement. An **HStack** does the same with
 available height and child widths.
 Growth and shrinkage along the stacking direction require explicit flex props.
 
-A height-only **Svg** containing an unsized **VStack** does **not** make its shapes share
+A height-only **Page** containing an unsized **VStack** does **not** make its shapes share
 that height or infer a common width. Supply the column width, or allocate child
 heights explicitly. For **Rect** aspects 1 and 2, a common width W gives a total height
 of W + W/2. To obtain 500px with no gaps, the author can choose W = 1000/3.

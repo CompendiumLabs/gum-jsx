@@ -73,7 +73,7 @@ whole drawing. Formula ink inherits `color`; `MathRule` also
 accepts an explicit `fill`.
 
 Outlines retain ink beyond the logical advance, including italic glyphs and
-negative kerns. An explicit `Svg` viewport clips at its edges, so leave padding
+negative kerns. An explicit `Page` viewport clips at its edges, so leave padding
 for overhang. The comparison script expands to the union of logical size and
 ink before rendering. [Standalone math helpers](math_export.md)
 provide that viewport directly, with synchronous and asynchronous SVG export.
@@ -82,7 +82,7 @@ See also [formula labels on plots](../gallery/math.md#math_plot_labels) and [mat
 ## Library setup
 
 ```ts
-import { Evaluator, LayoutPass, Box, Svg, px, em, render_svg } from '@gum-jsx/core'
+import { Evaluator, LayoutPass, Box, Page, px, em, render_svg } from '@gum-jsx/core'
 import * as math from '@gum-jsx/math'
 
 const evaluator = new Evaluator({ scope: math })
@@ -90,7 +90,7 @@ const fonts = math.createMathFonts()
 // Browser hosts preload before layout. Bun can also load local faces on demand.
 await fonts.load()
 const source = evaluator.evaluate('<Latex>a+b=c</Latex>')
-const viewport = new Svg({ font_size: px(36),
+const viewport = new Page({ font_size: px(36),
   children: new Box({ padding: em(0.5), children: source }) })
 const pass = new LayoutPass({ fonts: { value: fonts, version: fonts.version } })
 const svg = render_svg(pass.layout(viewport))
