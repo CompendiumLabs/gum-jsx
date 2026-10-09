@@ -268,7 +268,7 @@ caches, old tasks, user profiles, package-manager caches, or the filesystem for
 a hidden installation. Do not use `bunx` or `npx` to probe.
 
 If no renderer is found, explain that rendering requires downloading and running
-Gum 2.1.0-beta.0. Follow the host's approval flow before installing or running downloaded
+Gum 2.1.0-beta.1. Follow the host's approval flow before installing or running downloaded
 software. Ask the user for setup approval when it is not already authorized.
 Honor installation restrictions and the user's chosen scope. If setup is denied
 or blocked, provide JSX source and rendering instructions.
@@ -280,7 +280,7 @@ directory and put a minimal `package.json` containing `{"private":true}` there.
 Run this command **from that directory**:
 
 ```sh
-npm install --save-exact --ignore-scripts gum-jsx@2.1.0-beta.0
+npm install --save-exact --ignore-scripts gum-jsx@2.1.0-beta.1
 ```
 
 If npm's default cache is not writable in a sandbox, set `npm_config_cache` to
@@ -296,7 +296,7 @@ stop and report the error. Invoke
 Retain the exact invocation for later renders. Run rendering commands from the caller's working directory so input
 files resolve there.
 
-Bun 1.4.2+ works equally well: install with `bun add --exact --ignore-scripts gum-jsx@2.1.0-beta.0`
+Bun 1.4.2+ works equally well: install with `bun add --exact --ignore-scripts gum-jsx@2.1.0-beta.1`
 and run `bun /absolute/tools-dir/node_modules/.bin/gum`.
 
 This installation needs no global install, PATH or shell-profile changes, or
@@ -311,12 +311,12 @@ for an environment with a supported runtime.
 
 The bundled npm CLI runs under Node.js 24+ with no runtime package dependencies.
 
-- **Project CLI:** install with `npm install --save-dev --save-exact --ignore-scripts gum-jsx@2.1.0-beta.0`,
+- **Project CLI:** install with `npm install --save-dev --save-exact --ignore-scripts gum-jsx@2.1.0-beta.1`,
   then use `./node_modules/.bin/gum` (or its Windows wrapper).
-- **Global CLI:** install with `npm install -g --ignore-scripts gum-jsx@2.1.0-beta.0`, then use `gum`.
+- **Global CLI:** install with `npm install -g --ignore-scripts gum-jsx@2.1.0-beta.1`, then use `gum`.
 - **Library integration:** source packages require Bun or a browser bundler.
   Add the libraries the host code needs, for example
-  `npm install --save-exact --ignore-scripts @gum-jsx/core@2.1.0-beta.0 @gum-jsx/math@2.1.0-beta.0`.
+  `npm install --save-exact --ignore-scripts @gum-jsx/core@2.1.0-beta.1 @gum-jsx/math@2.1.0-beta.1`.
   See [Rendering](references/guides/rendering.md) for evaluation, layout, and export APIs, and
   [Math export](references/guides/math_export.md) for fonts and standalone formulas.
 
