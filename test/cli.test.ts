@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { px, THEMES } from '@gum-jsx/core'
+import { px, THEMES, render_element, Text, Span, Svg } from '@gum-jsx/core'
 import type { Fragment } from '@gum-jsx/core'
 import { createMathFonts, mathToSvg } from '@gum-jsx/math'
 import { render_pdf } from '@gum-jsx/pdf'
@@ -13,6 +13,7 @@ import { decode } from 'fast-png'
 import { version } from '../package.json'
 
 const exportSvg = mathToSvg
+const font_file = (face: string) => fileURLToPath(new URL(`./fixtures/fonts/${face}.otf`, import.meta.url))
 function drawings(fragment: Fragment): Fragment['draw'][number][] {
   return [...fragment.draw, ...fragment.children.flatMap(child => drawings(child.fragment))]
 }
@@ -48,6 +49,162 @@ test('gum prints the package version and exits without rendering', async () => {
   }
   const help = await cli(['--help'], '', 'cli')
   expect(help.text).toContain('-V, --version')
+  expect(help.text).toContain('--font <file>')
+  expect(help.text).toContain('--default-font <family>')
+  expect(help.text).toContain('--math-font <family>')
+})
+
+test('font files infer family, weight, and style and leave explicit source choices intact', async () => {
+  const faces = ['Regular', 'Light', 'Bold', 'Italic']
+  const args = faces.flatMap(face => ['--font', font_file(face)])
+  const fonts = createMathFonts()
+  for (const face of faces) fonts.register(await Bun.file(font_file(face)).arrayBuffer())
+  const source = `<Text>
+    A <Span font-weight="light">A</Span>
+    <Span font-weight="bold">A</Span>
+    <Span font-style="italic">A</Span>
+  </Text>`
+  const custom = await cli([...args, '--default-font', 'Gum Test', '-f', 'svg'], source)
+  expect(custom.code, custom.error).toBe(0)
+  const expected = render_element(new Text({ children: [
+    'A ', new Span({ font_weight: 300, children: 'A' }),
+    new Span({ font_weight: 700, children: 'A' }), new Span({ font_style: 'italic', children: 'A' }),
+  ] }), { fonts, defaults: { font_family: 'Gum Test' } })
+  expect(custom.text.trim()).toBe(expected.svg)
+  expect(custom.text).not.toContain('<text ')
+  const live = await cli([...args, '--default-font', 'Gum Test', '--text-mode', 'live', '-f', 'json'], source)
+  expect(live.code, live.error).toBe(0)
+  const runs = drawings(JSON.parse(live.text)).filter(draw => draw.kind === 'text')
+  expect(runs.map(draw => [draw.font_family, draw.font_weight, draw.font_style, !!draw.font_oblique]))
+    .toEqual([['Gum Test', 400, 'normal', false], ['Gum Test', 300, 'normal', false],
+      ['Gum Test', 700, 'normal', false], ['Gum Test', 400, 'italic', false]])
+
+  // Loading fonts does not change the default, and both root and nested choices win.
+  for (const input of ['<Text>A</Text>', '<Text>A <Latex>x^2</Latex></Text>']) {
+    const bundled = await cli(['-f', 'svg'], input)
+    const loaded = await cli([...args, '-f', 'svg'], input)
+    expect(loaded.code, loaded.error).toBe(0)
+    expect(loaded.text).toBe(bundled.text)
+  }
+  for (const input of ['<Text font-family="IBM Plex Mono">A</Text>',
+    '<Svg font-family="IBM Plex Mono"><Text>A</Text></Svg>']) {
+    const explicit = await cli(['-f', 'svg'], input)
+    const inherited = await cli([...args, '--default-font', 'Gum Test', '-f', 'svg'], input)
+    expect(inherited.code, inherited.error).toBe(0)
+    expect(inherited.text).toBe(explicit.text)
+  }
+  const builtin = await cli(['--default-font', 'IBM Plex Mono', '-f', 'svg'], '<Text>A</Text>')
+  const explicit = await cli(['-f', 'svg'], '<Text font-family="IBM Plex Mono">A</Text>')
+  expect(builtin.code, builtin.error).toBe(0)
+  expect(builtin.text).toBe(explicit.text)
+})
+
+test('custom fonts reach raster output, decks, and video frames', async () => {
+  // A relative path containing spaces resolves from the invoking directory.
+  await Bun.write(join(scratch, 'custom face.otf'), Bun.file(font_file('Regular')))
+  const args = ['--font', './custom face.otf', '--default-font', 'Gum Test']
+  const fonts = createMathFonts()
+  fonts.register(await Bun.file(font_file('Regular')).arrayBuffer())
+  const fragment = render_element(new Svg({ width: px(64), height: px(48),
+    children: new Text({ children: 'A' }) }), { fonts, defaults: { font_family: 'Gum Test' } }).fragment
+  const png = await cli([...args, '-f', 'png', '-W', '64', '-H', '48'], '<Text>A</Text>')
+  expect(png.code, png.error).toBe(0)
+  expect(png.bytes).toEqual(new Uint8Array(render_png(fragment)))
+
+  // Decks use the same registry on every page, including embedded PDF text.
+  const dir = join(scratch, 'font-deck')
+  const slide = render_element(new Svg({ width: px(128), height: px(96),
+    children: new Text({ children: 'A' }) }), { fonts, defaults: { font_family: 'Gum Test' } }).fragment
+  await Bun.write(join(dir, 'one.jsx'), '<Svg width="128px" height="96px"><Text>A</Text></Svg>')
+  await Bun.write(join(dir, 'two.jsx'), '<Svg width="128px" height="96px"><Text font-family="Gum Test">A</Text></Svg>')
+  for (const format of ['pdf', 'pptx']) {
+    const deck = await cli([...args, dir, '-f', format, '--text-mode', 'path'])
+    expect(deck.code, deck.error).toBe(0)
+    expect(deck.bytes).toEqual(new Uint8Array((format === 'pdf' ? render_pdf : render_pptx)([slide, slide])))
+  }
+  const pdf = await cli([...args, dir, '-f', 'pdf'])
+  expect(pdf.code, pdf.error).toBe(0)
+  expect(pdf.text).toContain('/FontFile3')
+
+  // Both generator and stored frames share fonts with previews and MP4 exports.
+  for (const children of [true, false]) {
+    const video = children ? '<Video size={[64,48]} fps={1}><Text>A</Text></Video>'
+      : '<Video size={[64,48]} fps={1} duration={1} frame={() => <Text>A</Text>} />'
+    const preview = await cli([...args, '-f', 'png', '--time', '0'], video)
+    expect(preview.code, preview.error).toBe(0)
+    expect(preview.bytes).toEqual(new Uint8Array(render_png(fragment, { background: '#ffffff' })))
+    const movie = await cli([...args, '-f', 'mp4'], video)
+    const explicit = await cli(['--font', './custom face.otf', '-f', 'mp4'],
+      video.replace('<Text>', '<Text font-family="Gum Test">'))
+    expect(movie.code, movie.error).toBe(0)
+    expect(explicit.code, explicit.error).toBe(0)
+    expect(movie.bytes).toEqual(explicit.bytes)
+  }
+})
+
+test('math font selection reaches outlines, live font identities, and PDF subsets', async () => {
+  const args = ['--font', font_file('Regular'), '--math-font', 'Gum Test']
+  const source = String.raw`<Latex>{"\\mathrm{A}+x+\\text{AB}"}</Latex>`
+  const live = await cli([...args, '--text-mode', 'live', '-f', 'json'], source)
+  expect(live.code, live.error).toBe(0)
+  const runs = drawings(JSON.parse(live.text)).filter(draw => draw.kind === 'text')
+  expect(runs.map(draw => [draw.text, draw.font_family])).toEqual([
+    ['A', 'Gum Test'], ['+', 'KaTeX_Main'], ['x', 'KaTeX_Math'],
+    ['+', 'KaTeX_Main'], ['A', 'Gum Test'], ['B', 'KaTeX_Main'],
+  ])
+  const custom = await cli([...args, '-f', 'png'], String.raw`<Latex>{"\\mathrm{A}"}</Latex>`)
+  const explicit = await cli(['--font', font_file('Regular'), '-f', 'png'],
+    '<Latex><MathSpan font-family="Gum Test">A</MathSpan></Latex>')
+  expect(custom.code, custom.error).toBe(0)
+  expect(explicit.code, explicit.error).toBe(0)
+  expect(custom.bytes).toEqual(explicit.bytes)
+  const pdf = await cli([...args, '-f', 'pdf'], source)
+  expect(pdf.code, pdf.error).toBe(0)
+  expect(pdf.text).toContain('/FontFile3')
+})
+
+test('math font selection is shared by decks and video exports', async () => {
+  const args = ['--font', font_file('Regular')]
+  const custom = String.raw`<Latex>{"\\mathrm{A}"}</Latex>`
+  const explicit = '<Latex><MathSpan font-family="Gum Test">A</MathSpan></Latex>'
+  const dir = join(scratch, 'math-font-deck')
+  await Bun.write(join(dir, 'one.jsx'), custom)
+  await Bun.write(join(dir, 'two.jsx'), custom)
+  const deck = await cli([...args, '--math-font', 'Gum Test', dir, '-f', 'pdf', '--text-mode', 'path'])
+  await Bun.write(join(dir, 'one.jsx'), explicit)
+  await Bun.write(join(dir, 'two.jsx'), explicit)
+  const expected = await cli([...args, dir, '-f', 'pdf', '--text-mode', 'path'])
+  expect(deck.code, deck.error).toBe(0)
+  expect(expected.code, expected.error).toBe(0)
+  expect(deck.bytes).toEqual(expected.bytes)
+
+  const video = (body: string) => `<Video size={[64,48]} fps={1}>${body}</Video>`
+  for (const format of ['png', 'mp4']) {
+    const result = await cli([...args, '--math-font', 'Gum Test', '-f', format], video(custom))
+    const baseline = await cli([...args, '-f', format], video(explicit))
+    expect(result.code, result.error).toBe(0)
+    expect(baseline.code, baseline.error).toBe(0)
+    expect(result.bytes).toEqual(baseline.bytes)
+  }
+})
+
+test('font errors report the file or unknown family before writing output', async () => {
+  const corrupt = join(scratch, 'broken.otf')
+  await Bun.write(corrupt, 'not a font')
+  const output = join(scratch, 'font-error.svg')
+  await Bun.write(output, 'existing output')
+  for (const file of [corrupt, join(scratch, 'missing.otf')]) {
+    const result = await cli(['--font', file, '-o', output], '<Text>A</Text>')
+    expect(result.code).toBe(1)
+    expect(result.error).toContain(file)
+    expect(result.text).toBe('')
+  }
+  for (const option of ['--default-font', '--math-font']) {
+    const unknown = await cli([option, 'Unknown Font', '-o', output], '<Square />')
+    expect(unknown.code).toBe(1)
+    expect(unknown.error).toContain('Unknown font family: Unknown Font')
+  }
+  expect(await Bun.file(output).text()).toBe('existing output')
 })
 
 test('gum renders named map coordinates and position spreads with the same geometry as tuples', async () => {

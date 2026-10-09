@@ -75,6 +75,18 @@ test('standalone reads files, writes output, and renders decks outside the works
     .toEqual(await render(false, ['slides/one.jsx', '-f', 'svg']))
 })
 
+test('standalone loads custom font faces from local files', async () => {
+  for (const face of ['Regular', 'Bold']) {
+    copyFileSync(join(import.meta.dir, `fixtures/fonts/${face}.otf`), join(scratch, `${face}.otf`))
+  }
+  const args = ['--font', './Regular.otf', '--font', './Bold.otf', '--default-font', 'Gum Test']
+  const source = '<Text>A <Span font-weight="bold">A</Span></Text>'
+  for (const format of ['svg', 'png', 'pdf']) {
+    expect(await render(true, [...args, '-f', format], source))
+      .toEqual(await render(false, [...args, '-f', format], source))
+  }
+})
+
 test('standalone embeds the MP4 encoder and previews video frames without external tools', async () => {
   const video = `<Video
     size={[64, 48]} fps={2} duration={1}
