@@ -236,6 +236,21 @@ test('font errors report the file or unknown family before writing output', asyn
   expect(await Bun.file(output).text()).toBe('existing output')
 })
 
+test('debug overlays reach every graphical CLI output', async () => {
+  const source = `<Svg width={px(128)} height={px(96)} background={white}>
+    <Box debug width={px(80)} height={px(60)} padding={px(8)} />
+  </Svg>`
+  for (const format of ['svg', 'png', 'kitty', 'pdf', 'pptx', 'mp4']) {
+    const input = format === 'mp4'
+      ? `<Video size={[128, 96]} fps={1}>${source}</Video>` : source
+    const enabled = await cli(['-f', format], input)
+    const disabled = await cli(['-f', format], input.replace(' debug', ' debug={false}'))
+    expect(enabled.code, enabled.error).toBe(0)
+    expect(disabled.code, disabled.error).toBe(0)
+    expect(enabled.bytes, format).not.toEqual(disabled.bytes)
+  }
+})
+
 test('gum crops PNG and kitty output in source pixels before applying ratio', async () => {
   const args: string[] = []
   const source = '<Square width={px(40)} fill="red" />'
