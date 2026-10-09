@@ -9,7 +9,7 @@ const scratch = mkdtempSync(join(tmpdir(), 'gum-docs-'))
 afterAll(() => rmSync(scratch, { recursive: true, force: true }))
 let invocation = 0
 
-// Run outside the workspace; package tests reuse this suite under Node and Bun.
+// Run outside the workspace against the installed package, or source for focused checks.
 async function cli(args: string[], input = '') {
   const output = join(scratch, `stdout-${++invocation}`)
   const errors = join(scratch, `stderr-${invocation}`)

@@ -399,6 +399,14 @@ Run `bun run typecheck` and `bun run test` from this package directory for
 TypeScript and command integration checks. The workspace commands run checks
 across all packages.
 
+`bun run test` packs and installs the npm package, then runs the CLI, docs, and
+loader suites once under Node, with up to four cases running concurrently.
+Bun-only plugin tests use the same install. One PNG smoke check compares Node,
+Bun, and the standalone executable; release archive checks also run.
+Cases use distinct fixture and output paths within each suite's temporary
+directory. For a focused source check, use
+`bun test ./test/cli.test.ts -t "test name"`.
+
 ### Build the npm package
 
 From this package's directory, run `bun run build` to generate `dist/npm/`.
@@ -408,8 +416,8 @@ license, and README artwork. Builds preserve class names used in layout diagnost
 Acorn deduplication used by standalone executables.
 
 Run `bun test test/package.test.ts` to pack the CLI, install it offline in a
-fresh project with lifecycle scripts disabled, and run command tests under Node
-and Bun. Node rendering is tested with an empty `PATH`. Set `GUM_NODE_RUNTIME`
+fresh project with lifecycle scripts disabled, and run the installed-package
+suite. Node rendering is tested with an empty `PATH`. Set `GUM_NODE_RUNTIME`
 to test a specific Node executable.
 
 ### Standalone executable
@@ -439,5 +447,5 @@ For a local build using the installed Bun runtime, or to test a release executab
 ```sh
 bun run standalone:build --target native
 ./dist/gum figure.jsx -o figure.png
-GUM_STANDALONE_BINARY="$PWD/dist/gum-linux-x64" bun test ./test/standalone.test.ts
+GUM_STANDALONE_BINARY="$PWD/dist/gum-linux-x64" bun test ./test/package.test.ts
 ```

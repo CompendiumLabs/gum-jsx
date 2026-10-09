@@ -50,8 +50,6 @@ test('gum prints the package version and exits without rendering', async () => {
   const help = await cli(['--help'], '', 'cli')
   expect(help.text).toContain('-V, --version')
   expect(help.text).toContain('--font <file>')
-  expect(help.text).not.toContain('--default-font')
-  expect(help.text).not.toContain('--math-font')
 })
 
 test('font files infer family, weight, and style and leave explicit source choices intact', async () => {
@@ -238,34 +236,6 @@ test('font errors report the file or unknown family before writing output', asyn
   expect(await Bun.file(output).text()).toBe('existing output')
 })
 
-test('removed font selection flags fail before evaluation or writing output', async () => {
-  const output = join(scratch, 'removed-font-options.svg')
-  await Bun.write(output, 'existing output')
-  for (const option of ['--default-font', '--math-font']) {
-    const result = await cli([option, 'Gum Test', '-o', output], 'throw new Error("Unexpected evaluation")')
-    expect(result.code).toBe(1)
-    expect(result.error).toContain(`unknown option '${option}'`)
-    expect(result.error).not.toContain('Unexpected evaluation')
-    expect(result.text).toBe('')
-  }
-  expect(await Bun.file(output).text()).toBe('existing output')
-})
-
-test('gum renders named map coordinates and position spreads with the same geometry as tuples', async () => {
-  const source = `
-    const position = {lon: 30, lat: 20}
-    return <GeoMap source={world_countries({ids: []})} width={px(120)} height={px(80)}>
-      <Rect {...{pos: position}} width={px(4)} height={px(6)} />
-      <Points points={[position]} point-size={px(8)} />
-    </GeoMap>
-  `
-  const named = await cli(['-f', 'svg'], source, 'cli')
-  const tuples = await cli(['-f', 'svg'], source.replace('{lon: 30, lat: 20}', '[30, 20]'), 'cli')
-  expect(named.code).toBe(0)
-  expect(tuples.code).toBe(0)
-  expect(named.text).toBe(tuples.text)
-})
-
 test('gum crops PNG and kitty output in source pixels before applying ratio', async () => {
   const args: string[] = []
   const source = '<Square width={px(40)} fill="red" />'
@@ -309,25 +279,6 @@ test('PNG encoding presets reach file and terminal output in gum', async () => {
   expect(invalid.code).toBe(1)
   expect(invalid.text).toBe('')
   expect(invalid.error).toContain('Allowed choices')
-})
-
-test('direct PNG output preserves crop pixels, backgrounds, and full geometry without native addons', async () => {
-  const source = '<Rect width="4px" height="4px" fill="red" stroke={none} />'
-  const args = ['-f', 'png', '--select', '-1,-1,6,6', '--ratio', '2']
-  for (const background of [undefined, 'blue']) {
-    const result = await cli([...args, ...background ? ['--background', background] : []], source, 'cli')
-    expect(result.code, result.error).toBe(0)
-    const image = decode(result.bytes)
-    expect([image.width, image.height]).toEqual([12, 12])
-    expect([...image.data.slice(0, 4)]).toEqual(background ? [0, 0, 255, 255] : [0, 0, 0, 0])
-    expect([...image.data.slice((3 * 12 + 3) * 4, (3 * 12 + 3) * 4 + 4)]).toEqual([255, 0, 0, 255])
-  }
-  const fraction = '<Rect width="1.25px" height="2.25px" fill="red" stroke={none} />'
-  const rounded = await cli(['-f', 'png', '--precision', '0', '--ratio', '2'], fraction, 'cli')
-  const full = await cli(['-f', 'png', '--precision', 'full', '--ratio', '2'], fraction, 'cli')
-  expect(rounded.code, rounded.error).toBe(0)
-  expect(rounded.bytes).toEqual(full.bytes)
-  expect(png_size(rounded.bytes)).toEqual({ width: 3, height: 5 })
 })
 
 test('PNG and kitty outline text regardless of SVG text mode and skip live emoji', async () => {

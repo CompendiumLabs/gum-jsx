@@ -13,7 +13,7 @@
     "prepack": "bun run build",
     "standalone:build": "bun scripts/standalone.ts",
     "standalone:pack": "bun scripts/standalone.ts --archive",
-    "test": "bun test ./test",
+    "test": "bun test --concurrent --max-concurrency=4 ./test/package.test.ts ./test/standalone-pack.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

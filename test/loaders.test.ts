@@ -12,7 +12,7 @@ const png = encode({ width: 2, height: 1, channels: 4, data: pixels })
 const image = `data:image/png;base64,${Buffer.from(png).toString('base64')}`
 afterAll(() => rmSync(scratch, { recursive: true, force: true }))
 
-// Run the same cases against source, the npm bundle under Node, and the Bun bundle.
+// Package tests select the installed entry; direct runs use source for focused checks.
 let invocation = 0
 async function cli(args: string[], input = '') {
   const output = join(scratch, `stdout-${++invocation}`)

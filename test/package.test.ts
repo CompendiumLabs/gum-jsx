@@ -1,13 +1,13 @@
 import { expect, test } from 'bun:test'
 import { mkdtemp, mkdir, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { version } from '../package.json'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 
-test('npm package installs offline and runs under Node and Bun, with Bun-only plugins', async () => {
+test('installed npm package passes command tests and matches Bun rendering', async () => {
   const scratch = await mkdtemp(join(tmpdir(), 'gum-npm-test-'))
   try {
     async function command(args: string[], cwd: string, env = process.env) {
@@ -16,7 +16,7 @@ test('npm package installs offline and runs under Node and Bun, with Bun-only pl
         child.exited, new Response(child.stdout).text(), new Response(child.stderr).text(),
       ])
       expect(code, `${args.join(' ')}\n${out}\n${err}`).toBe(0)
-      return out
+      return out + err
     }
     // Exercise the publication lifecycle, including building from source.
     await command([
@@ -46,9 +46,11 @@ test('npm package installs offline and runs under Node and Bun, with Bun-only pl
     expect(await Bun.file(entry).text()).toStartWith('#!/usr/bin/env node')
     const node = process.env.GUM_NODE_RUNTIME ?? Bun.which('node')
     expect(node).not.toBeNull()
-    await command([process.execPath, 'test', 'test/cli.test.ts', 'test/loaders.test.ts', 'test/docs.test.ts'], root, {
+    // Run command coverage once against the installed package under Node.
+    const runner = [process.execPath, 'test', '--concurrent', '--max-concurrency=4']
+    console.log(await command([...runner, 'test/cli.test.ts', 'test/loaders.test.ts', 'test/docs.test.ts'], root, {
       ...process.env, GUM_CLI_ENTRY: entry, GUM_CLI_RUNTIME: node!,
-    })
+    }))
     const output = join(consumer, 'keep.svg')
     await Bun.write(output, 'keep me')
     const rejectionOut = join(scratch, 'node-stdout')
@@ -67,10 +69,48 @@ test('npm package installs offline and runs under Node and Bun, with Bun-only pl
     expect(stderr).toContain('bun ')
     expect(await Bun.file(output).text()).toBe('keep me')
 
-    await command([process.execPath, 'test', 'test/cli.test.ts', 'test/plugins.test.ts',
-      'test/loaders.test.ts', 'test/docs.test.ts'], root, {
-      ...process.env, GUM_CLI_ENTRY: entry,
-    })
+    // Plugins require Bun, but still exercise the same installed npm package.
+    console.log(await command([...runner, 'test/plugins.test.ts'], root, {
+      ...process.env, GUM_CLI_ENTRY: entry, GUM_CLI_RUNTIME: process.execPath,
+    }))
+
+    // One scene checks fonts, math, map data, and WASM across distribution modes.
+    const supplied = process.env.GUM_STANDALONE_BINARY
+    const binary = supplied ? resolve(supplied)
+      : join(scratch, process.platform === 'win32' ? 'gum.exe' : 'gum')
+    if (!supplied) {
+      await command([process.execPath, 'run', 'standalone:build',
+        '--target', 'native', '--outfile', binary], root)
+    }
+    const source = `
+      <Svg width={px(240)} height={px(160)}>
+        <VStack>
+          <Text>Hello Gum</Text>
+          <Latex>x^2</Latex>
+          <GeoMap source={world_countries()} width={px(120)} height={px(60)} />
+        </VStack>
+      </Svg>
+    `
+    async function render(args: string[]) {
+      // Use files for stdout so both runtimes flush the complete image.
+      const output = join(scratch, 'render.png')
+      const errors = join(scratch, 'render-stderr')
+      const child = Bun.spawn([...args, '-f', 'png'], {
+        cwd: consumer, env: { ...process.env, PATH: '', NODE_PATH: '', BUN_OPTIONS: '' },
+        stdin: new Blob([source]), stdout: Bun.file(output), stderr: Bun.file(errors),
+      })
+      const code = await child.exited
+      const [bytes, error] = await Promise.all([
+        Bun.file(output).arrayBuffer(), Bun.file(errors).text(),
+      ])
+      expect(code, error).toBe(0)
+      expect(error).toBe('')
+      return new Uint8Array(bytes)
+    }
+    const png = await render([node!, '--no-addons', entry])
+    expect([...png.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10])
+    expect(await render([process.execPath, '--no-addons', entry])).toEqual(png)
+    expect(await render([binary])).toEqual(png)
   } finally {
     await rm(scratch, { recursive: true, force: true })
   }
