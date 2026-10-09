@@ -130,8 +130,6 @@ the existing rendering syntax. Both rendering forms accept stdin when no file is
 | `-b, --background <color>` | Paint the viewport background. |
 | `-t, --theme <theme>` | `light` or `dark`; defaults to the source theme, or dark for kitty and light otherwise. |
 | `--font <file>` | Load an extra font face; repeat for additional weights and styles. Family, weight, and style come from the font metadata. |
-| `--default-font <family>` | Inherited text family where the source does not specify one; default `IBM Plex Sans`. |
-| `--math-font <family>` | Registered family for ordinary math glyphs; retains KaTeX layout parameters and size fonts. |
 | `--title <text>` | Set the SVG, PDF, or PPTX document title. |
 | `--id-prefix <name>` | Prefix SVG definition IDs, default `gum`. |
 | `--precision <digits\|full>` | Output decimal places from 0 to 100, or `full`; default `10`. |
@@ -185,12 +183,18 @@ always request glyph outlines regardless of that flag. Emoji without outlines
 cannot be rasterized; export SVG to display them in a browser with suitable fonts.
 `--background` also fills any area of a PNG crop outside the figure viewport.
 
-Load custom font files with repeatable `--font` options, and select an inherited
-default with `--default-font`:
+Load custom font files with repeatable `--font` options:
 
 ```sh
-gum figure.jsx --font ./Inter-Regular.ttf --font ./Inter-Bold.ttf \
-  --default-font Inter -o figure.svg
+gum figure.jsx --font ./Inter-Regular.ttf --font ./Inter-Bold.ttf -o figure.svg
+```
+
+Select the inherited family in the source:
+
+```jsx
+<Svg font-family="Inter">
+  <Text>Text inherits the document's font.</Text>
+</Svg>
 ```
 
 Font paths resolve from the directory where you run the command. Supply an
@@ -201,23 +205,29 @@ their default instance. An existing family/weight/style registration is replaced
 by the last supplied face with that identity.
 
 Loading a font makes it available to `font-family="Inter"` in JSX without
-changing the default. Plex and math fonts remain available. `--default-font`
-also accepts bundled families, such as `"IBM Plex Mono"`; explicit root and
-nested font choices take precedence. These options apply to figures, decks,
+changing the default. Plex and math fonts remain available. `font-family`
+also accepts bundled families, such as `"IBM Plex Mono"`; nested font choices
+override inherited values. Font loading and props apply to figures, decks,
 video previews, and MP4 output. Live SVG and PPTX still require matching fonts
 in the viewer.
 
 Select a loaded math font separately from the prose family:
 
 ```sh
-gum figure.jsx --font ./MyMath-Regular.otf --math-font "My Math" -o figure.png
+gum figure.jsx --font ./MyMath-Regular.otf -o figure.png
+```
+
+```jsx
+<Svg math-font="My Math">
+  <Latex>x^2 + y^2</Latex>
+</Svg>
 ```
 
 The math provider uses the selected font for ordinary glyphs, including Unicode
 math italic and double-struck alphabets where available. Missing glyphs, other
 styled alphabets, and large size-font symbols use bundled KaTeX faces. KaTeX
 layout parameters and stretchy constructions remain in use; OpenType MATH
-tables are not read. This option applies to figures, decks, and video.
+tables are not read. The `math-font` prop inherits through figures, decks, and video.
 
 PDF uses `@gum-jsx/pdf`. It writes vector
 pages sized to their viewports at 96 pixels per inch (0.75 PDF points per pixel).

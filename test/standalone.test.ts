@@ -95,8 +95,10 @@ test('standalone loads custom font faces from local files', async () => {
   for (const face of ['Regular', 'Bold']) {
     copyFileSync(join(import.meta.dir, `fixtures/fonts/${face}.otf`), join(scratch, `${face}.otf`))
   }
-  const args = ['--font', './Regular.otf', '--font', './Bold.otf', '--default-font', 'Gum Test']
-  const source = '<Text>A <Span font-weight="bold">A</Span></Text>'
+  const args = ['--font', './Regular.otf', '--font', './Bold.otf']
+  const source = `<Svg font-family="Gum Test" math-font="Gum Test">
+    <Text>A <Span font-weight="bold">A</Span> <Latex>A</Latex></Text>
+  </Svg>`
   for (const format of ['svg', 'png', 'pdf']) {
     expect(await render(true, [...args, '-f', format], source))
       .toEqual(await render(false, [...args, '-f', format], source))
