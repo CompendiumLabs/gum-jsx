@@ -38,14 +38,16 @@ a hanging indent. A nested **Bullets** **Element** can be an item.
 
 ## Slide
 
-Use Slide inside a [Page](layout.md#Page) to provide a title and body layout. Several
-such pages can form a single-file [Document](layout.md#Document).
+Slide extends [Page](layout.md#Page) with a title and flexible body layout. Use it on
+its own, or put Slides directly inside a [Document](layout.md#Document) to make a deck.
 
 | Property | Default | Meaning |
 |---|---|---|
 | `title` | — | String or **Element** placed above the body |
 | `title-style` / `title-*` | `em(1.6)`, `bold` | Nested or flat text options for a generated title |
-| `font-size` | Inherited | Base font size for body text, title scale, padding, and gaps |
+| `font-size` | Document default or inherited | Base font size for body text, title scale, padding, and gaps |
+| `width` / `height` | Natural | Slide dimensions; use pixels for a standalone slide or shared Document dimensions |
+| `aspect` | `16 / 9` | Preferred ratio, used when neither the slide nor its Document supplies one |
 | `padding` | `em(1.5)` | Slide-edge lengths; accepts [Box padding forms](layout.md#Box) |
 | `gap` | `em(0.8)` | Space between the title and body |
 | `background` | `none` | Explicit **Slide** background paint |
@@ -53,10 +55,15 @@ such pages can form a single-file [Document](layout.md#Document).
 
 A 16:9 canvas with a measured title and flexible content area. `title` is a string
 or **Element**; `title-style` overrides default 1.6em bold text. The base font
-inherits from **Page** or another parent (16px without a parent override). Set
-`font-size` on **Slide** only when it should differ from its parent. Defaults:
+comes from **Document** defaults or inherits from a layout parent (16px otherwise).
+Set `font-size` on **Slide** to override it for one slide. Defaults:
 1.5em padding, 0.8em gap, transparent background. `clip` optionally hides paint outside
 the slide (false by default).
+
+Document can supply shared dimensions, aspect, background, typography, and theme.
+Slide props override those defaults. A standalone Slide is already an output
+viewport, so rendering does not add a Page wrapper and host `wrap` options do
+not apply. Existing Page-wrapped slides remain supported.
 
 Scoped `title-` props accept generated text options, including `title-color`,
 `title-font-size`, and `title-wrap`. They override matching fields in `title-style`.

@@ -54,7 +54,7 @@ Rendering requires an environment that can run commands and a **separate Gum
 executable**. The skill reuses an established renderer invocation, then checks PATH before
 the current project's local CLI. It uses the first command found. If none is found, it explains the required
 download and follows the host approval flow, asking for setup approval when
-needed. New installs use Gum 2.1.0-beta.1 in a writable task directory.
+needed. New installs use Gum 2.1.0 in a writable task directory.
 
 Install the renderer using the [main Gum installation guide](https://github.com/CompendiumLabs/gum-jsx#install).
 The maintained [CLI setup prompt](https://github.com/CompendiumLabs/gum-jsx-docs/blob/master/prompt/cli.md) defines

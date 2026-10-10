@@ -31,7 +31,7 @@ The bundled npm CLI in the `gum-jsx` package requires Node.js 24+. One can eithe
 run it with `npx gum-jsx` or install it globally with:
 
 ```sh
-npm install -g gum-jsx@beta
+npm install -g gum-jsx@latest
 gum --version
 ```
 

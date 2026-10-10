@@ -175,13 +175,15 @@ props on the **Box** itself when it is the item being allocated.
 
 ## Document
 
-An ordered collection of [Page](layout.md#Page) elements. Each page has its own
-dimensions and layout; the document supplies shared page defaults and a title.
+An ordered collection of [Page](layout.md#Page) elements, including [Slide](text.md#Slide)
+and components that adopt either through `define_component`.
+Each page has its own dimensions and layout; the document supplies shared page
+defaults and a title.
 A standalone Page remains sufficient for a single figure.
 
 | Property | Default | Meaning |
 |---|---|---|
-| `children` | Required | One or more Page elements, in output order; arrays, fragments, and conditional children are supported |
+| `children` | Required | One or more Page or Slide elements, in output order; arrays, fragments, and conditional children are supported |
 | `title` | — | Document title used by SVG, PDF, and PPTX exports unless the host overrides it |
 | Page sizing and style props | — | Defaults for each page, including `width`, `height`, `aspect`, `background`, typography, and theme |
 
@@ -189,11 +191,13 @@ A page's explicit props override document defaults. Host `defaults` sit below
 both, while host `overrides` win over both. Undefined props do not replace a
 default. Page content inherits the resulting page style normally.
 
-Put a [Slide](text.md#Slide) inside each Page for presentation layouts. Set
-`width="fill" height="fill"` on Slide to fill its page. Document does not arrange
-its pages in a stack or flow overflowing content onto another page. It is a
+Put [Slide](text.md#Slide) elements directly inside Document for presentation layouts;
+no Page wrapper is needed. Page and Slide can be mixed in the same document.
+Document does not arrange its pages in a stack or flow overflowing content onto
+another page. It is a
 top-level collection, like [Video](video.md#Video), rather than a layout element;
-its direct children must be Pages, and it cannot be nested inside one.
+its direct children must be Pages (including Slides), and it cannot be nested
+inside one.
 
 Save the example as `talk.jsx` to export the entire document or one page:
 
@@ -227,22 +231,18 @@ all pages to be embedded together. See [Rendering](../guides/rendering.md).
 // A complete two-slide document with shared page dimensions and typography.
 <Document title="A small presentation" width={px(960)} height={px(540)}
   font-size={px(28)} background={white}>
-  <Page>
-    <Slide width="fill" height="fill" title="One source, many pages">
-      <TextCol gap={em(1)}>
-        <Text>Each page gets its own layout.</Text>
-        <Text>Document supplies shared dimensions, styling, and metadata.</Text>
-      </TextCol>
-    </Slide>
-  </Page>
-  <Page background={slate} color={white}>
-    <Slide width="fill" height="fill" title="Choose an output">
-      <Bullets>
-        <Text>Export every page to PDF or PowerPoint.</Text>
-        <Text>Select a page for an SVG or PNG image.</Text>
-      </Bullets>
-    </Slide>
-  </Page>
+  <Slide title="One source, many pages">
+    <TextCol gap={em(1)}>
+      <Text>Each page gets its own layout.</Text>
+      <Text>Document supplies shared dimensions, styling, and metadata.</Text>
+    </TextCol>
+  </Slide>
+  <Slide title="Choose an output" background={slate} color={white}>
+    <Bullets>
+      <Text>Export every page to PDF or PowerPoint.</Text>
+      <Text>Select a page for an SVG or PNG image.</Text>
+    </Bullets>
+  </Slide>
 </Document>
 ```
 
@@ -681,6 +681,8 @@ elements inside a stack or **Group**.
 
 Use Page on its own, or put several Pages inside a [Document](layout.md#Document).
 Its layout is independent of the output format. Page replaces the former Svg element.
+[Slide](text.md#Slide) extends Page with a title and body layout, so it can be used
+directly inside Document without an additional Page wrapper.
 
 | Property | Default | Meaning |
 |---|---|---|

@@ -160,7 +160,9 @@ const AnotherTile = define_element('AnotherTile', Tile.layout, Tile.defaults)
 protocol, with a new name and no extra layout wrapper. It preserves the static
 layout and bounds behavior without retaining the original subclass or rerunning
 its normalizer. The low-level `new Element(type, props)` constructor remains
-available for explicit protocol adoption.
+available for explicit protocol adoption. Adopted Page and Slide components keep
+their viewport behavior: Document accepts them as pages, applies its defaults
+directly, and rendering does not add another Page wrapper.
 
 ## The query contract
 

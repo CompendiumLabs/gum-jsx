@@ -1,6 +1,6 @@
 {
   "name": "gum-jsx",
-  "version": "2.1.0-beta.1",
+  "version": "2.1.0",
   "description": "Render JSX plots, diagrams, math, slides, and animations with the gum command.",
   "type": "module",
   "license": "MIT",
@@ -17,15 +17,15 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@gum-jsx/cli": "2.1.0-beta.1",
-    "@gum-jsx/core": "2.1.0-beta.1",
-    "@gum-jsx/docs": "2.1.0-beta.1",
-    "@gum-jsx/math": "2.1.0-beta.1",
-    "@gum-jsx/mp4": "2.1.0-beta.1",
-    "@gum-jsx/maps": "2.1.0-beta.1",
-    "@gum-jsx/pdf": "2.1.0-beta.1",
-    "@gum-jsx/pptx": "2.1.0-beta.1",
-    "@gum-jsx/png": "2.1.0-beta.1",
+    "@gum-jsx/cli": "2.1.0",
+    "@gum-jsx/core": "2.1.0",
+    "@gum-jsx/docs": "2.1.0",
+    "@gum-jsx/math": "2.1.0",
+    "@gum-jsx/mp4": "2.1.0",
+    "@gum-jsx/maps": "2.1.0",
+    "@gum-jsx/pdf": "2.1.0",
+    "@gum-jsx/pptx": "2.1.0",
+    "@gum-jsx/png": "2.1.0",
     "@types/bun": "latest",
     "commander": "^14.0.3",
     "fast-png": "^8.0.0",
@@ -51,7 +51,7 @@
   ],
   "publishConfig": {
     "access": "public",
-    "tag": "beta"
+    "tag": "latest"
   },
   "engines": {
     "node": ">=24",
