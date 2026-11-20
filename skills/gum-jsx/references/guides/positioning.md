@@ -3,7 +3,7 @@
 `pos` chooses a point in the parent. `anchor` chooses the point on the child
 that meets it. These props position labels, shapes, or whole containers in
 [Group](../elements/layout.md#Group), [Overlay](../elements/layout.md#Overlay),
-[Graph](../elements/plotting.md#Graph), [Plot](../elements/plotting.md#Plot),
+[Graph](../elements/graph.md#Graph), [Plot](../elements/plotting.md#Plot),
 [Network](../elements/networks.md#Network), and [GeoMap](../elements/maps.md#GeoMap).
 
 For rows, columns, and grids, use their layout controls. See

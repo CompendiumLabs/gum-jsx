@@ -2,7 +2,25 @@
 
 Each entry includes its runnable JSX example.
 
-## Layout
+## Api gallery
+
+- [Clipping and transforms](gallery/api.md#clipping) — This example uses the low-level fragment API from Custom elements.
+- [Reusing fragments](gallery/api.md#repeated) — Use tree output with --stats to inspect allocations and layout queries.
+
+## Geometry gallery
+
+- [Arrow caps and tips](gallery/geometry.md#arrow_caps) — The top row compares butt, round, and square caps on thick shafts.
+- [Anatomy of a Cell](gallery/geometry.md#cell_diagram) — A labeled animal-cell schematic combines a lumpy membrane, nucleus, mitochondria, endoplasmic reticulum, and other organelles.
+- [Metal Grid](gallery/geometry.md#metal_grid) — A luminous 9-by-16 tile matrix sits under a bright layered spline, inside nested dark frames.
+- [Neon Rose](gallery/geometry.md#neon_rose) — Layered spline strokes create a luminous rose with a spiral bud, curled petals, leaves, and small cross-shaped sparkles.
+- [Pendulum Physics](gallery/geometry.md#pendulum_physics) — A pendulum diagram with a clipped support, angle arc, equilibrium line, bob, force arrows, and equation of motion.
+- [Regular Polygons](gallery/geometry.md#polygon_slide) — Triangles through octagons are shown in two groups of three labeled cards.
+- [Set Theory](gallery/geometry.md#set_theory) — Two smaller elliptical regions lie inside the larger set A, with independently positioned labels.
+- [Shape cards](gallery/geometry.md#shape_cards) — Three cards are generated from data with a small functional JSX component.
+- [Space Rose](gallery/geometry.md#space_rose) — A glowing, weathered light-box sign floats in a seeded starfield, with a rose printed on its front face.
+- [Spline Star](gallery/geometry.md#spline_star) — Alternating inner and outer vertices form a rounded five-point star.
+
+## Layout gallery
 
 - [Rounded box clipping](gallery/layout.md#box_clip) — Tree output retains the child's full allocation and overflow even though that ink is hidden.
 - [Flex grow](gallery/layout.md#flex_grow) — A bordered card holds a heading, a line of text, and a row of three shapes that takes up whatever room is left.
@@ -16,38 +34,7 @@ Each entry includes its runnable JSX example.
 - [Two columns](gallery/layout.md#two_columns) — A small figure and its explanation share a definite row width.
 - [UI Mockup](gallery/layout.md#ui_mockup) — Overlapping desktop-style windows combine a live plot, a fine background grid, and wrapped message text.
 
-## Geometry
-
-- [Arrow caps and tips](gallery/geometry.md#arrow_caps) — The top row compares butt, round, and square caps on thick shafts.
-- [Anatomy of a Cell](gallery/geometry.md#cell_diagram) — A labeled animal-cell schematic combines a lumpy membrane, nucleus, mitochondria, endoplasmic reticulum, and other organelles.
-- [Metal Grid](gallery/geometry.md#metal_grid) — A luminous 9-by-16 tile matrix sits under a bright layered spline, inside nested dark frames.
-- [Neon Rose](gallery/geometry.md#neon_rose) — Layered spline strokes create a luminous rose with a spiral bud, curled petals, leaves, and small cross-shaped sparkles.
-- [Pendulum Physics](gallery/geometry.md#pendulum_physics) — A pendulum diagram with a clipped support, angle arc, equilibrium line, bob, force arrows, and equation of motion.
-- [Regular Polygons](gallery/geometry.md#polygon_slide) — Triangles through octagons are shown in two groups of three labeled cards.
-- [Set Theory](gallery/geometry.md#set_theory) — Two smaller elliptical regions lie inside the larger set A, with independently positioned labels.
-- [Shape cards](gallery/geometry.md#shape_cards) — Three cards are generated from data with a small functional JSX component.
-- [Space Rose](gallery/geometry.md#space_rose) — A glowing, weathered light-box sign floats in a seeded starfield, with a rose printed on its front face.
-- [Spline Star](gallery/geometry.md#spline_star) — Alternating inner and outer vertices form a rounded five-point star.
-
-## Plotting
-
-- [Atomic Orbitals](gallery/plotting.md#atomic_orbitals) — Six stylized angular profiles show s, p, and d lobes with separate positive and negative phases.
-- [Axes with Arrows](gallery/plotting.md#axis_arrows) — A logarithmic curve with arrowheads on both directed axes.
-- [Complex Roots](gallery/plotting.md#complex_plot) — The real and imaginary components of the roots of x² + 2cx + 1 are plotted horizontally against the parameter c.
-- [Flux Capacitance](gallery/plotting.md#flux_capacitance) — A translucent band fills the space between sine and cosine over a full period.
-- [A reversed data axis](gallery/plotting.md#graph_scatter) — Directed limits reverse x while annotations and custom markers remain upright.
-- [Where U.S. GDP Was Produced](gallery/plotting.md#industry_sankey) — A Sankey-style chart divides 2024 U.S. GDP into goods, services, government, and their industry groups.
-- [Logarithmic projection](gallery/plotting.md#log_projection) — Draw a log–log graph with explicit tick labels and logarithmic grid spacing.
-- [Particle in a Box](gallery/plotting.md#particle_box) — Illustrate wavefunctions and energy states in an infinite square well.
-- [Regional changes](gallery/plotting.md#plot_bars) — Categorical ticks, positive and negative bars, and functional bar colors.
-- [Manual Plot](gallery/plotting.md#plot_manual) — A sine plot assembled from a Graph, Mesh2D, HAxis, and VAxis, rather than the higher-level Plot component.
-- [A slide with a plot](gallery/plotting.md#plot_slide) — A slide composes a measured title, figure, and caption at a stable type scale.
-- [Three-dimensional projection](gallery/plotting.md#projection_3d) — Project a three-dimensional helix, markers, axes, and labels into one graph.
-- [Slick Bars](gallery/plotting.md#slick_bars) — Rounded bars, angled category labels, and percentage annotations form a styled bar chart.
-- [Terrain in tiles](gallery/plotting.md#terrain_map) — Build a terraced terrain model from a 24-by-24 height field with shaded faces and an elevation legend.
-- [The Nexus](gallery/plotting.md#the_nexus) — Ten phase-shifted cosine wave packets share a Gaussian envelope and form a colored interference pattern over a fine grid.
-
-## Maps
+## Maps gallery
 
 - [Filtering and bounds](gallery/maps.md#filtered_region) — Filter country IDs while keeping a fixed longitude/latitude view.
 - [GeoJSON edge cases](gallery/maps.md#geojson_edges) — Show polygon holes, RFC 7946 winding, and two shapes meeting at the antimeridian.
@@ -59,24 +46,7 @@ Each entry includes its runnable JSX example.
 - [US states](gallery/maps.md#us_states) — Render US states with Albers USA insets, FIPS-keyed fills, and shared borders.
 - [World countries](gallery/maps.md#world_choropleth) — Color world countries by stable feature IDs on an Equal Earth map.
 
-## Networks
-
-- [Gum Rendering Core](gallery/networks.md#gum_core) — Gum JSX and TeX flow through a compact rendering core into SVG, PNG, and PDF.
-- [Macroeconomic Flows](gallery/networks.md#macro_economy) — Producers, consumers, government, and foreign trade form a four-sector flow schematic.
-- [Connections through layout](gallery/networks.md#network_connections) — Show how network edges meet the completed frames of varied nodes.
-- [Any element as a node](gallery/networks.md#network_shapes) — Connect shapes, stacks, and nested elements as network nodes.
-- [Transformer Architecture](gallery/networks.md#transformer) — Diagram the layers and repeated blocks of a decoder-only transformer.
-- [Unit Distance](gallery/networks.md#unit_distance) — A finite set of coefficient vectors in Q(i, ζ₃) produces a dense unit-distance graph.
-
-## Text
-
-- [One paragraph, two widths](gallery/text.md#paragraph) — The custom parent draws outlines around the measured paragraph boxes.
-- [Punk Rock](gallery/text.md#punk_rock) — Three colored text frames form a tilted badge with rounded outer corners.
-- [Text halos](gallery/text.md#text_halos) — Rounded text halos keep labels readable over lines without moving the labels.
-- [Type, ink, and line boxes](gallery/text.md#typography) — The tight-leading sample puts 28px glyphs in a 12px line box.
-- [Typography card](gallery/text.md#typography_card) — A text-focused card combines IBM Plex Sans and Mono, mixed weights, inline styles, baseline alignment, and a short preformatted block.
-
-## Math
+## Math gallery
 
 - [Aligned equations](gallery/math.md#aligned_math) — Use aligned to line up relations across several equations.
 - [Math inside prose](gallery/math.md#inline_math) — Text accepts formulas and other Gum elements alongside prose.
@@ -91,7 +61,38 @@ Each entry includes its runnable JSX example.
 - [Shape Algebra](gallery/math.md#shape_algebra) — A subdivided square is the value of a series, a colored circle appears under a radical, and a matrix transpose swaps colored swatches.
 - [Stokes’ Theorem](gallery/math.md#stokes_theorem) — An obliquely projected surface shows its oriented boundary, tangent arrows, and surface normals beside the theorem and explanatory prose.
 
-## Api
+## Networks gallery
 
-- [Clipping and transforms](gallery/api.md#clipping) — This example uses the low-level fragment API from Custom elements.
-- [Reusing fragments](gallery/api.md#repeated) — Use tree output with --stats to inspect allocations and layout queries.
+- [Gum Rendering Core](gallery/networks.md#gum_core) — Gum JSX and TeX flow through a compact rendering core into SVG, PNG, and PDF.
+- [Macroeconomic Flows](gallery/networks.md#macro_economy) — Producers, consumers, government, and foreign trade form a four-sector flow schematic.
+- [Connections through layout](gallery/networks.md#network_connections) — Show how network edges meet the completed frames of varied nodes.
+- [Any element as a node](gallery/networks.md#network_shapes) — Connect shapes, stacks, and nested elements as network nodes.
+- [Transformer Architecture](gallery/networks.md#transformer) — Diagram the layers and repeated blocks of a decoder-only transformer.
+- [Unit Distance](gallery/networks.md#unit_distance) — A finite set of coefficient vectors in Q(i, ζ₃) produces a dense unit-distance graph.
+
+## Plotting gallery
+
+- [Axes with Arrows](gallery/plotting.md#axis_arrows) — A logarithmic curve with arrowheads on both directed axes.
+- [Regional changes](gallery/plotting.md#plot_bars) — Categorical ticks, positive and negative bars, and functional bar colors.
+- [Slick Bars](gallery/plotting.md#slick_bars) — Rounded bars, angled category labels, and percentage annotations form a styled bar chart.
+- [A slide with a plot](gallery/plotting.md#plot_slide) — A slide composes a measured title, figure, and caption at a stable type scale.
+- [Particle in a Box](gallery/plotting.md#particle_box) — Illustrate wavefunctions and energy states in an infinite square well.
+- [Complex Roots](gallery/plotting.md#complex_plot) — The real and imaginary components of the roots of x² + 2cx + 1 are plotted horizontally against the parameter c.
+- [Flux Capacitance](gallery/plotting.md#flux_capacitance) — A translucent band fills the space between sine and cosine over a full period.
+- [Atomic Orbitals](gallery/plotting.md#atomic_orbitals) — Six stylized angular profiles show s, p, and d lobes with separate positive and negative phases.
+- [Complex Roots in 3D](gallery/plotting.md#complex_3d) — Trace the roots of x² + 2cx + 1 in three dimensions, with c, Re(x), and Im(x) on separate axes.
+- [A reversed data axis](gallery/plotting.md#graph_scatter) — Directed limits reverse x while annotations and custom markers remain upright.
+- [Where U.S. GDP Was Produced](gallery/plotting.md#industry_sankey) — A Sankey-style chart divides 2024 U.S. GDP into goods, services, government, and their industry groups.
+- [Logarithmic projection](gallery/plotting.md#log_projection) — Draw a log–log graph with explicit tick labels and logarithmic grid spacing.
+- [Three-dimensional projection](gallery/plotting.md#projection_3d) — Project a three-dimensional helix, markers, axes, and labels into one graph.
+- [Terrain in tiles](gallery/plotting.md#terrain_map) — Build a terraced terrain model from a 24-by-24 height field with shaded faces and an elevation legend.
+- [The Nexus](gallery/plotting.md#the_nexus) — Ten phase-shifted cosine wave packets share a Gaussian envelope and form a colored interference pattern over a fine grid.
+- [Manual Plot](gallery/plotting.md#plot_manual) — A sine plot assembled from a Graph, Mesh2D, HAxis, and VAxis, rather than the higher-level Plot component.
+
+## Text gallery
+
+- [One paragraph, two widths](gallery/text.md#paragraph) — The custom parent draws outlines around the measured paragraph boxes.
+- [Punk Rock](gallery/text.md#punk_rock) — Three colored text frames form a tilted badge with rounded outer corners.
+- [Text halos](gallery/text.md#text_halos) — Rounded text halos keep labels readable over lines without moving the labels.
+- [Type, ink, and line boxes](gallery/text.md#typography) — The tight-leading sample puts 28px glyphs in a 12px line box.
+- [Typography card](gallery/text.md#typography_card) — A text-focused card combines IBM Plex Sans and Mono, mixed weights, inline styles, baseline alignment, and a short preformatted block.

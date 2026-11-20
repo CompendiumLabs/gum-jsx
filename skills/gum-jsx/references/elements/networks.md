@@ -111,7 +111,7 @@ use ordinary px/em/fractional layout lengths. Changing the canvas size moves the
 nodes while their labels retain their font size; an explicit node width can wrap
 its label. Edges attach to the resulting frame after that wrapping finishes.
 
-Sizing and coordinate options follow [Graph](plotting.md#Graph): a natural network is
+Sizing and coordinate options follow [Graph](graph.md#Graph): a natural network is
 480×320, finite offers establish the canvas, and an aspect derives a missing axis.
 Inference includes the numeric Cartesian components of each child's `pos`,
 intermediate edge points, and graphable marks. Positions accept `[x, y]` or

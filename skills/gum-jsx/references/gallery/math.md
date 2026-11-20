@@ -788,7 +788,7 @@ font size and color; explicit styling on the formula takes precedence.
 The runnable example uses formulas in every label position. It plots sine and
 cosine with multiples of π on the horizontal axis and a mathematical legend.
 
-See [Plot](../elements/plotting.md#Plot), [Axis](../elements/plotting.md#Axis),
+See [Plot](../elements/plotting.md#Plot), [Axis](../elements/graph.md#Axis),
 [math inside prose](math.md#inline_math), and [math in slides](math.md#math_slides).
 
 <a id="math_plot_labels-example"></a>

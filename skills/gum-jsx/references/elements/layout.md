@@ -498,7 +498,7 @@ false and does not erase reported overflow. **Page** still clips at the outer vi
 
 **Group** uses local fractional `pos` values and `anchor`; **Graph** uses data positions and
 **Overlay** places decorations relative to a measured base. **Box** and stacks use their
-own placement rules. Use [Graph](plotting.md#Graph) for data limits and [Rotate](layout.md#Rotate)
+own placement rules. Use [Graph](graph.md#Graph) for data limits and [Rotate](layout.md#Rotate)
 or [TransformBox](layout.md#TransformBox) for explicit transforms. **Group** does not infer
 data limits or perform node/edge lookup.
 

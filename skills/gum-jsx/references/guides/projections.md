@@ -7,7 +7,7 @@ can use Cartesian, polar, or geographic coordinates.
 
 ## Polar coordinates in Graph
 
-Give [Graph](../elements/plotting.md#Graph) a `polar_projection()` to map named
+Give [Graph](../elements/graph.md#Graph) a `polar_projection()` to map named
 angle/radius records into Cartesian coordinates:
 
 ```jsx
@@ -47,10 +47,10 @@ Custom projections can still be supplied as pure coordinate-record functions.
 ## Parametric paths in source coordinates
 
 [SymLine](../elements/plotting.md#SymLine),
-[SymSpline](../elements/plotting.md#SymSpline),
-[SymPoly](../elements/plotting.md#SymPoly),
+[SymSpline](../elements/plotting-marks.md#SymSpline),
+[SymPoly](../elements/plotting-marks.md#SymPoly),
 [SymPoints](../elements/plotting.md#SymPoints), and
-[SymArrow](../elements/plotting.md#SymArrow) accept `f(t)` returning any numeric
+[SymArrow](../elements/plotting-marks.md#SymArrow) accept `f(t)` returning any numeric
 coordinate record. Sampling produces source coordinates; the enclosing Graph
 projects them into its Cartesian view. For example, put this spiral inside the
 polar Graph above:
@@ -96,8 +96,8 @@ splitting paths. An unlogged axis can still contain zero or negative values.
 Nonfinite samples follow the usual gap rules.
 
 Graph limits are **projected values**: `[0, 3]` covers data values from `1` to
-`1000` at base 10. [HAxis](../elements/plotting.md#HAxis),
-[VAxis](../elements/plotting.md#VAxis), and meshes already use output coordinates
+`1000` at base 10. [HAxis](../elements/graph.md#HAxis),
+[VAxis](../elements/graph.md#VAxis), and meshes already use output coordinates
 and do not apply the projection again. Supply explicit `[position, label]` ticks
 to display the original data values:
 

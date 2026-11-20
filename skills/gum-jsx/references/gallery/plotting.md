@@ -1,5 +1,359 @@
 # Plotting gallery
 
+These examples begin with [Plot](../elements/plotting.md#Plot) compositions.
+Start from one of these when the request calls for a chart with axes and labels.
+
+<a id="axis_arrows"></a>
+
+## Axes with Arrows
+
+A logarithmic curve with arrowheads on both directed axes. Plot measures the ticks,
+labels, baselines, and curved heads together.
+
+`axis-arrow` enables both heads. `axis-arrow-size` and `axis-arrow-curve` are
+forwarded to each generated axis; use the corresponding `xaxis-` or `yaxis-`
+scope to customize one axis.
+
+See [Axis](../elements/graph.md#Axis).
+
+<a id="axis_arrows-example"></a>
+
+### Example
+
+```jsx
+// Directed plot axes with curved arrowheads and a logarithmic curve.
+<Plot
+  font-size={px(14)}
+  title="Axes with arrows"
+  xlim={[1, 5]}
+  ylim={[0, 2]}
+  xticks={[1, 2, 3, 4]}
+  yticks={[0, 0.5, 1, 1.5]}
+  grid
+  axis-arrow
+  axis-arrow-open
+  axis-arrow-curve={0.4}
+  margin={em(2)}
+>
+  <SymLine fy={log} xlim={[1, 5]} stroke={blue} stroke-width={px(2)} />
+</Plot>
+```
+
+---
+
+<a id="plot_bars"></a>
+
+## Regional changes
+
+Categorical ticks, positive and negative bars, and functional bar colors.
+
+See [BarPlot](../elements/plotting.md#BarPlot) for options.
+
+<a id="plot_bars-example"></a>
+
+### Example
+
+```jsx
+// Categorical ticks, positive and negative bars, and functional bar colors.
+<BarPlot
+  font-size={em(1)}
+  values={[28, 43, -17, 56, 34]}
+  title="Change by region"
+  xlabel="Region"
+  ylabel="Change (%)"
+  ylim={[-20, 60]}
+  padding={0.025}
+  bar-width={0.7}
+  xticks={enumerate(["North", "East", "Central", "South", "West"])}
+  xaxis-label-font-size={em(0.8)}
+  styles={(value) => ({
+    fill: value < 0 ? red : blue,
+    border_radius: value < 0 ? {'b': em(0.25)} : {'t': em(0.25)},
+  })}
+>
+  <Polyline points={[[-0.5, 0], [4.5, 0]]} stroke={darkgray} />
+</BarPlot>
+```
+
+---
+
+<a id="slick_bars"></a>
+
+## Slick Bars
+
+Rounded bars, angled category labels, and percentage annotations form a styled bar chart.
+
+The model names and numbers are illustrative chart-demo data. No benchmark, methodology, or source was supplied; this is not a measured model comparison. BarPlot supplies rounded top corners, measured ticks, and an explicit domain with headroom for annotations.
+
+The x-axis combines `xaxis-rotate={-40}` with
+`xaxis-label-anchor={['end', 'start']}`. The anchor attaches each label's
+top-right corner to its tick, so labels of different lengths hang down and to
+the left instead of being centered by their rotated bounds. On a standalone
+axis, the equivalent properties are `rotate` and `label-anchor`.
+
+See [BarPlot](../elements/plotting.md#BarPlot) and
+[Axis](../elements/graph.md#Axis).
+
+<a id="slick_bars-example"></a>
+
+### Example
+
+```jsx
+// Historical sample values from the old gallery, preserved as chart-demo data.
+const labels = [
+  "GPT-4o",
+  "OpenAI o1",
+  "OpenAI o4-mini",
+  "Gemini 3 Pro",
+  "OpenAI o3",
+  "Grok 4",
+  "Claude Opus 4.5",
+  "GPT-5.2",
+]
+const values = [1.3, 3.2, 8.3, 12.4, 14.1, 15.9, 17.5, 25.2]
+return <BarPlot
+  title="Rounded bars · gallery sample data"
+  values={values}
+  aspect={1.3}
+  font-size={px(18)}
+  height={px(550)}
+  ylim={[0, 30]}
+  xticks={enumerate(labels)}
+  yticks={range(0, 31, 5)}
+  xaxis-at={-1.1}
+  yaxis-at={-0.7}
+  yaxis-tick-side="inner"
+  ygrid
+  xaxis-lim={[0, 7]}
+  xaxis-rotate={-40}
+  xaxis-label-anchor={['end', 'start']}
+  axis-tick-size={em(0.5)}
+  margin={em(2)}
+  bar-width={0.8}
+  border-radius={{ t: em(0.3) }}
+  fill={blue}
+>
+  {values.map((value, index) => (
+    <Text pos={[index, value]} anchor={["center", "end"]}>
+      {value + "%"}
+    </Text>
+  ))}
+</BarPlot>
+```
+
+---
+
+<a id="plot_slide"></a>
+
+## A slide with a plot
+
+A slide composes a measured title, figure, and caption at a stable type scale.
+
+See [Slide](../elements/text.md#Slide) for options.
+
+<a id="plot_slide-example"></a>
+
+### Example
+
+```jsx
+// A slide composes a measured title, figure, and caption at a stable type scale.
+<Slide fit font-size={px(15)} aspect={1.5} title="From samples to a figure">
+  <Plot
+    grow={1}
+    width={0.9}
+    align-self="center"
+    title="Sine wave"
+    xlabel="Phase (rad)"
+    ylabel="Value"
+    xlim={[0, tau]}
+    ylim={[-1.2, 1.2]}
+    font-size={em(0.75)}
+  >
+    <SymLine fy={sin} xlim={[0, tau]} stroke={blue} stroke-width={em(0.18)} />
+  </Plot>
+  <Text color={darkgray} font-size={em(0.9)}>A common sampler supports scalar functions and parametric curves.</Text>
+</Slide>
+```
+
+---
+
+<a id="particle_box"></a>
+
+## Particle in a Box
+
+A monochrome infinite-square-well illustration.
+Four sinusoidal wavefunctions sit between hatched walls, with matching state
+and energy labels. The vertical offsets are for comparison, not an energy scale.
+
+`baseline(index)` supplies the same offset to the curve, guide, and labels.
+[SymLine](../elements/plotting.md#SymLine) samples each sine curve over the well;
+241 samples provide smooth traces without interpolating a separate spline.
+[Polyline](../elements/geometry.md#Polyline) draws the diagonal hatching in data
+coordinates, as well as the well walls and baselines. **Line**, **HLine**, and
+**VLine** also use ambient data coordinates; `space="local"` opts out.
+
+[Plot](../elements/plotting.md#Plot) measures the math tick labels and reserves
+their space. Explicit x limits include room for the side annotations, while the
+y axis and grid are disabled. The title, plot, and final formula use a centered
+stack with an explicit plot height; text keeps its specified font size.
+
+[View the source](plotting.md#particle_box-example).
+
+<a id="particle_box-example"></a>
+
+### Example
+
+```jsx
+// Four wavefunctions in an infinite square well, vertically offset for comparison.
+const levels = [1, 2, 3, 4]
+const amplitude = 0.75
+const spacing = 2.5
+const ymin = -0.5
+const ymax = levels.length * spacing + 0.5
+const baseline = index => (index + 0.5) * spacing
+const ticks = [
+  [0, <Tex>0</Tex>],
+  [0.5, <Tex>L/2</Tex>],
+  [1, <Tex>L</Tex>],
+]
+
+return (
+  <Box color={black} padding={em(1.45)} background={white}>
+    <VStack gap={em(0.95)} align="center">
+      <Text font-size={em(1.5)} font-weight={bold}>Particle in a Box</Text>
+      <Plot
+        aspect={1.55}
+        xlim={[-0.45, 1.45]} ylim={[ymin, ymax]}
+        xticks={ticks} yaxis={false} grid={false}
+        margin={em(0.65)} xaxis-font-size={em(1.2)}
+        xaxis-stroke={black} xaxis-stroke-width={px(2.5)}
+        xaxis-tick-side="outer" xaxis-label-color={black}
+      >
+        {linspace(ymin, ymax - 0.5, 24).map(y => (
+          <Polyline
+            points={[[-0.065, y], [0, y + 0.5]]}
+            stroke={black} stroke-width={px(0.7)}
+          />
+        ))}
+        {linspace(ymin, ymax - 0.5, 24).map(y => (
+          <Polyline
+            points={[[1, y], [1.065, y + 0.5]]}
+            stroke={black} stroke-width={px(0.7)}
+          />
+        ))}
+        <Polyline points={[[0, ymin], [0, ymax]]} stroke={black} stroke-width={px(2.5)} />
+        <Polyline points={[[1, ymin], [1, ymax]]} stroke={black} stroke-width={px(2.5)} />
+        {levels.map((n, index) => (
+          <>
+            <Polyline
+              points={[[0, baseline(index)], [1, baseline(index)]]}
+              stroke={black} opacity={0.25} stroke-width={px(1)}
+            />
+            <SymLine
+              fy={x => baseline(index) + amplitude * sin(n * pi * x)}
+              xlim={[0, 1]} samples={241}
+              stroke={black} stroke-width={px(2.5)}
+            />
+            <Tex pos={[-0.25, baseline(index)]} anchor="center" font-size={em(1.3)} color={black}>
+              {`n=${n}`}
+            </Tex>
+            <Tex pos={[1.23, baseline(index)]} anchor="center" font-size={em(1.3)} color={black}>
+              {`E_{${n}}`}
+            </Tex>
+          </>
+        ))}
+      </Plot>
+      <Latex font-size={em(1.4)}>
+        {String.raw`\psi_n(x)=\sqrt{\frac{2}{L}}\sin\!\left(\frac{n\pi x}{L}\right)`}
+      </Latex>
+    </VStack>
+  </Box>
+)
+```
+
+---
+
+<a id="complex_plot"></a>
+
+## Complex Roots
+
+The real and imaginary components of the roots of x² + 2cx + 1 are plotted horizontally against the parameter c.
+
+The real branches are sampled separately outside |c| = 1, and the imaginary components inside it, keeping each curve within its domain. Upright math and text annotations use data positions and pixel font sizes.
+
+See [SymLine](../elements/plotting.md#SymLine).
+
+<a id="complex_plot-example"></a>
+
+### Example
+
+```jsx
+// Real and imaginary components of the roots of x² + 2cx + 1.
+const Curve = ({ fx, ylim, color }) => (
+  <SymLine fx={fx} ylim={ylim} samples={200} stroke={color} stroke-width={px(2.5)} />
+)
+return <Plot fit grid margin={em(1.4)} font-size={em(0.75)}
+  aspect={1.7} xlim={[-4, 4]} ylim={[-2, 2]}
+  xlabel={<Tex font-size={em(1.25)}>x=a+bi</Tex>}
+  ylabel={<Tex font-size={em(1.25)}>c</Tex>}
+  xticks={range(-4, 5)} yticks={linspace(-2, 2, 9)}
+>
+  <Line from={[-4, 0]} to={[4, 0]} stroke={darkgray} />
+  <Line from={[0, -2]} to={[0, 2]} stroke={darkgray} />
+  <Line from={[-2, 2]} to={[2, -2]} stroke-dasharray={px(3)} />
+  <Line from={[0, 2]} to={[0, -2]} stroke-dasharray={px(3)} />
+  <Curve fx={(c) => -c + sqrt(maximum(0, c * c - 1))} ylim={[-2, 2]} color={blue} />
+  <Curve fx={(c) => -c - sqrt(maximum(0, c * c - 1))} ylim={[-2, 2]} color={blue} />
+  <Curve fx={(c) => sqrt(maximum(0, 1 - c * c))} ylim={[-2, 2]} color={red} />
+  <Curve fx={(c) => -sqrt(maximum(0, 1 - c * c))} ylim={[-2, 2]} color={red} />
+  <Points points={[[-1, 1], [1, -1]]} point-size={px(7)} fill={blue} />
+  <Points points={[[0, -1], [0, 1]]} point-size={px(7)} fill={red} />
+  <Points points={[[0, 0]]} point-size={px(7)} fill={slate} />
+  <Text pos={[-2.6, 1.2]} color={blue} font-size={em(1.3)}>real</Text>
+  <Text pos={[1.5, -0.25]} color={red} font-size={em(1.3)}>imag</Text>
+  <Tex pos={[2.5, 1.75]} font-size={em(1.3)}>f(x)=x^2+2cx+1</Tex>
+</Plot>
+```
+
+---
+
+<a id="flux_capacitance"></a>
+
+## Flux Capacitance
+
+A translucent band fills the space between sine and cosine over a full period. The title is playful; the curves are a plotting demonstration.
+
+SymFill uses `upper` and `lower` to define the band's boundaries. All three sampled marks declare the same domain explicitly.
+
+See [SymFill](../elements/plotting.md#SymFill).
+
+<a id="flux_capacitance-example"></a>
+
+### Example
+
+```jsx
+// A translucent band between sine and cosine over one complete period.
+<Plot
+  title="Flux Capacitance"
+  xlabel="Phase (radians)"
+  ylabel="Interference"
+  xlim={[0, tau]}
+  ylim={[-1.5, 1.5]}
+  margin={em(1.25)}
+>
+  <SymFill upper={sin} lower={cos} xlim={[0, tau]} fill={blue} stroke={none} opacity={0.22} />
+  <SymLine fy={sin} xlim={[0, tau]} stroke={blue} stroke-width={px(2.5)} />
+  <SymLine fy={cos} xlim={[0, tau]} stroke={purple} stroke-width={px(2.5)} />
+</Plot>
+```
+
+---
+
+## Custom coordinate compositions
+
+These examples use custom canvases or projections. Their lower-level frame
+construction is useful for those compositions, rather than a default chart recipe.
+
 <a id="atomic_orbitals"></a>
 
 ## Atomic Orbitals
@@ -7,7 +361,7 @@
 Six stylized angular profiles show s, p, and d lobes with separate positive and
 negative phases.
 
-Each [SymPoly](../elements/plotting.md#SymPoly) samples `{theta, r}` from its
+Each [SymPoly](../elements/plotting-marks.md#SymPoly) samples `{theta, r}` from its
 angular radius function. The graphs share one `polar_projection()` to convert
 those records to Cartesian drawing coordinates. Phase intervals split the lobes
 for blue/red styling. The origin marker also uses polar coordinates, while
@@ -122,159 +476,119 @@ return <Box font-size={px(20)} padding={em(1)}>
 
 ---
 
-<a id="axis_arrows"></a>
+<a id="complex_3d"></a>
 
-## Axes with Arrows
+## Complex Roots in 3D
 
-A logarithmic curve with arrowheads on both directed axes. Plot measures the ticks,
-labels, baselines, and curved heads together.
+The roots x = −c ± √(c² − 1) of x² + 2cx + 1 = 0 trace two curves as c varies
+from −2 to 2. The three axes show the parameter c, the real part of x, and the
+imaginary part of x. Blue follows the plus branch; red follows the minus branch.
 
-`axis-arrow` enables both heads. `axis-arrow-size` and `axis-arrow-curve` are
-forwarded to each generated axis; use the corresponding `xaxis-` or `yaxis-`
-scope to customize one axis.
+For |c| < 1, the roots are complex conjugates with real part −c and imaginary
+parts ±√(1 − c²). Outside that interval, both roots lie in the gridded
+Im(x) = 0 plane. The markers show the repeated roots at c = ±1, where the
+branches meet: x = 1 at c = −1, and x = −1 at c = 1.
 
-See [Axis](../elements/plotting.md#Axis).
+[Graph](../elements/graph.md#Graph) applies `isometric_projection()` to the
+curves, axes, ticks, and labels. Each [SymLine](../elements/plotting.md#SymLine)
+samples a root as `{x: c, y: Re(x), z: Im(x)}`, keeping its real and imaginary
+components together throughout the curve. The graph's limits describe the
+projected view, and its aspect preserves equal scale in that view.
 
-<a id="axis_arrows-example"></a>
+Compare [Complex Roots](plotting.md#complex_plot), which plots the real and imaginary
+components separately, or see the [projection guide](../guides/projections.md).
 
-### Example
-
-```jsx
-// Directed plot axes with curved arrowheads and a logarithmic curve.
-<Plot
-  font-size={px(14)}
-  title="Axes with arrows"
-  xlim={[1, 5]}
-  ylim={[0, 2]}
-  xticks={[1, 2, 3, 4]}
-  yticks={[0, 0.5, 1, 1.5]}
-  grid
-  axis-arrow
-  axis-arrow-open
-  axis-arrow-curve={0.4}
-  margin={em(2)}
->
-  <SymLine fy={log} xlim={[1, 5]} stroke={blue} stroke-width={px(2)} />
-</Plot>
-```
-
----
-
-<a id="complex_plot"></a>
-
-## Complex Roots
-
-The real and imaginary components of the roots of x² + 2cx + 1 are plotted horizontally against the parameter c.
-
-The real branches are sampled separately outside |c| = 1, and the imaginary components inside it, keeping each curve within its domain. Upright math and text annotations use data positions and pixel font sizes.
-
-See [SymLine](../elements/plotting.md#SymLine).
-
-<a id="complex_plot-example"></a>
+<a id="complex_3d-example"></a>
 
 ### Example
 
 ```jsx
-// Real and imaginary components of the roots of x² + 2cx + 1.
-const Curve = ({ fx, ylim, color }) => (
-  <SymLine fx={fx} ylim={ylim} samples={301} stroke={color} stroke-width={px(2.5)} />
-)
-return <Plot
-  aspect={1.7}
-  xlim={[-4, 4]}
-  ylim={[-2, 2]}
-  grid
-  font-size={em(0.9)}
-  margin={em(1.4)}
-  xlabel={<Tex font-size={em(1.25)}>x=a+bi</Tex>}
-  ylabel={<Tex font-size={em(1.25)}>c</Tex>}
-  xticks={range(-4, 5)}
-  yticks={linspace(-2, 2, 9)}
->
-  <Polyline
-    points={[
-      [-4, 0],
-      [4, 0],
-    ]}
-    stroke={darkgray}
-  />
-  <Polyline
-    points={[
-      [0, -2],
-      [0, 2],
-    ]}
-    stroke={darkgray}
-  />
-  {[
-    [-2, -1],
-    [1, 2],
-  ].map((lim) => (
+// The roots of x² + 2cx + 1 traced in (c, Re x, Im x) coordinates.
+const branches = [
+  { sign: 1, color: blue, label: String.raw`x_+ = -c + \sqrt{c^2 - 1}` },
+  { sign: -1, color: red, label: String.raw`x_- = -c - \sqrt{c^2 - 1}` },
+]
+
+// Keep both components together, including the zero imaginary part of real roots.
+const root = (c, sign) => ({
+  x: c,
+  y: -c + sign * sqrt(maximum(0, c * c - 1)),
+  z: sign * sqrt(maximum(0, 1 - c * c)),
+})
+const axes = [
+  { axis: 'x', lim: [-2.5, 2.5], ticks: [-2, -1, 1, 2], label: 'c' },
+  { axis: 'y', lim: [-4.5, 4.5], ticks: [-4, -2, 2, 4], label: String.raw`\operatorname{Re}(x)` },
+  { axis: 'z', lim: [-1.5, 1.6], ticks: [-1, 1], label: String.raw`\operatorname{Im}(x)` },
+]
+
+// Axes, tick labels, and curves all share the same three-dimensional frame.
+const Axis = ({ axis, lim, ticks, label }) => {
+  const point = value => ({ x: 0, y: 0, z: 0, [axis]: value })
+  const offset = axis === 'z' ? { x: 0.22 } : { z: -0.22 }
+  return (
     <>
-      <Curve fx={(c) => -c + sqrt(maximum(0, c * c - 1))} ylim={lim} color={blue} />
-      <Curve fx={(c) => -c - sqrt(maximum(0, c * c - 1))} ylim={lim} color={blue} />
+      <Arrow
+        from={point(lim[0])} to={point(lim[1])}
+        stroke={slate} stroke-width={em(0.055)} head-size={em(0.35)}
+      />
+      <Points points={ticks.map(point)} point-size={em(0.15)} fill={slate} />
+      {ticks.map(value => (
+        <Text pos={{ ...point(value), ...offset }} color={slate} font-size={em(0.65)}>
+          {value}
+        </Text>
+      ))}
+      <Tex
+        pos={point(lim[1] + 0.35)} font-size={em(0.9)}
+        anchor={axis === 'y' ? ['end', 'center'] : 'center'}
+      >
+        {label}
+      </Tex>
     </>
-  ))}
-  <Curve fx={(c) => sqrt(maximum(0, 1 - c * c))} ylim={[-1, 1]} color={red} />
-  <Curve fx={(c) => -sqrt(maximum(0, 1 - c * c))} ylim={[-1, 1]} color={red} />
-  <Points
-    points={[
-      [-1, 1],
-      [1, -1],
-    ]}
-    point-size={px(8)}
-    fill={blue}
-  />
-  <Points
-    points={[
-      [0, -1],
-      [0, 1],
-    ]}
-    point-size={px(8)}
-    fill={red}
-  />
-  <Points points={[[0, 0]]} point-size={px(7)} fill={slate} />
-  <Text pos={[-2.6, 1.1]} anchor="center" color={blue} font-size={em(1.3)}>
-    real
-  </Text>
-  <Text pos={[1.6, -0.4]} anchor="center" color={red} font-size={em(1.3)}>
-    imag
-  </Text>
-  <Tex pos={[2.1, 1.6]} anchor="center" font-size={em(1.4)}>
-    f(x)=x^2+2cx+1
-  </Tex>
-</Plot>
-```
+  )
+}
 
----
-
-<a id="flux_capacitance"></a>
-
-## Flux Capacitance
-
-A translucent band fills the space between sine and cosine over a full period. The title is playful; the curves are a plotting demonstration.
-
-SymFill uses `upper` and `lower` to define the band's boundaries. All three sampled marks declare the same domain explicitly.
-
-See [SymFill](../elements/plotting.md#SymFill).
-
-<a id="flux_capacitance-example"></a>
-
-### Example
-
-```jsx
-// A translucent band between sine and cosine over one complete period.
-<Plot
-  title="Flux Capacitance"
-  xlabel="Phase (radians)"
-  ylabel="Interference"
-  xlim={[0, tau]}
-  ylim={[-1.5, 1.5]}
-  margin={em(1.25)}
->
-  <SymFill upper={sin} lower={cos} xlim={[0, tau]} fill={blue} stroke={none} opacity={0.22} />
-  <SymLine fy={sin} xlim={[0, tau]} stroke={blue} stroke-width={px(2.5)} />
-  <SymLine fy={cos} xlim={[0, tau]} stroke={purple} stroke-width={px(2.5)} />
-</Plot>
+return (
+  <TextBox width={em(36)} font-size={px(20)} padding={em(1.2)} background={white} fit>
+    <VStack gap={em(1)} align="center">
+      <Tex font-size={em(1.4)}>x^2 + 2cx + 1 = 0</Tex>
+      <Graph
+        width="fill" aspect={2.5}
+        projection={isometric_projection()}
+        xlim={[-5, 5]} ylim={[-2.75, 2.5]}
+      >
+        {/* A light grid marks the plane where the roots are real. */}
+        {range(-2, 3).map(c => (
+          <Line
+            from={{ x: c, y: -4, z: 0 }} to={{ x: c, y: 4, z: 0 }}
+            stroke={lightgray} stroke-width={em(0.035)}
+          />
+        ))}
+        {range(-4, 5).map(a => (
+          <Line
+            from={{ x: -2, y: a, z: 0 }} to={{ x: 2, y: a, z: 0 }}
+            stroke={lightgray} stroke-width={em(0.035)}
+          />
+        ))}
+        {axes.map(axis => <Axis {...axis} />)}
+        {branches.map(({ sign, color }) => (
+          <SymLine
+            f={c => root(c, sign)} tlim={[-2, 2]} samples={401}
+            stroke={color} stroke-width={em(0.14)}
+          />
+        ))}
+        <Points
+          points={[-1, 1].map(c => root(c, 1))}
+          point-size={em(0.38)} fill={slate}
+        />
+      </Graph>
+      <HStack gap={em(2)}>
+        {branches.map(({ color, label }) => (
+          <Tex color={color} font-size={em(1.1)}>{label}</Tex>
+        ))}
+      </HStack>
+    </VStack>
+  </TextBox>
+)
 ```
 
 ---
@@ -285,7 +599,7 @@ See [SymFill](../elements/plotting.md#SymFill).
 
 Directed limits reverse x while annotations and custom markers remain upright.
 
-See [Graph](../elements/plotting.md#Graph) for options.
+See [Graph](../elements/graph.md#Graph) for options.
 
 <a id="graph_scatter-example"></a>
 
@@ -562,7 +876,7 @@ return (
 ## Logarithmic projection
 
 `log_projection()` maps both data coordinates with base-10 logarithms. The
-[Graph](../elements/plotting.md#Graph) limits `[0, 3]` therefore cover values
+[Graph](../elements/graph.md#Graph) limits `[0, 3]` therefore cover values
 from `1` to `1000`. Use `log_projection({axes: 'x'})` or
 `log_projection({axes: 'y'})` for a semilog view, and `base` to choose another base.
 
@@ -644,208 +958,12 @@ return (
 
 ---
 
-<a id="particle_box"></a>
-
-## Particle in a Box
-
-A monochrome infinite-square-well illustration.
-Four sinusoidal wavefunctions sit between hatched walls, with matching state
-and energy labels. The vertical offsets are for comparison, not an energy scale.
-
-`baseline(index)` supplies the same offset to the curve, guide, and labels.
-[SymLine](../elements/plotting.md#SymLine) samples each sine curve over the well;
-241 samples provide smooth traces without interpolating a separate spline.
-[Polyline](../elements/geometry.md#Polyline) draws the diagonal hatching in data
-coordinates, as well as the well walls and baselines. **Line**, **HLine**, and
-**VLine** also use ambient data coordinates; `space="local"` opts out.
-
-[Plot](../elements/plotting.md#Plot) measures the math tick labels and reserves
-their space. Explicit x limits include room for the side annotations, while the
-y axis and grid are disabled. The title, plot, and final formula use a centered
-stack with an explicit plot height; text keeps its specified font size.
-
-[View the source](plotting.md#particle_box-example).
-
-<a id="particle_box-example"></a>
-
-### Example
-
-```jsx
-// Four wavefunctions in an infinite square well, vertically offset for comparison.
-const levels = [1, 2, 3, 4]
-const amplitude = 0.75
-const spacing = 2.5
-const ymin = -0.5
-const ymax = levels.length * spacing + 0.5
-const baseline = index => (index + 0.5) * spacing
-const ticks = [
-  [0, <Tex>0</Tex>],
-  [0.5, <Tex>L/2</Tex>],
-  [1, <Tex>L</Tex>],
-]
-
-return (
-  <Box color={black} padding={em(1.45)} background={white}>
-    <VStack gap={em(0.95)} align="center">
-      <Text font-size={em(1.5)} font-weight={bold}>Particle in a Box</Text>
-      <Plot
-        aspect={1.55}
-        xlim={[-0.45, 1.45]} ylim={[ymin, ymax]}
-        xticks={ticks} yaxis={false} grid={false}
-        margin={em(0.65)} xaxis-font-size={em(1.2)}
-        xaxis-stroke={black} xaxis-stroke-width={px(2.5)}
-        xaxis-tick-side="outer" xaxis-label-color={black}
-      >
-        {linspace(ymin, ymax - 0.5, 24).map(y => (
-          <Polyline
-            points={[[-0.065, y], [0, y + 0.5]]}
-            stroke={black} stroke-width={px(0.7)}
-          />
-        ))}
-        {linspace(ymin, ymax - 0.5, 24).map(y => (
-          <Polyline
-            points={[[1, y], [1.065, y + 0.5]]}
-            stroke={black} stroke-width={px(0.7)}
-          />
-        ))}
-        <Polyline points={[[0, ymin], [0, ymax]]} stroke={black} stroke-width={px(2.5)} />
-        <Polyline points={[[1, ymin], [1, ymax]]} stroke={black} stroke-width={px(2.5)} />
-        {levels.map((n, index) => (
-          <>
-            <Polyline
-              points={[[0, baseline(index)], [1, baseline(index)]]}
-              stroke={black} opacity={0.25} stroke-width={px(1)}
-            />
-            <SymLine
-              fy={x => baseline(index) + amplitude * sin(n * pi * x)}
-              xlim={[0, 1]} samples={241}
-              stroke={black} stroke-width={px(2.5)}
-            />
-            <Tex pos={[-0.25, baseline(index)]} anchor="center" font-size={em(1.3)} color={black}>
-              {`n=${n}`}
-            </Tex>
-            <Tex pos={[1.23, baseline(index)]} anchor="center" font-size={em(1.3)} color={black}>
-              {`E_{${n}}`}
-            </Tex>
-          </>
-        ))}
-      </Plot>
-      <Latex font-size={em(1.4)}>
-        {String.raw`\psi_n(x)=\sqrt{\frac{2}{L}}\sin\!\left(\frac{n\pi x}{L}\right)`}
-      </Latex>
-    </VStack>
-  </Box>
-)
-```
-
----
-
-<a id="plot_bars"></a>
-
-## Regional changes
-
-Categorical ticks, positive and negative bars, and functional bar colors.
-
-See [BarPlot](../elements/plotting.md#BarPlot) for options.
-
-<a id="plot_bars-example"></a>
-
-### Example
-
-```jsx
-// Categorical ticks, positive and negative bars, and functional bar colors.
-<BarPlot
-  font-size={em(1)}
-  values={[28, 43, -17, 56, 34]}
-  title="Change by region"
-  xlabel="Region"
-  ylabel="Change (%)"
-  ylim={[-20, 60]}
-  padding={0.025}
-  bar-width={0.7}
-  xticks={enumerate(["North", "East", "Central", "South", "West"])}
-  xaxis-label-font-size={em(0.8)}
-  styles={(value) => ({
-    fill: value < 0 ? red : blue,
-    border_radius: value < 0 ? {'b': em(0.25)} : {'t': em(0.25)},
-  })}
->
-  <Polyline points={[[-0.5, 0], [4.5, 0]]} stroke={darkgray} />
-</BarPlot>
-```
-
----
-
-<a id="plot_manual"></a>
-
-## Manual Plot
-
-A sine plot assembled from a Graph, Mesh2D, HAxis, and VAxis, rather than the higher-level Plot component.
-
-The graph supplies data mapping. Each axis and mesh declares its tick domain; outside padding reserves space for their labels. Axis placement uses `side`.
-
-See [Graph](../elements/plotting.md#Graph).
-
-<a id="plot_manual-example"></a>
-
-### Example
-
-```jsx
-// A sine plot assembled directly from Graph, a mesh, and two axes.
-const xlim = [0, tau]; const ylim = [-1, 1]
-const xticks = 5; const yticks = 5
-return <Box font-size={px(18)} padding={em(3)}>
-  <Graph xlim={xlim} ylim={ylim}>
-    <Mesh2D xlim={xlim} ylim={ylim} xticks={xticks} yticks={yticks} />
-    <HAxis lim={xlim} ticks={xticks} side="bottom" />
-    <VAxis lim={ylim} ticks={yticks} side="left" />
-    <SymLine fy={sin} xlim={xlim} stroke={blue} stroke-width={px(3)} />
-  </Graph>
-</Box>
-```
-
----
-
-<a id="plot_slide"></a>
-
-## A slide with a plot
-
-A slide composes a measured title, figure, and caption at a stable type scale.
-
-See [Slide](../elements/text.md#Slide) for options.
-
-<a id="plot_slide-example"></a>
-
-### Example
-
-```jsx
-// A slide composes a measured title, figure, and caption at a stable type scale.
-<Slide fit font-size={px(15)} aspect={1.5} title="From samples to a figure">
-  <Plot
-    grow={1}
-    width={0.9}
-    align-self="center"
-    title="Sine wave"
-    xlabel="Phase (rad)"
-    ylabel="Value"
-    xlim={[0, tau]}
-    ylim={[-1.2, 1.2]}
-    font-size={em(0.75)}
-  >
-    <SymLine fy={sin} xlim={[0, tau]} stroke={blue} stroke-width={em(0.18)} />
-  </Plot>
-  <Text color={darkgray} font-size={em(0.9)}>A common sampler supports scalar functions and parametric curves.</Text>
-</Slide>
-```
-
----
-
 <a id="projection_3d"></a>
 
 ## Three-dimensional projection
 
 Each point in this figure carries `{x, y, z}`. The core
-`isometric_projection()` helper on [Graph](../elements/plotting.md#Graph) maps
+`isometric_projection()` helper on [Graph](../elements/graph.md#Graph) maps
 these three dimensions to `{x, y}` on the page, with equal scale along all three
 source axes. The graph's limits describe that output space.
 
@@ -925,72 +1043,6 @@ return (
 
 ---
 
-<a id="slick_bars"></a>
-
-## Slick Bars
-
-Rounded bars, angled category labels, and percentage annotations form a styled bar chart.
-
-The model names and numbers are illustrative chart-demo data. No benchmark, methodology, or source was supplied; this is not a measured model comparison. BarPlot supplies rounded top corners, measured ticks, and an explicit domain with headroom for annotations.
-
-The x-axis combines `xaxis-rotate={-40}` with
-`xaxis-label-anchor={['end', 'start']}`. The anchor attaches each label's
-top-right corner to its tick, so labels of different lengths hang down and to
-the left instead of being centered by their rotated bounds. On a standalone
-axis, the equivalent properties are `rotate` and `label-anchor`.
-
-See [BarPlot](../elements/plotting.md#BarPlot) and
-[Axis](../elements/plotting.md#Axis).
-
-<a id="slick_bars-example"></a>
-
-### Example
-
-```jsx
-// Historical sample values from the old gallery, preserved as chart-demo data.
-const labels = [
-  "GPT-4o",
-  "OpenAI o1",
-  "OpenAI o4-mini",
-  "Gemini 3 Pro",
-  "OpenAI o3",
-  "Grok 4",
-  "Claude Opus 4.5",
-  "GPT-5.2",
-]
-const values = [1.3, 3.2, 8.3, 12.4, 14.1, 15.9, 17.5, 25.2]
-return <BarPlot
-  title="Rounded bars · gallery sample data"
-  values={values}
-  aspect={1.3}
-  font-size={px(18)}
-  height={px(550)}
-  ylim={[0, 30]}
-  xticks={enumerate(labels)}
-  yticks={range(0, 31, 5)}
-  xaxis-at={-1.1}
-  yaxis-at={-0.7}
-  yaxis-tick-side="inner"
-  ygrid
-  xaxis-lim={[0, 7]}
-  xaxis-rotate={-40}
-  xaxis-label-anchor={['end', 'start']}
-  axis-tick-size={em(0.5)}
-  margin={em(2)}
-  bar-width={0.8}
-  border-radius={{ t: em(0.3) }}
-  fill={blue}
->
-  {values.map((value, index) => (
-    <Text pos={[index, value]} anchor={["center", "end"]}>
-      {value + "%"}
-    </Text>
-  ))}
-</BarPlot>
-```
-
----
-
 <a id="terrain_map"></a>
 
 ## Terrain in tiles
@@ -1001,7 +1053,7 @@ define the elevation, rounded to steps of `0.3` to create the terraces.
 
 Each tile uses closed [Polyline](../elements/geometry.md#Polyline) paths for its
 top and exposed sides. Their corners carry `{x, y, z}` coordinates; a custom
-`projection` on [Graph](../elements/plotting.md#Graph) maps them into an isometric
+`projection` on [Graph](../elements/graph.md#Graph) maps them into an isometric
 view. The example sorts tiles by `i + j` to draw distant cells first and adds
 side faces where a tile stands above its neighbor. Interpolated elevation
 colors and darker side fills give the terrain depth.
@@ -1218,7 +1270,7 @@ Ten phase-shifted cosine wave packets share a Gaussian envelope and form a color
 
 Every curve explicitly samples the displayed domain. Mesh2D controls grid density independently of the disabled axes, and finite sample counts keep rendering predictable.
 
-See [Mesh2D](../elements/plotting.md#Mesh2D).
+See [Mesh2D](../elements/graph.md#Mesh2D).
 
 <a id="the_nexus-example"></a>
 
@@ -1246,5 +1298,40 @@ See [Mesh2D](../elements/plotting.md#Mesh2D).
       ))}
     </Plot>
   </Frame>
+</Box>
+```
+
+---
+
+## Building a frame manually
+
+This final example illustrates how axes and grids fit together when composing a
+frame yourself. For an ordinary function plot, Plot supplies these parts.
+
+<a id="plot_manual"></a>
+
+## Manual Plot
+
+A sine plot assembled from a Graph, Mesh2D, HAxis, and VAxis, rather than the higher-level Plot component.
+
+The graph supplies data mapping. Each axis and mesh declares its tick domain; outside padding reserves space for their labels. Axis placement uses `side`.
+
+See [Graph](../elements/graph.md#Graph).
+
+<a id="plot_manual-example"></a>
+
+### Example
+
+```jsx
+// A sine plot assembled directly from Graph, a mesh, and two axes.
+const xlim = [0, tau]; const ylim = [-1, 1]
+const xticks = 5; const yticks = 5
+return <Box font-size={px(18)} padding={em(3)}>
+  <Graph xlim={xlim} ylim={ylim}>
+    <Mesh2D xlim={xlim} ylim={ylim} xticks={xticks} yticks={yticks} />
+    <HAxis lim={xlim} ticks={xticks} side="bottom" />
+    <VAxis lim={ylim} ticks={yticks} side="left" />
+    <SymLine fy={sin} xlim={xlim} stroke={blue} stroke-width={px(3)} />
+  </Graph>
 </Box>
 ```

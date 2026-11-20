@@ -19,7 +19,7 @@ Under projection, the center also accepts arbitrary numeric records. Projected
 radii must be local lengths, such as `px(20)`; use sampled Polyline points for
 a curve defined in the source coordinate space.
 
-Inside [Graph](plotting.md#Graph), numeric geometry uses data coordinates; outside it,
+Inside [Graph](graph.md#Graph), numeric geometry uses data coordinates; outside it,
 geometry uses local fractions/px/em. `space="local"` opts out of an ambient graph,
 and `space="data"` requires one. Pixel strokes keep their size.
 
@@ -51,7 +51,7 @@ and `space="data"` requires one. Pixel strokes keep their size.
 
 A shaft from from/to or through points. curve makes a spline; radius rounds a
 polyline. Both heads follow the original route's endpoint directions.
-Use [SymArrow](plotting.md#SymArrow) to sample a function into an arrow path.
+Use [SymArrow](plotting-marks.md#SymArrow) to sample a function into an arrow path.
 
 | Property | Default | Meaning |
 | --- | --- | --- |
@@ -106,11 +106,11 @@ the cap stops at the head's base to keep them connected.
 
 Straight, rounded, and spline shafts use the shortened route. Original points
 still determine inferred graph limits. The same clearance applies to the arrows
-in [Field](plotting.md#Field) and [SymField](plotting.md#SymField).
+in [Field](plotting-marks.md#Field) and [SymField](plotting-marks.md#SymField).
 
 Point inputs accept `{x,y}` or `[x,y]`; see [Point values](../guides/point_values.md).
 
-Inside [Graph](plotting.md#Graph), numeric geometry uses data coordinates; outside it,
+Inside [Graph](graph.md#Graph), numeric geometry uses data coordinates; outside it,
 geometry uses local fractions/px/em. `space="local"` opts out of an ambient graph,
 and `space="data"` requires one. Pixel strokes keep their size.
 
@@ -171,7 +171,7 @@ keep their existing names. Head position and direction follow the arrow's route.
 
 Point inputs accept `{x,y}` or `[x,y]`; see [Point values](../guides/point_values.md).
 
-Inside [Graph](plotting.md#Graph), numeric geometry uses data coordinates; outside it,
+Inside [Graph](graph.md#Graph), numeric geometry uses data coordinates; outside it,
 geometry uses local fractions/px/em. `space="local"` opts out of an ambient graph,
 and `space="data"` requires one. Pixel strokes keep their size.
 
@@ -392,7 +392,7 @@ scalar supplies y; for horizontal fills it supplies x. Scalar boundaries require
 exactly Cartesian `{x,y}` or `[x,y]` inputs. **VFill** is the vertical
 convenience. Defaults: pale blue fill, no stroke.
 
-Numeric geometry follows [Graph](plotting.md#Graph) and participates in limits, including
+Numeric geometry follows [Graph](graph.md#Graph) and participates in limits, including
 the baseline. [SymFill](plotting.md#SymFill) samples function boundaries.
 
 <a id="Fill-example"></a>
@@ -433,7 +433,7 @@ direction defaults to vertical (horizontal for **HFill**). For vertical fills a
 scalar supplies y; for horizontal fills it supplies x. **VFill** is the vertical
 convenience. Defaults: pale blue fill, no stroke.
 
-Numeric geometry follows [Graph](plotting.md#Graph) and participates in limits, including
+Numeric geometry follows [Graph](graph.md#Graph) and participates in limits, including
 the baseline. [SymFill](plotting.md#SymFill) samples function boundaries.
 
 <a id="HFill-example"></a>
@@ -534,7 +534,7 @@ outside it. Set dimensions explicitly for a predictable rule or connector.
 Use [Arrow](geometry.md#Arrow) for arrowheads or [Network](networks.md#Network) and
 [Edge](networks.md#Edge) for connections between named elements.
 
-Inside [Graph](plotting.md#Graph), [Plot](plotting.md#Plot), or [GeoMap](maps.md#GeoMap), both
+Inside [Graph](graph.md#Graph), [Plot](plotting.md#Plot), or [GeoMap](maps.md#GeoMap), both
 numeric endpoints use the ambient coordinates automatically. Set `space="local"`
 for a local decoration, or `space="data"` to require a coordinate context.
 Existing graph drawings that relied on the old local default need `space="local"`.
@@ -687,7 +687,7 @@ of the current API.
 Repeat a marker at each `{x,y}` or `[x,y]` in points. Projected graphs also accept
 named numeric records such as `{theta, r}` and `{x, y, z}`. The forms can be mixed.
 Null/nonfinite entries are omitted
-without changing callback indices. Positions use ambient [Graph](plotting.md#Graph)
+without changing callback indices. Positions use ambient [Graph](graph.md#Graph)
 coordinates or local fractions outside it.
 
 `point-size` is full marker diameter/size, default `px(6)`. Scalar fractions use the
@@ -747,7 +747,7 @@ Return styled shapes for individual colors. Marker sizes do not contribute to da
 points in order and closes each finite run back to its first point. Null,
 nonfinite, and hidden projected samples split the path.
 
-Inside [Graph](plotting.md#Graph), [Plot](plotting.md#Plot), or [GeoMap](maps.md#GeoMap), numeric
+Inside [Graph](graph.md#Graph), [Plot](plotting.md#Plot), or [GeoMap](maps.md#GeoMap), numeric
 vertices use ambient coordinates and contribute to ordinary Graph/Plot limit
 inference. Custom projections need explicit output limits and can accept named
 records such as `{theta, r}`, `{x, y, z}`, or geographic `{lon, lat}`.
@@ -824,7 +824,7 @@ Outside a coordinate context, fractions map to the polyline's own allocated
 axes, with y increasing downward. Pixels and em are also accepted. Point bounds
 do not set its layout size or aspect.
 
-Inside [Graph](plotting.md#Graph), [Plot](plotting.md#Plot), or [GeoMap](maps.md#GeoMap), each
+Inside [Graph](graph.md#Graph), [Plot](plotting.md#Plot), or [GeoMap](maps.md#GeoMap), each
 numeric vertex uses the ambient coordinate context automatically, just like
 [Points](geometry.md#Points). Set `space="local"` to opt out, or `space="data"` to
 require a coordinate context (and throw when none is available).
@@ -902,7 +902,7 @@ for a data-vector endpoint.
 
 Point inputs accept `{x,y}` or `[x,y]`; see [Point values](../guides/point_values.md).
 
-Inside [Graph](plotting.md#Graph), numeric geometry uses data coordinates; outside it,
+Inside [Graph](graph.md#Graph), numeric geometry uses data coordinates; outside it,
 geometry uses local fractions/px/em. `space="local"` opts out of an ambient graph,
 and `space="data"` requires one. Pixel strokes keep their size.
 
@@ -1017,7 +1017,7 @@ A polyline with quadratic rounded corners. radius defaults to `px(8)`, resolves 
 
 Point inputs accept `{x,y}` or `[x,y]`; see [Point values](../guides/point_values.md).
 
-Inside [Graph](plotting.md#Graph), numeric geometry uses data coordinates; outside it,
+Inside [Graph](graph.md#Graph), numeric geometry uses data coordinates; outside it,
 geometry uses local fractions/px/em. `space="local"` opts out of an ambient graph,
 and `space="data"` requires one. Pixel strokes keep their size.
 
@@ -1115,7 +1115,7 @@ with text, padding, or clipping, use [Box](layout.md#Box) or [Frame](layout.md#F
 
 Independent segments in one drawing. segments is an array of pairs of `{x,y}` or `[x,y]` endpoints. Pairs never connect to one another; fill is ignored.
 
-Inside [Graph](plotting.md#Graph), numeric geometry uses data coordinates; outside it,
+Inside [Graph](graph.md#Graph), numeric geometry uses data coordinates; outside it,
 geometry uses local fractions/px/em. `space="local"` opts out of an ambient graph,
 and `space="data"` requires one. Pixel strokes keep their size.
 
@@ -1157,7 +1157,7 @@ A cubic spline through points. tension defaults to 1; zero makes straight segmen
 
 Point inputs accept `{x,y}` or `[x,y]`; see [Point values](../guides/point_values.md).
 
-Inside [Graph](plotting.md#Graph), numeric geometry uses data coordinates; outside it,
+Inside [Graph](graph.md#Graph), numeric geometry uses data coordinates; outside it,
 geometry uses local fractions/px/em. `space="local"` opts out of an ambient graph,
 and `space="data"` requires one. Pixel strokes keep their size.
 
@@ -1322,7 +1322,7 @@ direction defaults to vertical (horizontal for **HFill**). For vertical fills a
 scalar supplies y; for horizontal fills it supplies x. **VFill** is the vertical
 convenience. Defaults: pale blue fill, no stroke.
 
-Numeric geometry follows [Graph](plotting.md#Graph) and participates in limits, including
+Numeric geometry follows [Graph](graph.md#Graph) and participates in limits, including
 the baseline. [SymFill](plotting.md#SymFill) samples function boundaries.
 
 <a id="VFill-example"></a>

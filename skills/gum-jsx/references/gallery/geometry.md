@@ -17,7 +17,7 @@ their canvases. The root's `fit` scales the completed comparison uniformly.
 Shaft and head colors differ to make the connection visible.
 
 See [Arrow](../elements/geometry.md#Arrow) for options and short-route behavior.
-The same geometry is used by [Field](../elements/plotting.md#Field).
+The same geometry is used by [Field](../elements/plotting-marks.md#Field).
 
 <a id="arrow_caps-example"></a>
 
@@ -87,7 +87,7 @@ A labeled animal-cell schematic combines a lumpy membrane, nucleus, mitochondria
 
 Reusable organelles draw in local coordinates inside explicitly sized regions; the outer Graph places them in the shared diagram coordinate system. Rotate positions mitochondria, while Polyline draws data-space leader lines. Labels are manually placed, and colors are blended from the shared palette. This is a schematic, not a scale model.
 
-See [Graph](../elements/plotting.md#Graph).
+See [Graph](../elements/graph.md#Graph).
 
 <a id="cell_diagram-example"></a>
 
@@ -704,7 +704,7 @@ A pendulum diagram with a clipped support, angle arc,
 equilibrium line, bob, force arrows, and equation of motion. Change `angle` or
 `length` to move the rod, bob, and force annotations together.
 
-The drawing uses a downward-facing [Graph](../elements/plotting.md#Graph) so its
+The drawing uses a downward-facing [Graph](../elements/graph.md#Graph) so its
 data coordinates match the diagram's pixel proportions. `alongRod` derives
 positions from the pivot and angle. [Polyline](../elements/geometry.md#Polyline)
 draws the rod and equilibrium line in that coordinate system; [Arc](../elements/geometry.md#Arc)
@@ -836,7 +836,7 @@ The root's `fit` prop scales the complete grid to smaller hosts without changing
 Each card contains a data graph with the same limits; a closed sampled polygon
 uses evenly spaced polar points, excluding the duplicate final angle.
 
-See [SymPoly](../elements/plotting.md#SymPoly).
+See [SymPoly](../elements/plotting-marks.md#SymPoly).
 
 <a id="polygon_slide-example"></a>
 

@@ -22,7 +22,7 @@ both forms in one list. Each tuple must contain exactly two coordinates.
 
 The representation does not change coordinate units. Primitive shapes use local
 fractions, px, and em. Numeric points in graph marks use data coordinates inside
-[Graph](../elements/plotting.md#Graph) or [Plot](../elements/plotting.md#Plot). Tuple coordinates can mix lengths, such as
+[Graph](../elements/graph.md#Graph) or [Plot](../elements/plotting.md#Plot). Tuple coordinates can mix lengths, such as
 `[px(12), 0.5]`. **Circle**'s radius remains scalar; **Ellipse** accepts separate radii.
 
 Anchor and alignment pairs instead use dimensionless fractions from 0 to 1 or

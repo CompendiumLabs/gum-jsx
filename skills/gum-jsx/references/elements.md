@@ -2,23 +2,11 @@
 
 Each entry includes its runnable JSX example.
 
-## Layout
+## External elements
 
-- [Attach](elements/layout.md#Attach) — Attach an Element outside one content child.
-- [Box](elements/layout.md#Box) — Add padding, a background, an inside border, optional rounded clipping, and alignment around one content element.
-- [Document](elements/layout.md#Document) — Collect independently laid-out pages with shared defaults and document metadata.
-- [Frame](elements/layout.md#Frame) — Surround one element with padding, background, and a default border.
-- [Grid](elements/layout.md#Grid) — Arrange children row by row with column widths shared across every row.
-- [Group](elements/layout.md#Group) — A finite canvas for independently positioned children.
-- [HStack](elements/layout.md#HStack) — Arrange child elements left to right with flex sizing and alignment.
-- [Overlay](elements/layout.md#Overlay) — Place positioned decorations over a measured base child.
-- [Page](elements/layout.md#Page) — Define one output page with explicit or content-based dimensions, independent of format.
-- [Rotate](elements/layout.md#Rotate) — Rotate a measured child around a chosen alignment point.
-- [Spacer](elements/layout.md#Spacer) — Empty space with fixed dimensions or flexible growth.
-- [TransformBox](elements/layout.md#TransformBox) — Transform a naturally measured child using an affine matrix [a,b,c,d,e,f]: x′=ax+cy+e, y′=bx+dy+f.
-- [VStack](elements/layout.md#VStack) — Arrange child elements top to bottom with flex sizing and alignment.
+- [PngImage](elements/external.md#PngImage) — Embeds a PNG from a base64 data URL.
 
-## Geometry
+## Geometry elements
 
 - [Arc](elements/geometry.md#Arc) — An ellipse segment with center, scalar or paired radius, and start/end angles in degrees.
 - [Arrow](elements/geometry.md#Arrow) — Draw a straight, curved, or rounded shaft with optional arrowheads between points.
@@ -46,72 +34,48 @@ Each entry includes its runnable JSX example.
 - [VFill](elements/geometry.md#VFill) — Fill vertically between a series of points and a horizontal boundary.
 - [VLine](elements/geometry.md#VLine) — Draw a vertical line in ambient data coordinates or local geometry.
 
-## Plotting
+## Graph and manual axes
 
-- [Axis](elements/plotting.md#Axis) — An axis occupies the graph frame; ticks and labels extend outside it.
-- [Bar](elements/plotting.md#Bar) — Draw one vertical bar at a specified value and position.
-- [BarPlot](elements/plotting.md#BarPlot) — Combine bars, axes, labels, and other plot features in one chart.
-- [Bars](elements/plotting.md#Bars) — Draw a series of vertical bars from values, positions, and baselines.
-- [Field](elements/plotting.md#Field) — Draw vectors=[{point,vector},...], with either {x,y} or [x,y] for each point and vector.
-- [Graph](elements/plotting.md#Graph) — A finite canvas with data coordinates and an optional projection.
-- [HAxis](elements/plotting.md#HAxis) — HAxis draws a baseline, ticks, and labels.
-- [HBar](elements/plotting.md#HBar) — Draw one horizontal bar at a specified value and position.
-- [HBars](elements/plotting.md#HBars) — Draw a series of horizontal bars from values, positions, and baselines.
-- [HLabel](elements/plotting.md#HLabel) — One tick label. value defaults to 0; children can be a string, number, or Element (omitted text formats the value).
-- [HLabels](elements/plotting.md#HLabels) — HLabels draws labels only, without a baseline or ticks.
-- [HMesh](elements/plotting.md#HMesh) — Draw horizontal grid lines at generated or explicit tick values.
-- [HScale](elements/plotting.md#HScale) — HScale draws ticks only, without a baseline or labels.
-- [Label](elements/plotting.md#Label) — Draw one formatted label at a tick value on an axis.
-- [Labels](elements/plotting.md#Labels) — Labels draws labels only, without a baseline or ticks.
-- [Legend](elements/plotting.md#Legend) — A measured box of badge/label rows.
-- [LegendItem](elements/plotting.md#LegendItem) — One badge and label row inside Legend.
-- [Mesh](elements/plotting.md#Mesh) — Draw grid lines at generated or explicit tick values.
-- [Mesh2D](elements/plotting.md#Mesh2D) — Combine horizontal and vertical grid lines in graph coordinates.
-- [OuterLabel](elements/plotting.md#OuterLabel) — Place a label outside a chosen frame edge with optional offset and rotation.
-- [Plot](elements/plotting.md#Plot) — Compose graphable children with linear axes, grid lines, measured tick labels, axis titles, an optional legend, and an optional background.
-- [Scale](elements/plotting.md#Scale) — Draw axis ticks without a baseline or labels.
-- [SymArrow](elements/plotting.md#SymArrow) — Sample a function and draw its path with optional arrowheads.
-- [SymField](elements/plotting.md#SymField) — Sample f(x,y) on a rectangular grid and draw it with Field.
-- [SymFill](elements/plotting.md#SymFill) — Sample a band between upper and lower functions or numbers (defaults 1 and 0).
-- [SymLine](elements/plotting.md#SymLine) — Sample a function at the specified values and draw with Polyline.
-- [SymPoints](elements/plotting.md#SymPoints) — Use the sampling options described by SymLine and draw with Points.
-- [SymPoly](elements/plotting.md#SymPoly) — Sample a function or parametric curve and close each finite run into a polygon.
-- [SymSpline](elements/plotting.md#SymSpline) — Use the sampling options described by SymLine and draw with Spline.
-- [VAxis](elements/plotting.md#VAxis) — VAxis draws a baseline, ticks, and labels.
-- [VBar](elements/plotting.md#VBar) — Draw one vertical bar at a specified value and position.
-- [VBars](elements/plotting.md#VBars) — Draw a series of vertical bars from values, positions, and baselines.
-- [VLabel](elements/plotting.md#VLabel) — One tick label. value defaults to 0; children can be a string, number, or Element (omitted text formats the value).
-- [VLabels](elements/plotting.md#VLabels) — VLabels draws labels only, without a baseline or ticks.
-- [VMesh](elements/plotting.md#VMesh) — Draw vertical grid lines at generated or explicit tick values.
-- [VScale](elements/plotting.md#VScale) — VScale draws ticks only, without a baseline or labels.
+- [Graph](elements/graph.md#Graph) — A finite canvas with data coordinates and an optional projection.
+- [Axis](elements/graph.md#Axis) — An axis occupies the graph frame; ticks and labels extend outside it.
+- [HAxis](elements/graph.md#HAxis) — HAxis draws a baseline, ticks, and labels.
+- [VAxis](elements/graph.md#VAxis) — VAxis draws a baseline, ticks, and labels.
+- [Mesh2D](elements/graph.md#Mesh2D) — Combine horizontal and vertical grid lines in graph coordinates.
+- [Mesh](elements/graph.md#Mesh) — Draw grid lines at generated or explicit tick values.
+- [HMesh](elements/graph.md#HMesh) — Draw horizontal grid lines at generated or explicit tick values.
+- [VMesh](elements/graph.md#VMesh) — Draw vertical grid lines at generated or explicit tick values.
+- [Scale](elements/graph.md#Scale) — Draw axis ticks without a baseline or labels.
+- [HScale](elements/graph.md#HScale) — HScale draws ticks only, without a baseline or labels.
+- [VScale](elements/graph.md#VScale) — VScale draws ticks only, without a baseline or labels.
+- [Labels](elements/graph.md#Labels) — Labels draws labels only, without a baseline or ticks.
+- [HLabels](elements/graph.md#HLabels) — HLabels draws labels only, without a baseline or ticks.
+- [VLabels](elements/graph.md#VLabels) — VLabels draws labels only, without a baseline or ticks.
+- [Label](elements/graph.md#Label) — Draw one formatted label at a tick value on an axis.
+- [HLabel](elements/graph.md#HLabel) — One tick label. value defaults to 0; children can be a string, number, or Element (omitted text formats the value).
+- [VLabel](elements/graph.md#VLabel) — One tick label. value defaults to 0; children can be a string, number, or Element (omitted text formats the value).
+- [OuterLabel](elements/graph.md#OuterLabel) — Place a label outside a chosen frame edge with optional offset and rotation.
 
-## Maps
+## Layout elements
+
+- [Attach](elements/layout.md#Attach) — Attach an Element outside one content child.
+- [Box](elements/layout.md#Box) — Add padding, a background, an inside border, optional rounded clipping, and alignment around one content element.
+- [Document](elements/layout.md#Document) — Collect independently laid-out pages with shared defaults and document metadata.
+- [Frame](elements/layout.md#Frame) — Surround one element with padding, background, and a default border.
+- [Grid](elements/layout.md#Grid) — Arrange children row by row with column widths shared across every row.
+- [Group](elements/layout.md#Group) — A finite canvas for independently positioned children.
+- [HStack](elements/layout.md#HStack) — Arrange child elements left to right with flex sizing and alignment.
+- [Overlay](elements/layout.md#Overlay) — Place positioned decorations over a measured base child.
+- [Page](elements/layout.md#Page) — Define one output page with explicit or content-based dimensions, independent of format.
+- [Rotate](elements/layout.md#Rotate) — Rotate a measured child around a chosen alignment point.
+- [Spacer](elements/layout.md#Spacer) — Empty space with fixed dimensions or flexible growth.
+- [TransformBox](elements/layout.md#TransformBox) — Transform a naturally measured child using an affine matrix [a,b,c,d,e,f]: x′=ax+cy+e, y′=bx+dy+f.
+- [VStack](elements/layout.md#VStack) — Arrange child elements top to bottom with flex sizing and alignment.
+
+## Maps elements
 
 - [GeoMap](elements/maps.md#GeoMap) — Project GeoJSON or TopoJSON with per-feature styles and shared borders.
 
-## Networks
-
-- [Edge](elements/networks.md#Edge) — A connection rendered with Arrow's shaft, heads, and paint options.
-- [Network](elements/networks.md#Network) — Network lays out and places its nodes before connecting them with Edge.
-- [Node](elements/networks.md#Node) — A compact TextFrame with a centered placement anchor: the conventional labeled node.
-
-## Text
-
-- [Bullets](elements/text.md#Bullets) — A vertical list with baseline-aligned markers.
-- [Slide](elements/text.md#Slide) — Lay out a 16:9 slide with a measured title and flexible content area.
-- [Span](elements/text.md#Span) — Span changes inherited style for part of a Text element.
-- [Text](elements/text.md#Text) — Text lays out shaped glyphs at a fixed font size.
-- [TextBox](elements/text.md#TextBox) — TextBox accepts string/Span/Element children, with 0.6em padding.
-- [TextCol](elements/text.md#TextCol) — A text-aware stack: strings/numbers become Text elements at construction.
-- [TextFigure](elements/text.md#TextFigure) — Pair a figure with an optional measured caption and outer decoration.
-- [TextFrame](elements/text.md#TextFrame) — TextFrame accepts string/Span/Element children, with 0.6em padding.
-- [TextGrid](elements/text.md#TextGrid) — A Grid that converts strings and numbers to Text elements at construction.
-- [TextRow](elements/text.md#TextRow) — A text-aware stack: strings/numbers become Text elements at construction.
-- [TextStack](elements/text.md#TextStack) — A text-aware stack: strings/numbers become Text elements at construction.
-- [TitleBox](elements/text.md#TitleBox) — Place an optional title above content inside a box.
-- [TitleFrame](elements/text.md#TitleFrame) — TitleFrame draws a border around its content, with an optional boxed title centered across the top border.
-
-## Math
+## Math elements
 
 - [Accent](elements/math.md#Accent) — Put a glyph or a width-fitting decoration over an operand.
 - [Bracket](elements/math.md#Bracket) — An atom with left/right fences fitted to its complete body.
@@ -145,10 +109,52 @@ Each entry includes its runnable JSX example.
 - [VCenter](elements/math.md#VCenter) — Center an operand's logical height on the math axis.
 - [XArrow](elements/math.md#XArrow) — An extensible relation arrow with labels above and optionally below it.
 
-## Video
+## Networks elements
+
+- [Edge](elements/networks.md#Edge) — A connection rendered with Arrow's shaft, heads, and paint options.
+- [Network](elements/networks.md#Network) — Network lays out and places its nodes before connecting them with Edge.
+- [Node](elements/networks.md#Node) — A compact TextFrame with a centered placement anchor: the conventional labeled node.
+
+## Additional plot marks
+
+- [Bars](elements/plotting-marks.md#Bars) — Draw a series of vertical bars from values, positions, and baselines.
+- [Bar](elements/plotting-marks.md#Bar) — Draw one vertical bar at a specified value and position.
+- [HBars](elements/plotting-marks.md#HBars) — Draw a series of horizontal bars from values, positions, and baselines.
+- [HBar](elements/plotting-marks.md#HBar) — Draw one horizontal bar at a specified value and position.
+- [VBars](elements/plotting-marks.md#VBars) — Draw a series of vertical bars from values, positions, and baselines.
+- [VBar](elements/plotting-marks.md#VBar) — Draw one vertical bar at a specified value and position.
+- [Field](elements/plotting-marks.md#Field) — Draw vectors=[{point,vector},...], with either {x,y} or [x,y] for each point and vector.
+- [SymField](elements/plotting-marks.md#SymField) — Sample f(x,y) on a rectangular grid and draw it with Field.
+- [SymArrow](elements/plotting-marks.md#SymArrow) — Sample a function and draw its path with optional arrowheads.
+- [SymPoly](elements/plotting-marks.md#SymPoly) — Sample a function or parametric curve and close each finite run into a polygon.
+- [SymSpline](elements/plotting-marks.md#SymSpline) — Use the sampling options described by SymLine and draw with Spline.
+
+## Plots and charts
+
+- [Plot](elements/plotting.md#Plot) — Compose graphable children with linear axes, grid lines, measured tick labels, axis titles, an optional legend, and an optional background.
+- [BarPlot](elements/plotting.md#BarPlot) — Combine bars, axes, labels, and other plot features in one chart.
+- [SymLine](elements/plotting.md#SymLine) — Sample a function at the specified values and draw with Polyline.
+- [SymPoints](elements/plotting.md#SymPoints) — Use the sampling options described by SymLine and draw with Points.
+- [SymFill](elements/plotting.md#SymFill) — Sample a band between upper and lower functions or numbers (defaults 1 and 0).
+- [Legend](elements/plotting.md#Legend) — A measured box of badge/label rows.
+- [LegendItem](elements/plotting.md#LegendItem) — One badge and label row inside Legend.
+
+## Text elements
+
+- [Bullets](elements/text.md#Bullets) — A vertical list with baseline-aligned markers.
+- [Slide](elements/text.md#Slide) — Lay out a 16:9 slide with a measured title and flexible content area.
+- [Span](elements/text.md#Span) — Span changes inherited style for part of a Text element.
+- [Text](elements/text.md#Text) — Text lays out shaped glyphs at a fixed font size.
+- [TextBox](elements/text.md#TextBox) — TextBox accepts string/Span/Element children, with 0.6em padding.
+- [TextCol](elements/text.md#TextCol) — A text-aware stack: strings/numbers become Text elements at construction.
+- [TextFigure](elements/text.md#TextFigure) — Pair a figure with an optional measured caption and outer decoration.
+- [TextFrame](elements/text.md#TextFrame) — TextFrame accepts string/Span/Element children, with 0.6em padding.
+- [TextGrid](elements/text.md#TextGrid) — A Grid that converts strings and numbers to Text elements at construction.
+- [TextRow](elements/text.md#TextRow) — A text-aware stack: strings/numbers become Text elements at construction.
+- [TextStack](elements/text.md#TextStack) — A text-aware stack: strings/numbers become Text elements at construction.
+- [TitleBox](elements/text.md#TitleBox) — Place an optional title above content inside a box.
+- [TitleFrame](elements/text.md#TitleFrame) — TitleFrame draws a border around its content, with an optional boxed title centered across the top border.
+
+## Video elements
 
 - [Video](elements/video.md#Video) — Create an MP4 animation from frame children or a frame generator.
-
-## External
-
-- [PngImage](elements/external.md#PngImage) — Embeds a PNG from a base64 data URL.
